@@ -10,8 +10,8 @@ describe("Luckynime direct-distribution update logic", () => {
   });
 
   it("accepts only a trusted Luckynime GitHub APK asset and namespaces dismissal by release", () => {
-    const asset = { name: "Luckynime-v5.0.0.apk", size: 88_000_000, content_type: "application/vnd.android.package-archive", browser_download_url: "https://github.com/luckygrup-png/LuckynimeApp/releases/download/v5.0.0/Luckynime-v5.0.0.apk" };
-    expect(parseGitHubRelease({ tag_name: "v5.0.0", name: "v5.0.0", html_url: "https://github.com/luckygrup-png/LuckynimeApp/releases/tag/v5.0.0", assets: [asset] })).toMatchObject({ version: "5.0.0", assetName: "Luckynime-v5.0.0.apk" });
+    const asset = { name: "Luckynime-v5.0.0.apk", size: 88_000_000, content_type: "application/vnd.android.package-archive", browser_download_url: "https://github.com/Lukigays/LuckynimeApp/releases/download/v5.0.0/Luckynime-v5.0.0.apk" };
+    expect(parseGitHubRelease({ tag_name: "v5.0.0", name: "v5.0.0", html_url: "https://github.com/Lukigays/LuckynimeApp/releases/tag/v5.0.0", assets: [asset] })).toMatchObject({ version: "5.0.0", assetName: "Luckynime-v5.0.0.apk" });
     expect(parseGitHubRelease({ tag_name: "v4.2.1" })).toBeNull();
     expect(updateDismissalKey("v4.2.4")).toBe("luckynime.update.dismissed:4.2.4");
   });

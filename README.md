@@ -4,11 +4,11 @@
 
 <br>
 
-<a href="https://github.com/luckygrup-png/LuckynimeApp/releases/latest">
-  <img src="https://img.shields.io/github/downloads/luckygrup-png/LuckynimeApp/total?style=for-the-badge&logo=github&color=a78bfa&labelColor=1E1B4B" alt="Downloads" />
+<a href="https://github.com/Lukigays/LuckynimeApp/releases/latest">
+  <img src="https://img.shields.io/github/downloads/Lukigays/LuckynimeApp/total?style=for-the-badge&logo=github&color=a78bfa&labelColor=1E1B4B" alt="Downloads" />
 </a>
-<a href="https://github.com/luckygrup-png/LuckynimeApp/releases/latest">
-  <img src="https://img.shields.io/github/v/release/luckygrup-png/LuckynimeApp?style=for-the-badge&color=c4b5fd&labelColor=1E1B4B" alt="Latest release" />
+<a href="https://github.com/Lukigays/LuckynimeApp/releases/latest">
+  <img src="https://img.shields.io/github/v/release/Lukigays/LuckynimeApp?style=for-the-badge&color=c4b5fd&labelColor=1E1B4B" alt="Latest release" />
 </a>
 <img src="https://img.shields.io/badge/Android-9%2B-a5b4fc?style=for-the-badge&logo=android&logoColor=white&labelColor=1E1B4B" alt="Android 9+" />
 <img src="https://img.shields.io/badge/Open%20Source-a78bfa?style=for-the-badge&labelColor=1E1B4B" alt="Open source" />
@@ -16,11 +16,11 @@
 <h1>luckynime app</h1>
 <p><i>streaming anime sub indonesia, langsung di kantong kamu</i></p>
 
-<a href="https://github.com/luckygrup-png/LuckynimeApp/releases/latest"><b>⬇ Download APK</b></a>
+<a href="https://github.com/Lukigays/LuckynimeApp/releases/latest"><b>⬇ Download APK</b></a>
 &nbsp;·&nbsp;
-<a href="https://github.com/luckygrup-png/luckynime">Web</a>
+<a href="https://github.com/Lukigays/luckynime">Web</a>
 &nbsp;·&nbsp;
-<a href="https://github.com/luckygrup-png/Luckynime-Dashboard">Dashboard</a>
+<a href="https://github.com/Lukigays/Luckynime-Dashboard">Dashboard</a>
 
 </div>
 
@@ -29,7 +29,7 @@
 ## ✦ Tentang
 
 **Luckynime App** adalah aplikasi streaming anime Android resmi dari ekosistem
-[**Luckynime**](https://github.com/luckygrup-png) — satu klik install, langsung nonton.
+[**Luckynime**](https://github.com/Lukigays) — satu klik install, langsung nonton.
 Dibangun dengan Expo + React Native dan native playback layer.
 
 ### Yang bikin beda
@@ -47,7 +47,7 @@ Dibangun dengan Expo + React Native dan native playback layer.
 
 ## 📦 Install
 
-1. Buka [**Releases**](https://github.com/luckygrup-png/LuckynimeApp/releases/latest)
+1. Buka [**Releases**](https://github.com/Lukigays/LuckynimeApp/releases/latest)
 2. Download `arm64` (umum), `arm32`, atau `universal`
 3. Install — kalau diminta, aktifkan *install dari sumber tidak dikenal*
 
@@ -68,11 +68,11 @@ Baca [CONTRIBUTING.md](CONTRIBUTING.md) sebelum membuka PR.
 
 | Project | Deskripsi |
 |---|---|
-| [**luckynime**](https://github.com/luckygrup-png/luckynime) | Web experience utama |
-| [**dunia luckynime**](https://github.com/luckygrup-png/Dunia-Luckynime) | Dunia interaktif (React + Supabase) |
-| [**luckynime api**](https://github.com/luckygrup-png/Luckynime-API) | REST API anime sub Indo |
-| [**nuepet zoo**](https://github.com/luckygrup-png/NuePet-Zoo) | 3D floating-island pet sanctuary |
-| [**luckynime dashboard**](https://github.com/luckygrup-png/Luckynime-Dashboard) | Admin portal & Mobile APK |
+| [**luckynime**](https://github.com/Lukigays/luckynime) | Web experience utama |
+| [**dunia luckynime**](https://github.com/Lukigays/Dunia-Luckynime) | Dunia interaktif (React + Supabase) |
+| [**luckynime api**](https://github.com/Lukigays/Luckynime-API) | REST API anime sub Indo |
+| [**nuepet zoo**](https://github.com/Lukigays/NuePet-Zoo) | 3D floating-island pet sanctuary |
+| [**luckynime dashboard**](https://github.com/Lukigays/Luckynime-Dashboard) | Admin portal & Mobile APK |
 
 ## ⚖️ License & Catatan
 
@@ -85,5 +85,5 @@ Hanya streaming konten yang kamu punya hak untuk tonton.
 
 <div align="center">
 <sub>Built with 💜 by <b>Lucky Developer</b> — <code>@lukyy</code> · part of the
-<a href="https://github.com/luckygrup-png"><b>luckynime</b></a> ecosystem</sub>
+<a href="https://github.com/Lukigays"><b>luckynime</b></a> ecosystem</sub>
 </div>

@@ -8,7 +8,7 @@ const APK_MIME_TYPE = "application/vnd.android.package-archive";
 const FLAG_GRANT_READ_URI_PERMISSION = 0x00000001;
 
 const TRUSTED_DOWNLOAD_PREFIX =
-  "/luckygrup-png/LuckynimeApp/releases/download/";
+  "/Lukigays/LuckynimeApp/releases/download/";
 
 export type DownloadProgress = {
   /** Bytes downloaded so far */

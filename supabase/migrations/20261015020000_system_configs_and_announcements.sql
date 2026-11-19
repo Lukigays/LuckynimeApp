@@ -92,7 +92,7 @@ VALUES (
   '{
     "version": "1.0.0",
     "build_number": 1,
-    "apk_url": "https://github.com/luckygrup-png/LuckynimeApp.git",
+    "apk_url": "https://github.com/Lukigays/LuckynimeApp.git",
     "changelog": "Pembaruan perdana Luckynime dengan fitur Avatar Borders, Dylan Crystal Store, dan Gacha Banner.",
     "force_update": false,
     "min_version": "1.0.0"

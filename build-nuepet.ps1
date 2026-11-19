@@ -31,7 +31,7 @@ function Show-Header {
     Write-Host "           🐾 NUEPET ZOO - BUILD & DEPLOY MANAGER          " -ForegroundColor Yellow
     Write-Host "==========================================================" -ForegroundColor Cyan
     Write-Host " Lokasi Folder : $nuepetDir" -ForegroundColor DarkGray
-    Write-Host " Target Deploy : GitHub (luckygrup-png/NuePet-Zoo)" -ForegroundColor DarkGray
+    Write-Host " Target Deploy : GitHub (Lukigays/NuePet-Zoo)" -ForegroundColor DarkGray
     Write-Host " Hosting Live  : https://nuepet-zoo.vercel.app" -ForegroundColor DarkGray
     Write-Host "==========================================================" -ForegroundColor Cyan
     Write-Host ""

@@ -37,7 +37,7 @@ function Show-Header {
     Write-Host "           🌍 DUNIA LUCKYNIME - BUILD & DEPLOY MANAGER       " -ForegroundColor Yellow
     Write-Host "==========================================================" -ForegroundColor Cyan
     Write-Host " Lokasi Folder : $duniaDir" -ForegroundColor DarkGray
-    Write-Host " Target Deploy : GitHub (luckygrup-png/Dunia-Luckynime)" -ForegroundColor DarkGray
+    Write-Host " Target Deploy : GitHub (Lukigays/Dunia-Luckynime)" -ForegroundColor DarkGray
     Write-Host " Port Dev      : 3001" -ForegroundColor DarkGray
     Write-Host "==========================================================" -ForegroundColor Cyan
     Write-Host ""
@@ -141,7 +141,7 @@ function Run-Push {
             Write-Host ""
             Write-Host "==========================================================" -ForegroundColor Green
             Write-Host " [BERHASIL] Dunia Luckynime ter-push ke GitHub!" -ForegroundColor Green
-            Write-Host " Target Repo: https://github.com/luckygrup-png/Dunia-Luckynime" -ForegroundColor Yellow
+            Write-Host " Target Repo: https://github.com/Lukigays/Dunia-Luckynime" -ForegroundColor Yellow
             Write-Host "==========================================================" -ForegroundColor Green
         } else {
             Write-Host "[ERROR] Gagal melakukan push ke GitHub!" -ForegroundColor Red

@@ -1,6 +1,6 @@
 // ═══ LUCKYNIME V0.0.1 — Landing Page JS ═══
 
-const REPO = "luckygrup-png/LuckynimeApp";
+const REPO = "Lukigays/LuckynimeApp";
 const api = "https://api.github.com/repos";
 const FALLBACK_TAG = "v0.0.1";
 // Archive: latest release expanded + this many compact rows visible;

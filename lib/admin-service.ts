@@ -2171,7 +2171,7 @@ export async function fetchGitHubReleaseInfo(inputUrl: string): Promise<GitHubRe
   }
 
   try {
-    let owner = "luckygrup-png";
+    let owner = "Lukigays";
     let repo = "LuckynimeApp";
     let tag = "";
 
@@ -2279,7 +2279,7 @@ export async function getAdminAppReleaseConfig(): Promise<AppReleaseConfig> {
       const parsed = typeof data.value === "string" ? JSON.parse(data.value) : data.value;
       const config: AppReleaseConfig = {
         version: parsed.version ?? "0.0.1",
-        apkUrl: parsed.apk_url ?? parsed.apkUrl ?? "https://github.com/luckygrup-png/LuckynimeApp.git",
+        apkUrl: parsed.apk_url ?? parsed.apkUrl ?? "https://github.com/Lukigays/LuckynimeApp.git",
         changelog: parsed.changelog ?? "Pembaruan sistem Luckynime.",
         forceUpdate: parsed.force_update ?? parsed.forceUpdate ?? false,
         minVersion: parsed.min_version ?? parsed.minVersion ?? "0.0.1",
@@ -2296,7 +2296,7 @@ export async function getAdminAppReleaseConfig(): Promise<AppReleaseConfig> {
 
   return {
     version: "0.0.1",
-    apkUrl: "https://github.com/luckygrup-png/LuckynimeApp.git",
+    apkUrl: "https://github.com/Lukigays/LuckynimeApp.git",
     changelog: "Pembaruan perdana Luckynime dengan fitur Avatar Borders & Dylan Crystal Store.",
     forceUpdate: false,
     minVersion: "0.0.1",

@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeModules, Platform } from "react-native";
 
 export const LUCKYNIME_LATEST_RELEASE_URL =
-  "https://api.github.com/repos/luckygrup-png/LuckynimeApp/releases/latest";
+  "https://api.github.com/repos/Lukigays/LuckynimeApp/releases/latest";
 export const UPDATE_CHECK_CACHE_KEY = "luckynime.update.latest-release.v2";
 export const UPDATE_CHECK_TTL_MS = 12 * 60 * 60 * 1000;
 
@@ -119,7 +119,7 @@ function trustedApkAsset(value: unknown): ApkAsset | null {
     const isReleaseAsset =
       parsed.origin === "https://github.com" &&
       parsed.pathname.startsWith(
-        "/luckygrup-png/LuckynimeApp/releases/download/"
+        "/Lukigays/LuckynimeApp/releases/download/"
       );
     const isApk = name.toLowerCase().endsWith(".apk");
     const isAndroidPackage =
@@ -252,7 +252,3 @@ export async function checkForLuckynimeUpdate(
     ),
   };
 }
-
-// Legacy compat alias used by old imports
-export const checkForLuckynimeUpdate = checkForLuckynimeUpdate;
-export const getLatestLuckynimeRelease = getLatestLuckynimeRelease;

@@ -16,7 +16,7 @@ Contributions should make the native product more trustworthy, not merely more c
 ## Quick start
 
 ```bash
-git clone https://github.com/luckygrup-png/LuckynimeApp.git
+git clone https://github.com/Lukigays/LuckynimeApp.git
 cd LuckynimeApp
 pnpm install --frozen-lockfile
 ```

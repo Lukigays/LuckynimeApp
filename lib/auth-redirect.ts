@@ -1,5 +1,4 @@
 export const LUCKYNIME_AUTH_REDIRECT_URL = "luckynime://auth";
-export const LUCKYNIME_AUTH_REDIRECT_URL = LUCKYNIME_AUTH_REDIRECT_URL;
 
 export function signUpVerificationNotice(email: string) {
   const destination = email.trim() || "your email address";

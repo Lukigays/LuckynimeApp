@@ -2,7 +2,7 @@
 
 # Changelog
 
-This is the public record of meaningful native Android releases. For the currently installable build, open [GitHub Releases](https://github.com/luckygrup-png/LuckynimeApp/releases/latest).
+This is the public record of meaningful native Android releases. For the currently installable build, open [GitHub Releases](https://github.com/Lukigays/LuckynimeApp/releases/latest).
 
 ## Unreleased
 
@@ -301,4 +301,4 @@ This is the public record of meaningful native Android releases. For the current
 
 `SIGNAL / CURRENT BUILD FIRST`
 
-[README](./README.md) · [Latest release](https://github.com/luckygrup-png/LuckynimeApp/releases/latest) · [Security](./SECURITY.md) · [Contributing](./CONTRIBUTING.md)
+[README](./README.md) · [Latest release](https://github.com/Lukigays/LuckynimeApp/releases/latest) · [Security](./SECURITY.md) · [Contributing](./CONTRIBUTING.md)

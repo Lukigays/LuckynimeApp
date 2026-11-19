@@ -49,7 +49,7 @@ INSERT INTO public.system_configs (key, value) VALUES
 ('app_release', '{
   "version": "0.0.1",
   "build_number": 1,
-  "apk_url": "https://github.com/luckygrup-png/LuckynimeApp.git",
+  "apk_url": "https://github.com/Lukigays/LuckynimeApp.git",
   "changelog": "Rilis awal Luckynime dengan fitur Avatar Borders & Dylan Crystal Store.",
   "force_update": false,
   "min_version": "0.0.1"

@@ -29,7 +29,7 @@ The palette is fixed to `#090909` black, `#141414` surface, `#1C1C1C` raised, `#
 ## Content integrity
 
 - The site uses only committed real app captures from `site/assets/screens/` and local source-controlled visual assets. No generated imagery, no mislabeled states.
-- Release actions always target the named GitHub release (`https://github.com/luckygrup-png/LuckynimeApp/releases/download/vX.Y.Z/luckynime-vX.Y.Z-<arch>.apk`). The `universal` APK contains all architectures.
+- Release actions always target the named GitHub release (`https://github.com/Lukigays/LuckynimeApp/releases/download/vX.Y.Z/luckynime-vX.Y.Z-<arch>.apk`). The `universal` APK contains all architectures.
 - The package-migration warning (uninstall legacy `luckynime.anine.app`) and Android 9+ compatibility stay visible before the visitor scrolls.
 - Support copy names only live routes: Saweria. Removed routes (e.g. Patreon, Binance Pay, USDT) must not reappear in copy or QR assets served by the page.
 - The docs grid must mirror the repo: same eight documents, same files on `main`. Never point it at a separate wiki or subdomain that can rot.
@@ -47,4 +47,4 @@ When cutting a new app release, update the site in the same pass:
 
 ## Public deployment QA
 
-The public URL `https://luckygrup-png.github.io/LuckynimeApp/` serves the static `site/` artifact via GitHub Pages. After each site change, verify on desktop and at the `720px` mobile breakpoint: hero version matches the latest tag, all three APK links download, the product rail renders real captures, support links resolve, and the FAQ single-open behavior still works.
+The public URL `https://Lukigays.github.io/LuckynimeApp/` serves the static `site/` artifact via GitHub Pages. After each site change, verify on desktop and at the `720px` mobile breakpoint: hero version matches the latest tag, all three APK links download, the product rail renders real captures, support links resolve, and the FAQ single-open behavior still works.

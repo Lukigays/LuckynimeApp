@@ -21,7 +21,7 @@ assert.match(script, /querySelectorAll\("\.copy-btn, \[data-copy-support\]"\)/);
 // ─── Docs grid mirrors the repo docs (no dead subdomain) ───
 for (const doc of ["PRIVACY.md", "TERMS.md", "DMCA.md", "SECURITY.md", "SUPPORT.md", "CONTRIBUTING.md", "CHANGELOG.md"]) {
   assert.ok(
-    html.includes(`https://github.com/luckygrup-png/LuckynimeApp/blob/main/${doc}`),
+    html.includes(`https://github.com/Lukigays/LuckynimeApp/blob/main/${doc}`),
     `docs grid links ${doc}`,
   );
 }
