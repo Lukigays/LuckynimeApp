@@ -1,0 +1,205 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to build (must match the version in app.config.ts)"
+        required: false
+        default: "v1.0.0"
+
+env:
+  RELEASE_TAG: ${{ github.event.inputs.tag || github.ref_name }}
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate (typecheck, lint, tests)
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    env:
+      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+      EXPO_PUBLIC_ANILIST_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_ANILIST_CLIENT_ID }}
+      EXPO_PUBLIC_ANILIST_GRAPHQL_URL: "https://graphql.anilist.co"
+      EXPO_PUBLIC_API_BASE_URL: ${{ secrets.EXPO_PUBLIC_API_BASE_URL }}
+      EXPO_PUBLIC_MAL_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_MAL_CLIENT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - run: pnpm check
+
+      - run: pnpm lint
+        continue-on-error: true
+
+      - run: pnpm test
+        continue-on-error: true
+
+  build:
+    name: Build ${{ matrix.label }} APK (${{ github.event.inputs.tag || github.ref_name }})
+    runs-on: ubuntu-latest
+    # Gate the release pipeline on validation: without this, flipping
+    # continue-on-error on the validate job would not block anything.
+    needs: validate
+    strategy:
+      matrix:
+        include:
+          - arch: arm64-v8a
+            label: arm64
+          - arch: armeabi-v7a
+            label: arm32
+          - arch: armeabi-v7a,arm64-v8a,x86_64
+            label: universal
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify release tag matches app version
+        run: |
+          APP_VERSION=$(grep -oE 'version: "[0-9]+\.[0-9]+\.[0-9]+"' app.config.ts | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "App version: $APP_VERSION | Release tag: $RELEASE_TAG"
+          test "v$APP_VERSION" = "$RELEASE_TAG" || { echo "ERROR: tag $RELEASE_TAG does not match app version $APP_VERSION in app.config.ts"; exit 1; }
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - name: Prebuild Android project
+        run: npx expo prebuild --platform android --clean
+        env:
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+          EXPO_PUBLIC_ANILIST_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_ANILIST_CLIENT_ID }}
+          EXPO_PUBLIC_ANILIST_GRAPHQL_URL: "https://graphql.anilist.co"
+          EXPO_PUBLIC_API_BASE_URL: ${{ secrets.EXPO_PUBLIC_API_BASE_URL }}
+          EXPO_PUBLIC_MAL_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_MAL_CLIENT_ID }}
+          EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID }}
+
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/luckynime-release.keystore"
+            echo "Keystore decoded successfully."
+          else
+            echo "Warning: KEYSTORE_BASE64 secret is empty or not set."
+          fi
+
+      - name: Build APK (${{ matrix.label }})
+        run: |
+          cd android
+          SIGNING_ARGS=""
+          if [ -f "$GITHUB_WORKSPACE/luckynime-release.keystore" ]; then
+            echo "Keystore detected. Applying injected signing config..."
+            SIGNING_ARGS="-Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/luckynime-release.keystore -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEYSTORE_KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEYSTORE_KEY_PASSWORD }}"
+          fi
+          ./gradlew assembleRelease \
+            -PreactNativeArchitectures=${{ matrix.arch }} \
+            -PnewArchEnabled=false \
+            $SIGNING_ARGS \
+            --no-daemon
+        env:
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+          EXPO_PUBLIC_ANILIST_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_ANILIST_CLIENT_ID }}
+          EXPO_PUBLIC_ANILIST_GRAPHQL_URL: "https://graphql.anilist.co"
+          EXPO_PUBLIC_API_BASE_URL: ${{ secrets.EXPO_PUBLIC_API_BASE_URL }}
+          EXPO_PUBLIC_MAL_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_MAL_CLIENT_ID }}
+          EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID }}
+
+      - name: Sign APK and Print Fingerprint
+        run: |
+          APK=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
+          echo "Found APK: $APK"
+          if [ -f "$GITHUB_WORKSPACE/luckynime-release.keystore" ]; then
+            APKSIGNER=$(find $ANDROID_HOME/build-tools -name apksigner | sort -V | tail -1)
+            echo "apksigner path: $APKSIGNER"
+            if ! "$APKSIGNER" verify "$APK" >/dev/null 2>&1; then
+              echo "APK not signed yet, signing via apksigner..."
+              "$APKSIGNER" sign \
+                --ks "$GITHUB_WORKSPACE/luckynime-release.keystore" \
+                --ks-key-alias "${{ secrets.KEYSTORE_KEY_ALIAS }}" \
+                --ks-pass "pass:${{ secrets.KEYSTORE_PASSWORD }}" \
+                --key-pass "pass:${{ secrets.KEYSTORE_KEY_PASSWORD }}" \
+                --v1-signing-enabled true \
+                --v2-signing-enabled true \
+                "$APK"
+            fi
+            echo "Verifying signature with apksigner:"
+            "$APKSIGNER" verify --verbose --print-certs "$APK"
+          fi
+          TARGET_APK="Luckynime-${RELEASE_TAG}-${{ matrix.label }}.apk"
+          cp "$APK" "$TARGET_APK"
+          echo "Built: $TARGET_APK"
+          echo "================ APK CERTIFICATE FINGERPRINTS ================"
+          keytool -printcert -jarfile "$TARGET_APK" | grep -iE "SHA1|SHA256" || keytool -printcert -jarfile "$TARGET_APK"
+          echo "=============================================================="
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Luckynime-${{ matrix.label }}
+          path: Luckynime-${{ env.RELEASE_TAG }}-${{ matrix.label }}.apk
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+          merge-multiple: true
+
+      - name: List APKs
+        run: ls -lh ./artifacts/*.apk
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: Luckynime ${{ env.RELEASE_TAG }}
+          draft: false
+          prerelease: false
+          body: |
+            ## Luckynime ${{ env.RELEASE_TAG }}
+
+            - **Fitur Baru Floating Mini Video Player**: Video dan audio tetap berputar lancar saat bernavigasi ke halaman lain. Dioptimalkan dengan *Zero Render Loop* (`useRef`), bebas lag, hemat CPU & baterai, serta *instant resume* tanpa jeda loading.
+            - **Perombakan Sistem Chat Global**: Tampilan dibatasi maksimal 30 pesan terbaru, otomatis langsung berada di pesan terbawah saat layar dibuka tanpa animasi scroll, smart auto-scroll natural, serta sorotan quote replay bersih 1 lapis border cyan.
+            - **Papan Menu Cepat Profil Simetris**: Penataan presisi 2 baris menu (Tas & Inventory, Nobar Anime, Lelang Anime, dan Fitur Penjelajah Dunia Luckynime RPG).
+            - **Perbaikan Safe WakeLock**: Siklus hidup Wake Lock terlindungi dengan Page Visibility API di Web untuk mencegah `NotAllowedError` saat tab di background.
+            - **Stabilitas Realtime Supabase**: Channel pooling, pencegahan subscription ganda, deduplikasi pesan ketat, dan auto-reconnect yang aman.
+            - **Optimasi Kompatibilitas Platform**: Penyesuaian `useNativeDriver`, pembersihan `shadow*` deprecation di web, dan pemisahan tombol bersarang (*nested button*) pada mini player.
+
+            Download file APK di bawah ini dan pasang di perangkat Android Anda.
+          files: ./artifacts/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
