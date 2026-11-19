@@ -357,9 +357,7 @@ function getGoogleSignin() {
       // Tidak ada fallback ke web browser. Kalau native gagal, lempar error
       // ke UI agar user mendapat pesan yang jelas, bukan diarahkan ke Chrome.
       const gModule = getGoogleSignin();
-      const webClientId =
-        process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ||
-        "444728416290-rtacl8l6hofjhm0uauid82vppsda4e1i.apps.googleusercontent.com";
+      const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || "";
 
       if (!gModule || !webClientId) {
         throw new Error("Login Google belum dikonfigurasi untuk perangkat ini.");
