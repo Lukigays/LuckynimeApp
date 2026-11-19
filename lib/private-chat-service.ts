@@ -1,0 +1,261 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { supabase } from "./supabase";
+import { filterAndCensorMessage } from "./word-filter";
+import { sendPushToUser } from "./push-notification-service";
+import {
+  sanitizeMessage,
+  checkChatCooldown,
+  recordChatTimestamp,
+  checkDuplicateSpamAndAutoBan,
+} from "./security-defense";
+
+export interface PrivateMessage {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  message: string;
+  createdAt: string;
+}
+
+const CHAT_CACHE_PREFIX = "luckynime_private_chat:";
+
+function getChatKey(userA: string, userB: string): string {
+  return [userA, userB].sort().join("_");
+}
+
+/**
+ * Mengambil riwayat pesan pribadi antara dua pengguna (maksimal 7 hari terakhir).
+ * Pesan yang lebih dari 7 hari otomatis tidak ditampilkan dan dibersihkan dari server.
+ */
+export async function getPrivateMessages(
+  userA: string,
+  userB: string
+): Promise<PrivateMessage[]> {
+  if (!userA || !userB) return [];
+
+  const chatKey = getChatKey(userA, userB);
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  try {
+    // 1. Bersihkan pesan kedaluwarsa secara otomatis di latar belakang (> 7 hari)
+    void Promise.resolve(
+      supabase
+        .from("private_messages")
+        .delete()
+        .lt("created_at", sevenDaysAgo)
+    ).catch(() => {});
+
+    // 2. Ambil pesan aktif (usia <= 7 hari)
+    let { data, error } = await supabase
+      .from("private_messages")
+      .select("id, sender_id, receiver_id, message, created_at")
+      .or(
+        `and(sender_id.eq.${userA},receiver_id.eq.${userB}),and(sender_id.eq.${userB},receiver_id.eq.${userA})`
+      )
+      .gte("created_at", sevenDaysAgo)
+      .order("created_at", { ascending: true })
+      .limit(150);
+
+    // Fallback jika PostgREST query .or(...) error
+    if (error) {
+      const fallback = await supabase
+        .from("private_messages")
+        .select("id, sender_id, receiver_id, message, created_at")
+        .in("sender_id", [userA, userB])
+        .in("receiver_id", [userA, userB])
+        .gte("created_at", sevenDaysAgo)
+        .order("created_at", { ascending: true })
+        .limit(150);
+      data = fallback.data;
+      error = fallback.error;
+    }
+
+    if (error || !data) {
+      // Fallback ke cache lokal jika offline
+      const local = await AsyncStorage.getItem(`${CHAT_CACHE_PREFIX}${chatKey}`);
+      if (local) {
+        const parsed: PrivateMessage[] = JSON.parse(local);
+        return parsed.filter((m) => new Date(m.createdAt).getTime() >= Date.now() - 7 * 86_400_000);
+      }
+      return [];
+    }
+
+    const messages: PrivateMessage[] = data.map((d) => ({
+      id: d.id,
+      senderId: d.sender_id,
+      receiverId: d.receiver_id,
+      message: filterAndCensorMessage(d.message).processedText,
+      createdAt: d.created_at,
+    }));
+
+    // Simpan ke cache lokal
+    void AsyncStorage.setItem(
+      `${CHAT_CACHE_PREFIX}${chatKey}`,
+      JSON.stringify(messages)
+    ).catch(() => {});
+
+    return messages;
+  } catch (err) {
+    console.warn("[private-chat] getPrivateMessages error:", err);
+    return [];
+  }
+}
+
+/**
+ * Mengirim pesan chat pribadi baru.
+ * Otomatis menyensor kata terlarang jika terdeteksi.
+ */
+export async function sendPrivateMessage(
+  senderId: string,
+  receiverId: string,
+  text: string,
+  senderName?: string | null
+): Promise<{ success: boolean; data?: PrivateMessage; error?: string; warning?: string; isBanned?: boolean }> {
+  if (!senderId || !receiverId) {
+    return { success: false, error: "Sesi pengguna tidak valid." };
+  }
+
+  // 1. Sanitasi anti-injeksi XSS, Script, dan batas karakter
+  const sanitized = sanitizeMessage(text, 1000);
+  if (!sanitized) {
+    return { success: false, error: "Pesan tidak boleh kosong." };
+  }
+
+  // 2. Cek Anti-Flood / Rate Limiting (Jeda Chat)
+  const cooldownCheck = await checkChatCooldown(senderId);
+  if (!cooldownCheck.allowed) {
+    return {
+      success: false,
+      error: `Terlalu cepat. Harap tunggu ${cooldownCheck.remainingSeconds} detik sebelum mengirim lagi.`,
+    };
+  }
+
+  // 3. Deteksi Spam Pesan Sama (4x Berturut-turut = AUTO-BAN AKUN)
+  const spamCheck = await checkDuplicateSpamAndAutoBan(senderId, "chat_pribadi", sanitized);
+  if (spamCheck.isBanned) {
+    return {
+      success: false,
+      isBanned: true,
+      error: spamCheck.errorMessage || "AKUN DIBLOKIR: Anda telah diblokir permanen karena mengirim pesan yang sama 4 kali!",
+    };
+  }
+
+  // 4. Filter kata terlarang secara otomatis sebelum disimpan ke database
+  const filtered = filterAndCensorMessage(sanitized);
+  const textToSave = filtered.processedText;
+
+  try {
+    const { data, error } = await supabase
+      .from("private_messages")
+      .insert({
+        sender_id: senderId,
+        receiver_id: receiverId,
+        message: textToSave,
+        created_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error || !data) {
+      return { success: false, error: error?.message || "Gagal mengirim pesan." };
+    }
+
+    // Catat timestamp sukses
+    await recordChatTimestamp(senderId);
+
+    const newMsg: PrivateMessage = {
+      id: data.id,
+      senderId: data.sender_id,
+      receiverId: data.receiver_id,
+      message: data.message,
+      createdAt: data.created_at,
+    };
+
+    // Kirim notifikasi ke penerima pesan
+    try {
+      await supabase.from("notifications").insert({
+        user_id: receiverId,
+        title: `Pesan baru dari ${senderName || "Teman"}`,
+        message: textToSave.length > 50 ? `${textToSave.slice(0, 50)}...` : textToSave,
+        type: "private_chat",
+        read: false,
+      });
+    } catch {}
+
+    // 🔔 Kirim Push Notification ke HP penerima (tetap sampai walaupun APK penerima sedang mati total)
+    void sendPushToUser(receiverId, {
+      title: senderName || "Pesan Chat Masuk",
+      body: textToSave,
+      channelId: "luckynime_chat",
+      data: {
+        type: "chat",
+        senderId,
+        actionUrl: `/chat/${senderId}`,
+      },
+    });
+
+    return {
+      success: true,
+      data: newMsg,
+      warning: spamCheck.warningMessage,
+    };
+  } catch (err: any) {
+    return { success: false, error: err?.message || "Gagal mengirim pesan." };
+  }
+}
+
+/**
+ * Berlangganan pesan masuk secara realtime.
+ */
+export function subscribePrivateMessages(
+  userA: string,
+  userB: string,
+  onNewMessage: (msg: PrivateMessage) => void
+) {
+  const channelName = `dm_${[userA, userB].sort().join("_")}`;
+
+  const channel = supabase
+    .channel(channelName)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "private_messages",
+      },
+      (payload) => {
+        const row = payload.new as any;
+        if (
+          row &&
+          ((row.sender_id === userA && row.receiver_id === userB) ||
+            (row.sender_id === userB && row.receiver_id === userA))
+        ) {
+          onNewMessage({
+            id: row.id,
+            senderId: row.sender_id,
+            receiverId: row.receiver_id,
+            message: filterAndCensorMessage(row.message).processedText,
+            createdAt: row.created_at,
+          });
+        }
+      }
+    )
+    .subscribe((status, err) => {
+      if (status === "CHANNEL_ERROR") {
+        console.warn(`[private-chat] Realtime error for channel ${channelName}:`, err?.message || err);
+      }
+    });
+
+  return () => {
+    try {
+      supabase.removeChannel(channel).catch(() => {});
+    } catch {}
+  };
+}
+
+/** Melacak partner chat yang sedang aktif dibuka layarnya */
+export let activeChatPartnerId: string | null = null;
+
+export function setActiveChatPartner(partnerId: string | null) {
+  activeChatPartnerId = partnerId;
+}
