@@ -21,14 +21,13 @@ import { useQuery } from "@tanstack/react-query";
 import { AppIcon } from "@/components/app-icon";
 import { ChibiLoading } from "@/components/chibi-loading";
 import { BorderAvatar } from "@/components/border-avatar";
-import { UserVerificationBadge } from "@/components/user-verification-badge";
+import { SystemRoleBadge, UserVerificationBadge } from "@/components/user-verification-badge";
 import { ProfileCityPlaque } from "@/components/profile-city-plaque";
 import { getTierForLevel } from "@/components/level-progress-modal";
 import { getEquippedBorderId, getEquippedBorderStorageKey } from "@/lib/avatar-borders";
 import { useLuckynimeAuth } from "@/providers/auth-provider";
 import { supabase } from "@/lib/supabase";
 import { hapticLight, hapticSuccess } from "@/lib/haptics";
-import { isSpecialRole } from "@/lib/admin-service";
 import {
   getFriendshipStatus,
   sendFriendRequest,
@@ -260,6 +259,8 @@ const PodiumCard = React.memo(function PodiumCard({
         />
       </View>
 
+      <SystemRoleBadge role={entry.role} compact />
+
       {/* ── Badges Row: Rank Tier Pill + Level Pill (Persis Chat Global & LeaderRow) ── */}
       <View style={styles.podiumBadgesRow}>
         {currentTier ? (
@@ -406,6 +407,7 @@ const LeaderRow = React.memo(function LeaderRow({
 
         {/* 3. Badges Row: Rank Tier Pill + Level Pill (Persis Chat Global) */}
         <View style={styles.rowBadges}>
+          <SystemRoleBadge role={entry.role} compact />
           {currentTier ? (
             <View
               style={[
@@ -612,7 +614,7 @@ export default function LeaderboardScreen() {
   });
 
   const entries = useMemo(() => {
-    return (data ?? []).filter((e) => !isSpecialRole(e.role));
+    return data ?? [];
   }, [data]);
   const top3 = entries.slice(0, 3);
 
@@ -830,6 +832,7 @@ export default function LeaderboardScreen() {
                     </View>
 
                     <View style={styles.sheetBadgesRow}>
+                      <SystemRoleBadge role={selectedEntry.role} compact />
                       <View
                         style={[
                           styles.rankTierPill,

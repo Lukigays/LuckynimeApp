@@ -20,7 +20,7 @@ import { ChibiLoading } from "@/components/chibi-loading";
 import { BorderAvatar } from "@/components/border-avatar";
 import { useLuckynimeAuth } from "@/providers/auth-provider";
 import { isSpecialRole } from "@/lib/admin-service";
-import { UserVerificationBadge } from "@/components/user-verification-badge";
+import { SystemRoleBadge, UserVerificationBadge } from "@/components/user-verification-badge";
 import {
   type FriendUser,
   getFriends,
@@ -364,6 +364,7 @@ export default function ConnectionsScreen() {
                   </View>
 
                   <View style={styles.badgesRow}>
+                    <SystemRoleBadge role={item.role} compact />
                     {/* Level Pill */}
                     <View style={styles.levelPill}>
                       {activeTier?.imageUrl && (
@@ -453,6 +454,7 @@ export default function ConnectionsScreen() {
 
                     {/* Level + Tier + Member Number */}
                     <View style={styles.badgesRow}>
+                      <SystemRoleBadge role={item.role} compact />
                       <View style={styles.levelPill}>
                         {activeTier?.imageUrl && (
                           <Image
@@ -616,6 +618,7 @@ export default function ConnectionsScreen() {
                       </View>
                       {/* Level + Tier + Member Number */}
                       <View style={styles.badgesRow}>
+                        <SystemRoleBadge role={item.role} compact />
                         <View style={styles.levelPill}>
                           {srActiveTier?.imageUrl && (
                             <Image
@@ -723,13 +726,10 @@ export default function ConnectionsScreen() {
                       <Text style={styles.displayNameText} numberOfLines={1}>
                         {selectedFriend.displayName}
                       </Text>
-                      <AppIcon
-                        name={sfSpecial ? "check-decagram" : "check-circle"}
-                        size={14}
-                        color={sfSpecial ? "#EF4444" : "#38BDF8"}
-                      />
+                      <UserVerificationBadge role={selectedFriend.role} isVip={selectedFriend.isVip} size={14} />
                     </View>
                     <View style={styles.badgesRow}>
+                      <SystemRoleBadge role={selectedFriend.role} compact />
                       <View style={styles.levelPill}>
                         {sfTier?.imageUrl && (
                           <Image
@@ -740,7 +740,9 @@ export default function ConnectionsScreen() {
                           />
                         )}
                         <Text style={styles.levelPillText}>
-                          Lvl {selectedFriend.level.toLocaleString("id-ID")}
+                          {sfSpecial || sfTierInfo.isInfinity
+                            ? "∞"
+                            : `Lvl ${selectedFriend.level.toLocaleString("id-ID")}`}
                         </Text>
                       </View>
                       <View style={styles.tierPill}>

@@ -23,7 +23,7 @@ import { canSubmitSharedComment, commentAuthorLabel } from "@/lib/comment-conten
 import { useLuckynimeAuth } from "@/providers/auth-provider";
 import { BorderAvatar } from "@/components/border-avatar";
 import { getEquippedBorderId } from "@/lib/avatar-borders";
-import { UserVerificationBadge } from "@/components/user-verification-badge";
+import { SystemRoleBadge, UserVerificationBadge } from "@/components/user-verification-badge";
 import { getTierForLevel } from "@/components/level-progress-modal";
 import { ProfileCityPlaque } from "@/components/profile-city-plaque";
 import { hapticLight } from "@/lib/haptics";
@@ -224,6 +224,7 @@ function CommentAuthor({ comment }: { comment: SharedComment }) {
 
         {/* Baris 3: Rank Tier Pill (e.g. GOLD) + Level Pill (Lvl 11) + Timestamp */}
         <View style={styles.badgesAndMetaRow}>
+          <SystemRoleBadge role={role} compact />
           {activeTier ? (
             <View
               style={[

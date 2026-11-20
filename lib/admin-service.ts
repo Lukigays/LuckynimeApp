@@ -838,7 +838,11 @@ export async function getAdminUsersList(search?: string): Promise<AdminUserListI
         const resetBanner = await AsyncStorage.getItem(`@luckynime_user_cd_reset_${p.id}_banner`);
 
         const isBanned = overrideBan !== null ? overrideBan === "true" : Boolean(p.is_banned);
-        const role = overrideRole || p.role || "Member";
+        const serverRole = typeof p.role === "string" && p.role.trim().length > 0 ? p.role.trim() : null;
+        if (serverRole && overrideRole && overrideRole !== serverRole) {
+          AsyncStorage.removeItem(`@luckynime_user_role_${p.id}`).catch(() => {});
+        }
+        const role = serverRole || overrideRole || "Member";
         const banReason = overrideBanReason !== null ? overrideBanReason : (p.ban_reason || null);
         const nameUpdatedAt = resetName ? null : (p.name_updated_at || null);
         const avatarUpdatedAt = resetAvatar ? null : (p.avatar_updated_at || null);
@@ -1048,11 +1052,9 @@ export async function adminUpdateUserRole(params: {
   }
 
   try {
-    // 1. Simpan ke local override agar UI & auth langsung aktif seketika
-    await AsyncStorage.setItem(`@luckynime_user_role_${params.userId}`, params.newRole);
-
-    // 2. Coba via RPC Security Definer (bebas pembatasan RLS)
+    // 1. Coba via RPC Security Definer (bebas pembatasan RLS & guard trigger)
     let dbUpdated = false;
+    let lastDbError = "";
     try {
       const { data: rpcData, error: rpcErr } = await supabase.rpc("admin_update_user_role", {
         p_user_id: params.userId,
@@ -1060,10 +1062,16 @@ export async function adminUpdateUserRole(params: {
       });
       if (!rpcErr && rpcData && (rpcData.success || rpcData.id)) {
         dbUpdated = true;
+      } else if (rpcErr?.message) {
+        lastDbError = rpcErr.message;
+      } else if (rpcData?.error) {
+        lastDbError = String(rpcData.error);
       }
-    } catch {}
+    } catch (e: any) {
+      lastDbError = e?.message || "";
+    }
 
-    // 3. Fallback direct update jika RPC belum terpasang
+    // 2. Fallback direct update jika RPC belum terpasang
     if (!dbUpdated) {
       const { data, error } = await supabase
         .from("profiles")
@@ -1071,10 +1079,22 @@ export async function adminUpdateUserRole(params: {
         .eq("id", params.userId)
         .select();
 
-      if (!error && Array.isArray(data) && data.length > 0) {
+      if (!error && Array.isArray(data) && data.length > 0 && data[0]?.role === params.newRole) {
         dbUpdated = true;
+      } else if (error?.message) {
+        lastDbError = error.message;
       }
     }
+
+    if (!dbUpdated) {
+      return {
+        success: false,
+        error: lastDbError || "Gagal menyimpan perubahan Role Sistem ke database server.",
+      };
+    }
+
+    // 3. Sinkronkan local override hanya setelah server benar-benar terbarui
+    await AsyncStorage.setItem(`@luckynime_user_role_${params.userId}`, params.newRole);
 
     await logAdminAction({
       admin: params.admin,

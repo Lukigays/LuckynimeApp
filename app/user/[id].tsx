@@ -678,9 +678,7 @@ export default function PublicUserProfileScreen() {
                     },
                   ]}
                 >
-                  {isSpecial
-                    ? "Admin ∞"
-                    : tierInfo?.isInfinity
+                  {isSpecial || tierInfo?.isInfinity
                     ? "∞"
                     : `Lvl ${targetUser.level.toLocaleString("id-ID")}`}
                 </Text>

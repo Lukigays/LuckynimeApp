@@ -1,4 +1,5 @@
 import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { AppIcon } from "@/components/app-icon";
 import { isSpecialRole } from "@/lib/admin-service";
 
@@ -45,3 +46,53 @@ export function UserVerificationBadge({
 
   return null;
 }
+
+export function SystemRoleBadge({
+  role,
+  compact = false,
+}: {
+  role?: string | null;
+  compact?: boolean;
+}) {
+  if (!role || !isSpecialRole(role)) return null;
+  const label = role.replace(/_/g, " ").trim().toUpperCase();
+  if (!label || label === "MEMBER" || label === "GUEST") return null;
+
+  return (
+    <View style={[roleStyles.pill, compact && roleStyles.pillCompact]}>
+      <AppIcon name="shield-check" size={compact ? 9 : 10} color="#F87171" />
+      <Text style={[roleStyles.text, compact && roleStyles.textCompact]} numberOfLines={1}>
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+const roleStyles = StyleSheet.create({
+  pill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    backgroundColor: "rgba(239, 68, 68, 0.16)",
+    borderWidth: 1,
+    borderColor: "rgba(239, 68, 68, 0.42)",
+  },
+  pillCompact: {
+    paddingHorizontal: 5,
+    paddingVertical: 1.5,
+    gap: 2.5,
+  },
+  text: {
+    fontFamily: "Nunito-Black",
+    fontSize: 9.5,
+    color: "#FCA5A5",
+    letterSpacing: 0.4,
+  },
+  textCompact: {
+    fontSize: 8.5,
+    letterSpacing: 0.3,
+  },
+});

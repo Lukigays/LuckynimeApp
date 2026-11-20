@@ -1468,14 +1468,14 @@ export default function NobarWatchPartyScreen() {
                           </Text>
 
                           <UserVerificationBadge
-                            role={isSenderHost ? "HOST" : item.sender_role}
+                            role={isSenderSpecial ? item.sender_role : isSenderHost ? "HOST" : item.sender_role}
                             isVip={item.sender_is_vip}
                             size={12}
                           />
 
                           <View style={styles.chatLevelPill}>
                             <Text style={styles.chatLevelPillText}>
-                              Lvl {item.sender_level || 1}
+                              {isSenderSpecial ? "∞" : `Lvl ${item.sender_level || 1}`}
                             </Text>
                           </View>
 
@@ -1483,17 +1483,19 @@ export default function NobarWatchPartyScreen() {
                             <View style={styles.chatHostBadge}>
                               <Text style={styles.chatHostBadgeText}>HOST</Text>
                             </View>
-                          ) : isSenderSpecial ? (
+                          ) : null}
+
+                          {isSenderSpecial ? (
                             <View style={styles.chatSpecialBadge}>
                               <Text style={styles.chatSpecialBadgeText}>
                                 {(item.sender_role || "ADMIN").toUpperCase()}
                               </Text>
                             </View>
-                          ) : (
+                          ) : !isSenderHost ? (
                             <View style={styles.chatMemberBadge}>
                               <Text style={styles.chatMemberBadgeText}>MEMBER</Text>
                             </View>
-                          )}
+                          ) : null}
 
                           <Text style={styles.chatTime}>{formatChatTime(item.created_at)}</Text>
                         </View>

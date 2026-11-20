@@ -154,9 +154,17 @@ export function AuthProvider({ children }: PropsWithChildren) {
           AsyncStorage.removeItem(`luckynime.cooldown.${user.id}.avatar`).catch(() => {});
         }
 
+        const serverRole =
+          typeof (profileData as any)?.role === "string" && (profileData as any).role.trim().length > 0
+            ? (profileData as any).role.trim()
+            : null;
+        if (serverRole && overrideRole && overrideRole !== serverRole) {
+          AsyncStorage.removeItem(`@luckynime_user_role_${user.id}`).catch(() => {});
+        }
+
         const fullProfile = {
           ...profileData,
-          role: overrideRole || (profileData as any)?.role || "Member",
+          role: serverRole || overrideRole || "Member",
           is_banned: overrideBan !== null ? overrideBan === "true" : Boolean((profileData as any)?.is_banned),
           banned_at: (profileData as any)?.banned_at || null,
           ban_reason: overrideBanReason || (profileData as any)?.ban_reason || null,
@@ -324,6 +332,32 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
     return () => { mounted = false; sessionValidation.current += 1; appStateSubscription.remove(); subscription?.unsubscribe(); };
   }, [loadProfile]);
+
+  // Dengarkan perubahan profil real-time (Role Sistem, Level, Ban, Border) dari Supabase
+  useEffect(() => {
+    const activeUser = session?.user;
+    if (!activeUser?.id) return;
+
+    const channel = supabase
+      .channel(`auth_profile_sync_${activeUser.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "profiles",
+          filter: `id=eq.${activeUser.id}`,
+        },
+        () => {
+          void loadProfile(activeUser);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [session?.user, loadProfile]);
 
 let GoogleSigninModule: typeof import("@react-native-google-signin/google-signin") | null = null;
 function getGoogleSignin() {

@@ -3,7 +3,6 @@
 // ==============================================================================
 
 import { supabase } from "@/lib/supabase";
-import { isSpecialRole } from "@/lib/admin-service";
 import { batchPreloadClanProfiles } from "@/lib/global-chat-service";
 
 export type LeaderboardPeriod = "daily" | "weekly" | "monthly" | "alltime";
@@ -56,32 +55,17 @@ export async function getLeaderboard(
   const now = new Date();
   const periodStart = getPeriodStart(period);
 
-  // ── ALL-TIME: langsung dari profiles (khusus member biasa centang biru) ────
+  // ── ALL-TIME: langsung dari profiles (semua pengguna termasuk pemegang Role Sistem tampil) ────
   if (period === "alltime") {
-    const fetchLimit = Math.max(limit * 2, limit + 30);
-    let { data, error } = await supabase
+    const { data } = await supabase
       .from("profiles")
       .select("id, username, display_name, avatar_url, member_number, level, exp, is_vip, equipped_border, role")
-      .or("role.is.null,role.ilike.member")
       .order("exp", { ascending: false })
-      .limit(fetchLimit);
-
-    if (error) {
-      // Fallback jika query .or ditolak
-      const fb = await supabase
-        .from("profiles")
-        .select("id, username, display_name, avatar_url, member_number, level, exp, is_vip, equipped_border, role")
-        .order("exp", { ascending: false })
-        .limit(fetchLimit);
-      data = fb.data;
-    }
+      .limit(limit);
 
     if (!data || data.length === 0) return [];
 
-    // Filter ketat: Dilarang admin / role khusus centang merah masuk leaderboard
-    const eligibleMembers = data
-      .filter((p: any) => !isSpecialRole(p?.role))
-      .slice(0, limit);
+    const eligibleMembers = data.slice(0, limit);
 
     // Preload profil klan secara asynchronous agar instan saat ditampilkan di plakat
     batchPreloadClanProfiles(eligibleMembers.map((p: any) => p.id)).catch(() => {});
@@ -147,13 +131,7 @@ export async function getLeaderboard(
 
   const profileMap = new Map((profileData ?? []).map((p: any) => [p.id, p]));
 
-  // Step 5: Filter ketat khusus member biasa (centang biru), role admin / centang merah dilarang masuk
-  const eligibleUserIds = candidateUserIds
-    .filter((uid) => {
-      const p: any = profileMap.get(uid);
-      return !isSpecialRole(p?.role);
-    })
-    .slice(0, limit);
+  const eligibleUserIds = candidateUserIds.slice(0, limit);
 
   // Preload profil klan secara asynchronous
   batchPreloadClanProfiles(eligibleUserIds).catch(() => {});

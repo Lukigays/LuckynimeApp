@@ -54,10 +54,28 @@ function formatMemberNumber(num: any): string {
   return "#" + (clean || "1");
 }
 
-// In-memory cache profile untuk mengurangi network overhead
+// In-memory cache profile untuk mengurangi network overhead (dengan TTL 20 detik agar perubahan Role Sistem/Level/Border cepat terlihat semua orang)
 export const profileCache = new Map<string, any>();
+const profileCacheTimestamps = new Map<string, number>();
+const PROFILE_CACHE_TTL_MS = 20_000;
 export const clanProfileCache = new Map<string, any>();
 const memGlobalChatCache = new Map<GlobalRoom, GlobalChatMessage[]>();
+
+function isProfileCacheFresh(userId: string): boolean {
+  if (!profileCache.has(userId)) return false;
+  const ts = profileCacheTimestamps.get(userId) ?? 0;
+  return Date.now() - ts < PROFILE_CACHE_TTL_MS;
+}
+
+export function invalidateGlobalChatProfileCache(userId?: string): void {
+  if (userId) {
+    profileCache.delete(userId);
+    profileCacheTimestamps.delete(userId);
+  } else {
+    profileCache.clear();
+    profileCacheTimestamps.clear();
+  }
+}
 
 export function getCachedGlobalMessagesSync(room: GlobalRoom): GlobalChatMessage[] {
   const list = memGlobalChatCache.get(room) || [];
@@ -65,7 +83,7 @@ export function getCachedGlobalMessagesSync(room: GlobalRoom): GlobalChatMessage
 }
 
 async function fetchSenderProfile(userId: string) {
-  if (profileCache.has(userId)) {
+  if (isProfileCacheFresh(userId)) {
     return profileCache.get(userId);
   }
 
@@ -79,13 +97,15 @@ async function fetchSenderProfile(userId: string) {
     if (!error && data) {
       if (profileCache.size > 150) {
         profileCache.clear();
+        profileCacheTimestamps.clear();
       }
       profileCache.set(userId, data);
+      profileCacheTimestamps.set(userId, Date.now());
       return data;
     }
   } catch {}
 
-  return null;
+  return profileCache.get(userId) ?? null;
 }
 
 /**
@@ -215,21 +235,26 @@ export async function getGlobalMessages(
       return cached;
     }
 
-    // Ambil profile sender secara unik (maksimal 30 sender)
+    // Ambil profile sender secara unik (maksimal 30 sender) — refresh jika belum ada atau sudah lewat TTL 20 detik
     const uniqueSenderIds = Array.from(new Set(rows.map((r) => r.sender_id)));
-    const missingSenderIds = uniqueSenderIds.filter((id) => !profileCache.has(id));
+    const staleOrMissingSenderIds = uniqueSenderIds.filter((id) => !isProfileCacheFresh(id));
 
-    if (missingSenderIds.length > 0) {
+    if (staleOrMissingSenderIds.length > 0) {
       const { data: profiles } = await supabase
         .from("profiles")
         .select("id, username, display_name, avatar_url, equipped_border, level, role, is_vip, member_number")
-        .in("id", missingSenderIds);
+        .in("id", staleOrMissingSenderIds);
 
       if (profiles) {
         if (profileCache.size + profiles.length > 200) {
           profileCache.clear();
+          profileCacheTimestamps.clear();
         }
-        profiles.forEach((p) => profileCache.set(p.id, p));
+        const now = Date.now();
+        profiles.forEach((p) => {
+          profileCache.set(p.id, p);
+          profileCacheTimestamps.set(p.id, now);
+        });
       }
     }
 

@@ -20,7 +20,7 @@ import { Image } from "expo-image";
 import { AppIcon } from "@/components/app-icon";
 import { ChibiLoading } from "@/components/chibi-loading";
 import { BorderAvatar } from "@/components/border-avatar";
-import { UserVerificationBadge } from "@/components/user-verification-badge";
+import { SystemRoleBadge, UserVerificationBadge } from "@/components/user-verification-badge";
 import { getTierForLevel } from "@/components/level-progress-modal";
 import { ProfileCityPlaque } from "@/components/profile-city-plaque";
 import { ChatStickerPicker } from "@/components/chat-sticker-picker";
@@ -251,6 +251,7 @@ const ChatMessageItem = React.memo(
 
             {/* 3. Badges Row: Rank Tier Pill + Level Pill */}
             <View style={styles.badgesRow}>
+              <SystemRoleBadge role={item.senderRole} compact />
               {activeTier ? (
                 <View
                   style={[

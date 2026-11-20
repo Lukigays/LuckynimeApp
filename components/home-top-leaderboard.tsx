@@ -12,13 +12,12 @@ import { router } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AppIcon } from "@/components/app-icon";
 import { BorderAvatar } from "@/components/border-avatar";
-import { UserVerificationBadge } from "@/components/user-verification-badge";
+import { SystemRoleBadge, UserVerificationBadge } from "@/components/user-verification-badge";
 import { ProfileCityPlaque } from "@/components/profile-city-plaque";
 import { getTierForLevel } from "@/components/level-progress-modal";
 import { getLeaderboard, formatXp, type LeaderboardEntry } from "@/lib/leaderboard-service";
 import { supabase } from "@/lib/supabase";
 import { hapticLight } from "@/lib/haptics";
-import { isSpecialRole } from "@/lib/admin-service";
 
 const GOLD = "#F59E0B";
 const SILVER = "#CBD5E1";
@@ -112,6 +111,8 @@ const HomePodiumItem = React.memo(function HomePodiumItem({ entry }: { entry: Le
         <UserVerificationBadge role={entry.role} isVip={entry.isVip} size={10} />
       </View>
 
+      <SystemRoleBadge role={entry.role} compact />
+
       {/* Plakat Kota & Klan (DRAKONIA / GELANDANGAN) */}
       <View style={styles.homeCityClanRow}>
         <ProfileCityPlaque
@@ -197,7 +198,7 @@ export function HomeTopLeaderboard() {
   }, [queryClient]);
 
   const entries = useMemo(() => {
-    return (data ?? []).filter((e) => !isSpecialRole((e as any).role));
+    return data ?? [];
   }, [data]);
   const top3 = entries.slice(0, 3);
 
