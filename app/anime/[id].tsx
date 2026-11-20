@@ -16,7 +16,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getAnimeById, getRecommendations } from "@/lib/anilist";
+import { getAnimeById, getRecommendations, getSeededAnimeById } from "@/lib/anilist";
 import { BANNER_W, POSTER_W, getOptimizedImageUri } from "@/lib/image-optimization";
 import { parseRouteId } from "@/lib/route-params";
 import { getEpisodes } from "@/lib/luckynime-api";
@@ -142,6 +142,7 @@ export default function AnimeDetailScreen() {
   const anime = useQuery({
     queryKey: ["anime", id],
     queryFn: () => getAnimeById(id),
+    placeholderData: () => getSeededAnimeById(id),
     enabled: !invalidId,
     staleTime: 15 * 60_000,
   });

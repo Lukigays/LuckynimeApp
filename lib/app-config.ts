@@ -47,17 +47,25 @@ function previewLuckynimeProxy() {
   return null;
 }
 
+const isVitest = Boolean(process.env.VITEST);
+const rawAnilistEnv = cleanEnv(process.env.EXPO_PUBLIC_ANILIST_GRAPHQL_URL);
+const resolvedAnilistUrl = isVitest
+  ? (rawAnilistEnv || "https://graphql.anilist.co")
+  : (!rawAnilistEnv || rawAnilistEnv === "https://graphql.anilist.co")
+    ? `${productionLuckynimeApi}/api/v1/anilist`
+    : rawAnilistEnv;
+
 export const APP_CONFIG = {
   // Android uses the authoritative production backend directly. The temporary
   // browser preview uses a same-project forwarding route because luckynime-api.vercel.app
   // deliberately restricts its browser CORS allow-list to trusted web origins.
   apiBaseUrl: previewLuckynimeProxy() ?? productionLuckynimeApi,
-  // Luckynime's offline AniList mirror: same database as AniList, no rate limits.
-  anilistGraphqlUrl: cleanEnv(process.env.EXPO_PUBLIC_ANILIST_GRAPHQL_URL) || "https://graphql.anilist.co",
-  metadataResolverUrl,
+  // Edge-cached AniList GraphQL accelerator on luckynime-api (Singapore CDN, <100ms, ISP-throttle proof).
+  anilistGraphqlUrl: resolvedAnilistUrl,
+  metadataResolverUrl: isVitest ? metadataResolverUrl : "",
   // This public URL reaches the website's server-side TMDB resolver. It is not
   // a TMDB API URL and the TMDB read token never enters an Expo environment.
-  tmdbEpisodesResolverUrl,
+  tmdbEpisodesResolverUrl: isVitest ? tmdbEpisodesResolverUrl : "",
   directMalEnabled: cleanEnv(process.env.EXPO_PUBLIC_DIRECT_MAL) === "true" && Boolean(cleanEnv(process.env.EXPO_PUBLIC_MAL_CLIENT_ID)),
   supabaseUrl: cleanEnv(process.env.EXPO_PUBLIC_SUPABASE_URL) || "",
   supabaseAnonKey: cleanEnv(process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY) || "",

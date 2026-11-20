@@ -8,12 +8,26 @@ import type { AiringSchedulePage, Anime, AnimePage } from "@/lib/types";
 // header pause still protects if EXPO_PUBLIC_ANILIST_GRAPHQL_URL points back
 // at official AniList (30 req/min → the header budget slows us to ~24/min).
 const CLIENT_REQUEST_INTERVAL_MS = process.env.VITEST ? 0 : 300;
-const REQUEST_CACHE_TTL_MS = 5 * 60_000;
-const STALE_CACHE_TTL_MS = 30 * 60_000;
+const REQUEST_CACHE_TTL_MS = 10 * 60_000;
+const STALE_CACHE_TTL_MS = 60 * 60_000;
 const responseCache = new Map<string, { expiresAt: number; staleUntil: number; value: unknown }>();
 const inFlightRequests = new Map<string, Promise<unknown>>();
+const seededAnimeById = new Map<number, Anime>();
 let nextAniListRequestAt = 0;
 let blockedUntil = 0;
+
+export function seedAnimeItems(items: ReadonlyArray<Anime | null | undefined> | null | undefined) {
+  if (!items) return;
+  for (const item of items) {
+    if (!item || !Number.isInteger(item.id) || item.id <= 0) continue;
+    const prev = seededAnimeById.get(item.id);
+    seededAnimeById.set(item.id, prev ? { ...prev, ...item } : item);
+  }
+}
+
+export function getSeededAnimeById(id: number): Anime | undefined {
+  return seededAnimeById.get(id);
+}
 
 export class AniListRateLimitError extends Error {
   readonly retryAfterMs: number | null;
@@ -187,18 +201,41 @@ async function request<T>(query: string, variables: Record<string, unknown> = {}
   if (existingRequest) return existingRequest as Promise<T>;
 
   const requestPromise = (async () => {
+    const compactQuery = query.replace(/\s+/g, " ").trim();
     const fetchFromEndpoint = async (endpoint: string) => {
-      await waitForAniListSlot();
+      const isEdgeAccelerator = !process.env.VITEST && endpoint.includes("/api/v1/anilist");
+      if (!isEdgeAccelerator) {
+        await waitForAniListSlot();
+      }
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 12000);
+      const timeoutId = setTimeout(() => controller.abort(), isEdgeAccelerator ? 5500 : 9000);
       let response: Response;
       try {
-        response = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: requestBody,
-          signal: controller.signal,
-        });
+        if (isEdgeAccelerator) {
+          const qs = `q=${encodeURIComponent(compactQuery)}&v=${encodeURIComponent(JSON.stringify(providedVariables))}`;
+          const getUrl = `${endpoint}?${qs}`;
+          if (getUrl.length < 6500) {
+            response = await fetch(getUrl, {
+              method: "GET",
+              headers: { Accept: "application/json" },
+              signal: controller.signal,
+            });
+          } else {
+            response = await fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: requestBody,
+              signal: controller.signal,
+            });
+          }
+        } else {
+          response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: requestBody,
+            signal: controller.signal,
+          });
+        }
       } finally {
         clearTimeout(timeoutId);
       }
@@ -347,17 +384,26 @@ export async function getAnimePage(options: {
     format: options.format,
     isAdult: options.isAdult,
   });
+  seedAnimeItems(data.Page?.media);
   return data.Page;
 }
 
 export async function getHomeAnime(isAdult?: boolean | null) {
   const data = await request<{ trending: AnimePage; popular: AnimePage; upcoming: AnimePage }>(homeQuery, { isAdult });
+  seedAnimeItems(data.trending?.media);
+  seedAnimeItems(data.popular?.media);
+  seedAnimeItems(data.upcoming?.media);
   return { trending: data.trending.media, popular: data.popular.media, upcoming: data.upcoming.media };
 }
 
 export async function getAnimeById(id: number): Promise<Anime> {
   const query = `query Anime($id: Int!) { Media(id: $id, type: ANIME) { ${detailFields} } }`;
   const data = await request<{ Media: Anime }>(query, { id });
+  if (data.Media) {
+    seedAnimeItems([data.Media]);
+    const relNodes = (data.Media.relations?.edges ?? []).map((e) => e?.node);
+    seedAnimeItems(relNodes);
+  }
   return data.Media;
 }
 
@@ -411,7 +457,9 @@ export async function getAnimeByIds(ids: readonly number[]): Promise<Anime[]> {
   const pages = await Promise.all(chunks.map((chunk) =>
     request<{ Page: AnimePage }>(animeByIdsQuery, { ids: chunk }).then((data) => data.Page.media),
   ));
-  return pages.flat();
+  const flat = pages.flat();
+  seedAnimeItems(flat);
+  return flat;
 }
 
 const airingScheduleBatchQuery = `query AiringScheduleBatch($perPage: Int!, $startAt: Int, $endAt: Int) {
@@ -433,6 +481,7 @@ export async function getAiringScheduleWindow(window?: AiringScheduleWindow): Pr
   const schedules = total <= 50
     ? data.first.airingSchedules
     : [...data.first.airingSchedules, ...data.second.airingSchedules];
+  seedAnimeItems(schedules.map((s) => s?.media));
   return { ...data.first, airingSchedules: schedules };
 }
 
@@ -481,6 +530,7 @@ export async function getAnimePool(options: {
       pool.push(item);
     }
   }
+  seedAnimeItems(pool);
   return pool;
 }
 
@@ -497,6 +547,9 @@ const homeRailsQuery = `query HomeRails($isAdult: Boolean) {
  */
 export async function getHomeRailAnime(isAdult?: boolean | null): Promise<{ ongoing: Anime[]; topMovies: Anime[]; justFinished: Anime[] }> {
   const data = await request<{ ongoing: AnimePage; topMovies: AnimePage; justFinished: AnimePage }>(homeRailsQuery, { isAdult });
+  seedAnimeItems(data.ongoing?.media);
+  seedAnimeItems(data.topMovies?.media);
+  seedAnimeItems(data.justFinished?.media);
   return {
     ongoing: data.ongoing.media,
     topMovies: data.topMovies.media,
@@ -524,7 +577,9 @@ export async function getRecommendations(animeId: number): Promise<Anime[]> {
   const data = await request<{
     Media?: { recommendations?: { edges?: Array<{ node: { rating: number; mediaRecommendation?: Anime | null } }> } | null } | null;
   }>(query, { mediaId: animeId });
-  return (data.Media?.recommendations?.edges ?? [])
+  const recs = (data.Media?.recommendations?.edges ?? [])
     .map((edge) => edge.node.mediaRecommendation)
     .filter((item): item is Anime => Boolean(item && Number.isFinite(Number(item.id))));
+  seedAnimeItems(recs);
+  return recs;
 }
