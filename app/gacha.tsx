@@ -62,13 +62,29 @@ function CachedGachaImage({
   transition?: number;
 }) {
   const { assetUri } = useCachedGachaAsset(uri);
+  const [useRemote, setUseRemote] = useState(false);
+
+  useEffect(() => {
+    setUseRemote(false);
+  }, [uri]);
+
+  const effectiveUri = (!useRemote && assetUri ? assetUri : uri) || "";
+  if (!effectiveUri) {
+    return <View style={[style, { backgroundColor: "#18181F" }]} />;
+  }
+
   return (
     <Image
-      source={{ uri: assetUri || uri || "" }}
+      source={{ uri: effectiveUri }}
       style={style}
       contentFit={contentFit}
       transition={transition}
-      cachePolicy="disk"
+      cachePolicy="memory-disk"
+      onError={() => {
+        if (!useRemote && assetUri && uri && assetUri !== uri) {
+          setUseRemote(true);
+        }
+      }}
     />
   );
 }

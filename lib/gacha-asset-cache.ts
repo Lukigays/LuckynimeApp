@@ -4,8 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system/legacy";
 
 // ─── KONFIGURASI CACHE GACHA ANDROID ───
-const CACHE_SUBDIR = "luckynime_gacha/";
-const MANIFEST_STORAGE_KEY = "luckynime.gacha.asset_manifest_v1";
+const CACHE_SUBDIR = "luckynime_gacha_v2/";
+const MANIFEST_STORAGE_KEY = "luckynime.gacha.asset_manifest_v2";
 const MAX_CACHE_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB batas aman penyimpanan lokal Android
 const MAX_CACHE_FILES = 100; // Maksimal 100 aset aktif di cache
 
@@ -115,10 +115,10 @@ export async function getOrDownloadGachaAsset(remoteUrl?: string | null): Promis
     const filename = hashUrlToFilename(url);
     const localUri = `${dir}${filename}`;
 
-    // 1. Cek apakah sudah ada di manifest & file fisik valid di disk
+    // 1. Cek apakah sudah ada di manifest & file fisik valid di disk (>1 KB)
     if (manifest[url]) {
       const fileInfo = await FileSystem.getInfoAsync(localUri);
-      if (fileInfo.exists && (fileInfo as any).size > 0) {
+      if (fileInfo.exists && ((fileInfo as any).size || 0) > 1024) {
         manifest[url].lastAccessed = Date.now();
         // Simpan manifest update akses secara async
         saveManifest(manifest).catch(() => {});
@@ -131,21 +131,23 @@ export async function getOrDownloadGachaAsset(remoteUrl?: string | null): Promis
     if (downloadRes.status >= 200 && downloadRes.status < 300) {
       const info = await FileSystem.getInfoAsync(localUri);
       const size = (info as any).size || 0;
+      if (size > 1024) {
+        manifest[url] = {
+          url,
+          localUri,
+          filename,
+          size,
+          lastAccessed: Date.now(),
+        };
+        await saveManifest(manifest);
 
-      manifest[url] = {
-        url,
-        localUri,
-        filename,
-        size,
-        lastAccessed: Date.now(),
-      };
-      await saveManifest(manifest);
+        // Jalankan pembersihan LRU jika melebihi batas aman
+        enforceCacheQuota(manifest).catch(() => {});
 
-      // Jalankan pembersihan LRU jika melebihi batas aman
-      enforceCacheQuota(manifest).catch(() => {});
-
-      return localUri;
+        return localUri;
+      }
     }
+    await FileSystem.deleteAsync(localUri, { idempotent: true }).catch(() => {});
   } catch (err) {
     console.warn("[gacha-cache] Gagal mengunduh aset ke cache lokal:", url, err);
   }

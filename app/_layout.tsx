@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Platform, Pressable, Text, TextInput, View } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { Animated, Easing, Platform, Pressable, Text, TextInput, View } from "react-native";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -71,32 +71,147 @@ export default function RootLayout() {
   });
 
   const [minSplashElapsed, setMinSplashElapsed] = useState(false);
+  const pulseAnim = useRef(new Animated.Value(0)).current;
+  const barAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     void SystemUI.setBackgroundColorAsync(APP_BG_COLOR).catch(() => {});
-    // Lepaskan splash screen native OS agar animasi loading.gif langsung aktif
     void SplashScreen.hideAsync().catch(() => {});
 
-    // Beri jeda timer agar animasi loading.gif pembuka aplikasi dapat berputar dengan sempurna
+    const pulseLoop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 900,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 0,
+          duration: 900,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    const barLoop = Animated.loop(
+      Animated.timing(barAnim, {
+        toValue: 1,
+        duration: 1200,
+        easing: Easing.inOut(Easing.quad),
+        useNativeDriver: true,
+      }),
+    );
+    pulseLoop.start();
+    barLoop.start();
+
     const timer = setTimeout(() => {
       setMinSplashElapsed(true);
-    }, 1800);
+    }, 1350);
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => {
+      clearTimeout(timer);
+      pulseLoop.stop();
+      barLoop.stop();
+    };
+  }, [barAnim, pulseAnim]);
 
   const showSplash = !fontsLoaded || !minSplashElapsed;
 
   if (showSplash) {
+    const logoScale = pulseAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.96, 1.05],
+    });
+    const glowOpacity = pulseAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.28, 0.62],
+    });
+    const barTranslate = barAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-90, 90],
+    });
+
     return (
       <GestureHandlerRootView style={{ flex: 1, backgroundColor: APP_BG_COLOR }}>
         <StatusBar style="light" translucent backgroundColor="transparent" />
-        <View style={{ flex: 1, backgroundColor: APP_BG_COLOR, alignItems: "center", justifyContent: "center" }}>
-          <Image
-            source={require("../assets/images/loading.gif")}
-            style={{ width: "100%", height: "100%" }}
-            contentFit="contain"
-          />
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: APP_BG_COLOR,
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: 28,
+          }}
+        >
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <Animated.View
+              style={{
+                position: "absolute",
+                width: 190,
+                height: 190,
+                borderRadius: 95,
+                backgroundColor: "#A855F7",
+                opacity: glowOpacity,
+                transform: [{ scale: logoScale }],
+              }}
+            />
+            <Animated.View style={{ transform: [{ scale: logoScale }] }}>
+              <Image
+                source={require("../assets/images/android-icon-foreground.png")}
+                style={{ width: 148, height: 148 }}
+                contentFit="contain"
+              />
+            </Animated.View>
+          </View>
+
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={{
+              marginTop: 14,
+              fontSize: 34,
+              fontWeight: "800",
+              letterSpacing: 0.6,
+              color: "#F8FAFC",
+              textAlign: "center",
+            }}
+          >
+            Luckynime
+          </Text>
+          <Text
+            style={{
+              marginTop: 6,
+              fontSize: 11,
+              fontWeight: "700",
+              letterSpacing: 3.2,
+              color: "#C084FC",
+              textAlign: "center",
+            }}
+          >
+            ANIME STREAMING
+          </Text>
+
+          <View
+            style={{
+              marginTop: 28,
+              width: 132,
+              height: 3,
+              borderRadius: 2,
+              backgroundColor: "rgba(168, 85, 247, 0.18)",
+              overflow: "hidden",
+            }}
+          >
+            <Animated.View
+              style={{
+                width: 64,
+                height: 3,
+                borderRadius: 2,
+                backgroundColor: "#C084FC",
+                transform: [{ translateX: barTranslate }],
+              }}
+            />
+          </View>
         </View>
       </GestureHandlerRootView>
     );

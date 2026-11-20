@@ -756,13 +756,13 @@ export default function WatchScreen() {
       setServerIndex(next);
       return;
     }
-    // ALL servers exhausted — mount the first verified embed, if any.
+    // ALL servers exhausted — mount the first verified embed across current stream & all servers.
     if (!embedSource) {
-      // Check both the stream response (which has enriched sources) and the
-      // provider's initial sources from getServers (which may already carry
-      // embed sources from the backend).
-      const embedCandidates = embedSources(stream ?? { sources: current.sources ?? [] });
-      const fallbackEmbed = embedCandidates[0] ?? embedSources({ sources: current.sources ?? [] })[0];
+      const allEmbeds = [
+        ...embedSources(stream ?? { sources: current.sources ?? [] }),
+        ...activeProviders.flatMap((p) => embedSources({ sources: p.sources ?? [] })),
+      ];
+      const fallbackEmbed = allEmbeds[0];
       if (fallbackEmbed) {
         videoRef.current?.pause();
         sourceStarted.current = false;
