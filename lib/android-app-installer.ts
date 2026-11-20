@@ -2,13 +2,13 @@ import * as FileSystemLegacy from "expo-file-system/legacy";
 import * as IntentLauncher from "expo-intent-launcher";
 import { Platform } from "react-native";
 
-import type { ApkAsset } from "@/lib/app-update";
+import {
+  isTrustedReleaseDownloadUrl,
+  type ApkAsset,
+} from "@/lib/app-update";
 
 const APK_MIME_TYPE = "application/vnd.android.package-archive";
 const FLAG_GRANT_READ_URI_PERMISSION = 0x00000001;
-
-const TRUSTED_DOWNLOAD_PREFIX =
-  "/Lukigays/LuckynimeApp/releases/download/";
 
 export type DownloadProgress = {
   /** Bytes downloaded so far */
@@ -24,20 +24,11 @@ function validateAsset(asset: ApkAsset) {
     !asset.downloadUrl ||
     !asset.name ||
     !Number.isSafeInteger(asset.size) ||
-    asset.size <= 0
+    asset.size < 0
   ) {
     throw new Error("ASET PEMBARUAN TIDAK DAPAT DIVERIFIKASI.");
   }
-  let parsed: URL;
-  try {
-    parsed = new URL(asset.downloadUrl);
-  } catch {
-    throw new Error("ASET PEMBARUAN TIDAK DAPAT DIVERIFIKASI.");
-  }
-  const trusted =
-    parsed.protocol === "https:" &&
-    parsed.origin === "https://github.com" &&
-    parsed.pathname.startsWith(TRUSTED_DOWNLOAD_PREFIX);
+  const trusted = isTrustedReleaseDownloadUrl(asset.downloadUrl);
   const safeName =
     /^[A-Za-z0-9._-]+\.apk$/.test(asset.name) &&
     !asset.name.includes("..");
@@ -79,7 +70,7 @@ export async function downloadAndInstallApk(
   );
   if (existing?.exists) {
     const existingSize = (existing as { size?: number }).size ?? 0;
-    if (existingSize !== asset.size) {
+    if (asset.size <= 0 || existingSize !== asset.size) {
       await FileSystemLegacy.deleteAsync(destUri, { idempotent: true });
     }
   }
@@ -89,6 +80,7 @@ export async function downloadAndInstallApk(
     () => null
   );
   const alreadyDownloaded =
+    asset.size > 0 &&
     afterDelete?.exists &&
     ((afterDelete as { size?: number }).size ?? 0) === asset.size;
 
@@ -124,7 +116,7 @@ export async function downloadAndInstallApk(
     // Verify size
     const finalInfo = await FileSystemLegacy.getInfoAsync(result.uri);
     const finalSize = (finalInfo as { size?: number }).size ?? 0;
-    if (finalSize !== asset.size) {
+    if (finalSize <= 0 || (asset.size > 0 && finalSize !== asset.size)) {
       await FileSystemLegacy.deleteAsync(result.uri, {
         idempotent: true,
       }).catch(() => {});

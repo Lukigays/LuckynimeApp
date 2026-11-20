@@ -2192,7 +2192,7 @@ export async function fetchGitHubReleaseInfo(inputUrl: string): Promise<GitHubRe
 
   try {
     let owner = "Lukigays";
-    let repo = "LuckynimeApp";
+    let repo = "Luckynime-Release";
     let tag = "";
 
     const matchTag = clean.match(/github\.com\/([^\/]+)\/([^\/]+)\/releases\/tag\/([^\/\s#?]+)/i);

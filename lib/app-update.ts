@@ -1,10 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeModules, Platform } from "react-native";
+import { supabase } from "@/lib/supabase";
 
 export const LUCKYNIME_LATEST_RELEASE_URL =
-  "https://api.github.com/repos/Lukigays/LuckynimeApp/releases/latest";
-export const UPDATE_CHECK_CACHE_KEY = "luckynime.update.latest-release.v2";
-export const UPDATE_CHECK_TTL_MS = 12 * 60 * 60 * 1000;
+  "https://api.github.com/repos/Lukigays/Luckynime-Release/releases/latest";
+export const UPDATE_CHECK_CACHE_KEY = "luckynime.update.latest-release.v3";
+export const UPDATE_CHECK_TTL_MS = 6 * 60 * 60 * 1000;
+
+export const TRUSTED_RELEASE_DOWNLOAD_PREFIXES = [
+  "/Lukigays/Luckynime-Release/releases/download/",
+  "/Lukigays/LuckynimeApp/releases/download/",
+] as const;
 
 // ── ABI / Architecture helpers ──────────────────────────────────────────────
 
@@ -21,8 +27,8 @@ const ABI_LABELS: Record<ApkAbi, string> = {
 };
 
 const ABI_PATTERNS: Array<{ abi: ApkAbi; pattern: RegExp }> = [
-  { abi: "arm64-v8a",   pattern: /arm64[-_]?v8a/i },
-  { abi: "armeabi-v7a", pattern: /armeabi[-_]?v7a/i },
+  { abi: "arm64-v8a",   pattern: /arm64(?:[-_]?v8a)?/i },
+  { abi: "armeabi-v7a", pattern: /armeabi(?:[-_]?v7a)?|arm32/i },
   { abi: "x86_64",      pattern: /x86_64|x86-64/i },
   { abi: "universal",   pattern: /universal/i },
 ];
@@ -43,7 +49,6 @@ export function abiLabel(abi: ApkAbi | null): string {
 export async function getDeviceAbi(): Promise<ApkAbi | null> {
   if (Platform.OS !== "android") return null;
   try {
-    // react-native exposes CPU_ABI via NativeModules.PlatformConstants on Android
     const constants = NativeModules.PlatformConstants as
       | { CPU_ABI?: string; CPU_ABI2?: string }
       | undefined;
@@ -101,6 +106,21 @@ export function compareVersions(left?: string | null, right?: string | null) {
   return 0;
 }
 
+export function isTrustedReleaseDownloadUrl(downloadUrl: string): boolean {
+  try {
+    const parsed = new URL(downloadUrl);
+    return (
+      parsed.protocol === "https:" &&
+      parsed.origin === "https://github.com" &&
+      TRUSTED_RELEASE_DOWNLOAD_PREFIXES.some((prefix) =>
+        parsed.pathname.startsWith(prefix)
+      )
+    );
+  } catch {
+    return false;
+  }
+}
+
 function trustedApkAsset(value: unknown): ApkAsset | null {
   const asset = value as {
     name?: unknown;
@@ -114,31 +134,22 @@ function trustedApkAsset(value: unknown): ApkAsset | null {
     typeof asset?.browser_download_url === "string"
       ? asset.browser_download_url.trim()
       : "";
-  try {
-    const parsed = new URL(downloadUrl);
-    const isReleaseAsset =
-      parsed.origin === "https://github.com" &&
-      parsed.pathname.startsWith(
-        "/Lukigays/LuckynimeApp/releases/download/"
-      );
-    const isApk = name.toLowerCase().endsWith(".apk");
-    const isAndroidPackage =
-      !asset?.content_type ||
-      asset.content_type === "application/vnd.android.package-archive" ||
-      asset.content_type === "application/octet-stream";
-    if (
-      isReleaseAsset &&
-      isApk &&
-      isAndroidPackage &&
-      Number.isSafeInteger(size) &&
-      size > 0
-    ) {
-      return { name, size, downloadUrl, abi: detectAssetAbi(name) };
-    }
-    return null;
-  } catch {
-    return null;
+  const isReleaseAsset = isTrustedReleaseDownloadUrl(downloadUrl);
+  const isApk = name.toLowerCase().endsWith(".apk");
+  const isAndroidPackage =
+    !asset?.content_type ||
+    asset.content_type === "application/vnd.android.package-archive" ||
+    asset.content_type === "application/octet-stream";
+  if (
+    isReleaseAsset &&
+    isApk &&
+    isAndroidPackage &&
+    Number.isSafeInteger(size) &&
+    size > 0
+  ) {
+    return { name, size, downloadUrl, abi: detectAssetAbi(name) };
   }
+  return null;
 }
 
 export function parseGitHubRelease(payload: unknown): AppRelease | null {
@@ -208,6 +219,59 @@ export function updateDismissalKey(releaseVersion: string) {
   return `luckynime.update.dismissed:${normalizeVersion(releaseVersion)}`;
 }
 
+async function fetchSupabaseFallbackRelease(): Promise<AppRelease | null> {
+  try {
+    const { data, error } = await supabase
+      .from("system_configs")
+      .select("value")
+      .eq("key", "app_release")
+      .maybeSingle();
+    if (error || !data?.value) return null;
+    const val = typeof data.value === "string" ? JSON.parse(data.value) : data.value;
+    const rawVer = val?.latest_version ?? val?.version ?? "";
+    const version = normalizeVersion(rawVer);
+    if (version === "0.0.0") return null;
+
+    const tag = `v${version}`;
+    const baseDownload = `https://github.com/Lukigays/Luckynime-Release/releases/download/${tag}`;
+    const releaseUrl =
+      typeof val?.release_url === "string" && val.release_url.includes("github.com")
+        ? val.release_url
+        : `https://github.com/Lukigays/Luckynime-Release/releases/tag/${tag}`;
+    const arm64Asset: ApkAsset = {
+      name: `Luckynime-${tag}-arm64.apk`,
+      size: 0,
+      downloadUrl: `${baseDownload}/Luckynime-${tag}-arm64.apk`,
+      abi: "arm64-v8a",
+    };
+    const arm32Asset: ApkAsset = {
+      name: `Luckynime-${tag}-arm32.apk`,
+      size: 0,
+      downloadUrl: `${baseDownload}/Luckynime-${tag}-arm32.apk`,
+      abi: "armeabi-v7a",
+    };
+    const universalAsset: ApkAsset = {
+      name: `Luckynime-${tag}-universal.apk`,
+      size: 0,
+      downloadUrl: `${baseDownload}/Luckynime-${tag}-universal.apk`,
+      abi: "universal",
+    };
+    return {
+      version,
+      name: `Luckynime v${version}`,
+      releaseUrl,
+      assets: [arm64Asset, arm32Asset, universalAsset],
+      downloadUrl: arm64Asset.downloadUrl,
+      assetName: arm64Asset.name,
+      assetSize: 0,
+      body: val?.changelog ?? val?.release_notes ?? `Pembaruan Luckynime v${version}`,
+      mandatory: Boolean(val?.force_update ?? val?.forceUpdate),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function getLatestLuckynimeRelease(options?: {
   force?: boolean;
   fetcher?: typeof fetch;
@@ -226,18 +290,39 @@ export async function getLatestLuckynimeRelease(options?: {
       } catch {}
     }
   }
-  const response = await (options?.fetcher ?? fetch)(
-    LUCKYNIME_LATEST_RELEASE_URL,
-    { headers: { Accept: "application/vnd.github+json" } }
-  );
-  if (!response.ok) throw new Error("Tidak dapat mengecek pembaruan saat ini.");
-  const release = parseGitHubRelease(await response.json());
-  if (release)
-    void AsyncStorage.setItem(
-      UPDATE_CHECK_CACHE_KEY,
-      JSON.stringify({ fetchedAt: now, release })
-    ).catch(() => {});
-  return release;
+
+  try {
+    const response = await (options?.fetcher ?? fetch)(
+      LUCKYNIME_LATEST_RELEASE_URL,
+      { headers: { Accept: "application/vnd.github+json" } }
+    );
+    if (response.ok) {
+      const release = parseGitHubRelease(await response.json());
+      if (release) {
+        void AsyncStorage.setItem(
+          UPDATE_CHECK_CACHE_KEY,
+          JSON.stringify({ fetchedAt: now, release })
+        ).catch(() => {});
+        return release;
+      }
+    }
+  } catch {
+    // Fall through to Supabase fallback when custom fetcher isn't passed
+  }
+
+  // Only fall back to Supabase in live runtime (when no mock test fetcher was injected)
+  if (!options?.fetcher) {
+    const fallback = await fetchSupabaseFallbackRelease();
+    if (fallback) {
+      void AsyncStorage.setItem(
+        UPDATE_CHECK_CACHE_KEY,
+        JSON.stringify({ fetchedAt: now, release: fallback })
+      ).catch(() => {});
+      return fallback;
+    }
+  }
+
+  throw new Error("Tidak dapat mengecek pembaruan saat ini.");
 }
 
 export async function checkForLuckynimeUpdate(

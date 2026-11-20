@@ -171,6 +171,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      PUBLIC_RELEASE_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -182,7 +184,30 @@ jobs:
       - name: List APKs
         run: ls -lh ./artifacts/*.apk
 
-      - name: Create GitHub Release
+      - name: Publish Public APK Release (Lukigays/Luckynime-Release)
+        if: ${{ env.PUBLIC_RELEASE_TOKEN != '' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          repository: Lukigays/Luckynime-Release
+          tag_name: ${{ env.RELEASE_TAG }}
+          target_commitish: main
+          name: Luckynime ${{ env.RELEASE_TAG }}
+          draft: false
+          prerelease: false
+          body: |
+            ## Luckynime ${{ env.RELEASE_TAG }}
+
+            - **Tampilan Video Player Gaya Wibuku**: Kontrol tengah 5 tombol (`Episode sebelumnya`, `-10s`, tombol Play putih besar, `+10s`, `Episode selanjutnya`), baris bawah (`00:00 / 24:00`, `Autonext`, pemilih resolusi, kecepatan `1x`, Fullscreen), serta seekbar merah penuh di tepi bawah.
+            - **Subtitle Otomatis Bahasa Indonesia Putih Bersih**: Aktif otomatis ke Bahasa Indonesia (`id`), teks putih bersih ber-outline hitam tajam tanpa kotak gelap.
+            - **Auto-Update Publik Terintegrasi**: Mendukung pengunduhan & pembaruan otomatis langsung melalui repositori rilis publik resmi (`Lukigays/Luckynime-Release`) tanpa mengekspos source code.
+
+            Download file APK di bawah ini (**arm64** direkomendasikan untuk mayoritas perangkat Android modern).
+          files: ./artifacts/*.apk
+        env:
+          PUBLIC_RELEASE_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
+
+      - name: Create Internal GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.RELEASE_TAG }}
@@ -190,16 +215,9 @@ jobs:
           draft: false
           prerelease: false
           body: |
-            ## Luckynime ${{ env.RELEASE_TAG }}
+            ## Luckynime ${{ env.RELEASE_TAG }} (Internal Build Mirror)
 
-            - **Fitur Baru Floating Mini Video Player**: Video dan audio tetap berputar lancar saat bernavigasi ke halaman lain. Dioptimalkan dengan *Zero Render Loop* (`useRef`), bebas lag, hemat CPU & baterai, serta *instant resume* tanpa jeda loading.
-            - **Perombakan Sistem Chat Global**: Tampilan dibatasi maksimal 30 pesan terbaru, otomatis langsung berada di pesan terbawah saat layar dibuka tanpa animasi scroll, smart auto-scroll natural, serta sorotan quote replay bersih 1 lapis border cyan.
-            - **Papan Menu Cepat Profil Simetris**: Penataan presisi 2 baris menu (Tas & Inventory, Nobar Anime, Lelang Anime, dan Fitur Penjelajah Dunia Luckynime RPG).
-            - **Perbaikan Safe WakeLock**: Siklus hidup Wake Lock terlindungi dengan Page Visibility API di Web untuk mencegah `NotAllowedError` saat tab di background.
-            - **Stabilitas Realtime Supabase**: Channel pooling, pencegahan subscription ganda, deduplikasi pesan ketat, dan auto-reconnect yang aman.
-            - **Optimasi Kompatibilitas Platform**: Penyesuaian `useNativeDriver`, pembersihan `shadow*` deprecation di web, dan pemisahan tombol bersarang (*nested button*) pada mini player.
-
-            Download file APK di bawah ini dan pasang di perangkat Android Anda.
+            Public release published to `https://github.com/Lukigays/Luckynime-Release/releases/tag/${{ env.RELEASE_TAG }}`.
           files: ./artifacts/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
