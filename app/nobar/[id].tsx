@@ -24,6 +24,18 @@ import * as Clipboard from "expo-clipboard";
 import type { VideoRef, OnProgressData, OnLoadData } from "react-native-video";
 
 import { UniversalVideo as Video } from "@/components/universal-video";
+import { SubtitleRenderer } from "@/components/subtitle-renderer";
+import {
+  detectSubtitleFormat,
+  detectSubtitleFormatFromContent,
+  findActiveCues,
+  matchSubtitleTrack,
+  parseSubtitle,
+  type SubtitleCue,
+  type SubtitleTrackLike,
+} from "@/lib/subtitle-parser";
+import { loadSubtitlePreferences, type SubtitlePreferences } from "@/lib/subtitle-preferences";
+import { luckynimeProxyUrl } from "@/lib/luckynime-api";
 import { AppIcon } from "@/components/app-icon";
 import { UserVerificationBadge } from "@/components/user-verification-badge";
 import { isSpecialRole } from "@/lib/admin-service";
@@ -157,6 +169,11 @@ export default function NobarWatchPartyScreen() {
   const [streamUri, setStreamUri] = useState<string | null>(null);
   const [streamHeaders, setStreamHeaders] = useState<Record<string, string> | undefined>();
   const [streamType, setStreamType] = useState<string | undefined>("m3u8");
+  const [streamSubtitles, setStreamSubtitles] = useState<SubtitleTrackLike[]>([]);
+  const [subtitlePrefs, setSubtitlePrefs] = useState<SubtitlePreferences | null>(null);
+  const [nobarSubEnabled, setNobarSubEnabled] = useState(true);
+  const [activeSubtitles, setActiveSubtitles] = useState<SubtitleCue[]>([]);
+  const parsedNobarCuesRef = useRef<SubtitleCue[]>([]);
   const [loadingStream, setLoadingStream] = useState(true);
   const [streamError, setStreamError] = useState<string | null>(null);
 
@@ -312,16 +329,26 @@ export default function NobarWatchPartyScreen() {
   }, [room?.host_id, currentUserId, currentUserName, currentUserAvatar, auth.profile]);
 
   // 2. Fetch Video Stream Source
+  useEffect(() => {
+    void loadSubtitlePreferences().then((prefs) => {
+      setSubtitlePrefs(prefs);
+      setNobarSubEnabled(prefs.enabled);
+    });
+  }, []);
+
   const loadStream = useCallback(async (animeId: number, ep: number) => {
     setLoadingStream(true);
     setStreamError(null);
     isVideoLoadedRef.current = false;
+    parsedNobarCuesRef.current = [];
+    setActiveSubtitles([]);
     try {
       const res = await resolveNobarStream(animeId, ep);
       if (res.uri) {
         setStreamUri(res.uri);
         setStreamHeaders(res.headers);
         setStreamType(res.type || "m3u8");
+        setStreamSubtitles(res.subtitles ?? []);
       } else {
         setStreamError(res.error || "Gagal memuat link streaming anime.");
       }
@@ -331,6 +358,35 @@ export default function NobarWatchPartyScreen() {
       setLoadingStream(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!streamSubtitles.length || !nobarSubEnabled) {
+      parsedNobarCuesRef.current = [];
+      setActiveSubtitles([]);
+      return;
+    }
+    const track = matchSubtitleTrack(streamSubtitles, subtitlePrefs?.preferredLanguage ?? "id");
+    if (!track?.url) return;
+    const targetUrl =
+      track.url.includes("/api/v1/proxy?") || track.url.includes("/api/v1/subtitle")
+        ? luckynimeProxyUrl(track.url)
+        : luckynimeProxyUrl(track.url);
+    let cancelled = false;
+    fetch(targetUrl, { headers: { Accept: "text/vtt, text/plain, */*" } })
+      .then((r) => (r.ok ? r.text() : ""))
+      .then((text) => {
+        if (cancelled || !text.trim()) return;
+        const fmt = detectSubtitleFormat(track.url) ?? detectSubtitleFormatFromContent(text);
+        const parsed = parseSubtitle(text, fmt);
+        if (cancelled) return;
+        parsedNobarCuesRef.current = parsed.cues;
+        setActiveSubtitles(findActiveCues(parsed.cues, currentTimeRef.current));
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [streamSubtitles, nobarSubEnabled, subtitlePrefs?.preferredLanguage]);
 
   useEffect(() => {
     if (room?.anime_id && currentEpisode) {
@@ -1027,6 +1083,7 @@ export default function NobarWatchPartyScreen() {
               ref={videoRef}
               source={videoSource}
               style={StyleSheet.absoluteFillObject}
+              useTextureView={Platform.OS === "android"}
               resizeMode="contain"
               paused={!isPlaying}
               muted={isMuted}
@@ -1055,6 +1112,9 @@ export default function NobarWatchPartyScreen() {
               }}
               onProgress={(data: OnProgressData) => {
                 currentTimeRef.current = data.currentTime;
+                if (parsedNobarCuesRef.current.length && nobarSubEnabled) {
+                  setActiveSubtitles(findActiveCues(parsedNobarCuesRef.current, data.currentTime));
+                }
                 if (!isSeekingRef.current) {
                   setCurrentTime(data.currentTime);
                 }
@@ -1064,6 +1124,37 @@ export default function NobarWatchPartyScreen() {
                 console.warn("[Nobar Video playback error]:", err);
               }}
             />
+
+            {nobarSubEnabled && activeSubtitles.length > 0 && (
+              <View
+                pointerEvents="none"
+                style={{
+                  ...StyleSheet.absoluteFillObject,
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  paddingBottom: showControls ? (isFullscreen ? 76 : 48) : (isFullscreen ? 20 : 10),
+                  zIndex: 4,
+                  elevation: 4,
+                }}
+              >
+                <SubtitleRenderer
+                  cues={activeSubtitles}
+                  preferences={
+                    subtitlePrefs
+                      ? { ...subtitlePrefs, enabled: true }
+                      : {
+                          enabled: true,
+                          preferredLanguage: "id",
+                          fontSize: 14,
+                          bgOpacity: 0.55,
+                          outlineThickness: 2,
+                          fontFamily: "default",
+                          timeOffset: 0,
+                        }
+                  }
+                />
+              </View>
+            )}
 
             {/* Buffering Indicator */}
             {isBuffering && (
@@ -1103,6 +1194,18 @@ export default function NobarWatchPartyScreen() {
                   )}
 
                   <View style={styles.controlsRightActions}>
+                    {streamSubtitles.length > 0 && (
+                      <Pressable
+                        onPress={() => setNobarSubEnabled((v) => !v)}
+                        style={[
+                          styles.controlIconBtn,
+                          nobarSubEnabled && { backgroundColor: "rgba(255,77,77,0.28)", borderColor: "#FF4D4D" },
+                        ]}
+                        hitSlop={8}
+                      >
+                        <Text style={{ color: "#FFFFFF", fontSize: 10, fontWeight: "800" }}>CC</Text>
+                      </Pressable>
+                    )}
 
                     <Pressable
                       onPress={() => setIsMuted((m) => !m)}

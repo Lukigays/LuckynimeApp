@@ -42,8 +42,9 @@ export function SubtitleRenderer({ cues, preferences }: Props) {
               styles.cueText,
               {
                 fontSize: preferences.fontSize,
+                lineHeight: Math.round(preferences.fontSize * 1.42),
                 fontFamily,
-                textShadowRadius: outline,
+                textShadowRadius: Math.max(2, outline * 1.5),
               },
             ]}
           >
@@ -57,24 +58,22 @@ export function SubtitleRenderer({ cues, preferences }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    bottom: 8,
-    left: 16,
-    right: 16,
+    width: "100%",
+    paddingHorizontal: 14,
     alignItems: "center",
     gap: 4,
   },
   cueWrapper: {
-    maxWidth: "95%",
-    borderRadius: 3,
-    paddingVertical: 2,
+    maxWidth: "94%",
+    borderRadius: 4,
+    paddingVertical: 3,
   },
   cueText: {
     color: "#FFFFFF",
     textAlign: "center",
     fontWeight: "700",
     lineHeight: 20,
-    textShadowColor: "rgba(0,0,0,0.9)",
+    textShadowColor: "rgba(0,0,0,0.96)",
     textShadowOffset: { width: 0, height: 1 },
   },
 });

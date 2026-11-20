@@ -352,6 +352,7 @@ export default function WatchScreen() {
   const [requestedQuality, setRequestedQuality] = useState("auto");
   const [adaptiveBitrateCap, setAdaptiveBitrateCap] = useState<number | null>(null);
   const [subtitlePrefs, setSubtitlePrefs] = useState<SubtitlePreferences | null>(null);
+  const [selectedTrackUrl, setSelectedTrackUrl] = useState<string | null>(null);
   const [activeSubtitles, setActiveSubtitles] = useState<SubtitleCue[]>([]);
   const [playerLocked, setPlayerLocked] = useState(false);
   const [lastPlayerError, setLastPlayerError] = useState<string | null>(null);
@@ -606,7 +607,7 @@ export default function WatchScreen() {
     setSubtitlePrefs((prev) => {
       const merged: SubtitlePreferences = {
         enabled: prev?.enabled ?? true,
-        preferredLanguage: prev?.preferredLanguage ?? "en",
+        preferredLanguage: prev?.preferredLanguage ?? "id",
         fontSize: prev?.fontSize ?? 14,
         bgOpacity: prev?.bgOpacity ?? 0.55,
         outlineThickness: prev?.outlineThickness ?? 2,
@@ -620,38 +621,88 @@ export default function WatchScreen() {
     });
   }, []);
 
+  const availableSubtitles = useMemo(() => {
+    const raw = source?.subtitles?.length
+      ? source.subtitles
+      : stream?.subtitles?.length
+        ? stream.subtitles
+        : activeProvider?.subtitles ?? [];
+    return raw.filter(isActualSubtitleTrack);
+  }, [source?.subtitles, stream?.subtitles, activeProvider?.subtitles]);
+
+  // Reset explicit per-track URL override when changing episode, server, or dub/sub mode.
   useEffect(() => {
-    if (!source?.subtitles?.length || !subtitlePrefs) { parsedCuesRef.current = []; setActiveSubtitles([]); return; }
-    const preferred = matchSubtitleTrack(source.subtitles, subtitlePrefs.preferredLanguage);
-    if (!preferred?.url) { parsedCuesRef.current = []; setActiveSubtitles([]); return; }
-    const urlFormat = detectSubtitleFormat(preferred.url);
-    const subtitleUrl = preferred.url.includes("/api/v1/proxy?") ? luckynimeProxyUrl(preferred.url) : luckynimeProxyUrl(preferred.url, nativePlaybackHeaders(playbackHeaders));
+    setSelectedTrackUrl(null);
+  }, [animeId, episode, serverIndex, language]);
+
+  const activeSubtitleTrack = useMemo(() => {
+    if (!availableSubtitles.length) return null;
+    if (selectedTrackUrl) {
+      const explicit = availableSubtitles.find((item) => item.url === selectedTrackUrl);
+      if (explicit) return explicit;
+    }
+    return matchSubtitleTrack(availableSubtitles, subtitlePrefs?.preferredLanguage ?? "id");
+  }, [availableSubtitles, selectedTrackUrl, subtitlePrefs?.preferredLanguage]);
+
+  useEffect(() => {
+    if (!activeSubtitleTrack?.url || subtitlePrefs?.enabled === false) {
+      parsedCuesRef.current = [];
+      setActiveSubtitles([]);
+      return;
+    }
+    const rawTrackUrl = activeSubtitleTrack.url;
+    const urlFormat = detectSubtitleFormat(rawTrackUrl);
+    const isAlreadyProxied =
+      rawTrackUrl.includes("/api/v1/proxy?") || rawTrackUrl.includes("/api/v1/subtitle");
+    const subtitleUrl = isAlreadyProxied
+      ? luckynimeProxyUrl(rawTrackUrl)
+      : luckynimeProxyUrl(rawTrackUrl, nativePlaybackHeaders(playbackHeadersMirrorRef.current));
+
     let cancelled = false;
-    const directHeaders = nativePlaybackHeaders(playbackHeaders);
-    const subHeaders: Record<string, string> = {
-      "User-Agent": CHROME_ANDROID_UA,
-      Referer: "https://luckynime.tech/",
-      Accept: "*/*",
-      ...(directHeaders && !preferred.url.includes("/api/v1/proxy?") ? directHeaders : {}),
-    };
-    fetch(subtitleUrl, { headers: subHeaders })
-      .then((r) => {
-        if (!r.ok) throw new Error(`subtitle ${r.status}`);
-        return r.text();
-      })
-      .then((text) => {
-        if (cancelled || !text.trim()) {
-          if (!cancelled) { parsedCuesRef.current = []; setActiveSubtitles([]); }
-          return;
-        }
-        const format = urlFormat ?? detectSubtitleFormatFromContent(text);
-        const parsed = parseSubtitle(text, format);
+    const loadTrack = async () => {
+      const attemptFetch = async (targetUrl: string) => {
+        const res = await fetch(targetUrl, {
+          headers: { Accept: "text/vtt, text/plain, */*" },
+        });
+        if (!res.ok) throw new Error(`subtitle ${res.status}`);
+        return res.text();
+      };
+
+      let text = "";
+      try {
+        text = await attemptFetch(subtitleUrl);
+      } catch {
+        // Retry once cleanly in case a serverless cold-start or transient network hiccup occurred.
         if (cancelled) return;
-        parsedCuesRef.current = parsed.cues;
-        setActiveSubtitles(findActiveCues(parsed.cues, currentTimeRef.current - subtitleOffsetRef.current));
-      }).catch(() => { if (!cancelled) { parsedCuesRef.current = []; setActiveSubtitles([]); } });
-    return () => { cancelled = true; };
-  }, [source?.url, source?.subtitles, subtitlePrefs?.preferredLanguage, playbackHeaders]);
+        await new Promise((r) => setTimeout(r, 400));
+        if (cancelled) return;
+        text = await attemptFetch(subtitleUrl);
+      }
+
+      if (cancelled || !text.trim()) {
+        if (!cancelled) {
+          parsedCuesRef.current = [];
+          setActiveSubtitles([]);
+        }
+        return;
+      }
+      const format = urlFormat ?? detectSubtitleFormatFromContent(text);
+      const parsed = parseSubtitle(text, format);
+      if (cancelled) return;
+      parsedCuesRef.current = parsed.cues;
+      setActiveSubtitles(findActiveCues(parsed.cues, currentTimeRef.current - subtitleOffsetRef.current));
+    };
+
+    void loadTrack().catch(() => {
+      if (!cancelled) {
+        parsedCuesRef.current = [];
+        setActiveSubtitles([]);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeSubtitleTrack?.url, subtitlePrefs?.enabled]);
 
   // Positive offset = subs appear later (evaluate an earlier cue time),
   // negative = subs appear earlier. Re-selects immediately when it changes
@@ -2720,8 +2771,8 @@ export default function WatchScreen() {
       : sourceQualityOptions.map((item) => ({ id: item.id, label: item.label, requestQuality: item.requestQuality, source: item.source }));
 
   const selectedSubtitleUrl = useMemo(
-    () => (source?.subtitles?.length && subtitlePrefs?.enabled ? matchSubtitleTrack(source.subtitles, subtitlePrefs.preferredLanguage)?.url ?? null : null),
-    [source?.subtitles, subtitlePrefs?.enabled, subtitlePrefs?.preferredLanguage],
+    () => (subtitlePrefs?.enabled !== false ? activeSubtitleTrack?.url ?? null : null),
+    [activeSubtitleTrack?.url, subtitlePrefs?.enabled],
   );
 
   const progressPct = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
@@ -2748,7 +2799,7 @@ export default function WatchScreen() {
         native Video SurfaceView eats touches aimed behind it. */}
     <View style={[styles.videoShell, manualFullscreen && ps.videoShellFullscreen]}>
       {embedSource && !source ? <EmbedPlayer uri={embedSource.url} headers={nativePlaybackHeaders(playbackHeaders)} onError={() => handleProviderBlockedRef.current("player")} onLoaded={() => { embedReadyRef.current = true; setShowControls(true); }} /> : null}
-      {source ? <Video key={activeProvider?.id ?? "default"} ref={videoRef} style={StyleSheet.absoluteFill} source={{ uri: videoSourceUri, headers: videoSourceHeaders, type: videoContentType, bufferConfig: videoBufferConfig }}
+      {source ? <Video key={activeProvider?.id ?? "default"} ref={videoRef} style={StyleSheet.absoluteFill} useTextureView={Platform.OS === "android"} source={{ uri: videoSourceUri, headers: videoSourceHeaders, type: videoContentType, bufferConfig: videoBufferConfig }}
         paused={!isPlaying} rate={is2xSeeking ? 2.0 : speed} resizeMode={fillMode} muted={muted} volume={volume}
         maxBitRate={adaptiveBitrateCap ?? undefined}
         onLoad={(data: OnLoadData) => {
@@ -2787,7 +2838,23 @@ export default function WatchScreen() {
 
       {/* ── Subtitle Layer (lifts above the bottom deck while chrome is
           visible so cues are never hidden behind the timeline). ── */}
-      {subtitlePrefs ? <View style={[styles.subtitleWrapper, showControls && !playerLocked ? styles.subtitleWrapperWithControls : manualFullscreen ? styles.subtitleWrapperFullscreen : null]} pointerEvents="none"><SubtitleRenderer cues={activeSubtitles} preferences={subtitlePrefs} /></View> : null}
+      {subtitlePrefs ? (
+        <View
+          style={[
+            styles.subtitleWrapper,
+            manualFullscreen
+              ? showControls && !playerLocked
+                ? styles.subtitleWrapperFullscreenControls
+                : styles.subtitleWrapperFullscreen
+              : showControls && !playerLocked
+                ? styles.subtitleWrapperWithControls
+                : null,
+          ]}
+          pointerEvents="none"
+        >
+          <SubtitleRenderer cues={activeSubtitles} preferences={subtitlePrefs} />
+        </View>
+      ) : null}
 
       {/* ── Gesture overlay: sits ABOVE native Video, BELOW chrome.
           This is what makes tap-to-toggle reliable — touches no longer have to
@@ -3174,11 +3241,27 @@ export default function WatchScreen() {
         <ScrollView contentContainerStyle={ps.settingsContent} showsVerticalScrollIndicator={false}>
           <Text style={ps.sectionLabel}>{t("player.subtitles")}</Text>
           <View style={ps.chipRow}>
-            {source.subtitles?.filter(isActualSubtitleTrack).length ? <>
+            {availableSubtitles.length ? <>
               <Pressable onPress={() => updateSubtitlePrefs({ enabled: false })} style={[ps.chip, subtitlePrefs && !subtitlePrefs.enabled && ps.chipActive]}>
                 <Text style={[ps.chipText, subtitlePrefs && !subtitlePrefs.enabled && ps.chipTextActive]}>{t("player.off")}</Text>
               </Pressable>
-              {source.subtitles.filter(isActualSubtitleTrack).map((sub) => { const active = subtitlePrefs?.enabled && selectedSubtitleUrl === sub.url; return <Pressable key={sub.url} onPress={() => updateSubtitlePrefs({ enabled: true, preferredLanguage: sub.lang || sub.label || "en" })} style={[ps.chip, active && ps.chipActive]}><Text numberOfLines={1} style={[ps.chipText, active && ps.chipTextActive]}>{sub.label || sub.lang || "Track"}</Text></Pressable>; })}
+              {availableSubtitles.map((sub) => {
+                const active = Boolean(subtitlePrefs?.enabled !== false && selectedSubtitleUrl === sub.url);
+                return (
+                  <Pressable
+                    key={sub.url}
+                    onPress={() => {
+                      setSelectedTrackUrl(sub.url);
+                      updateSubtitlePrefs({ enabled: true, preferredLanguage: sub.lang || sub.label || "id" });
+                    }}
+                    style={[ps.chip, active && ps.chipActive]}
+                  >
+                    <Text numberOfLines={1} style={[ps.chipText, active && ps.chipTextActive]}>
+                      {sub.label || sub.lang || "Track"}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </> : <Text style={ps.emptyLine}>{t("player.noTracks")}</Text>}
           </View>
 
@@ -3771,7 +3854,7 @@ export default function WatchScreen() {
 // ── Styles ──
 const ps = StyleSheet.create({
   videoShellFullscreen: { position: "absolute", zIndex: 50, elevation: 50, top: 0, right: 0, bottom: 0, left: 0, width: "100%", height: "100%", aspectRatio: undefined, backgroundColor: "#000000", justifyContent: "center" },
-  settingsOverlay: { position: "absolute", zIndex: 4, top: 6, right: 6, bottom: 6, width: 240, maxWidth: "76%", borderRadius: 4, backgroundColor: "rgba(9,9,9,0.92)", overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" },
+  settingsOverlay: { position: "absolute", zIndex: 8, elevation: 8, top: 6, right: 6, bottom: 6, width: 240, maxWidth: "76%", borderRadius: 4, backgroundColor: "rgba(9,9,9,0.92)", overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" },
   settingsHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.06)" },
   settingsHeaderText: { color: "#FFF", fontSize: 11, fontWeight: "800", letterSpacing: 0.3 },
   settingsContent: { padding: 8, paddingBottom: 10, gap: 1 },
@@ -3819,9 +3902,10 @@ const styles = StyleSheet.create({
   miniProgressPlayed: { position: "absolute", top: 0, left: 0, bottom: 0, backgroundColor: "#FF4D4D" },
   statusToast: { position: "absolute", bottom: 28, alignSelf: "center", zIndex: 14, flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 13, paddingVertical: 8, borderRadius: 8, backgroundColor: "rgba(0,0,0,0.82)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
   statusToastText: { color: "#FFF", fontSize: 11, fontWeight: "600", letterSpacing: 0.2 },
-  subtitleWrapper: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end", alignItems: "center", paddingBottom: 68, zIndex: 1 },
-  subtitleWrapperWithControls: { paddingBottom: 144 },
-  subtitleWrapperFullscreen: { paddingBottom: 24 },
+  subtitleWrapper: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end", alignItems: "center", paddingBottom: 10, zIndex: 4, elevation: 4 },
+  subtitleWrapperWithControls: { paddingBottom: 56 },
+  subtitleWrapperFullscreen: { paddingBottom: 22 },
+  subtitleWrapperFullscreenControls: { paddingBottom: 88 },
   controlsBackdrop: { ...StyleSheet.absoluteFillObject, zIndex: 3, justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 6 },
   controlsBackdropFullscreen: { paddingHorizontal: 20, paddingVertical: 12 },
   // Edge scrims stay light on purpose: readability bands only, never a veil

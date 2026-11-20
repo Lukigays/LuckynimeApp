@@ -409,6 +409,7 @@ export async function resolveNobarStream(
   headers?: Record<string, string>;
   isEmbed?: boolean;
   type?: string;
+  subtitles?: Array<{ url: string; label?: string; lang?: string }>;
   error?: string;
 }> {
   try {
@@ -423,6 +424,7 @@ export async function resolveNobarStream(
       try {
         let sources = activeServer.sources ? playableSources(activeServer.sources) : [];
         let rawHeaders = activeServer.headers;
+        let resolvedSubtitles = activeServer.subtitles;
 
         if (!sources.length) {
           const streamData = await getStream({
@@ -435,6 +437,7 @@ export async function resolveNobarStream(
           if (streamData?.sources) {
             sources = playableSources(streamData.sources);
             rawHeaders = streamData.headers || rawHeaders;
+            resolvedSubtitles = streamData.subtitles || resolvedSubtitles;
           }
         }
 
@@ -463,8 +466,9 @@ export async function resolveNobarStream(
               };
 
           const streamType = src.type === "hls" || src.url?.includes(".m3u8") || isProxy ? "m3u8" : undefined;
+          const subtitles = src.subtitles?.length ? src.subtitles : resolvedSubtitles;
 
-          return { uri: finalUrl, headers: finalHeaders, isEmbed, type: streamType };
+          return { uri: finalUrl, headers: finalHeaders, isEmbed, type: streamType, subtitles };
         }
       } catch {
         continue;

@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const STORAGE_KEY = "luckynime.subtitle-preferences.v2";
+const STORAGE_KEY = "luckynime.subtitle-preferences.v3";
+const LEGACY_STORAGE_KEY = "luckynime.subtitle-preferences.v2";
 
 export type SubtitleFont = "default" | "monospace" | "serif" | "rounded";
 
@@ -17,7 +18,7 @@ export type SubtitlePreferences = {
 
 const DEFAULTS: SubtitlePreferences = {
   enabled: true,
-  preferredLanguage: "en",
+  preferredLanguage: "id",
   fontSize: 14,
   bgOpacity: 0.55,
   outlineThickness: 2,
@@ -52,6 +53,23 @@ export async function loadSubtitlePreferences(): Promise<SubtitlePreferences> {
       const parsed = { ...DEFAULTS, ...JSON.parse(raw) } as SubtitlePreferences;
       cached = parsed;
       return parsed;
+    }
+    const legacyRaw = await AsyncStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacyRaw) {
+      const legacyParsed = JSON.parse(legacyRaw) as Partial<SubtitlePreferences>;
+      // Migrate styling settings while upgrading old default "en" to "id" (Indonesian).
+      const migrated: SubtitlePreferences = {
+        ...DEFAULTS,
+        ...legacyParsed,
+        enabled: legacyParsed.enabled ?? true,
+        preferredLanguage:
+          !legacyParsed.preferredLanguage || legacyParsed.preferredLanguage === "en"
+            ? "id"
+            : legacyParsed.preferredLanguage,
+      };
+      cached = migrated;
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(migrated)).catch(() => {});
+      return migrated;
     }
   } catch {}
   cached = DEFAULTS;

@@ -184,13 +184,34 @@ const LANGUAGE_ALIASES: Record<string, string> = {
   english: "en",
   eng: "en",
   spanish: "es",
+  espanol: "es",
   french: "fr",
+  francais: "fr",
   german: "de",
+  deutsch: "de",
   arabic: "ar",
   hindi: "hi",
   portuguese: "pt",
+  portugues: "pt",
   indonesian: "id",
+  indonesia: "id",
+  ind: "id",
+  subindo: "id",
+  indo: "id",
+  malay: "ms",
+  melayu: "ms",
   japanese: "ja",
+  jpn: "ja",
+  italian: "it",
+  italiano: "it",
+  ita: "it",
+  russian: "ru",
+  rus: "ru",
+  korean: "ko",
+  kor: "ko",
+  chinese: "zh",
+  thai: "th",
+  vietnamese: "vi",
   spanishlatin: "es",
 };
 
@@ -242,6 +263,13 @@ export function matchSubtitleTrack(
     if (lang.startsWith(preferred) || preferred.startsWith(lang) || label.startsWith(preferred) || preferred.startsWith(label)) {
       if (lang || label) return track;
     }
+  }
+  // If Indonesian was preferred and missing, prefer English before arbitrary foreign tracks.
+  if (preferred === "id") {
+    const englishFallback = validTracks.find(
+      (track) => normalizeSubtitleLang(track.lang) === "en" || normalizeSubtitleLang(track.label) === "en",
+    );
+    if (englishFallback) return englishFallback;
   }
   return validTracks[0] ?? null;
 }
