@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import type { SubtitleCue } from "@/lib/subtitle-parser";
 import type { SubtitlePreferences } from "@/lib/subtitle-preferences";
 import { SUBTITLE_FONTS } from "@/lib/subtitle-preferences";
@@ -7,6 +7,7 @@ import { SUBTITLE_FONTS } from "@/lib/subtitle-preferences";
 type Props = {
   cues: SubtitleCue[];
   preferences: SubtitlePreferences;
+  fullscreen?: boolean;
 };
 
 function resolveFont(pref: SubtitlePreferences["fontFamily"]): string | undefined {
@@ -15,7 +16,14 @@ function resolveFont(pref: SubtitlePreferences["fontFamily"]): string | undefine
   return match.family;
 }
 
-export function SubtitleRenderer({ cues, preferences }: Props) {
+const STROKE_OFFSETS = [
+  { x: -1.25, y: -1.25 },
+  { x: 1.25, y: -1.25 },
+  { x: -1.25, y: 1.25 },
+  { x: 1.25, y: 1.25 },
+];
+
+export function SubtitleRenderer({ cues, preferences, fullscreen = false }: Props) {
   const activeCues = useMemo(() => cues.slice(0, 2), [cues]);
 
   if (!preferences.enabled || activeCues.length === 0) return null;
@@ -23,35 +31,79 @@ export function SubtitleRenderer({ cues, preferences }: Props) {
   const fontFamily = resolveFont(preferences.fontFamily);
   const bgAlpha = preferences.bgOpacity;
   const outline = preferences.outlineThickness;
+  const fontSize = fullscreen
+    ? Math.round(preferences.fontSize * 1.26)
+    : preferences.fontSize;
+  const lineHeight = Math.round(fontSize * 1.36);
+  const strokeScale = Math.max(0.75, outline / 2);
 
   return (
     <View style={styles.container} pointerEvents="none">
-      {activeCues.map((cue) => (
-        <View
-          key={cue.id}
-          style={[
-            styles.cueWrapper,
-            {
-              backgroundColor: `rgba(0,0,0,${bgAlpha})`,
-              paddingHorizontal: outline > 0 ? 10 : 6,
-            },
-          ]}
-        >
-          <Text
+      {activeCues.map((cue) => {
+        const fontStyle = cue.style?.italic ? ("italic" as const) : ("normal" as const);
+        return (
+          <View
+            key={cue.id}
             style={[
-              styles.cueText,
-              {
-                fontSize: preferences.fontSize,
-                lineHeight: Math.round(preferences.fontSize * 1.42),
-                fontFamily,
-                textShadowRadius: Math.max(2, outline * 1.5),
-              },
+              styles.cueWrapper,
+              bgAlpha > 0
+                ? {
+                    backgroundColor: `rgba(0,0,0,${bgAlpha})`,
+                    paddingHorizontal: 10,
+                    paddingVertical: 3,
+                    borderRadius: 4,
+                  }
+                : null,
             ]}
           >
-            {cue.text}
-          </Text>
-        </View>
-      ))}
+            {outline > 0 && Platform.OS !== "web"
+              ? STROKE_OFFSETS.map((off, idx) => (
+                  <Text
+                    key={idx}
+                    importantForAccessibility="no"
+                    accessible={false}
+                    style={[
+                      styles.cueText,
+                      styles.strokeClone,
+                      {
+                        fontSize,
+                        lineHeight,
+                        fontFamily,
+                        fontStyle,
+                        transform: [
+                          { translateX: off.x * strokeScale },
+                          { translateY: off.y * strokeScale },
+                        ],
+                      },
+                    ]}
+                  >
+                    {cue.text}
+                  </Text>
+                ))
+              : null}
+            <Text
+              style={[
+                styles.cueText,
+                {
+                  fontSize,
+                  lineHeight,
+                  fontFamily,
+                  fontStyle,
+                  textShadowRadius: outline > 0 ? Math.max(3, outline * 1.6) : 0,
+                },
+                Platform.OS === "web" && outline > 0
+                  ? ({
+                      textShadow:
+                        "-1.3px -1.3px 0 #000, 1.3px -1.3px 0 #000, -1.3px 1.3px 0 #000, 1.3px 1.3px 0 #000, 0 2px 4px rgba(0,0,0,0.9)",
+                    } as any)
+                  : null,
+              ]}
+            >
+              {cue.text}
+            </Text>
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -59,21 +111,29 @@ export function SubtitleRenderer({ cues, preferences }: Props) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     alignItems: "center",
-    gap: 4,
+    gap: 2,
   },
   cueWrapper: {
-    maxWidth: "94%",
-    borderRadius: 4,
-    paddingVertical: 3,
+    maxWidth: "92%",
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
   },
   cueText: {
     color: "#FFFFFF",
     textAlign: "center",
     fontWeight: "700",
-    lineHeight: 20,
+    letterSpacing: 0.15,
     textShadowColor: "rgba(0,0,0,0.96)",
     textShadowOffset: { width: 0, height: 1 },
+  },
+  strokeClone: {
+    position: "absolute",
+    color: "#000000",
+    textShadowColor: "#000000",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 1.5,
   },
 });

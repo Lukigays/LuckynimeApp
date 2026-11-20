@@ -164,6 +164,7 @@ export default function SettingsScreen() {
     hapticLight();
     setAutoPlay(value);
     void savePlaybackSetting("autoPlay", value);
+    void AsyncStorage.setItem("luckynime.watch.autonext.v2", String(value)).catch(() => {});
   };
 
   const toggleGestures = (value: boolean) => {

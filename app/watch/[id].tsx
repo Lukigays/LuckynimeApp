@@ -83,13 +83,13 @@ import { NativeScreen } from "@/components/screen";
 import { SubtitleRenderer } from "@/components/subtitle-renderer";
 import { SleepTimerPill } from "@/components/sleep-timer";
 import { chrome } from "@/components/player/chrome-styles";
-import { parseSubtitle, detectSubtitleFormat, detectSubtitleFormatFromContent, findActiveCues, matchSubtitleTrack, isActualSubtitleTrack, type SubtitleCue } from "@/lib/subtitle-parser";
-import { loadSubtitlePreferences, saveSubtitlePreferences, SUBTITLE_FONTS, BG_OPACITY_PRESETS, OUTLINE_PRESETS, clampSubtitleOffset, formatSubtitleOffset, SUBTITLE_OFFSET_MIN, SUBTITLE_OFFSET_MAX, SUBTITLE_OFFSET_STEP, type SubtitlePreferences } from "@/lib/subtitle-preferences";
+import { parseSubtitle, detectSubtitleFormat, detectSubtitleFormatFromContent, findActiveCues, matchSubtitleTrack, isActualSubtitleTrack, normalizeSubtitleLang, type SubtitleCue } from "@/lib/subtitle-parser";
+import { loadSubtitlePreferences, saveSubtitlePreferences, getSubtitlePreferencesSync, SUBTITLE_FONTS, BG_OPACITY_PRESETS, OUTLINE_PRESETS, clampSubtitleOffset, formatSubtitleOffset, SUBTITLE_OFFSET_MIN, SUBTITLE_OFFSET_MAX, SUBTITLE_OFFSET_STEP, type SubtitlePreferences } from "@/lib/subtitle-preferences";
 import { loadPlaybackSettings, savePlaybackSetting } from "@/lib/user-settings";
 import { resolveNextEpisode, resolvePrevEpisode } from "@/lib/up-next";
 import { SAWERIA_URL } from "@/lib/support";
 import { t } from "@/lib/i18n";
-import Svg, { Rect } from "react-native-svg";
+import Svg, { Path, Rect } from "react-native-svg";
 import { ReportStreamModal } from "@/components/report-stream-modal";
 
 const TOPUP_CRYSTAL = require("@/assets/images/topup/topup-crystal.png");
@@ -127,6 +127,16 @@ function formatTime(seconds: number) {
   const secs = rounded % 60;
   if (hours > 0) return `${hours}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   return `${minutes}:${String(secs).padStart(2, "0")}`;
+}
+
+function formatClockTime(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
+  const rounded = Math.floor(seconds);
+  const hours = Math.floor(rounded / 3600);
+  const minutes = Math.floor((rounded % 3600) / 60);
+  const secs = rounded % 60;
+  if (hours > 0) return `${hours}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
 function cleanSynopsisText(raw?: string | null): string {
@@ -351,7 +361,7 @@ export default function WatchScreen() {
   const [downloadMessage, setDownloadMessage] = useState<string | null>(null);
   const [requestedQuality, setRequestedQuality] = useState("auto");
   const [adaptiveBitrateCap, setAdaptiveBitrateCap] = useState<number | null>(null);
-  const [subtitlePrefs, setSubtitlePrefs] = useState<SubtitlePreferences | null>(null);
+  const [subtitlePrefs, setSubtitlePrefs] = useState<SubtitlePreferences>(() => getSubtitlePreferencesSync());
   const [selectedTrackUrl, setSelectedTrackUrl] = useState<string | null>(null);
   const [activeSubtitles, setActiveSubtitles] = useState<SubtitleCue[]>([]);
   const [playerLocked, setPlayerLocked] = useState(false);
@@ -412,9 +422,8 @@ export default function WatchScreen() {
   // auto-plays. Manual PLAY NOW or dismiss.
   const [upNextVisible, setUpNextVisible] = useState(false);
   const upNextShownFor = useRef<string | null>(null);
-  // Auto-play next episode preference (default OFF = wait for the user, the
-  // historic behavior). The countdown only runs while this is on.
-  const [autoPlayNext, setAutoPlayNext] = useState(false);
+  // Auto-play next episode preference (default ON = matches Autonext toggle in player).
+  const [autoPlayNext, setAutoPlayNext] = useState(true);
   // Seconds left on the Up Next auto-play countdown; null = not counting.
   const [upNextCountdown, setUpNextCountdown] = useState<number | null>(null);
   const [volumeHud, setVolumeHud] = useState<number | null>(null);
@@ -608,8 +617,8 @@ export default function WatchScreen() {
       const merged: SubtitlePreferences = {
         enabled: prev?.enabled ?? true,
         preferredLanguage: prev?.preferredLanguage ?? "id",
-        fontSize: prev?.fontSize ?? 14,
-        bgOpacity: prev?.bgOpacity ?? 0.55,
+        fontSize: prev?.fontSize ?? 15,
+        bgOpacity: prev?.bgOpacity ?? 0,
         outlineThickness: prev?.outlineThickness ?? 2,
         fontFamily: prev?.fontFamily ?? "default",
         timeOffset: prev?.timeOffset ?? 0,
@@ -654,9 +663,21 @@ export default function WatchScreen() {
     const urlFormat = detectSubtitleFormat(rawTrackUrl);
     const isAlreadyProxied =
       rawTrackUrl.includes("/api/v1/proxy?") || rawTrackUrl.includes("/api/v1/subtitle");
-    const subtitleUrl = isAlreadyProxied
+    const baseSubtitleUrl = isAlreadyProxied
       ? luckynimeProxyUrl(rawTrackUrl)
       : luckynimeProxyUrl(rawTrackUrl, nativePlaybackHeaders(playbackHeadersMirrorRef.current));
+
+    // Pastikan otomatis terjemah ke Bahasa Indonesia apabila preferensi adalah "id"
+    // dan track sumber dari server belum berbahasa Indonesia / belum memiliki translate=id.
+    const wantsIndonesian = normalizeSubtitleLang(subtitlePrefs?.preferredLanguage ?? "id") === "id";
+    const trackIsIndonesian =
+      normalizeSubtitleLang(activeSubtitleTrack.lang) === "id" ||
+      normalizeSubtitleLang(activeSubtitleTrack.label) === "id" ||
+      baseSubtitleUrl.includes("translate=id");
+    const subtitleUrl =
+      wantsIndonesian && !trackIsIndonesian && !selectedTrackUrl && baseSubtitleUrl.includes("/api/v1/proxy?")
+        ? `${baseSubtitleUrl}&translate=id`
+        : baseSubtitleUrl;
 
     let cancelled = false;
     const loadTrack = async () => {
@@ -841,18 +862,22 @@ export default function WatchScreen() {
     let active = true;
     void Promise.all([
       AsyncStorage.getItem("luckynime.watch.preferences"),
+      AsyncStorage.getItem("luckynime.watch.autonext.v2"),
       loadPlaybackSettings(),
-    ]).then(([stored, pb]) => {
+    ]).then(([stored, storedAutoNextV2, pb]) => {
       if (!active) return;
       if (stored) {
         try {
           const preferences = JSON.parse(stored) as WatchPreferences;
           if (typeof preferences.speed === "number" && [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].includes(preferences.speed)) setSpeed(preferences.speed);
-          if (typeof preferences.autoPlayNext === "boolean") setAutoPlayNext(preferences.autoPlayNext);
         } catch { /* ignore malformed */ }
       }
+      if (storedAutoNextV2 === "true" || storedAutoNextV2 === "false") {
+        setAutoPlayNext(storedAutoNextV2 === "true");
+      } else {
+        setAutoPlayNext(true);
+      }
       if (pb) {
-        if (typeof pb.autoPlay === "boolean") setAutoPlayNext(pb.autoPlay);
         setGesturesEnabled(pb.gestures);
         setSkipIntroEnabled(pb.skipIntro);
         const dur = parseInt(pb.introDuration.replace("s", ""), 10);
@@ -868,6 +893,7 @@ export default function WatchScreen() {
   useEffect(() => {
     if (!preferencesReady) return;
     void AsyncStorage.setItem("luckynime.watch.preferences", JSON.stringify({ speed, autoPlayNext })).catch(() => {});
+    void AsyncStorage.setItem("luckynime.watch.autonext.v2", String(autoPlayNext)).catch(() => {});
     void savePlaybackSetting("autoPlay", autoPlayNext);
   }, [preferencesReady, speed, autoPlayNext]);
 
@@ -1705,7 +1731,10 @@ export default function WatchScreen() {
       const response = await getStream({ animeId, episode, provider: activeProvider.provider, lang: language, quality: choice.requestQuality });
       const replacement = nativeSources(response)[0];
       if (!replacement) throw new Error("This provider did not return that quality.");
-      setStream(response);
+      setStream((prev) => ({
+        ...response,
+        subtitles: response.subtitles?.length ? response.subtitles : prev?.subtitles ?? [],
+      }));
       applySkipSegments(providerSkipSegments(response));
       setPlaybackHeaders(response.headers ?? activeProvider.headers);
       setRequestedQuality(choice.requestQuality);
@@ -2779,6 +2808,17 @@ export default function WatchScreen() {
   const bufferPct = duration > 0 && playableDuration > 0 ? Math.min(100, (playableDuration / duration) * 100) : 0;
   // Segmented track tint from real OP/ED ranges (provider + AniSkip merged).
   const chapterTrack = useMemo(() => chapterTrackSegments(skipSegments, duration), [skipSegments, duration]);
+  const playerQualityBadge = useMemo(() => {
+    if (displayedQuality && displayedQuality.toLowerCase() !== "auto") {
+      return displayedQuality;
+    }
+    if (liveHeight && liveHeight > 0) {
+      return `${liveHeight}p`;
+    }
+    const firstSpecific = displayedQualityOptions.find((o) => o.label.toLowerCase() !== "auto");
+    return firstSpecific?.label || displayedQuality || "720p";
+  }, [displayedQuality, liveHeight, displayedQualityOptions]);
+  const speedBadge = useMemo(() => `${Number.isInteger(speed) ? speed : speed}x`, [speed]);
 
   if (invalidId) {
     return <NativeScreen scroll={false} style={styles.fill}>
@@ -2800,6 +2840,7 @@ export default function WatchScreen() {
     <View style={[styles.videoShell, manualFullscreen && ps.videoShellFullscreen]}>
       {embedSource && !source ? <EmbedPlayer uri={embedSource.url} headers={nativePlaybackHeaders(playbackHeaders)} onError={() => handleProviderBlockedRef.current("player")} onLoaded={() => { embedReadyRef.current = true; setShowControls(true); }} /> : null}
       {source ? <Video key={activeProvider?.id ?? "default"} ref={videoRef} style={StyleSheet.absoluteFill} useTextureView={Platform.OS === "android"} source={{ uri: videoSourceUri, headers: videoSourceHeaders, type: videoContentType, bufferConfig: videoBufferConfig }}
+        selectedTextTrack={{ type: "disabled" } as any}
         paused={!isPlaying} rate={is2xSeeking ? 2.0 : speed} resizeMode={fillMode} muted={muted} volume={volume}
         maxBitRate={adaptiveBitrateCap ?? undefined}
         onLoad={(data: OnLoadData) => {
@@ -2827,7 +2868,20 @@ export default function WatchScreen() {
         onBandwidthUpdate={handleBandwidthUpdate}
         onPictureInPictureStatusChanged={onPipStatusChanged}
         onError={(event: any) => { const detail = event?.error?.errorString || event?.error?.errorCode || "Unknown player error"; const mountedUrl = source?.url ?? null; if (shouldRefreshMasterOnVariantError({ errorDetail: String(detail), variantUrl: mountedUrl, refreshedAlready: variantTokenRefreshAttempted.current === mountedUrl })) { variantTokenRefreshAttempted.current = mountedUrl; void refreshVariantFromMaster(); return; } setLastPlayerError(String(detail)); setPlayerStatus("error"); if (!useSourceProxy) { setUseSourceProxy(true); setSourceRevision((v) => v + 1); return; } handleProviderBlockedRef.current("player"); }}
-        onEnd={() => { const reachedEnd = duration > 30 && currentTime >= Math.max(1, duration - 2); if (!sourceStarted.current || !reachedEnd) return; if (auth.user) { history.save.mutate({ animeId, animeTitle: title, animeImage: image || null, episode, episodeTitle: selectedEpisode?.title || null, episodeThumbnail: selectedEpisode?.thumbnail || null, progress: duration || currentTime, duration: duration || currentTime }); if (providerSync.connected.length) providerSync.pushProgress.mutate({ animeId, episode, progress: Math.floor(duration || currentTime), status: "completed" }); } showUpNext(); }}
+        onEnd={() => {
+          const reachedEnd = duration > 30 && currentTime >= Math.max(1, duration - 2);
+          if (!sourceStarted.current || !reachedEnd) return;
+          if (auth.user) {
+            history.save.mutate({ animeId, animeTitle: title, animeImage: image || null, episode, episodeTitle: selectedEpisode?.title || null, episodeThumbnail: selectedEpisode?.thumbnail || null, progress: duration || currentTime, duration: duration || currentTime });
+            if (providerSync.connected.length) providerSync.pushProgress.mutate({ animeId, episode, progress: Math.floor(duration || currentTime), status: "completed" });
+          }
+          if (autoPlayNext && nextKnownEpisode) {
+            setUpNextVisible(false);
+            goToEpisode(nextKnownEpisode);
+            return;
+          }
+          showUpNext();
+        }}
       /> : (embedSource && !error) ? null : <View style={styles.videoPlaceholder}>
         {loadingServers ? <ProviderDiscoveryLoader attempt={serverAttempt} /> : loadingStream ? <View style={styles.thumbnailLoading}>
           <Image source={{ uri: selectedEpisode?.thumbnail || watchBackdrop || image || "" }} style={StyleSheet.absoluteFillObject} contentFit="cover" cachePolicy="memory-disk" />
@@ -2836,23 +2890,20 @@ export default function WatchScreen() {
         </View> : error ? <Text style={styles.errorText}>{error}</Text> : <Text style={styles.placeholderText}>PREPARING VIDEO</Text>}
       </View>}
 
-      {/* ── Subtitle Layer (lifts above the bottom deck while chrome is
-          visible so cues are never hidden behind the timeline). ── */}
+      {/* ── Subtitle Layer: crisp white text with black outline at bottom-center ── */}
       {subtitlePrefs ? (
         <View
           style={[
             styles.subtitleWrapper,
-            manualFullscreen
-              ? showControls && !playerLocked
-                ? styles.subtitleWrapperFullscreenControls
-                : styles.subtitleWrapperFullscreen
-              : showControls && !playerLocked
-                ? styles.subtitleWrapperWithControls
-                : null,
+            manualFullscreen ? styles.subtitleWrapperFullscreen : null,
           ]}
           pointerEvents="none"
         >
-          <SubtitleRenderer cues={activeSubtitles} preferences={subtitlePrefs} />
+          <SubtitleRenderer
+            cues={activeSubtitles}
+            preferences={subtitlePrefs}
+            fullscreen={manualFullscreen}
+          />
         </View>
       ) : null}
 
@@ -2943,130 +2994,300 @@ export default function WatchScreen() {
         </Animated.View>
       ) : null}
 
-      {/* Main controls — mounted only while visible (fading in or visible).
-          When hidden they are fully unmounted so they never block touches
-          on the gesture layer. pointerEvents switches with visibility, so
-          buttons still win hit-test when chrome is up. */}
+      {/* Main controls — Wibuku-identical overlay:
+          1) Subtle top back + CC button
+          2) Centered 5-button row: Prev Episode | -10s | White Circle Play | +10s | Next Episode
+          3) Bottom status row: 00:06 / 24:12  ...  Autonext | 360p/720p | 1x | Fullscreen
+          4) Edge-to-edge red seekbar with red thumb pinned to bottom edge */}
       {source && controlsRendered ? (
-        <Animated.View style={[styles.controlsBackdrop, manualFullscreen && styles.controlsBackdropFullscreen, { opacity: controlsOpacity }]} pointerEvents={showControls && !playerLocked ? "box-none" : "none"}>
-          {/* Edge scrims — layered bands fake a gradient without adding a
-              native dependency; keeps top/bottom rows readable like the
-              reference player. */}
-          <View pointerEvents="none" style={styles.scrimTopSoft} />
-          <View pointerEvents="none" style={styles.scrimTopMain} />
-          <View pointerEvents="none" style={styles.scrimBottomSoft} />
-          <View pointerEvents="none" style={styles.scrimBottomMain} />
-          {/* TOP BAR */}
-          <View style={styles.topBar}>
-            <Pressable onPress={handleBackPress} accessibilityRole="button" accessibilityLabel="Go back" style={styles.iconButton} hitSlop={10}>
-              <ArrowLeft size={22} color="#FFF" weight="bold" />
+        <Animated.View
+          style={[
+            styles.controlsBackdrop,
+            manualFullscreen && styles.controlsBackdropFullscreen,
+            { opacity: controlsOpacity },
+          ]}
+          pointerEvents={showControls && !playerLocked ? "box-none" : "none"}
+        >
+          {/* TOP BAR (clean & minimal) */}
+          <View style={[styles.topBar, manualFullscreen && styles.topBarFullscreen]} pointerEvents="box-none">
+            <Pressable
+              onPress={handleBackPress}
+              accessibilityRole="button"
+              accessibilityLabel="Go back"
+              style={styles.iconButton}
+              hitSlop={10}
+            >
+              <ArrowLeft size={21} color="rgba(255,255,255,0.92)" weight="bold" />
             </Pressable>
-            <Text style={styles.playerTitle} numberOfLines={1} ellipsizeMode="tail">{`${title} - Episode ${episode}`}</Text>
-            <View style={styles.topRightRow}>
-              <Pressable onPress={() => setActivePanel("speed")} accessibilityRole="button" accessibilityLabel="Playback speed" style={styles.iconButton} hitSlop={8}>
-                <Speedometer size={18} color="#FFF" weight="bold" />
+            {manualFullscreen ? (
+              <Text style={styles.playerTitle} numberOfLines={1} ellipsizeMode="tail">
+                {`${title} · Episode ${episode}`}
+              </Text>
+            ) : (
+              <View pointerEvents="none" style={{ flex: 1 }} />
+            )}
+            <View style={styles.topRightRow} pointerEvents="box-none">
+              <Pressable
+                onPress={() => setActivePanel(activePanel === "subtitles" ? null : "subtitles")}
+                accessibilityRole="button"
+                accessibilityLabel="Subtitles"
+                style={[styles.iconButton, activePanel === "subtitles" && styles.iconButtonActive]}
+                hitSlop={8}
+              >
+                <Subtitles
+                  size={18}
+                  color={activePanel === "subtitles" ? "#FF0000" : "rgba(255,255,255,0.9)"}
+                  weight="bold"
+                />
               </Pressable>
-              <Pressable onPress={() => setActivePanel(activePanel === "subtitles" ? null : "subtitles")} accessibilityRole="button" accessibilityLabel="Subtitles" style={[styles.iconButton, activePanel === "subtitles" && styles.iconButtonActive]} hitSlop={8}>
-                <Subtitles size={18} color={activePanel === "subtitles" ? nothing.red : "#FFF"} weight="bold" />
-              </Pressable>
-              <Pressable onPress={() => setActivePanel(activePanel === "settings" ? null : "settings")} accessibilityRole="button" accessibilityLabel="Settings" style={[styles.iconButton, activePanel === "settings" && styles.iconButtonActive]} hitSlop={8}>
-                <Gear size={18} color={activePanel === "settings" ? nothing.red : "#FFF"} weight="bold" />
+              <Pressable
+                onPress={() => setActivePanel(activePanel === "settings" ? null : "settings")}
+                accessibilityRole="button"
+                accessibilityLabel="Settings"
+                style={[styles.iconButton, activePanel === "settings" && styles.iconButtonActive]}
+                hitSlop={8}
+              >
+                <Gear
+                  size={18}
+                  color={activePanel === "settings" ? "#FF0000" : "rgba(255,255,255,0.9)"}
+                  weight="bold"
+                />
               </Pressable>
             </View>
           </View>
 
-          {/* BOTTOM CONTROLS */}
-          <View style={styles.bottomDeck}>
-            {/* Resume pill — resume hides near the end (there is nothing left
-                to resume). Skip lives in the single floating overlay button
-                below so it never renders twice. */}
+          {/* CENTER 5-BUTTON TRANSPORT ROW */}
+          <View style={[styles.centerTransportRow, manualFullscreen && styles.centerTransportRowFullscreen]} pointerEvents="box-none">
+            {/* 1. Previous Episode */}
+            <Pressable
+              disabled={!previousKnownEpisode}
+              onPress={() => previousKnownEpisode && goToEpisode(previousKnownEpisode)}
+              accessibilityRole="button"
+              accessibilityLabel="Episode sebelumnya"
+              style={[styles.epNavBtn, !previousKnownEpisode && styles.epNavBtnDisabled]}
+              hitSlop={10}
+            >
+              <SkipBack size={manualFullscreen ? 32 : 28} color="#FFFFFF" weight="fill" />
+              <Text style={styles.epNavLabel} numberOfLines={1}>
+                {previousKnownEpisode
+                  ? `Episode ${previousKnownEpisode}`
+                  : episode > 1
+                    ? `Episode ${episode - 1}`
+                    : "Episode 1"}
+              </Text>
+            </Pressable>
+
+            {/* 2. Rewind 10s */}
+            <Pressable
+              onPress={() => {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                seekBy(-10);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Mundur 10 detik"
+              style={styles.seek10Btn}
+              hitSlop={10}
+            >
+              <Seek10Icon direction="back" size={manualFullscreen ? 40 : 35} />
+            </Pressable>
+
+            {/* 3. Big White Circle Play / Pause */}
+            <Pressable
+              onPress={() => {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                setIsPlaying((p) => !p);
+              }}
+              onLongPress={beginHoldSpeed}
+              onPressOut={endHoldSpeed}
+              delayLongPress={400}
+              accessibilityRole="button"
+              accessibilityLabel={isPlaying ? "Pause" : "Play"}
+              accessibilityHint="Tahan untuk kecepatan 2x"
+              style={[styles.bigPlayButton, manualFullscreen && styles.bigPlayButtonFullscreen]}
+            >
+              {isPlaying ? (
+                <Pause size={manualFullscreen ? 30 : 26} color="#52525B" weight="fill" />
+              ) : (
+                <Play
+                  size={manualFullscreen ? 30 : 26}
+                  color="#52525B"
+                  weight="fill"
+                  style={{ marginLeft: 3 }}
+                />
+              )}
+            </Pressable>
+
+            {/* 4. Forward 10s */}
+            <Pressable
+              onPress={() => {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                seekBy(10);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Maju 10 detik"
+              style={styles.seek10Btn}
+              hitSlop={10}
+            >
+              <Seek10Icon direction="forward" size={manualFullscreen ? 40 : 35} />
+            </Pressable>
+
+            {/* 5. Next Episode */}
+            <Pressable
+              disabled={!nextKnownEpisode}
+              onPress={nextEpisode}
+              accessibilityRole="button"
+              accessibilityLabel="Episode selanjutnya"
+              style={[styles.epNavBtn, !nextKnownEpisode && styles.epNavBtnDisabled]}
+              hitSlop={10}
+            >
+              <SkipForward size={manualFullscreen ? 32 : 28} color="#FFFFFF" weight="fill" />
+              <Text style={styles.epNavLabel} numberOfLines={1}>
+                {`Episode ${nextKnownEpisode ?? episode + 1}`}
+              </Text>
+            </Pressable>
+          </View>
+
+          {/* BOTTOM CONTROLS + EDGE-TO-EDGE RED SEEKBAR */}
+          <View style={styles.bottomDeck} pointerEvents="box-none">
             {(resumePosition && (duration <= 0 || resumePosition < duration * 0.9)) ? (
-              <View style={styles.contextActions}>
-                <Pressable onPress={() => { pendingResume.current = resumePosition; videoRef.current?.seek(resumePosition); setResumePosition(null); }} accessibilityRole="button" style={styles.resumeBtn}>
+              <View style={[styles.contextActions, { paddingHorizontal: manualFullscreen ? 20 : 12 }]}>
+                <Pressable
+                  onPress={() => {
+                    pendingResume.current = resumePosition;
+                    videoRef.current?.seek(resumePosition);
+                    setResumePosition(null);
+                  }}
+                  accessibilityRole="button"
+                  style={styles.resumeBtn}
+                >
                   <Play size={12} color="#FFF" weight="fill" />
-                  <Text style={styles.resumeBtnText}>{`RESUME ${formatTime(resumePosition)}`}</Text>
+                  <Text style={styles.resumeBtnText}>{`Lanjutkan ${formatClockTime(resumePosition)}`}</Text>
                 </Pressable>
               </View>
             ) : null}
 
-            {/* Timeline */}
-            <View style={styles.timelineRow}>
-              <Text style={styles.timeLabel}>{formatTime(currentTime)}</Text>
-              <View
-                ref={progressBarRef}
-                style={styles.progressBarTrack}
-                hitSlop={{ top: 14, bottom: 14, left: 6, right: 6 }}
-                onLayout={onProgressLayout}
-                onTouchStart={onBarTouchStart}
-                onTouchMove={onBarTouchMove}
-                onTouchEnd={seekFromBar}
-                onTouchCancel={() => setDragPct(null)}
-                accessibilityRole="adjustable"
-                accessibilityLabel="Seek bar"
-              >
-                <View pointerEvents="none" style={[styles.progressBuffered, dragPct !== null && styles.progressTrackThick, { width: `${bufferPct}%` }]} />
-                <View pointerEvents="none" style={[styles.progressPlayed, dragPct !== null && styles.progressTrackThick, { width: `${dragPct !== null ? dragPct : progressPct}%` }]} />
-                {chapterTrack.map((segment) => <View key={segment.kind} pointerEvents="none" style={[styles.chapterMarker, { left: `${segment.leftPct}%`, width: `${segment.widthPct}%` }]} />)}
-                <View pointerEvents="none" style={[styles.scrubberKnob, dragPct !== null && styles.scrubberKnobActive, { left: `${dragPct !== null ? dragPct : progressPct}%` }]} />
-                {dragPct !== null ? <View pointerEvents="none" style={[styles.dragPreview, { left: `${Math.max(0, Math.min(dragPct, 100))}%` }]}><Text style={styles.dragPreviewText}>{formatTime((dragPct / 100) * duration)}</Text></View> : null}
+            {/* Bottom info & action row: 00:06 / 24:12  |  Autonext  360p  1x  [ ] */}
+            <View
+              style={[
+                styles.wibukuBottomBar,
+                manualFullscreen && styles.wibukuBottomBarFullscreen,
+              ]}
+              pointerEvents="box-none"
+            >
+              <Text style={styles.wibukuTimeText}>
+                {`${formatClockTime(dragPct !== null ? (dragPct / 100) * duration : currentTime)} / ${formatClockTime(duration)}`}
+              </Text>
+
+              <View style={styles.wibukuRightControls} pointerEvents="box-none">
+                {/* Autonext toggle */}
+                <Pressable
+                  onPress={() => {
+                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                    setAutoPlayNext((v) => !v);
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Toggle Autonext"
+                  style={[styles.autonextBtn, !autoPlayNext && styles.autonextBtnInactive]}
+                  hitSlop={8}
+                >
+                  <SkipForward size={15} color="#FFFFFF" weight="fill" />
+                  <Text style={styles.autonextText}>Autonext</Text>
+                </Pressable>
+
+                {/* Quality selector */}
+                <Pressable
+                  onPress={() => {
+                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                    setActivePanel("quality");
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Pilih resolusi video"
+                  style={styles.bottomTextBtn}
+                  hitSlop={8}
+                >
+                  <Text style={styles.bottomControlLabel}>{playerQualityBadge}</Text>
+                </Pressable>
+
+                {/* Speed selector */}
+                <Pressable
+                  onPress={() => {
+                    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                    setActivePanel("speed");
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Pilih kecepatan putar"
+                  style={styles.bottomTextBtn}
+                  hitSlop={8}
+                >
+                  <Text style={styles.bottomControlLabel}>{speedBadge}</Text>
+                </Pressable>
+
+                {/* Fullscreen corners */}
+                <Pressable
+                  onPress={manualFullscreen ? exitFullscreen : enterFullscreen}
+                  accessibilityRole="button"
+                  accessibilityLabel={manualFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                  style={styles.fullscreenCornerBtn}
+                  hitSlop={10}
+                >
+                  <FullscreenCornersIcon size={20} exit={manualFullscreen} />
+                </Pressable>
               </View>
-              <Text style={styles.timeLabel}>{formatTime(duration)}</Text>
             </View>
 
-            {/* Action rail — reference layout: lock+volume | −10 prev play next +10 | download fullscreen.
-                ±10 uses numbered icons — the old rail had two identical SkipBack/SkipForward
-                pairs (±10 vs prev/next episode) that were impossible to tell apart. */}
-            <View style={styles.actionRail}>
-              <View style={styles.railSide}>
-                <Pressable onPress={engagePlayerLock} accessibilityRole="button" accessibilityLabel="Lock player controls" style={styles.railBtn} hitSlop={8}>
-                  <Lock size={18} color="#FFF" weight="bold" />
-                </Pressable>
-                <Pressable onPress={() => { void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {}); setMuted((m) => !m); }} accessibilityRole="button" accessibilityLabel={muted ? "Unmute" : "Mute"} style={styles.railBtn} hitSlop={8}>
-                  {muted ? <SpeakerNone size={18} color="#FFF" weight="bold" /> : <SpeakerHigh size={18} color="#FFF" weight="bold" />}
-                </Pressable>
-              </View>
-              <View style={styles.railCenter}>
-                <Pressable onPress={() => { void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {}); seekBy(-10); }} accessibilityRole="button" accessibilityLabel="Back 10 seconds" style={styles.railBtn} hitSlop={8}>
-                  <AppIcon name="rewind-10" size={23} color="#FFF" />
-                </Pressable>
-                <Pressable disabled={!previousKnownEpisode} onPress={() => previousKnownEpisode && goToEpisode(previousKnownEpisode)} accessibilityRole="button" accessibilityLabel="Previous episode" style={[styles.railBtn, !previousKnownEpisode && styles.railBtnDisabled]} hitSlop={8}>
-                  <SkipBack size={20} color="#FFF" weight="fill" />
-                </Pressable>
-                <Pressable onPress={() => { void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {}); setIsPlaying((p) => !p); }} onLongPress={beginHoldSpeed} onPressOut={endHoldSpeed} delayLongPress={400} accessibilityRole="button" accessibilityLabel={isPlaying ? "Pause" : "Play"} accessibilityHint="Hold for 2x speed" style={[styles.bigPlayButton, manualFullscreen && styles.bigPlayButtonFullscreen]}>
-                  {isPlaying ? <Pause size={26} color="#000" weight="fill" /> : <Play size={26} color="#000" weight="fill" style={{ marginLeft: 2 }} />}
-                </Pressable>
-                <Pressable disabled={!nextKnownEpisode} onPress={nextEpisode} accessibilityRole="button" accessibilityLabel="Next episode" style={[styles.railBtn, !nextKnownEpisode && styles.railBtnDisabled]} hitSlop={8}>
-                  <SkipForward size={20} color="#FFF" weight="fill" />
-                </Pressable>
-                <Pressable onPress={() => { void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {}); seekBy(10); }} accessibilityRole="button" accessibilityLabel="Forward 10 seconds" style={styles.railBtn} hitSlop={8}>
-                  <AppIcon name="fast-forward-10" size={23} color="#FFF" />
-                </Pressable>
-              </View>
-              <View style={styles.railSideRight}>
-                {downloadProgress !== null ? (
-                  /* expo-file-system's File.downloadFileAsync emits no incremental
-                     progress (only the final 1.0), so show an honest spinner. */
-                  <View style={styles.downloadBtn} accessibilityLabel="Downloading episode">
-                    <ActivityIndicator size="small" color="#FFF" />
-                  </View>
-                ) : offlineDownload ? (
-                  <Pressable onPress={() => { void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {}); playOffline(); }} onLongPress={() => { void removeDownload(); }} accessibilityRole="button" accessibilityLabel="Play saved download" accessibilityHint="Long press to remove the saved copy" style={styles.railBtn} hitSlop={8}>
-                    <DownloadSimple size={19} color={nothing.green} weight="bold" />
-                  </Pressable>
-                ) : (
-                  <Pressable onPress={() => { void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {}); onDownloadPress(); }} accessibilityRole="button" accessibilityLabel="Download episode" accessibilityHint="Opens quality options when the provider offers them" style={styles.railBtn} hitSlop={8}>
-                    <Download size={19} color="#FFF" weight="bold" />
-                  </Pressable>
-                )}
-                {pipAvailable && source ? (
-                  <Pressable onPress={() => enterPiP()} accessibilityRole="button" accessibilityLabel="Picture in picture" style={styles.railBtn} hitSlop={8}>
-                    <PictureInPicture size={18} color="#FFF" weight="bold" />
-                  </Pressable>
-                ) : null}
-                <Pressable onPress={manualFullscreen ? exitFullscreen : enterFullscreen} accessibilityRole="button" accessibilityLabel={manualFullscreen ? "Exit fullscreen" : "Enter fullscreen"} style={styles.railBtn} hitSlop={8}>
-                  {manualFullscreen ? <ArrowsIn size={18} color="#FFF" weight="bold" /> : <ArrowsOut size={18} color="#FFF" weight="bold" />}
-                </Pressable>
-              </View>
+            {/* Edge-to-edge Red Seekbar pinned to very bottom of video */}
+            <View
+              ref={progressBarRef}
+              style={styles.edgeSeekbarHitbox}
+              hitSlop={{ top: 14, bottom: 10, left: 0, right: 0 }}
+              onLayout={onProgressLayout}
+              onTouchStart={onBarTouchStart}
+              onTouchMove={onBarTouchMove}
+              onTouchEnd={seekFromBar}
+              onTouchCancel={() => setDragPct(null)}
+              accessibilityRole="adjustable"
+              accessibilityLabel="Seek bar"
+            >
+              <View pointerEvents="none" style={styles.edgeSeekbarBase} />
+              <View
+                pointerEvents="none"
+                style={[
+                  styles.edgeSeekbarBuffered,
+                  dragPct !== null && styles.edgeSeekbarThick,
+                  { width: `${bufferPct}%` },
+                ]}
+              />
+              <View
+                pointerEvents="none"
+                style={[
+                  styles.edgeSeekbarPlayed,
+                  dragPct !== null && styles.edgeSeekbarThick,
+                  { width: `${dragPct !== null ? dragPct : progressPct}%` },
+                ]}
+              />
+              {chapterTrack.map((segment) => (
+                <View
+                  key={segment.kind}
+                  pointerEvents="none"
+                  style={[styles.chapterMarker, { left: `${segment.leftPct}%`, width: `${segment.widthPct}%` }]}
+                />
+              ))}
+              <View
+                pointerEvents="none"
+                style={[
+                  styles.redScrubberKnob,
+                  dragPct !== null && styles.redScrubberKnobActive,
+                  { left: `${Math.max(0, Math.min(100, dragPct !== null ? dragPct : progressPct))}%` },
+                ]}
+              />
+              {dragPct !== null ? (
+                <View
+                  pointerEvents="none"
+                  style={[styles.dragPreview, { left: `${Math.max(4, Math.min(dragPct, 92))}%` }]}
+                >
+                  <Text style={styles.dragPreviewText}>{formatClockTime((dragPct / 100) * duration)}</Text>
+                </View>
+              ) : null}
             </View>
           </View>
         </Animated.View>
@@ -3267,8 +3488,8 @@ export default function WatchScreen() {
 
           <Text style={ps.sectionLabel}>{t("player.subtitleSize")}</Text>
           <View style={ps.chipRow}>
-            {[{ label: "S", value: 12 }, { label: "M", value: 14 }, { label: "L", value: 18 }].map((preset) => {
-              const active = (subtitlePrefs?.fontSize ?? 14) === preset.value;
+            {[{ label: "S", value: 13 }, { label: "M", value: 15 }, { label: "L", value: 18 }].map((preset) => {
+              const active = (subtitlePrefs?.fontSize ?? 15) === preset.value;
               return <Pressable key={preset.label} onPress={() => updateSubtitlePrefs({ enabled: true, fontSize: preset.value })} style={[ps.chip, active && ps.chipActive]}><Text style={[ps.chipText, active && ps.chipTextActive]}>{preset.label}</Text></Pressable>;
             })}
           </View>
@@ -3276,7 +3497,7 @@ export default function WatchScreen() {
           <Text style={ps.sectionLabel}>BACKGROUND</Text>
           <View style={ps.chipRow}>
             {BG_OPACITY_PRESETS.map((val) => {
-              const active = (subtitlePrefs?.bgOpacity ?? 0.55) === val;
+              const active = (subtitlePrefs?.bgOpacity ?? 0) === val;
               const label = val === 0 ? "Off" : `${Math.round(val * 100)}%`;
               return <Pressable key={val} onPress={() => updateSubtitlePrefs({ enabled: true, bgOpacity: val })} style={[ps.chip, active && ps.chipActive]}><Text style={[ps.chipText, active && ps.chipTextActive]}>{label}</Text></Pressable>;
             })}
@@ -3329,79 +3550,92 @@ export default function WatchScreen() {
     {/* ── Below player ── */}
     {!manualFullscreen ? <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false} removeClippedSubviews={Platform.OS === "android"}>
       
-      {/* ── 1. Action Buttons Rail (Quality, Server, Sub/Dub, Like, Dislike, Download, Share) ── */}
+      {/* ── 1. Action Buttons Rail (Merged Like/Dislike | Quality | Download | Subtitle | Share) ── */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.actionPillsRail}>
-        {/* Quality Dropdown Button */}
+        {/* Merged Like / Dislike Capsule */}
+        <View style={styles.mergedReactionPill}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={toggleLike}
+            style={styles.reactionHalfBtn}
+            hitSlop={6}
+          >
+            <ThumbsUp
+              size={15}
+              color={userLiked === true ? "#EF4444" : "#FFFFFF"}
+              weight={userLiked === true ? "fill" : "regular"}
+            />
+            <Text style={[styles.actionPillText, userLiked === true && styles.actionPillTextLiked]}>
+              {userLiked === true ? "2.4K" : "2.3K"}
+            </Text>
+          </Pressable>
+          <View style={styles.reactionDivider} />
+          <Pressable
+            accessibilityRole="button"
+            onPress={toggleDislike}
+            style={styles.reactionHalfBtn}
+            hitSlop={6}
+          >
+            <ThumbsDown
+              size={15}
+              color={userLiked === false ? "#EF4444" : "#FFFFFF"}
+              weight={userLiked === false ? "fill" : "regular"}
+            />
+            <Text style={[styles.actionPillText, userLiked === false && styles.actionPillTextLiked]}>
+              {userLiked === false ? "21" : "20"}
+            </Text>
+          </Pressable>
+        </View>
+
+        {/* Quality Pill */}
         <Pressable
           accessibilityRole="button"
-          onPress={() => setActivePanel("settings")}
+          onPress={() => setActivePanel("quality")}
           style={styles.actionPill}
         >
           <PlayCircle size={15} color="#FFFFFF" weight="bold" />
           <Text style={styles.actionPillText}>
-            {displayedQuality ? `${displayedQuality} Quality` : "480p Quality"}
-          </Text>
-          <CaretDown size={12} color="#94A3B8" weight="bold" />
-        </Pressable>
-
-        {/* Sub / Dub Dropdown Button */}
-        {providers.sub.length > 0 || providers.dub.length > 0 ? (
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => {
-              if (providers.sub.length > 0 && providers.dub.length > 0) {
-                setActivePanel("language");
-              } else {
-                selectLanguage(language === "sub" ? "dub" : "sub");
-              }
-            }}
-            style={styles.actionPill}
-          >
-            <Subtitles size={15} color="#FFFFFF" weight="bold" />
-            <Text style={styles.actionPillText}>
-              {language === "sub" ? "SUB" : "DUB"}
-            </Text>
-            {providers.sub.length > 0 && providers.dub.length > 0 ? (
-              <CaretDown size={12} color="#94A3B8" weight="bold" />
-            ) : null}
-          </Pressable>
-        ) : null}
-
-        {/* Like */}
-        <Pressable
-          accessibilityRole="button"
-          onPress={toggleLike}
-          style={[styles.actionPill, userLiked === true && styles.actionPillActive]}
-        >
-          <ThumbsUp size={15} color={userLiked === true ? "#EF4444" : "#FFFFFF"} weight={userLiked === true ? "fill" : "regular"} />
-          <Text style={[styles.actionPillText, userLiked === true && styles.actionPillTextLiked]}>
-            {userLiked === true ? "18.3K" : "18.2K"}
+            {`${playerQualityBadge} Quality`}
           </Text>
         </Pressable>
 
-        {/* Dislike */}
+        {/* Download Pill */}
         <Pressable
           accessibilityRole="button"
-          onPress={toggleDislike}
-          style={[styles.actionPill, userLiked === false && styles.actionPillActive]}
-        >
-          <ThumbsDown size={15} color={userLiked === false ? "#EF4444" : "#FFFFFF"} weight={userLiked === false ? "fill" : "regular"} />
-          <Text style={styles.actionPillText}>
-            {userLiked === false ? "303" : "302"}
-          </Text>
-        </Pressable>
-
-        {/* Download */}
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => setActivePanel("download")}
+          onPress={onDownloadPress}
           style={styles.actionPill}
         >
           <Download size={15} color="#FFFFFF" weight="regular" />
           <Text style={styles.actionPillText}>Download</Text>
         </Pressable>
 
-        {/* Share */}
+        {/* Subtitle Pill */}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => setActivePanel(activePanel === "subtitles" ? null : "subtitles")}
+          style={[styles.actionPill, subtitlePrefs?.enabled && styles.actionPillSubtitleOn]}
+        >
+          <Subtitles size={15} color="#FFFFFF" weight="bold" />
+          <Text style={styles.actionPillText}>
+            {subtitlePrefs?.enabled !== false ? "Sub Indo" : "Subtitle"}
+          </Text>
+        </Pressable>
+
+        {/* Audio Dub / Sub Pill (if dub exists) */}
+        {providers.dub.length > 0 ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setActivePanel("language")}
+            style={styles.actionPill}
+          >
+            <Text style={styles.actionPillText}>
+              {language === "sub" ? "SUB" : "DUB"}
+            </Text>
+            <CaretDown size={12} color="#94A3B8" weight="bold" />
+          </Pressable>
+        ) : null}
+
+        {/* Share Pill */}
         <Pressable
           accessibilityRole="button"
           onPress={handleShare}
@@ -3441,13 +3675,13 @@ export default function WatchScreen() {
             </View>
           </View>
 
-          {/* Report Button */}
+          {/* Report Button (Yellow Amber like Wibuku) */}
           <Pressable
             accessibilityRole="button"
             onPress={reportBrokenSource}
             style={styles.reportPillBtn}
           >
-            <Flag size={13} color="#F43F5E" weight="fill" />
+            <Flag size={13} color="#111827" weight="fill" />
             <Text style={styles.reportPillText}>Report</Text>
           </Pressable>
         </View>
@@ -3611,6 +3845,123 @@ export default function WatchScreen() {
 
     {/* ── Modal Pickers ── */}
     <Modal visible={activePanel === "speed"} transparent animationType="fade"><Pressable style={styles.modalBackdrop} onPress={() => setActivePanel(null)}><View style={styles.modalSheet}><Text style={styles.modalTitle}>{t("player.playbackSpeed")}</Text>{[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0].map((val) => <Pressable key={val} style={[styles.modalItem, speed === val && styles.modalItemActive]} onPress={() => { setSpeed(val); lockedSpeed.current = val; setActivePanel(null); }}><Text style={[styles.modalItemText, speed === val && styles.modalItemTextActive]}>{val === 1.0 ? "1.0x (Normal)" : `${val}x`}</Text>{speed === val && <Check size={20} color={nothing.red} weight="bold" />}</Pressable>)}</View></Pressable></Modal>
+
+    {/* Quality & Server Picker Modal */}
+    <Modal
+      visible={activePanel === "quality"}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setActivePanel(null)}
+    >
+      <Pressable style={styles.serverModalBackdrop} onPress={() => setActivePanel(null)}>
+        <Pressable
+          style={styles.serverModalSheet}
+          onPress={(e) => {
+            e.stopPropagation?.();
+          }}
+        >
+          <View style={styles.serverSheetHandle} />
+          <View style={styles.serverSheetHeader}>
+            <View style={{ flex: 1, gap: 2 }}>
+              <View style={styles.serverTitleRow}>
+                <PlayCircle size={16} color="#E2E8F0" weight="bold" />
+                <Text style={styles.serverSheetTitle}>PILIH KUALITAS & SERVER</Text>
+              </View>
+              <Text style={styles.serverSheetSubtitle}>
+                {`Aktif: ${playerQualityBadge} · ${activeProvider?.label || "Server Utama"}`}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setActivePanel(null)}
+              hitSlop={12}
+              style={({ pressed }) => [styles.serverCloseBtn, pressed && { opacity: 0.6 }]}
+              accessibilityRole="button"
+              accessibilityLabel="Tutup Pilihan Kualitas"
+            >
+              <X size={16} color="#94A3B8" weight="bold" />
+            </Pressable>
+          </View>
+
+          <ScrollView
+            style={styles.serverScrollList}
+            contentContainerStyle={styles.serverScrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {displayedQualityOptions.length ? (
+              displayedQualityOptions.map((item: WatchQualityOption) => {
+                const selected = displayedQuality.toLowerCase() === item.label.toLowerCase();
+                return (
+                  <Pressable
+                    key={item.id}
+                    onPress={() => {
+                      if (source) {
+                        void selectAdaptiveQuality(item);
+                      } else if (item.source) {
+                        selectQuality(item.source);
+                      }
+                      setActivePanel(null);
+                    }}
+                    style={({ pressed }) => [
+                      styles.serverItemCard,
+                      selected && styles.serverItemCardActive,
+                      pressed && styles.serverItemCardPressed,
+                    ]}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Pilih kualitas ${item.label}`}
+                  >
+                    <View style={styles.serverItemLeft}>
+                      <Text style={[styles.serverItemTitle, selected && styles.serverItemTitleActive]}>
+                        {item.label}
+                      </Text>
+                    </View>
+                    {selected ? <Check size={18} color="#FF0000" weight="bold" /> : null}
+                  </Pressable>
+                );
+              })
+            ) : (
+              <View style={styles.serverEmptyBox}>
+                <Text style={styles.serverEmptyText}>Resolusi diatur otomatis oleh server.</Text>
+              </View>
+            )}
+
+            {activeProviders.length > 1 ? (
+              <View style={{ marginTop: 8, gap: 6 }}>
+                <Text style={[ps.sectionLabel, { paddingHorizontal: 4 }]}>PILIHAN SERVER</Text>
+                {activeProviders.map((prov, idx) => {
+                  const isCurrentServer = idx === serverIndex;
+                  return (
+                    <Pressable
+                      key={prov.id}
+                      onPress={() => {
+                        if (idx !== serverIndex) {
+                          setServerIndex(idx);
+                        }
+                        setActivePanel(null);
+                      }}
+                      style={({ pressed }) => [
+                        styles.serverItemCard,
+                        isCurrentServer && styles.serverItemCardActive,
+                        pressed && styles.serverItemCardPressed,
+                      ]}
+                    >
+                      <View style={styles.serverItemLeft}>
+                        <Text style={[styles.serverNumText, isCurrentServer && styles.serverNumTextActive]}>
+                          {String(idx + 1).padStart(2, "0")}
+                        </Text>
+                        <Text style={[styles.serverItemTitle, isCurrentServer && styles.serverItemTitleActive]}>
+                          {prov.label || `Server ${idx + 1}`}
+                        </Text>
+                      </View>
+                      {isCurrentServer ? <Check size={18} color="#FF0000" weight="bold" /> : null}
+                    </Pressable>
+                  );
+                })}
+              </View>
+            ) : null}
+          </ScrollView>
+        </Pressable>
+      </Pressable>
+    </Modal>
 
     {/* Audio / Language Dropdown Picker - Half Screen Liquid Glass */}
     <Modal
@@ -3897,33 +4248,195 @@ const styles = StyleSheet.create({
   embedBottomDeck: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" },
   embedBottomInfo: { flex: 1, flexShrink: 1, marginRight: 6 },
   embedBottomLabel: { color: "rgba(255,255,255,0.75)", fontSize: 11, fontWeight: "700", letterSpacing: 0.3 },
-  miniProgress: { position: "absolute", left: 0, right: 0, bottom: 0, height: 2, backgroundColor: "rgba(255,255,255,0.22)", zIndex: 2 },
-  miniProgressBuffered: { position: "absolute", top: 0, left: 0, bottom: 0, backgroundColor: "rgba(255,255,255,0.35)" },
-  miniProgressPlayed: { position: "absolute", top: 0, left: 0, bottom: 0, backgroundColor: "#FF4D4D" },
-  statusToast: { position: "absolute", bottom: 28, alignSelf: "center", zIndex: 14, flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 13, paddingVertical: 8, borderRadius: 8, backgroundColor: "rgba(0,0,0,0.82)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
+  miniProgress: { position: "absolute", left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: "rgba(255,255,255,0.22)", zIndex: 2 },
+  miniProgressBuffered: { position: "absolute", top: 0, left: 0, bottom: 0, backgroundColor: "rgba(255,255,255,0.38)" },
+  miniProgressPlayed: { position: "absolute", top: 0, left: 0, bottom: 0, backgroundColor: "#FF0000" },
+  statusToast: { position: "absolute", bottom: 34, alignSelf: "center", zIndex: 14, flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 13, paddingVertical: 8, borderRadius: 8, backgroundColor: "rgba(0,0,0,0.82)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
   statusToastText: { color: "#FFF", fontSize: 11, fontWeight: "600", letterSpacing: 0.2 },
-  subtitleWrapper: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end", alignItems: "center", paddingBottom: 10, zIndex: 4, elevation: 4 },
-  subtitleWrapperWithControls: { paddingBottom: 56 },
-  subtitleWrapperFullscreen: { paddingBottom: 22 },
-  subtitleWrapperFullscreenControls: { paddingBottom: 88 },
-  controlsBackdrop: { ...StyleSheet.absoluteFillObject, zIndex: 3, justifyContent: "space-between", paddingHorizontal: 8, paddingVertical: 6 },
-  controlsBackdropFullscreen: { paddingHorizontal: 20, paddingVertical: 12 },
-  // Edge scrims stay light on purpose: readability bands only, never a veil
-  // over the picture. They mount solely with the chrome and unmount with it.
+  subtitleWrapper: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end", alignItems: "center", paddingBottom: 14, zIndex: 2, elevation: 2 },
+  subtitleWrapperWithControls: { paddingBottom: 14 },
+  subtitleWrapperFullscreen: { paddingBottom: 28 },
+  subtitleWrapperFullscreenControls: { paddingBottom: 28 },
+  controlsBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 3,
+    elevation: 3,
+    justifyContent: "space-between",
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+    paddingTop: 6,
+    paddingBottom: 0,
+    paddingHorizontal: 0,
+  },
+  controlsBackdropFullscreen: {
+    paddingTop: 14,
+    paddingBottom: 0,
+    paddingHorizontal: 0,
+  },
   scrimTopMain: { position: "absolute", top: 0, left: 0, right: 0, height: 56, backgroundColor: "rgba(0,0,0,0.22)" },
   scrimTopSoft: { position: "absolute", top: 0, left: 0, right: 0, height: 96, backgroundColor: "rgba(0,0,0,0.10)" },
   scrimBottomMain: { position: "absolute", bottom: 0, left: 0, right: 0, height: 80, backgroundColor: "rgba(0,0,0,0.22)" },
   scrimBottomSoft: { position: "absolute", bottom: 0, left: 0, right: 0, height: 110, backgroundColor: "rgba(0,0,0,0.10)" },
-  topBar: { flexDirection: "row", alignItems: "center", flexWrap: "nowrap", width: "100%" },
-  playerTitle: { flex: 1, flexShrink: 1, color: "#FFF", fontSize: 13, fontWeight: "600", marginLeft: 8, marginRight: 6 },
-  topRightRow: { flexDirection: "row", alignItems: "center", gap: 2, flexShrink: 0 },
-  iconButton: { width: 30, height: 30, padding: 2, justifyContent: "center", alignItems: "center", flexShrink: 0 },
-  iconButtonActive: { backgroundColor: "rgba(255,77,77,0.15)", borderRadius: 4 },
+  topBar: { flexDirection: "row", alignItems: "center", flexWrap: "nowrap", width: "100%", paddingHorizontal: 10 },
+  topBarFullscreen: { paddingHorizontal: 20 },
+  playerTitle: { flex: 1, flexShrink: 1, color: "#FFF", fontSize: 13, fontWeight: "700", marginLeft: 8, marginRight: 6 },
+  topRightRow: { flexDirection: "row", alignItems: "center", gap: 4, flexShrink: 0 },
+  iconButton: { width: 32, height: 32, padding: 2, justifyContent: "center", alignItems: "center", flexShrink: 0 },
+  iconButtonActive: { backgroundColor: "rgba(255,0,0,0.16)", borderRadius: 6 },
   orientationBadge: { backgroundColor: "rgba(255,77,77,0.85)", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3 },
   orientationBadgeText: { color: nothing.white, fontFamily: nothing.mono, fontSize: 10, fontWeight: "900", letterSpacing: 0.5 },
   subPillBadge: { backgroundColor: nothing.red, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 5, flexShrink: 0 },
   subPillBadgeText: { color: nothing.black, fontSize: 10, fontWeight: "800", letterSpacing: 0.2, textTransform: "uppercase" },
-  bottomDeck: { gap: 3, width: "100%" },
+  centerTransportRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    width: "100%",
+    paddingHorizontal: 12,
+    marginTop: 2,
+  },
+  centerTransportRowFullscreen: {
+    paddingHorizontal: 64,
+    justifyContent: "center",
+    gap: 34,
+  },
+  epNavBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: 68,
+    gap: 5,
+  },
+  epNavBtnDisabled: {
+    opacity: 0.35,
+  },
+  epNavLabel: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: -0.1,
+    textShadowColor: "rgba(0,0,0,0.65)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  seek10Btn: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bottomDeck: { gap: 4, width: "100%" },
+  wibukuBottomBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 12,
+    paddingBottom: 6,
+  },
+  wibukuBottomBarFullscreen: {
+    paddingHorizontal: 22,
+    paddingBottom: 10,
+  },
+  wibukuTimeText: {
+    color: "#FFFFFF",
+    fontSize: 12.5,
+    fontWeight: "700",
+    fontVariant: ["tabular-nums"],
+    letterSpacing: 0.1,
+    textShadowColor: "rgba(0,0,0,0.65)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  wibukuRightControls: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  autonextBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingVertical: 3,
+    paddingHorizontal: 2,
+  },
+  autonextBtnInactive: {
+    opacity: 0.45,
+  },
+  autonextText: {
+    color: "#FFFFFF",
+    fontSize: 12.5,
+    fontWeight: "700",
+    letterSpacing: -0.1,
+  },
+  bottomTextBtn: {
+    paddingVertical: 3,
+    paddingHorizontal: 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bottomControlLabel: {
+    color: "#FFFFFF",
+    fontSize: 12.5,
+    fontWeight: "700",
+    fontVariant: ["tabular-nums"],
+  },
+  fullscreenCornerBtn: {
+    width: 26,
+    height: 26,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  edgeSeekbarHitbox: {
+    width: "100%",
+    height: 12,
+    justifyContent: "flex-end",
+    position: "relative",
+  },
+  edgeSeekbarBase: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 3,
+    backgroundColor: "rgba(255, 255, 255, 0.32)",
+  },
+  edgeSeekbarBuffered: {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    height: 3,
+    backgroundColor: "rgba(255, 255, 255, 0.58)",
+  },
+  edgeSeekbarPlayed: {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    height: 3,
+    backgroundColor: "#FF0000",
+  },
+  edgeSeekbarThick: {
+    height: 4.5,
+  },
+  redScrubberKnob: {
+    position: "absolute",
+    width: 13,
+    height: 13,
+    borderRadius: 6.5,
+    backgroundColor: "#FF0000",
+    marginLeft: -6.5,
+    bottom: -5,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.45,
+    shadowRadius: 2,
+  },
+  redScrubberKnobActive: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginLeft: -8,
+    bottom: -6,
+  },
   timelineRow: { flexDirection: "row", alignItems: "center", gap: 4, width: "100%" },
   timeLabel: { color: "#FFF", fontSize: 11, fontWeight: "600", minWidth: 34, textAlign: "center", flexShrink: 0, fontVariant: ["tabular-nums"] },
   progressBarTrack: { flex: 1, height: 16, justifyContent: "center" },
@@ -3932,7 +4445,7 @@ const styles = StyleSheet.create({
   progressTrackThick: { height: 3, borderRadius: 1.5 },
   scrubberKnob: { position: "absolute", width: 10, height: 10, borderRadius: 5, backgroundColor: "#FFF", marginLeft: -5, top: 3, elevation: 3 },
   scrubberKnobActive: { width: 14, height: 14, borderRadius: 7, marginLeft: -7, top: 1 },
-  dragPreview: { position: "absolute", top: -28, marginLeft: -24, backgroundColor: "rgba(0,0,0,0.85)", borderRadius: 5, paddingHorizontal: 7, paddingVertical: 3 },
+  dragPreview: { position: "absolute", top: -30, marginLeft: -24, backgroundColor: "rgba(0,0,0,0.88)", borderRadius: 5, paddingHorizontal: 7, paddingVertical: 3 },
   dragPreviewText: { color: nothing.white, fontSize: 11, fontWeight: "700", fontVariant: ["tabular-nums"] },
   actionRail: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", flexWrap: "nowrap", width: "100%" },
   railSide: { flexDirection: "row", alignItems: "center", gap: 2, flexShrink: 0 },
@@ -3941,14 +4454,27 @@ const styles = StyleSheet.create({
   railBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center", flexShrink: 0 },
   railBtnDisabled: { opacity: 0.35 },
   downloadBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center", flexShrink: 0, gap: 0 },
-  bigPlayButton: { width: 48, height: 48, borderRadius: 24, backgroundColor: "#FFF", justifyContent: "center", alignItems: "center", flexShrink: 0, marginHorizontal: 4 },
-  bigPlayButtonFullscreen: { width: 56, height: 56, borderRadius: 28 },
+  bigPlayButton: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+    flexShrink: 0,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  bigPlayButtonFullscreen: { width: 66, height: 66, borderRadius: 33 },
   hudBadge: { position: "absolute", top: 20, alignSelf: "center", backgroundColor: "rgba(0,0,0,0.75)", paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, flexDirection: "row", alignItems: "center", gap: 5, zIndex: 10 },
   hudPill: { position: "absolute", alignSelf: "center", backgroundColor: "rgba(0,0,0,0.8)", paddingHorizontal: 14, paddingVertical: 8, borderRadius: 8, flexDirection: "row", alignItems: "center", gap: 8, zIndex: 10 },
   hudText: { color: "#FFF", fontSize: 12, fontWeight: "700" },
   doubleTapOverlay: { position: "absolute", top: "32%", alignItems: "center", justifyContent: "center", zIndex: 12 },
   doubleTapText: { color: "#FFF", fontSize: 12, fontWeight: "800", marginTop: 3 },
-  chapterMarker: { position: "absolute", height: 2, backgroundColor: "#FFD600", borderRadius: 1, top: 7 },
+  chapterMarker: { position: "absolute", height: 3, backgroundColor: "#FFD600", bottom: 0 },
   skipButtonOverlay: { position: "absolute", bottom: 120, right: 12, backgroundColor: "rgba(255,255,255,0.92)", paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, flexDirection: "row", alignItems: "center", gap: 4, zIndex: 15, elevation: 6, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 8 },
   upNextCard: { position: "absolute", bottom: 120, right: 12, zIndex: 15, elevation: 6, flexDirection: "row", gap: 8, alignItems: "center", maxWidth: 260, backgroundColor: "rgba(9,9,9,0.88)", borderRadius: 8, padding: 8, borderWidth: 1, borderColor: "rgba(255,255,255,0.12)" },
   upNextPoster: { width: 44, height: 62, borderRadius: 4, backgroundColor: nothing.raised },
@@ -4184,7 +4710,27 @@ const styles = StyleSheet.create({
   errorCopy: { color: nothing.muted, fontSize: 12, lineHeight: 16 },
   scroll: { backgroundColor: "#101114", padding: 14, gap: 14, paddingBottom: 40 },
   actionPillsRail: { flexDirection: "row", gap: 8, paddingVertical: 2 },
-  actionPill: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#1A1D24", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.08)", borderRadius: 20, paddingHorizontal: 14, paddingVertical: 8 },
+  mergedReactionPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#20232B",
+    borderRadius: 22,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 10,
+  },
+  reactionHalfBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  reactionDivider: {
+    width: 1,
+    height: 14,
+    backgroundColor: "rgba(255, 255, 255, 0.22)",
+  },
+  actionPill: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#20232B", borderRadius: 22, paddingHorizontal: 14, paddingVertical: 8 },
+  actionPillSubtitleOn: { backgroundColor: "#20232B" },
   actionPillActive: { backgroundColor: "rgba(239, 68, 68, 0.15)", borderColor: "rgba(239, 68, 68, 0.4)" },
   actionPillServer: { backgroundColor: "rgba(56, 189, 248, 0.1)", borderColor: "rgba(56, 189, 248, 0.25)" },
   actionPillLang: { backgroundColor: "rgba(167, 139, 250, 0.1)", borderColor: "rgba(167, 139, 250, 0.25)" },
@@ -4210,8 +4756,16 @@ const styles = StyleSheet.create({
   animeSubMetaText: { color: "#94A3B8", fontSize: 12, fontWeight: "600" },
   animeSubMetaDot: { color: "#64748B", fontSize: 12 },
   viewsRow: { flexDirection: "row", alignItems: "center", gap: 3 },
-  reportPillBtn: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "rgba(255, 255, 255, 0.08)", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.14)", borderRadius: 18, paddingHorizontal: 12, paddingVertical: 6 },
-  reportPillText: { color: "#E2E8F0", fontSize: 12, fontWeight: "700" },
+  reportPillBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "#FACC15",
+    borderRadius: 20,
+    paddingHorizontal: 13,
+    paddingVertical: 7,
+  },
+  reportPillText: { color: "#111827", fontSize: 12, fontWeight: "800" },
   animeDescText: { color: "#CBD5E1", fontSize: 13, lineHeight: 19 },
   descToggleBtn: { alignSelf: "flex-start", marginTop: -4 },
   descToggleText: { color: "#38BDF8", fontSize: 12, fontWeight: "700" },
@@ -4469,4 +5023,89 @@ function ProviderDiscoveryLoader({ attempt: _attempt }: { attempt: number }) {
     </View>
   );
 }
+
+/**
+ * Circular arrow with crisp "10" in the center — matches Wibuku's -10s / +10s buttons.
+ */
+function Seek10Icon({ direction, size = 35 }: { direction: "back" | "forward"; size?: number }) {
+  const numFontSize = Math.round(size * 0.31);
+  return (
+    <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>
+      <Svg width={size} height={size} viewBox="0 0 36 36">
+        {direction === "back" ? (
+          <>
+            <Path
+              d="M18 6 A12 12 0 1 1 7.6 12"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+            />
+            <Path
+              d="M18 2.2 L12.5 6 L18 9.8 Z"
+              fill="#FFFFFF"
+            />
+          </>
+        ) : (
+          <>
+            <Path
+              d="M18 6 A12 12 0 1 0 28.4 12"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+            />
+            <Path
+              d="M18 2.2 L23.5 6 L18 9.8 Z"
+              fill="#FFFFFF"
+            />
+          </>
+        )}
+      </Svg>
+      <Text
+        style={{
+          position: "absolute",
+          color: "#FFFFFF",
+          fontSize: numFontSize,
+          fontWeight: "800",
+          letterSpacing: -0.4,
+          marginTop: 2,
+          includeFontPadding: false,
+        }}
+      >
+        10
+      </Text>
+    </View>
+  );
+}
+
+/**
+ * 4-corner frame fullscreen icon — matches Wibuku's bottom-right fullscreen icon.
+ */
+function FullscreenCornersIcon({ size = 20, exit = false }: { size?: number; exit?: boolean }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      {exit ? (
+        <Path
+          d="M4 9H9V4M15 4V9H20M20 15H15V20M9 20V15H4"
+          fill="none"
+          stroke="#FFFFFF"
+          strokeWidth={2.3}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ) : (
+        <Path
+          d="M4 9V4H9M15 4H20V9M20 15V20H15M9 20H4V15"
+          fill="none"
+          stroke="#FFFFFF"
+          strokeWidth={2.3}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+    </Svg>
+  );
+}
+
 

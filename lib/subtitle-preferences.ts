@@ -1,7 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const STORAGE_KEY = "luckynime.subtitle-preferences.v3";
-const LEGACY_STORAGE_KEY = "luckynime.subtitle-preferences.v2";
+const STORAGE_KEY = "luckynime.subtitle-preferences.v4";
+const LEGACY_STORAGE_KEYS = [
+  "luckynime.subtitle-preferences.v3",
+  "luckynime.subtitle-preferences.v2",
+];
 
 export type SubtitleFont = "default" | "monospace" | "serif" | "rounded";
 
@@ -19,8 +22,8 @@ export type SubtitlePreferences = {
 const DEFAULTS: SubtitlePreferences = {
   enabled: true,
   preferredLanguage: "id",
-  fontSize: 14,
-  bgOpacity: 0.55,
+  fontSize: 15,
+  bgOpacity: 0,
   outlineThickness: 2,
   fontFamily: "default",
   timeOffset: 0,
@@ -54,22 +57,26 @@ export async function loadSubtitlePreferences(): Promise<SubtitlePreferences> {
       cached = parsed;
       return parsed;
     }
-    const legacyRaw = await AsyncStorage.getItem(LEGACY_STORAGE_KEY);
-    if (legacyRaw) {
-      const legacyParsed = JSON.parse(legacyRaw) as Partial<SubtitlePreferences>;
-      // Migrate styling settings while upgrading old default "en" to "id" (Indonesian).
-      const migrated: SubtitlePreferences = {
-        ...DEFAULTS,
-        ...legacyParsed,
-        enabled: legacyParsed.enabled ?? true,
-        preferredLanguage:
-          !legacyParsed.preferredLanguage || legacyParsed.preferredLanguage === "en"
-            ? "id"
-            : legacyParsed.preferredLanguage,
-      };
-      cached = migrated;
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(migrated)).catch(() => {});
-      return migrated;
+    for (const legacyKey of LEGACY_STORAGE_KEYS) {
+      const legacyRaw = await AsyncStorage.getItem(legacyKey);
+      if (legacyRaw) {
+        const legacyParsed = JSON.parse(legacyRaw) as Partial<SubtitlePreferences>;
+        // Migrate to clean fansub style: automatic Indonesian ("id"), enabled,
+        // crisp white text with black outline and NO dark box background (bgOpacity: 0).
+        const migrated: SubtitlePreferences = {
+          ...DEFAULTS,
+          fontFamily: legacyParsed.fontFamily ?? DEFAULTS.fontFamily,
+          timeOffset: clampSubtitleOffset(legacyParsed.timeOffset ?? 0),
+          enabled: true,
+          preferredLanguage: "id",
+          bgOpacity: 0,
+          outlineThickness: Math.max(2, legacyParsed.outlineThickness ?? 2),
+          fontSize: legacyParsed.fontSize && legacyParsed.fontSize >= 14 ? legacyParsed.fontSize : 15,
+        };
+        cached = migrated;
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(migrated)).catch(() => {});
+        return migrated;
+      }
     }
   } catch {}
   cached = DEFAULTS;
@@ -88,6 +95,10 @@ export function getSubtitlePreferencesSync(): SubtitlePreferences {
   return cached ?? DEFAULTS;
 }
 
+export function resetSubtitlePreferencesCache(): void {
+  cached = null;
+}
+
 export const SUBTITLE_FONTS: { id: SubtitleFont; label: string; family: string }[] = [
   { id: "default", label: "System", family: "System" },
   { id: "monospace", label: "Mono", family: "monospace" },
@@ -95,6 +106,6 @@ export const SUBTITLE_FONTS: { id: SubtitleFont; label: string; family: string }
   { id: "rounded", label: "Rounded", family: "Caveat-Bold" },
 ];
 
-export const FONT_SIZE_PRESETS = [10, 12, 14, 16, 18, 20];
+export const FONT_SIZE_PRESETS = [12, 14, 15, 17, 19, 22];
 export const BG_OPACITY_PRESETS = [0, 0.3, 0.55, 0.75, 0.9];
 export const OUTLINE_PRESETS = [0, 1, 2, 3, 4];

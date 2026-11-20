@@ -30,6 +30,7 @@ import {
   detectSubtitleFormatFromContent,
   findActiveCues,
   matchSubtitleTrack,
+  normalizeSubtitleLang,
   parseSubtitle,
   type SubtitleCue,
   type SubtitleTrackLike,
@@ -365,12 +366,19 @@ export default function NobarWatchPartyScreen() {
       setActiveSubtitles([]);
       return;
     }
-    const track = matchSubtitleTrack(streamSubtitles, subtitlePrefs?.preferredLanguage ?? "id");
+    const preferred = subtitlePrefs?.preferredLanguage ?? "id";
+    const track = matchSubtitleTrack(streamSubtitles, preferred);
     if (!track?.url) return;
+    const baseTargetUrl = luckynimeProxyUrl(track.url);
+    const wantsIndonesian = normalizeSubtitleLang(preferred) === "id";
+    const trackIsIndonesian =
+      normalizeSubtitleLang(track.lang) === "id" ||
+      normalizeSubtitleLang(track.label) === "id" ||
+      baseTargetUrl.includes("translate=id");
     const targetUrl =
-      track.url.includes("/api/v1/proxy?") || track.url.includes("/api/v1/subtitle")
-        ? luckynimeProxyUrl(track.url)
-        : luckynimeProxyUrl(track.url);
+      wantsIndonesian && !trackIsIndonesian && baseTargetUrl.includes("/api/v1/proxy?")
+        ? `${baseTargetUrl}&translate=id`
+        : baseTargetUrl;
     let cancelled = false;
     fetch(targetUrl, { headers: { Accept: "text/vtt, text/plain, */*" } })
       .then((r) => (r.ok ? r.text() : ""))
@@ -1132,21 +1140,22 @@ export default function NobarWatchPartyScreen() {
                   ...StyleSheet.absoluteFillObject,
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  paddingBottom: showControls ? (isFullscreen ? 76 : 48) : (isFullscreen ? 20 : 10),
+                  paddingBottom: isFullscreen ? 26 : 12,
                   zIndex: 4,
                   elevation: 4,
                 }}
               >
                 <SubtitleRenderer
                   cues={activeSubtitles}
+                  fullscreen={isFullscreen}
                   preferences={
                     subtitlePrefs
                       ? { ...subtitlePrefs, enabled: true }
                       : {
                           enabled: true,
                           preferredLanguage: "id",
-                          fontSize: 14,
-                          bgOpacity: 0.55,
+                          fontSize: 15,
+                          bgOpacity: 0,
                           outlineThickness: 2,
                           fontFamily: "default",
                           timeOffset: 0,

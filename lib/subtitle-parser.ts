@@ -64,6 +64,10 @@ function cleanText(raw: string): string {
     .trim();
 }
 
+function hasItalicMarkup(raw: string): boolean {
+  return /<\s*i\b[^>]*>/i.test(raw) || /\{\\i1\b/i.test(raw);
+}
+
 function parseVTT(content: string): ParsedSubtitle {
   const cues: SubtitleCue[] = [];
   const normalized = content.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
@@ -86,9 +90,11 @@ function parseVTT(content: string): ParsedSubtitle {
     const startTime = timestampToSeconds(cueTimestampToken(timeParts[0]));
     const endTime = timestampToSeconds(cueTimestampToken(timeParts[1]));
     if (!Number.isFinite(startTime) || !Number.isFinite(endTime) || endTime <= startTime) continue;
-    const text = cleanText(lines.slice(timeLineIdx + 1).join("\n"));
+    const rawBody = lines.slice(timeLineIdx + 1).join("\n");
+    const text = cleanText(rawBody);
     if (!text) continue;
-    cues.push({ id: ++id, startTime, endTime, text });
+    const italic = hasItalicMarkup(rawBody);
+    cues.push(italic ? { id: ++id, startTime, endTime, text, style: { italic: true } } : { id: ++id, startTime, endTime, text });
   }
   return { cues, format: "vtt" };
 }
@@ -108,9 +114,11 @@ function parseSRT(content: string): ParsedSubtitle {
     const startTime = timestampToSeconds(cueTimestampToken(timeParts[0]));
     const endTime = timestampToSeconds(cueTimestampToken(timeParts[1]));
     if (!Number.isFinite(startTime) || !Number.isFinite(endTime) || endTime <= startTime) continue;
-    const text = cleanText(lines.slice(timeLineIdx + 1).join("\n"));
+    const rawBody = lines.slice(timeLineIdx + 1).join("\n");
+    const text = cleanText(rawBody);
     if (!text) continue;
-    cues.push({ id: ++id, startTime, endTime, text });
+    const italic = hasItalicMarkup(rawBody);
+    cues.push(italic ? { id: ++id, startTime, endTime, text, style: { italic: true } } : { id: ++id, startTime, endTime, text });
   }
   return { cues, format: "srt" };
 }
