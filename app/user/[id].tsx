@@ -589,7 +589,8 @@ export default function PublicUserProfileScreen() {
             source={{ uri: targetUser.bannerUrl || DEFAULT_BANNER }}
             style={styles.bannerImage}
             contentFit="cover"
-            transition={200}
+            autoplay
+            transition={targetUser.bannerUrl?.toLowerCase().includes(".gif") ? 0 : 200}
             cachePolicy="memory-disk"
           />
           <LinearGradient

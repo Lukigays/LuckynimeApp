@@ -950,7 +950,7 @@ export default function AvatarDecorationsScreen() {
             <View style={[styles.cardStatusBadge, styles.cardStatusReleased]}>
               <AppIcon name="check-circle" size={8.5} color="#10B981" />
               <Text style={[styles.cardStatusText, styles.cardStatusTextReleased]}>
-                Rilis
+                {border.assetUrl.toLowerCase().includes(".gif") ? "GIF · Rilis" : "Rilis"}
               </Text>
             </View>
           )}

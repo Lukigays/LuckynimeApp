@@ -170,7 +170,8 @@ export const BorderAvatar: React.FC<BorderAvatarProps> = React.memo(({
           ]}
           contentFit="contain"
           pointerEvents="none"
-          transition={150}
+          autoplay
+          transition={borderData?.assetUrl?.toLowerCase().includes(".gif") ? 0 : 150}
           cachePolicy="memory-disk"
           onError={() => setBorderError(true)}
         />

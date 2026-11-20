@@ -4,8 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system/legacy";
 
 // ─── KONFIGURASI CACHE GACHA ANDROID ───
-const CACHE_SUBDIR = "luckynime_gacha_v2/";
-const MANIFEST_STORAGE_KEY = "luckynime.gacha.asset_manifest_v2";
+const CACHE_SUBDIR = "luckynime_gacha_v3/";
+const MANIFEST_STORAGE_KEY = "luckynime.gacha.asset_manifest_v3";
 const MAX_CACHE_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB batas aman penyimpanan lokal Android
 const MAX_CACHE_FILES = 100; // Maksimal 100 aset aktif di cache
 

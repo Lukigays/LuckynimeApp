@@ -72,13 +72,15 @@ function CachedGachaImage({
   if (!effectiveUri) {
     return <View style={[style, { backgroundColor: "#18181F" }]} />;
   }
+  const isGif = effectiveUri.toLowerCase().includes(".gif");
 
   return (
     <Image
       source={{ uri: effectiveUri }}
       style={style}
       contentFit={contentFit}
-      transition={transition}
+      autoplay
+      transition={isGif ? 0 : transition}
       cachePolicy="memory-disk"
       onError={() => {
         if (!useRemote && assetUri && uri && assetUri !== uri) {
@@ -826,6 +828,25 @@ export default function GachaScreen() {
                         <Text style={styles.wallpaperCardTitle} numberOfLines={1}>
                           {item.name}
                         </Text>
+
+                        {/* GIF badge on top right for animated Mythic / Legendary wallpapers */}
+                        {item.image?.toLowerCase().includes(".gif") ? (
+                          <View
+                            style={{
+                              position: "absolute",
+                              top: 8,
+                              right: 8,
+                              paddingHorizontal: 6,
+                              paddingVertical: 2,
+                              borderRadius: 4,
+                              backgroundColor: "rgba(168, 85, 247, 0.85)",
+                            }}
+                          >
+                            <Text style={{ fontSize: 9, fontWeight: "800", color: "#FFFFFF", letterSpacing: 0.6 }}>
+                              GIF
+                            </Text>
+                          </View>
+                        ) : null}
 
                         {/* Bottom action row */}
                         <View style={styles.wallpaperCardBottom}>

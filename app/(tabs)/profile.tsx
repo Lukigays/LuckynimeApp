@@ -1026,7 +1026,8 @@ export default function ProfileScreen() {
             source={{ uri: !bannerLoadError && auth.profile?.banner_url ? auth.profile.banner_url : DEFAULT_BANNER }}
             style={styles.bannerImage}
             contentFit="cover"
-            transition={200}
+            autoplay
+            transition={auth.profile?.banner_url?.toLowerCase().includes(".gif") ? 0 : 200}
             cachePolicy="memory-disk"
             onError={() => setBannerLoadError(true)}
           />

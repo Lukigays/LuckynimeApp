@@ -138,7 +138,7 @@ const _liveCatalogMap = new Map<string, AvatarBorder>();
 let _liveCatalogList: AvatarBorder[] = [];
 
 // Kunci cache persistent untuk kecepatan buka aplikasi 0ms (Stale-While-Revalidate)
-export const CACHED_BORDER_CATALOG_KEY = "luckynime.cached_border_catalog_v2";
+export const CACHED_BORDER_CATALOG_KEY = "luckynime.cached_border_catalog_v3";
 
 // Inisialisasi cepat dari AsyncStorage saat modul dimuat agar tidak ada jeda loading
 AsyncStorage.getItem(CACHED_BORDER_CATALOG_KEY)

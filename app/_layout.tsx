@@ -71,65 +71,68 @@ export default function RootLayout() {
   });
 
   const [minSplashElapsed, setMinSplashElapsed] = useState(false);
-  const pulseAnim = useRef(new Animated.Value(0)).current;
+  const entranceAnim = useRef(new Animated.Value(0)).current;
+  const wordAnim = useRef(new Animated.Value(0)).current;
   const barAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     void SystemUI.setBackgroundColorAsync(APP_BG_COLOR).catch(() => {});
     void SplashScreen.hideAsync().catch(() => {});
 
-    const pulseLoop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 900,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 0,
-          duration: 900,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-      ]),
-    );
+    Animated.parallel([
+      Animated.spring(entranceAnim, {
+        toValue: 1,
+        tension: 65,
+        friction: 8,
+        useNativeDriver: true,
+      }),
+      Animated.timing(wordAnim, {
+        toValue: 1,
+        duration: 520,
+        delay: 140,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
+
     const barLoop = Animated.loop(
       Animated.timing(barAnim, {
         toValue: 1,
-        duration: 1200,
-        easing: Easing.inOut(Easing.quad),
+        duration: 1050,
+        easing: Easing.inOut(Easing.cubic),
         useNativeDriver: true,
       }),
     );
-    pulseLoop.start();
     barLoop.start();
 
     const timer = setTimeout(() => {
       setMinSplashElapsed(true);
-    }, 1350);
+    }, 1300);
 
     return () => {
       clearTimeout(timer);
-      pulseLoop.stop();
       barLoop.stop();
     };
-  }, [barAnim, pulseAnim]);
+  }, [barAnim, entranceAnim, wordAnim]);
 
   const showSplash = !fontsLoaded || !minSplashElapsed;
 
   if (showSplash) {
-    const logoScale = pulseAnim.interpolate({
+    const starScale = entranceAnim.interpolate({
       inputRange: [0, 1],
-      outputRange: [0.96, 1.05],
+      outputRange: [0.4, 1],
     });
-    const glowOpacity = pulseAnim.interpolate({
+    const starRotate = entranceAnim.interpolate({
       inputRange: [0, 1],
-      outputRange: [0.28, 0.62],
+      outputRange: ["-75deg", "0deg"],
+    });
+    const wordTranslateX = wordAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-18, 0],
     });
     const barTranslate = barAnim.interpolate({
       inputRange: [0, 1],
-      outputRange: [-90, 90],
+      outputRange: [-130, 175],
     });
 
     return (
@@ -144,74 +147,93 @@ export default function RootLayout() {
             paddingHorizontal: 28,
           }}
         >
-          <View style={{ alignItems: "center", justifyContent: "center" }}>
+          {/* Crisp Horizontal Cinema Brand Lockup — zero circles or boxy backgrounds */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Animated.View
               style={{
-                position: "absolute",
-                width: 190,
-                height: 190,
-                borderRadius: 95,
-                backgroundColor: "#A855F7",
-                opacity: glowOpacity,
-                transform: [{ scale: logoScale }],
+                opacity: entranceAnim,
+                transform: [{ scale: starScale }, { rotate: starRotate }],
+                marginRight: 8,
               }}
-            />
-            <Animated.View style={{ transform: [{ scale: logoScale }] }}>
+            >
               <Image
                 source={require("../assets/images/android-icon-foreground.png")}
-                style={{ width: 148, height: 148 }}
+                style={{ width: 64, height: 64 }}
                 contentFit="contain"
               />
             </Animated.View>
+
+            <Animated.View
+              style={{
+                opacity: wordAnim,
+                transform: [{ translateX: wordTranslateX }],
+                flexDirection: "row",
+                alignItems: "baseline",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 34,
+                  fontWeight: "800",
+                  letterSpacing: -0.5,
+                  color: "#FFFFFF",
+                }}
+              >
+                Lucky
+              </Text>
+              <Text
+                style={{
+                  fontSize: 34,
+                  fontWeight: "800",
+                  letterSpacing: -0.5,
+                  color: "#C084FC",
+                }}
+              >
+                nime
+              </Text>
+            </Animated.View>
           </View>
 
-          <Text
-            numberOfLines={1}
-            adjustsFontSizeToFit
+          {/* Razor-thin horizontal laser line (sharp edges, not circular) */}
+          <Animated.View
             style={{
-              marginTop: 14,
-              fontSize: 34,
-              fontWeight: "800",
-              letterSpacing: 0.6,
-              color: "#F8FAFC",
-              textAlign: "center",
-            }}
-          >
-            Luckynime
-          </Text>
-          <Text
-            style={{
-              marginTop: 6,
-              fontSize: 11,
-              fontWeight: "700",
-              letterSpacing: 3.2,
-              color: "#C084FC",
-              textAlign: "center",
-            }}
-          >
-            ANIME STREAMING
-          </Text>
-
-          <View
-            style={{
-              marginTop: 28,
-              width: 132,
-              height: 3,
-              borderRadius: 2,
-              backgroundColor: "rgba(168, 85, 247, 0.18)",
+              opacity: wordAnim,
+              marginTop: 18,
+              width: 172,
+              height: 1.5,
+              backgroundColor: "rgba(255, 255, 255, 0.08)",
               overflow: "hidden",
             }}
           >
             <Animated.View
               style={{
-                width: 64,
-                height: 3,
-                borderRadius: 2,
+                width: 68,
+                height: 1.5,
                 backgroundColor: "#C084FC",
                 transform: [{ translateX: barTranslate }],
               }}
             />
-          </View>
+          </Animated.View>
+
+          <Animated.Text
+            style={{
+              opacity: wordAnim,
+              marginTop: 12,
+              fontSize: 9.5,
+              fontWeight: "700",
+              letterSpacing: 3.6,
+              color: "#64748B",
+              textAlign: "center",
+            }}
+          >
+            STREAMING ANIME
+          </Animated.Text>
         </View>
       </GestureHandlerRootView>
     );
