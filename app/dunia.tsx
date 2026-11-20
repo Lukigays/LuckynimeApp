@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Animated,
   Dimensions,
-  Linking,
   Platform,
   Pressable,
   StyleSheet,
@@ -34,11 +33,11 @@ const DEFAULT_DUNIA_URL =
     : "https://dunia-luckynime.vercel.app";
 
 const LOADING_STEPS = [
-  "Menghubungkan ke server Dunia Luckynime...",
+  "Membuka gerbang Dunia Luckynime...",
   "Menyiapkan identitas petualang...",
-  "Mengunduh aset peta dan wilayah dunia...",
-  "Memuat data klan dan emblem kota...",
-  "Sinkronisasi selesai, memasuki dunia...",
+  "Memuat peta dan wilayah dunia...",
+  "Memanggil para petualang dan klan...",
+  "Selamat datang di Dunia Luckynime...",
 ];
 
 export default function DuniaLuckynimeScreen() {
@@ -224,11 +223,6 @@ export default function DuniaLuckynimeScreen() {
     router.back();
   };
 
-  const handleOpenExternal = () => {
-    hapticLight();
-    void Linking.openURL(targetUrl);
-  };
-
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.container}>
       {/* ─── HEADER BAR ─── */}
@@ -245,23 +239,10 @@ export default function DuniaLuckynimeScreen() {
 
         <View style={styles.headerTitleWrap}>
           <Text style={styles.headerTitle}>Dunia Luckynime</Text>
-          <View style={styles.onlineBadge}>
-            <View style={styles.onlineDot} />
-            <Text style={styles.onlineText}>Cloud Realm</Text>
-          </View>
         </View>
 
-        <View style={styles.headerRightActions}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Buka di Browser"
-            onPress={handleOpenExternal}
-            style={({ pressed }) => [styles.headerBtn, pressed && styles.btnPressed]}
-            hitSlop={10}
-          >
-            <AppIcon name="open-in-new" size={19} color="#94A3B8" />
-          </Pressable>
-        </View>
+        {/* Spacer penyeimbang agar judul tetap di tengah (tanpa tombol web) */}
+        <View style={styles.headerBtn} />
       </View>
 
       {/* ─── GAME PRELOADER SCREEN (SEBELUM ASET SELESAI DIMUAT) ─── */}
@@ -323,7 +304,7 @@ export default function DuniaLuckynimeScreen() {
           <AppIcon name="alert-circle" size={48} color="#EF4444" />
           <Text style={styles.errorTitle}>Koneksi Terputus</Text>
           <Text style={styles.errorDesc}>
-            Gagal terhubung ke server Dunia Luckynime. Periksa koneksi internet Anda atau coba lagi nanti.
+            Dunia sedang tidak dapat dijangkau. Periksa koneksi internet Anda atau coba lagi nanti.
           </Text>
           <Pressable
             onPress={() => {
@@ -386,32 +367,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#FFFFFF",
     letterSpacing: -0.2,
-  },
-  onlineBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    backgroundColor: "rgba(16, 185, 129, 0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(16, 185, 129, 0.35)",
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  onlineDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "#10B981",
-  },
-  onlineText: {
-    fontFamily: "Nunito-Bold",
-    fontSize: 10,
-    color: "#10B981",
-  },
-  headerRightActions: {
-    flexDirection: "row",
-    alignItems: "center",
   },
   duniaContainer: {
     flex: 1,

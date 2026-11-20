@@ -806,8 +806,52 @@ export async function awardGachaXp(
   );
   if (totalXpAwarded === 0) return { totalXpAwarded: 0, newExp: 0, newLevel: 1, oldLevel: 1, levelUp: false };
 
+  const targetId = `gacha_pull_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+  const description = `Hadiah Gacha Summon (${results.length} item didapat)`;
+  const metadata = {
+    results_count: results.length,
+    rarities: results.map((r) => r.rarity),
+  };
+
+  // Jalur utama: RPC atomik add_user_exp (mengunci baris & menambah EXP di
+  // sisi server) sehingga perubahan EXP oleh admin tidak tertimpa oleh
+  // operasi baca-tulis bersamaan (lost-update) yang membuat EXP "balik lagi".
   try {
-    const { data: profile, error: fetchErr } = await supabase
+    const { data: rpcRes, error: rpcErr } = await supabase.rpc("add_user_exp", {
+      p_user_id: userId,
+      p_amount: totalXpAwarded,
+      p_activity_type: "gacha_summon",
+      p_description: description,
+      p_target_id: targetId,
+      p_base_xp: totalXpAwarded,
+      p_bonus_xp: 0,
+      p_multiplier: 1.0,
+      p_metadata: metadata,
+    });
+
+    const row = Array.isArray(rpcRes) ? rpcRes[0] : rpcRes;
+    if (!rpcErr && row && row.success) {
+      const newExp = Number(row.new_exp) || 0;
+      const newLevel = Number(row.new_level) || 1;
+      const oldLevel = Number(row.old_level) || 1;
+      return {
+        totalXpAwarded,
+        newExp,
+        newLevel,
+        oldLevel,
+        levelUp: newLevel > oldLevel,
+      };
+    }
+    if (rpcErr) {
+      console.warn("[gacha-service] add_user_exp RPC failed, fallback:", rpcErr.message);
+    }
+  } catch (rpcCatch) {
+    console.warn("[gacha-service] add_user_exp RPC exception, fallback:", rpcCatch);
+  }
+
+  // Fallback darurat (best-effort) jika RPC tidak tersedia.
+  try {
+    const { data: profile } = await supabase
       .from("profiles")
       .select("exp, level")
       .eq("id", userId)
@@ -837,16 +881,13 @@ export async function awardGachaXp(
       await supabase.from("user_xp_transactions").insert({
         user_id: userId,
         activity_type: "gacha_summon",
-        target_id: `gacha_pull_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        target_id: targetId,
         base_xp: totalXpAwarded,
         bonus_xp: 0,
         total_xp: totalXpAwarded,
         multiplier: 1.0,
-        description: `Hadiah Gacha Summon (${results.length} item didapat)`,
-        metadata: {
-          results_count: results.length,
-          rarities: results.map((r) => r.rarity),
-        },
+        description,
+        metadata,
       });
     } catch {}
 
@@ -896,6 +937,52 @@ export async function awardDirectUserXp(
   const bonusXp = Math.round((baseXp * bonusPercent) / 100);
   const totalXp = baseXp + bonusXp;
 
+  const targetId = `${activityType}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+  const multiplier = 1.0 + bonusPercent / 100;
+  const metadata = {
+    bonus_percent: bonusPercent,
+    source: "gacha_simulation",
+  };
+
+  // Jalur utama: RPC atomik add_user_exp (kunci baris + tambah di server)
+  // agar EXP hasil set admin tidak tertimpa operasi baca-tulis bersamaan.
+  try {
+    const { data: rpcRes, error: rpcErr } = await supabase.rpc("add_user_exp", {
+      p_user_id: userId,
+      p_amount: totalXp,
+      p_activity_type: activityType,
+      p_description: description,
+      p_target_id: targetId,
+      p_base_xp: baseXp,
+      p_bonus_xp: bonusXp,
+      p_multiplier: multiplier,
+      p_metadata: metadata,
+    });
+
+    const row = Array.isArray(rpcRes) ? rpcRes[0] : rpcRes;
+    if (!rpcErr && row && row.success) {
+      const newExp = Number(row.new_exp) || 0;
+      const newLevel = Number(row.new_level) || 1;
+      const oldLevel = Number(row.old_level) || 1;
+      return {
+        success: true,
+        baseXp,
+        bonusXp,
+        totalXp,
+        newExp,
+        newLevel,
+        oldLevel,
+        levelUp: newLevel > oldLevel,
+      };
+    }
+    if (rpcErr) {
+      console.warn("[gacha-service] add_user_exp RPC failed, fallback:", rpcErr.message);
+    }
+  } catch (rpcCatch) {
+    console.warn("[gacha-service] add_user_exp RPC exception, fallback:", rpcCatch);
+  }
+
+  // Fallback darurat (best-effort) jika RPC tidak tersedia.
   try {
     const { data: profile, error: fetchErr } = await supabase
       .from("profiles")
@@ -931,16 +1018,13 @@ export async function awardDirectUserXp(
       await supabase.from("user_xp_transactions").insert({
         user_id: userId,
         activity_type: activityType,
-        target_id: `${activityType}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        target_id: targetId,
         base_xp: baseXp,
         bonus_xp: bonusXp,
         total_xp: totalXp,
-        multiplier: 1.0 + bonusPercent / 100,
+        multiplier,
         description,
-        metadata: {
-          bonus_percent: bonusPercent,
-          source: "gacha_simulation",
-        },
+        metadata,
       });
     } catch {}
 

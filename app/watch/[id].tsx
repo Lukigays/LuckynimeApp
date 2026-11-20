@@ -18,7 +18,7 @@ import {
   SkipBack, SkipForward, Play, Pause, ArrowsOut, ArrowsIn, Check, X,
   Lock, Rewind, FastForward, Download, DownloadSimple, CaretRight,
   Sun, PictureInPicture, ThumbsUp, ThumbsDown, ShareNetwork, PlayCircle,
-  Flag, Diamond, Sparkle, Info, SlidersHorizontal, Eye, CaretDown, HardDrives
+  Flag, Diamond, Sparkle, Info, SlidersHorizontal, Eye, CaretDown
 } from "phosphor-react-native";
 import { luckynimeProxyUrl, getAnimeMetadata, getEpisodes, getServers, getStream, getPlaybackType, isLuckynimeProxyUrl, nativePlaybackHeaders, CHROME_ANDROID_UA } from "@/lib/luckynime-api";
 import { getAnimeById, getKnownMalId, getMalIdByAnimeId } from "@/lib/anilist";
@@ -578,14 +578,6 @@ export default function WatchScreen() {
   // ("Kiwi 1080p") become picker rows; plain labels ("Zoko") become the
   // single default option.
   const backendDownloadOptions = useMemo(() => sortBackendDownloadOptions(buildBackendDownloadOptions(activeProviders)), [activeProviders]);
-  // Server picker lists only providers that actually carry something to play
-  // (stream sources or backend download links) — every row is backend-listed,
-  // never a fixed fallback name. Original indices are kept so selectServer
-  // stays aligned with activeProviders.
-  const selectableProviders = useMemo(() => activeProviders
-    .map((provider, index) => ({ provider, index }))
-    .filter(({ provider }) => (provider.sources?.length ?? 0) > 0 || (provider.downloads?.length ?? 0) > 0),
-  [activeProviders]);
   const currentRating = ratings.scoreFor(episode) ?? 0;
   const skipKind = activeSkipKind(skipSegments, currentTime);
 
@@ -3269,19 +3261,6 @@ export default function WatchScreen() {
           <CaretDown size={12} color="#94A3B8" weight="bold" />
         </Pressable>
 
-        {/* Server Dropdown Button (Server 1, Server 2, Server 3, etc.) */}
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => setActivePanel("server")}
-          style={styles.actionPill}
-        >
-          <HardDrives size={15} color="#FFFFFF" weight="bold" />
-          <Text style={styles.actionPillText}>
-            {`Server ${serverIndex + 1}`}
-          </Text>
-          <CaretDown size={12} color="#94A3B8" weight="bold" />
-        </Pressable>
-
         {/* Sub / Dub Dropdown Button */}
         {providers.sub.length > 0 || providers.dub.length > 0 ? (
           <Pressable
@@ -3549,124 +3528,6 @@ export default function WatchScreen() {
 
     {/* ── Modal Pickers ── */}
     <Modal visible={activePanel === "speed"} transparent animationType="fade"><Pressable style={styles.modalBackdrop} onPress={() => setActivePanel(null)}><View style={styles.modalSheet}><Text style={styles.modalTitle}>{t("player.playbackSpeed")}</Text>{[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0].map((val) => <Pressable key={val} style={[styles.modalItem, speed === val && styles.modalItemActive]} onPress={() => { setSpeed(val); lockedSpeed.current = val; setActivePanel(null); }}><Text style={[styles.modalItemText, speed === val && styles.modalItemTextActive]}>{val === 1.0 ? "1.0x (Normal)" : `${val}x`}</Text>{speed === val && <Check size={20} color={nothing.red} weight="bold" />}</Pressable>)}</View></Pressable></Modal>
-
-    {/* Server Dropdown Picker (Server 1, Server 2, Server 3, etc.) - Half Screen Liquid Glass */}
-    <Modal
-      visible={activePanel === "server"}
-      transparent
-      animationType="fade"
-      onRequestClose={() => setActivePanel(null)}
-    >
-      <Pressable style={styles.serverModalBackdrop} onPress={() => setActivePanel(null)}>
-        <Pressable
-          style={styles.serverModalSheet}
-          onPress={(e) => {
-            // Prevent dismiss when tapping inside the modal sheet
-            e.stopPropagation?.();
-          }}
-        >
-          {/* Sheet Handle */}
-          <View style={styles.serverSheetHandle} />
-
-          {/* Header */}
-          <View style={styles.serverSheetHeader}>
-            <View style={{ flex: 1, gap: 2 }}>
-              <View style={styles.serverTitleRow}>
-                <HardDrives size={16} color="#E2E8F0" weight="bold" />
-                <Text style={styles.serverSheetTitle}>PILIH SERVER</Text>
-              </View>
-              <Text style={styles.serverSheetSubtitle}>
-                {selectableProviders.length
-                  ? `${selectableProviders.length} Server Tersedia · Pilih alternatif jika buffering`
-                  : "Mencari server aktif…"}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => setActivePanel(null)}
-              hitSlop={12}
-              style={({ pressed }) => [
-                styles.serverCloseBtn,
-                pressed && { opacity: 0.6 },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Tutup Pilihan Server"
-            >
-              <X size={16} color="#94A3B8" weight="bold" />
-            </Pressable>
-          </View>
-
-          {/* Scrollable Server List (Half Screen, Vertical Scroll) */}
-          <ScrollView
-            style={styles.serverScrollList}
-            contentContainerStyle={styles.serverScrollContent}
-            showsVerticalScrollIndicator={true}
-            nestedScrollEnabled={true}
-            bounces={true}
-          >
-            {selectableProviders.length ? (
-              selectableProviders.map(({ provider, index }) => {
-                const isActive = index === serverIndex;
-                const numStr = index + 1 < 10 ? `0${index + 1}` : `${index + 1}`;
-                return (
-                  <Pressable
-                    key={provider.id}
-                    onPress={() => {
-                      selectServer(index);
-                      setActivePanel(null);
-                    }}
-                    style={({ pressed }) => [
-                      styles.serverItemCard,
-                      isActive && styles.serverItemCardActive,
-                      pressed && styles.serverItemCardPressed,
-                    ]}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Pilih Server ${index + 1}`}
-                  >
-                    <View style={styles.serverItemLeft}>
-                      {/* Number Text (No Background Box, Clean Silver Typography) */}
-                      <Text
-                        style={[
-                          styles.serverNumText,
-                          isActive && styles.serverNumTextActive,
-                        ]}
-                      >
-                        {numStr}
-                      </Text>
-
-                      {/* Text info */}
-                      <View style={{ flex: 1, gap: 2 }}>
-                        <Text
-                          style={[
-                            styles.serverItemTitle,
-                            isActive && styles.serverItemTitleActive,
-                          ]}
-                        >
-                          {`Server ${index + 1}`}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.serverItemSub,
-                            isActive && styles.serverItemSubActive,
-                          ]}
-                        >
-                          {isActive
-                            ? "Sedang Digunakan · Kualitas Cepat"
-                            : "Streaming Server Alternatif"}
-                        </Text>
-                      </View>
-                    </View>
-                  </Pressable>
-                );
-              })
-            ) : (
-              <View style={styles.serverEmptyBox}>
-                <Text style={styles.serverEmptyText}>Mencari server aktif…</Text>
-              </View>
-            )}
-          </ScrollView>
-        </Pressable>
-      </Pressable>
-    </Modal>
 
     {/* Audio / Language Dropdown Picker - Half Screen Liquid Glass */}
     <Modal
