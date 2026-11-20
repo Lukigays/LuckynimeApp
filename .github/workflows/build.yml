@@ -189,6 +189,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           repository: Lukigays/Luckynime-Release
+          token: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
           tag_name: ${{ env.RELEASE_TAG }}
           target_commitish: main
           name: Luckynime ${{ env.RELEASE_TAG }}
@@ -203,9 +204,6 @@ jobs:
 
             Download file APK di bawah ini (**arm64** direkomendasikan untuk mayoritas perangkat Android modern).
           files: ./artifacts/*.apk
-        env:
-          PUBLIC_RELEASE_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
 
       - name: Create Internal GitHub Release
         uses: softprops/action-gh-release@v2
