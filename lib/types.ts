@@ -95,6 +95,7 @@ export type StreamResponse = {
   sources: StreamSource[];
   qualities?: string[];
   headers?: Record<string, string>;
+  subtitles?: Array<{ url: string; label?: string; lang?: string }>;
   intro?: { startTime?: number; endTime?: number };
   outro?: { startTime?: number; endTime?: number };
   error?: string;

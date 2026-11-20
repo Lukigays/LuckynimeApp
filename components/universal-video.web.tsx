@@ -15,6 +15,7 @@ export type UniversalVideoProps = {
   muted?: boolean;
   volume?: number;
   maxBitRate?: number;
+  useTextureView?: boolean;
   onLoad?: (data: OnLoadData) => void;
   onReadyForDisplay?: () => void;
   onProgress?: (data: OnProgressData) => void;
