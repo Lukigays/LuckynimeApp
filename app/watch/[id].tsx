@@ -21,7 +21,7 @@ import {
   Sun, PictureInPicture, ThumbsUp, ThumbsDown, ShareNetwork, PlayCircle,
   Flag, Diamond, Sparkle, Info, SlidersHorizontal, Eye, CaretDown
 } from "phosphor-react-native";
-import { luckynimeProxyUrl, getAnimeMetadata, getEpisodes, getServers, getStream, getPlaybackType, isLuckynimeProxyUrl, nativePlaybackHeaders, CHROME_ANDROID_UA } from "@/lib/luckynime-api";
+import { luckynimeHlsRenditionUrl, luckynimeProxyUrl, getAnimeMetadata, getEpisodes, getServers, getStream, getPlaybackType, isLuckynimeProxyUrl, nativePlaybackHeaders, CHROME_ANDROID_UA } from "@/lib/luckynime-api";
 import { getAnimeById, getKnownMalId, getMalIdByAnimeId } from "@/lib/anilist";
 import { enrichEpisodesWithTmdb } from "@/lib/tmdb-episodes";
 import {
@@ -330,6 +330,7 @@ export default function WatchScreen() {
   const [buffering, setBuffering] = useState(false);
   const [playableDuration, setPlayableDuration] = useState(0);
   const [videoTracks, setVideoTracks] = useState<any[]>([]);
+  const [audioTracks, setAudioTracks] = useState<any[]>([]);
   // Real renditions parsed out of the provider's Auto URL (HLS master or DASH
   // manifest) — kept around while a parsed variant is mounted so the menu can
   // offer Auto + siblings without re-fetching.
@@ -1704,7 +1705,7 @@ export default function WatchScreen() {
           : parseHlsMasterVariants(text, originalStreamUrl(masterPlaybackUri));
         const options = playbackType === "dash"
           ? buildDashQualityOptions(activeSource, variants)
-          : buildHlsQualityOptions(activeSource, variants, { proxied, headers: directHeaders });
+          : buildHlsQualityOptions(activeSource, variants, { proxied, headers: directHeaders, lang: language });
         if (!options.length) { setParsedQualityOptions(null); parsedOptionsRef.current = null; parsedVariantsRef.current = null; return; }
         hlsVariantsCache.current.set(masterPlaybackUri, { options, variants });
         await applyRemembered(options, variants);
@@ -1874,7 +1875,7 @@ export default function WatchScreen() {
       const wantedHeight = Number.parseInt(String(stale.quality ?? ""), 10);
       const targetCdn = (Number.isFinite(wantedHeight) ? variantUrlForHeight(variants, wantedHeight) : null) ?? variants[0]?.url ?? null;
       if (!targetCdn) throw new Error("no variant");
-      const freshOptions = buildHlsQualityOptions(stale, variants, { proxied, headers: directHeaders });
+      const freshOptions = buildHlsQualityOptions(stale, variants, { proxied, headers: directHeaders, lang: language });
       if (freshOptions.length) {
         hlsVariantsCache.current.set(masterKey, { options: freshOptions, variants });
         setParsedQualityOptions(freshOptions);
@@ -1883,7 +1884,18 @@ export default function WatchScreen() {
       }
       sourceMounted.current = true;
       sourceFailureHandled.current = null;
-      setSource({ ...stale, url: proxied ? luckynimeProxyUrl(targetCdn, directHeaders) : targetCdn });
+      const nextVariantUrl = variants[0]?.detachedAudio
+        ? luckynimeHlsRenditionUrl(
+            originalStreamUrl(masterKey),
+            Number.isFinite(wantedHeight) && wantedHeight > 0 ? wantedHeight : variants[0].height,
+            language,
+            proxied,
+            directHeaders,
+          )
+        : proxied
+          ? luckynimeProxyUrl(targetCdn, directHeaders)
+          : targetCdn;
+      setSource({ ...stale, url: nextVariantUrl });
       setSourceRevision((value) => value + 1);
     } catch {
       handleProviderBlockedRef.current("player");
@@ -3043,6 +3055,29 @@ export default function WatchScreen() {
 
   const speedBadge = useMemo(() => `${Number.isInteger(speed) ? speed : speed}x`, [speed]);
 
+  useEffect(() => {
+    setAudioTracks([]);
+  }, [source?.url]);
+
+  const resolvedAudioTrack = useMemo(() => {
+    if (!audioTracks || audioTracks.length === 0) return undefined;
+    const matchIndex = audioTracks.findIndex((tr) => {
+      const meta = `${tr?.language ?? ""} ${tr?.title ?? ""}`.toLowerCase();
+      return language === "dub"
+        ? /\b(en|eng|english)\b/.test(meta)
+        : /\b(ja|jpn|jp|japanese)\b/.test(meta);
+    });
+    if (matchIndex >= 0) {
+      const tr = audioTracks[matchIndex];
+      const idx = typeof tr?.index === "number" ? tr.index : matchIndex;
+      return { type: "index", value: idx } as any;
+    }
+    const selectedIdx = audioTracks.findIndex((tr) => Boolean(tr?.selected));
+    if (selectedIdx >= 0) return undefined;
+    const first = audioTracks[0];
+    return { type: "index", value: typeof first?.index === "number" ? first.index : 0 } as any;
+  }, [audioTracks, language]);
+
   useImmersiveSystemBars(manualFullscreen, [showControls, activePanel, reportModalVisible]);
 
   if (invalidId) {
@@ -3066,8 +3101,15 @@ export default function WatchScreen() {
       {embedSource && !source ? <EmbedPlayer uri={embedSource.url} headers={nativePlaybackHeaders(playbackHeaders)} onError={() => handleProviderBlockedRef.current("player")} onLoaded={() => { embedReadyRef.current = true; setShowControls(true); }} /> : null}
       {source ? <Video key={activeProvider?.id ?? "default"} ref={videoRef} style={StyleSheet.absoluteFill} useTextureView={Platform.OS === "android"} source={{ uri: videoSourceUri, headers: videoSourceHeaders, type: videoContentType, bufferConfig: videoBufferConfig }}
         selectedTextTrack={{ type: "disabled" } as any}
+        selectedAudioTrack={resolvedAudioTrack}
+        ignoreSilentSwitch="ignore"
         paused={!isPlaying} rate={is2xSeeking ? 2.0 : speed} resizeMode={manualFullscreen ? fillMode : "contain"} muted={muted} volume={volume}
         maxBitRate={adaptiveBitrateCap ?? undefined}
+        onAudioTracks={(data: any) => {
+          if (Array.isArray(data?.audioTracks)) {
+            setAudioTracks(data.audioTracks);
+          }
+        }}
         onLoad={(data: OnLoadData) => {
           if (__DEV__) {
             console.log(`[PlaybackMetrics] Metadata Loaded (onLoad): duration=${data.duration}s t=${Date.now() - screenMountTime}ms provider=${activeProvider?.provider ?? activeProvider?.id ?? "?"}`);
@@ -3741,7 +3783,7 @@ export default function WatchScreen() {
     </View>
 
     {/* ── Error ── */}
-    {error ? <View style={styles.errorAction}><NothingCard style={styles.errorCard}><DotLabel tone="muted">{futureRelease ? "FUTURE EPISODE" : "VIDEO UNAVAILABLE"}</DotLabel><Text style={styles.errorCopy}>{error}</Text>{lastPlayerError ? <Text style={styles.errorCopy}>{humanPlayerError(lastPlayerError) ?? "Playback failed on this server."}</Text> : null}{lastPlayerError ? <Text style={ps.diagnosticLine}>{`PLAYER · ${lastPlayerError}`}</Text> : null}{skipFetchStatus !== "idle" && skipFetchStatus !== "ok" ? <Text style={ps.diagnosticLine}>{`SKIP DATA · ${skipFetchStatus.toUpperCase()}`}</Text> : null}{futureRelease ? null : <View style={styles.errorBtnRow}><NothingButton label={t("player.retry")} onPress={retry} variant="outline" /><NothingButton label={t("player.switchServer")} onPress={() => handleProviderBlocked("permanent")} variant="outline" /><NothingButton label={t("player.copyError")} onPress={() => { void Clipboard.setStringAsync(`${error}${lastPlayerError ? `\nPLAYER · ${lastPlayerError}` : ""}${skipFetchStatus !== "idle" && skipFetchStatus !== "ok" ? `\nSKIP DATA · ${skipFetchStatus.toUpperCase()}` : ""}\nSERVER · ${activeProvider?.label || "UNKNOWN"} · ${embedSource ? "EMBED" : useSourceProxy ? "PROXY" : "DIRECT"}`).catch(() => {}); }} variant="outline" /><NothingButton label="Report source" onPress={reportBrokenSource} variant="outline" /></View>}</NothingCard></View> : null}
+    {error ? <View style={styles.errorAction}><NothingCard style={styles.errorCard}><DotLabel tone="muted">{futureRelease ? "FUTURE EPISODE" : "VIDEO UNAVAILABLE"}</DotLabel><Text style={styles.errorCopy}>{error}</Text>{lastPlayerError ? <Text style={styles.errorCopy}>{humanPlayerError(lastPlayerError) ?? "Playback failed on this server."}</Text> : null}{lastPlayerError ? <Text style={ps.diagnosticLine}>{`PLAYER · ${lastPlayerError}`}</Text> : null}{skipFetchStatus !== "idle" && skipFetchStatus !== "ok" ? <Text style={ps.diagnosticLine}>{`SKIP DATA · ${skipFetchStatus.toUpperCase()}`}</Text> : null}{futureRelease ? null : <View style={styles.errorBtnRow}><NothingButton label={t("player.retry")} onPress={retry} variant="outline" /><NothingButton label={t("player.copyError")} onPress={() => { void Clipboard.setStringAsync(`${error}${lastPlayerError ? `\nPLAYER · ${lastPlayerError}` : ""}`).catch(() => {}); }} variant="outline" /></View>}</NothingCard></View> : null}
 
     {/* ── Below player ── */}
     {!manualFullscreen ? <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false} removeClippedSubviews={Platform.OS === "android"}>
@@ -3794,20 +3836,6 @@ export default function WatchScreen() {
             {`${playerQualityBadge} Quality`}
           </Text>
         </Pressable>
-
-        {/* Server Pill */}
-        {activeProviders.length > 0 ? (
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => setActivePanel("server")}
-            style={styles.actionPill}
-          >
-            <SlidersHorizontal size={15} color="#FFFFFF" weight="bold" />
-            <Text style={styles.actionPillText}>
-              {`Server (${serverIndex + 1}/${activeProviders.length})`}
-            </Text>
-          </Pressable>
-        ) : null}
 
         {/* Download Pill */}
         <Pressable
@@ -4140,72 +4168,6 @@ export default function WatchScreen() {
                       {tier.title}
                     </Text>
                     <Text style={styles.wibukuQualityDesc}>{tier.description}</Text>
-                  </View>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </Pressable>
-      </Pressable>
-    </Modal>
-
-    {/* Pilihan Server Streaming — Wibuku-identical Bottom Sheet */}
-    <Modal
-      visible={activePanel === "server"}
-      transparent
-      statusBarTranslucent
-      navigationBarTranslucent
-      animationType="slide"
-      onRequestClose={() => setActivePanel(null)}
-    >
-      <Pressable style={styles.wibukuQualityBackdrop} onPress={() => setActivePanel(null)}>
-        <Pressable
-          style={styles.wibukuQualitySheet}
-          onPress={(e) => {
-            e.stopPropagation?.();
-          }}
-        >
-          <View style={styles.wibukuQualityHandle} />
-          <Text style={styles.wibukuQualityHeading}>Pilihan Server Streaming</Text>
-
-          <ScrollView
-            style={styles.wibukuQualityScroll}
-            contentContainerStyle={styles.wibukuQualityList}
-            showsVerticalScrollIndicator={false}
-          >
-            {activeProviders.map((srv, idx) => {
-              const selected = idx === serverIndex;
-              const isNative = (srv.sources ?? []).some((s) => getPlaybackType(s) !== "embed");
-              const isIndo = /samehadaku|wibufile|pixeldrain|oploverz|anoboy|sub indo/i.test(srv.label);
-              const titleColor = isNative
-                ? isIndo
-                  ? "#7CB342"
-                  : "#FDD835"
-                : "#E4E4E7";
-              const desc = isNative
-                ? isIndo
-                  ? "Server lokal Sub Indo langsung · Anti-blokir ISP & hemat kuota"
-                  : "Pemutar utama Native HD · Mendukung pilih resolusi & lompat OP/ED"
-                : "Pemutar Web Alternatif Sub Indo · Server cadangan apabila jaringan padat";
-              return (
-                <Pressable
-                  key={srv.id || `${srv.provider}-${idx}`}
-                  onPress={() => selectServer(idx)}
-                  style={({ pressed }) => [
-                    styles.wibukuQualityRow,
-                    pressed && styles.wibukuQualityRowPressed,
-                  ]}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Pilih server ${srv.label}`}
-                >
-                  <View style={styles.wibukuQualityCheckCol}>
-                    {selected ? <Check size={20} color="#FFFFFF" weight="bold" /> : null}
-                  </View>
-                  <View style={styles.wibukuQualityTextCol}>
-                    <Text style={[styles.wibukuQualityTitle, { color: titleColor }]}>
-                      {srv.label}
-                    </Text>
-                    <Text style={styles.wibukuQualityDesc}>{desc}</Text>
                   </View>
                 </Pressable>
               );

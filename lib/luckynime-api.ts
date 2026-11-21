@@ -44,7 +44,7 @@ export function getPlaybackType(source: StreamSource): "hls" | "dash" | "native"
   const url = String(source.url ?? "").toLowerCase();
   if (raw.includes("embed") || raw.includes("iframe") || raw.includes("page")) return "embed";
   if (raw.includes("dash") || /\.mpd(?:$|[?#])/.test(url)) return "dash";
-  if (raw.includes("hls") || raw.includes("mpegurl") || /\.m3u8(?:$|[?#])/.test(url)) return "hls";
+  if (raw.includes("hls") || raw.includes("mpegurl") || /\.m3u8(?:$|[?#])/.test(url) || url.includes("/api/v1/hls-rendition")) return "hls";
   return "native";
 }
 
@@ -77,7 +77,27 @@ export function nativePlaybackHeaders(headers?: Record<string, string>) {
 }
 
 export function isLuckynimeProxyUrl(url: string) {
-  return String(url ?? "").includes("/api/v1/proxy?");
+  const s = String(url ?? "");
+  return s.includes("/api/v1/proxy?") || s.includes("/api/v1/hls-rendition?");
+}
+
+export function luckynimeHlsRenditionUrl(
+  masterUrl: string,
+  height: number,
+  lang: "sub" | "dub",
+  proxied: boolean,
+  headers?: Record<string, string>,
+) {
+  const params = new URLSearchParams({
+    master: masterUrl,
+    height: String(Math.round(height)),
+    lang,
+    proxied: proxied ? "1" : "0",
+  });
+  if (headers && Object.keys(headers).length) {
+    params.set("headers", JSON.stringify(headers));
+  }
+  return `${APP_CONFIG.apiBaseUrl}/api/v1/hls-rendition?${params.toString()}`;
 }
 
 export function luckynimeProxyUrl(url: string, headers?: Record<string, string>) {

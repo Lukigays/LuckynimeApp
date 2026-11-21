@@ -1,4 +1,4 @@
-import { luckynimeProxyUrl, hasExpiredEmbeddedToken, isLuckynimeProxyUrl } from "@/lib/luckynime-api";
+import { luckynimeHlsRenditionUrl, luckynimeProxyUrl, hasExpiredEmbeddedToken, isLuckynimeProxyUrl } from "@/lib/luckynime-api";
 import type { StreamSource } from "@/lib/types";
 import type { WatchQualityOption } from "@/lib/watch-quality";
 
@@ -9,6 +9,8 @@ export type HlsVariant = {
   /** Absolute CDN URL of the variant media playlist. */
   url: string;
   codecs?: string;
+  /** True when the master playlist declares separate #EXT-X-MEDIA:TYPE=AUDIO URIs. */
+  detachedAudio?: boolean;
 };
 
 const STREAM_INF_ATTRIBUTES = /([A-Z0-9-]+)=("[^"]*"|[^,]*)/g;
@@ -26,7 +28,7 @@ export function originalStreamUrl(playbackUrl: string) {
       ? `https://luckynime-api.local${playbackUrl}`
       : playbackUrl;
     const parsed = new URL(fullUrl);
-    const embedded = parsed.searchParams.get("url");
+    const embedded = parsed.searchParams.get("url") ?? parsed.searchParams.get("master");
     return embedded ? decodeURIComponent(embedded) : playbackUrl;
   } catch {
     return playbackUrl;
@@ -55,6 +57,10 @@ function parseResolution(value?: string) {
 export function parseHlsMasterVariants(text: string, baseUrl: string): HlsVariant[] {
   const lines = text.split(/\r?\n/);
   const byKey = new Map<string, HlsVariant>();
+  const hasDetachedAudio = lines.some((raw) => {
+    const ln = raw.trim();
+    return ln.startsWith("#EXT-X-MEDIA:") && /TYPE=AUDIO/i.test(ln) && /URI="[^"]+"/i.test(ln);
+  });
 
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index].trim();
@@ -87,7 +93,14 @@ export function parseHlsMasterVariants(text: string, baseUrl: string): HlsVarian
     const key = `${resolution.height}`;
     const existing = byKey.get(key);
     if (!existing || bandwidth > existing.bandwidth) {
-      byKey.set(key, { height: resolution.height, width: resolution.width, bandwidth, url: absolute, codecs: attributes.CODECS });
+      byKey.set(key, {
+        height: resolution.height,
+        width: resolution.width,
+        bandwidth,
+        url: absolute,
+        codecs: attributes.CODECS,
+        ...(hasDetachedAudio ? { detachedAudio: true } : {}),
+      });
     }
   }
 
@@ -184,11 +197,12 @@ export function shouldRefreshMasterOnVariantError(input: { errorDetail?: string 
 export function buildHlsQualityOptions(
   activeSource: StreamSource,
   variants: HlsVariant[],
-  mode: { proxied: boolean; headers?: Record<string, string> },
+  mode: { proxied: boolean; headers?: Record<string, string>; lang?: "sub" | "dub" },
 ): WatchQualityOption[] {
   if (variants.length < 2) return [];
 
   const playbackUrl = (cdnUrl: string) => (mode.proxied ? luckynimeProxyUrl(cdnUrl, mode.headers) : cdnUrl);
+  const rawMasterUrl = originalStreamUrl(activeSource.url);
 
   return [
     {
@@ -201,7 +215,17 @@ export function buildHlsQualityOptions(
       id: `hls-${variant.height}-${variant.bandwidth}`,
       label: `${variant.height}p`,
       requestQuality: `${variant.height}p`,
-      source: { ...activeSource, url: playbackUrl(variant.url), quality: `${variant.height}p` },
+      // CRITICAL AUDIO FIX: When the master playlist uses detached #EXT-X-MEDIA:TYPE=AUDIO
+      // tracks (e.g. Tokyo Revengers S4 & multi-audio HLS), mounting the bare child
+      // index-f2.m3u8 drops all audio tracks completely! Route through /api/v1/hls-rendition
+      // which generates a single-rendition master playlist that preserves the exact audio track!
+      source: {
+        ...activeSource,
+        url: variant.detachedAudio
+          ? luckynimeHlsRenditionUrl(rawMasterUrl, variant.height, mode.lang ?? "sub", mode.proxied, mode.headers)
+          : playbackUrl(variant.url),
+        quality: `${variant.height}p`,
+      },
     })),
   ];
 }
