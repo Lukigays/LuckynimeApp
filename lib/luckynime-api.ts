@@ -1,4 +1,5 @@
 import { APP_CONFIG } from "@/lib/app-config";
+import { getCachedClientServerStream, resolveClientFallbackServers } from "@/lib/client-indo-scrapers";
 import type { Anime, Episode, Server, StreamResponse, StreamSource } from "@/lib/types";
 
 export const CHROME_ANDROID_UA =
@@ -147,17 +148,27 @@ export async function hasDubForEpisode(animeId: number, episode: number): Promis
 
 const UNSUPPORTED_PROVIDERS = new Set(["flixcloud"]);
 
-/** Accept every server the backend returns. Only truly broken providers
- *  (flixcloud) are filtered. Deduplicates by display name so the UI never
- *  shows the same provider twice. */
+/** Accept every server the backend + on-device scrapers return. Native HLS/MP4
+ *  streams are ordered above embeds, and duplicate primary URLs are merged. */
 export async function getServers(animeId: number, episode: number, lang: "sub" | "dub"): Promise<Server[]> {
-  const payload = await apiRequest<any[]>(`/api/v1/servers?animeId=${animeId}&episode=${episode}&lang=${lang}`, undefined, 30_000);
-  if (!Array.isArray(payload) || payload.length === 0) {
-    // Empty array is a legitimate "no servers for this language" response —
-    // not an error. The caller decides what to do with zero servers.
-    return [];
+  let backendErr: unknown = null;
+  const [backendResult, clientServers] = await Promise.all([
+    apiRequest<any[]>(`/api/v1/servers?animeId=${animeId}&episode=${episode}&lang=${lang}`, undefined, 25_000).catch(
+      (err) => {
+        backendErr = err;
+        return [] as any[];
+      }
+    ),
+    resolveClientFallbackServers(animeId, episode, lang).catch(() => [] as Server[]),
+  ]);
+
+  if (backendErr && clientServers.length === 0) {
+    throw backendErr;
   }
-  const collect = (skipUnsupported: boolean) => {
+
+  const payload = Array.isArray(backendResult) ? backendResult : [];
+
+  const collectBackend = (skipUnsupported: boolean): Server[] => {
     const seen = new Set<string>();
     const servers: Server[] = [];
     for (const server of payload) {
@@ -180,17 +191,70 @@ export async function getServers(animeId: number, episode: number, lang: "sub" |
     }
     return servers;
   };
-  const servers = collect(true);
-  if (servers.length > 0) return servers;
-  // Last resort, not a fallback name: a filtered provider (flixcloud) that is
-  // the ONLY thing the backend lists — e.g. hentai embed-only titles — is
-  // kept instead of returning nothing. The website plays these (verified live,
-  // HTTP 200 embed pages); an honest backend-listed row beats a dead
-  // "no streaming" screen, and the player still rotates past it if it dies.
-  return collect(false);
+
+  let backendServers = collectBackend(true);
+  if (backendServers.length === 0 && payload.length > 0) {
+    backendServers = collectBackend(false);
+  }
+
+  // For dub, only append client MegaPlay fallback if backend actually confirmed dub exists
+  // (prevents false-positive DUB pill on sub-only anime)
+  const effectiveClient =
+    lang === "dub" && backendServers.length === 0
+      ? []
+      : clientServers;
+
+  const combined = [...backendServers, ...effectiveClient];
+  if (combined.length === 0) return [];
+
+  const seenUrls = new Set<string>();
+  const seenLabels = new Set<string>();
+  const deduped: Server[] = [];
+  for (const srv of combined) {
+    const primaryUrl = String(srv.sources?.[0]?.url ?? "").split("?")[0] ?? "";
+    const normLabel = srv.label.trim().toUpperCase();
+    if (primaryUrl && seenUrls.has(primaryUrl)) continue;
+    if (seenLabels.has(normLabel)) continue;
+    if (primaryUrl) seenUrls.add(primaryUrl);
+    seenLabels.add(normLabel);
+    deduped.push(srv);
+  }
+
+  const isNativeServer = (srv: Server) =>
+    (srv.sources ?? []).some((s) => {
+      const t = getPlaybackType(s);
+      return t === "hls" || t === "dash" || t === "native";
+    });
+
+  return [
+    ...deduped.filter((s) => isNativeServer(s)),
+    ...deduped.filter((s) => !isNativeServer(s)),
+  ];
 }
 
 export async function getStream(input: { animeId: number; episode: number; provider: string; lang: "sub" | "dub"; quality?: string; refresh?: boolean }): Promise<StreamResponse> {
+  if (String(input.provider || "").toLowerCase().startsWith("client-")) {
+    const clientSrv =
+      getCachedClientServerStream(input.animeId, input.episode, input.lang, input.provider) ??
+      (await resolveClientFallbackServers(input.animeId, input.episode, input.lang)).find(
+        (s) => s.provider.toLowerCase() === input.provider.toLowerCase()
+      );
+    if (clientSrv) {
+      const qualities = Array.from(
+        new Set(
+          (clientSrv.sources ?? [])
+            .filter((s) => getPlaybackType(s) !== "embed")
+            .map((s) => String(s.quality || "Auto"))
+        )
+      );
+      return {
+        sources: clientSrv.sources ?? [],
+        qualities: qualities.length > 0 ? qualities : ["Auto"],
+        headers: clientSrv.headers ?? {},
+        subtitles: clientSrv.subtitles,
+      };
+    }
+  }
   const payload = await apiRequest<BackendStreamResponse>("/api/v1/stream", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

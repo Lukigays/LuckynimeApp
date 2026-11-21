@@ -110,8 +110,8 @@ const HOLD_SEEK_MS = 350; // still-finger delay before double/triple-tap-hold �
 const TAP_ACTION_COOLDOWN_MS = 150; // min gap between any action (seek/toggle) and the next
 const EDGE_ZONE = 0.35; // x < 35% = brightness · x > 65% = volume · middle = 2x zone
 const SEEK_ZONE = 0.4; // x < 40% = rewind · x > 60% = forward · middle = play/pause
-const STREAM_CACHE_TTL_MS = 30_000;
-const STARTUP_WATCHDOG_MS = 3_000;
+const STREAM_CACHE_TTL_MS = 10 * 60_000;
+const STARTUP_WATCHDOG_MS = 7_500;
 const SKIP_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const ANISKIP_TIMEOUT_MS = 8_000;
 const UP_NEXT_AUTOPLAY_SECONDS = 5;
@@ -1087,15 +1087,17 @@ export default function WatchScreen() {
     }
 
     setError(null);
-    // Embed mounts immediately only for Hentai. For normal titles the embed
-    // player is the last resort after ALL servers return null, so a
-    // native-less first provider must not stick an embed before other
-    // servers are even tried.
-    const mountEmbedImmediately = preferEmbed && initialEmbeds.length > 0 && isHentai;
+    // Native HLS/MP4 servers are always sorted ahead of pure embed servers in
+    // getServers(). Therefore, when activeProvider is a pure embed server
+    // (!hasInitial && initialEmbeds.length > 0) — either selected manually in
+    // Pilihan Server or reached after native servers failed — mount its embed
+    // directly instead of rejecting it.
+    const isPureEmbedServer = !hasInitial && initialEmbeds.length > 0;
+    const mountEmbedImmediately =
+      initialEmbeds.length > 0 && (isHentai || embedOnlyCatalog || isPureEmbedServer);
     if ((hasInitial || mountEmbedImmediately) && !alreadyMounted && !forceThisRequest) {
       setStream(initial);
       setPlaybackHeaders(activeProvider.headers);
-      // Direct → proxy → embed fallback (embed immediately for Hentai only)
       if (mountEmbedImmediately) {
         sourceMounted.current = true;
         setSource(null);
@@ -1114,6 +1116,9 @@ export default function WatchScreen() {
       }
       applySkipSegments(providerSkipSegments(initial));
       setLoadingStream(false);
+      if (isPureEmbedServer) {
+        return () => { cancelled = true; };
+      }
     } else if (!hasInitial && !mountEmbedImmediately) {
       setLoadingStream(true);
     }
@@ -1127,18 +1132,12 @@ export default function WatchScreen() {
       const cachedDirect = directSources(cached.data);
       const cachedProxies = proxySources(cached.data);
       const cachedEmbeds = embedSources(cached.data);
-      const preferCachedEmbed = shouldPreferEmbed({
-        isHentai,
-        directCount: cachedDirect.length,
-        proxyCount: cachedProxies.length,
-        embedCount: cachedEmbeds.length,
-      });
-      const mountCachedEmbed = preferCachedEmbed && cachedEmbeds.length > 0 && isHentai;
+      const isPureCachedEmbed = !cachedDirect.length && !cachedProxies.length && cachedEmbeds.length > 0;
+      const mountCachedEmbed =
+        cachedEmbeds.length > 0 && (isHentai || embedOnlyCatalog || isPureCachedEmbed);
       if (!alreadyMounted && (cachedDirect.length || cachedProxies.length || mountCachedEmbed)) {
         setStream(cached.data);
         setPlaybackHeaders(cached.data.headers ?? activeProvider.headers);
-        // Embed from cache mounts only for Hentai. For normal titles the next
-        // server is tried first via handleProviderBlocked.
         if (mountCachedEmbed) {
           sourceMounted.current = true;
           setSource(null);
@@ -1176,15 +1175,11 @@ export default function WatchScreen() {
         const refreshedEmbeds = embedSources(response);
         const hasNative = refreshedDirect.length > 0 || refreshedProxies.length > 0;
         if (!hasNative) {
-          // No direct/proxy from this provider — cache the response so
-          // handleProviderBlocked can read embed sources from `stream`.
           streamCache.current.set(cacheKey, { savedAt: Date.now(), data: response });
           setStream(response);
           setPlaybackHeaders(response.headers ?? activeProvider.headers);
           applySkipSegments(providerSkipSegments(response));
-          // Hentai / embed-only catalogs mount the embed straight away instead
-          // of burning refresh + rotation rounds on a heavy backend.
-          if ((isHentai || embedOnlyCatalog) && refreshedEmbeds.length > 0 && shouldMountReplacementSource(sourceMounted.current, forceThisRequest)) {
+          if (refreshedEmbeds.length > 0 && shouldMountReplacementSource(sourceMounted.current, forceThisRequest)) {
             sourceMounted.current = true;
             setSource(null);
             setEmbedSource(refreshedEmbeds[0]);
@@ -1192,7 +1187,9 @@ export default function WatchScreen() {
             setLoadingStream(false);
             return;
           }
-          handleProviderBlockedRef.current("stream");
+          if (!sourceMounted.current) {
+            handleProviderBlockedRef.current("stream");
+          }
           return;
         }
         streamCache.current.set(cacheKey, { savedAt: Date.now(), data: response });
@@ -3798,6 +3795,20 @@ export default function WatchScreen() {
           </Text>
         </Pressable>
 
+        {/* Server Pill */}
+        {activeProviders.length > 0 ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setActivePanel("server")}
+            style={styles.actionPill}
+          >
+            <SlidersHorizontal size={15} color="#FFFFFF" weight="bold" />
+            <Text style={styles.actionPillText}>
+              {`Server (${serverIndex + 1}/${activeProviders.length})`}
+            </Text>
+          </Pressable>
+        ) : null}
+
         {/* Download Pill */}
         <Pressable
           accessibilityRole="button"
@@ -4129,6 +4140,72 @@ export default function WatchScreen() {
                       {tier.title}
                     </Text>
                     <Text style={styles.wibukuQualityDesc}>{tier.description}</Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </Pressable>
+      </Pressable>
+    </Modal>
+
+    {/* Pilihan Server Streaming — Wibuku-identical Bottom Sheet */}
+    <Modal
+      visible={activePanel === "server"}
+      transparent
+      statusBarTranslucent
+      navigationBarTranslucent
+      animationType="slide"
+      onRequestClose={() => setActivePanel(null)}
+    >
+      <Pressable style={styles.wibukuQualityBackdrop} onPress={() => setActivePanel(null)}>
+        <Pressable
+          style={styles.wibukuQualitySheet}
+          onPress={(e) => {
+            e.stopPropagation?.();
+          }}
+        >
+          <View style={styles.wibukuQualityHandle} />
+          <Text style={styles.wibukuQualityHeading}>Pilihan Server Streaming</Text>
+
+          <ScrollView
+            style={styles.wibukuQualityScroll}
+            contentContainerStyle={styles.wibukuQualityList}
+            showsVerticalScrollIndicator={false}
+          >
+            {activeProviders.map((srv, idx) => {
+              const selected = idx === serverIndex;
+              const isNative = (srv.sources ?? []).some((s) => getPlaybackType(s) !== "embed");
+              const isIndo = /samehadaku|wibufile|pixeldrain|oploverz|anoboy|sub indo/i.test(srv.label);
+              const titleColor = isNative
+                ? isIndo
+                  ? "#7CB342"
+                  : "#FDD835"
+                : "#E4E4E7";
+              const desc = isNative
+                ? isIndo
+                  ? "Server lokal Sub Indo langsung · Anti-blokir ISP & hemat kuota"
+                  : "Pemutar utama Native HD · Mendukung pilih resolusi & lompat OP/ED"
+                : "Pemutar Web Alternatif Sub Indo · Server cadangan apabila jaringan padat";
+              return (
+                <Pressable
+                  key={srv.id || `${srv.provider}-${idx}`}
+                  onPress={() => selectServer(idx)}
+                  style={({ pressed }) => [
+                    styles.wibukuQualityRow,
+                    pressed && styles.wibukuQualityRowPressed,
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Pilih server ${srv.label}`}
+                >
+                  <View style={styles.wibukuQualityCheckCol}>
+                    {selected ? <Check size={20} color="#FFFFFF" weight="bold" /> : null}
+                  </View>
+                  <View style={styles.wibukuQualityTextCol}>
+                    <Text style={[styles.wibukuQualityTitle, { color: titleColor }]}>
+                      {srv.label}
+                    </Text>
+                    <Text style={styles.wibukuQualityDesc}>{desc}</Text>
                   </View>
                 </Pressable>
               );
