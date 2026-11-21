@@ -5,7 +5,12 @@ import { router } from "expo-router";
 import { AppIcon } from "@/components/app-icon";
 import { nothing } from "@/components/nothing-ui";
 
-export function NativeScreen({ children, scroll = true, style }: PropsWithChildren<{ scroll?: boolean; style?: ViewStyle }>) {
+export function NativeScreen({
+  children,
+  scroll = true,
+  fullscreen = false,
+  style,
+}: PropsWithChildren<{ scroll?: boolean; fullscreen?: boolean; style?: ViewStyle }>) {
   const bg = style?.backgroundColor ? { backgroundColor: style.backgroundColor } : null;
   const content = scroll ? (
     <ScrollView
@@ -19,7 +24,7 @@ export function NativeScreen({ children, scroll = true, style }: PropsWithChildr
     <View style={[styles.fill, style]}>{children}</View>
   );
   return (
-    <SafeAreaView edges={["top", "left", "right"]} style={[styles.safe, bg]}>
+    <SafeAreaView edges={fullscreen ? [] : ["top", "left", "right"]} style={[styles.safe, bg]}>
       {content}
     </SafeAreaView>
   );

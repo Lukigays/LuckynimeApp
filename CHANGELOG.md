@@ -6,6 +6,11 @@ This is the public record of meaningful native Android releases. For the current
 
 ## Unreleased
 
+## v1.1.2 — Fullscreen Immersive Penuh (Sembunyikan Pill Bar / Navigation Bar Android)
+
+- **Sembunyikan Pill Bar & Navigation Bar Saat Fullscreen**: Mengintegrasikan modul native `expo-navigation-bar` + sinkronisasi `RNEdgeToEdge` dalam mode *Sticky Immersive* (`overlay-swipe`), sehingga garis gesture pill bar / tombol navigasi Android di bagian bawah layar benar-benar hilang saat menonton fullscreen dan tidak muncul saat layar diketuk.
+- **Modal Translucent & Layar Penuh Tanpa Inset**: Mencegah bar navigasi muncul ulang saat membuka panel kecepatan/resolusi di mode fullscreen.
+
 ## v1.1.1 — Layar Tonton Bersih Tanpa Garis Merah di Bawah
 
 - **Hapus Garis Progress Merah Saat Menonton**: Menghilangkan garis merah tipis (`miniProgress`) di tepi bawah layar saat kontrol player tersembunyi sehingga tampilan video inline maupun fullscreen benar-benar bersih 100% (seekbar merah hanya tampil ketika layar diketuk untuk membuka kontrol).

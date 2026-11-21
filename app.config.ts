@@ -13,7 +13,7 @@ const env = {
 const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
-  version: "1.1.1",
+  version: "1.1.2",
   orientation: "default",
   icon: "./assets/images/logo-app.png",
   scheme: env.scheme,
@@ -28,7 +28,7 @@ const config: ExpoConfig = {
     infoPlist: { ITSAppUsesNonExemptEncryption: false },
   },
   android: {
-    versionCode: 21,
+    versionCode: 22,
     adaptiveIcon: { backgroundColor: "#0E0E11", foregroundImage: "./assets/images/android-icon-foreground.png" },
     edgeToEdgeEnabled: true,
     softwareKeyboardLayoutMode: "resize",
@@ -57,6 +57,8 @@ const config: ExpoConfig = {
     "expo-asset",
     "expo-audio",
     "expo-font",
+    "expo-navigation-bar",
+    "./plugins/with-immersive-fullscreen",
     "expo-web-browser",
     ["react-native-video", { enableAndroidPictureInPicture: true }],
     ["expo-screen-orientation", { initialOrientation: "DEFAULT" }],

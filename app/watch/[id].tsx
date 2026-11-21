@@ -10,6 +10,7 @@ import type { OnProgressData, OnLoadData, OnBufferData, VideoRef } from "react-n
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { StatusBar } from "expo-status-bar";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { applyAndroidImmersiveBars, useImmersiveSystemBars } from "@/lib/immersive-mode";
 import * as Brightness from "expo-brightness";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
@@ -2621,7 +2622,10 @@ export default function WatchScreen() {
     setActivePanel(null);
     setShowControls(true);
     setManualFullscreen(true);
-    if (Platform.OS !== "web") lockForceLandscape();
+    if (Platform.OS !== "web") {
+      lockForceLandscape();
+      void applyAndroidImmersiveBars(true);
+    }
   }, [lockForceLandscape]);
 
   const exitFullscreen = useCallback(() => {
@@ -2629,6 +2633,7 @@ export default function WatchScreen() {
     // Keep chrome visible on exit so the inline player never looks dead.
     setShowControls(true);
     if (Platform.OS !== "web") {
+      void applyAndroidImmersiveBars(false);
       // Lock portrait briefly before unlocking so Android doesn't stay stuck
       // in the last forced landscape when auto-rotate is OFF.
       void ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT).catch(() => {}).finally(() => {
@@ -2838,6 +2843,8 @@ export default function WatchScreen() {
   }, [displayedQuality, liveHeight, displayedQualityOptions]);
   const speedBadge = useMemo(() => `${Number.isInteger(speed) ? speed : speed}x`, [speed]);
 
+  useImmersiveSystemBars(manualFullscreen, [showControls, activePanel, reportModalVisible]);
+
   if (invalidId) {
     return <NativeScreen scroll={false} style={styles.fill}>
       <View style={styles.invalidWrap}>
@@ -2848,7 +2855,7 @@ export default function WatchScreen() {
     </NativeScreen>;
   }
 
-  return <NativeScreen scroll={false} style={styles.fill}>
+  return <NativeScreen scroll={false} fullscreen={manualFullscreen} style={styles.fill}>
     <StatusBar hidden={manualFullscreen} />
 
     {/* ── Video Container + Gesture Layer ── */}
@@ -3855,12 +3862,14 @@ export default function WatchScreen() {
     </ScrollView> : null}
 
     {/* ── Modal Pickers ── */}
-    <Modal visible={activePanel === "speed"} transparent animationType="fade"><Pressable style={styles.modalBackdrop} onPress={() => setActivePanel(null)}><View style={styles.modalSheet}><Text style={styles.modalTitle}>{t("player.playbackSpeed")}</Text>{[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0].map((val) => <Pressable key={val} style={[styles.modalItem, speed === val && styles.modalItemActive]} onPress={() => { setSpeed(val); lockedSpeed.current = val; setActivePanel(null); }}><Text style={[styles.modalItemText, speed === val && styles.modalItemTextActive]}>{val === 1.0 ? "1.0x (Normal)" : `${val}x`}</Text>{speed === val && <Check size={20} color={nothing.red} weight="bold" />}</Pressable>)}</View></Pressable></Modal>
+    <Modal visible={activePanel === "speed"} transparent statusBarTranslucent navigationBarTranslucent animationType="fade"><Pressable style={styles.modalBackdrop} onPress={() => setActivePanel(null)}><View style={styles.modalSheet}><Text style={styles.modalTitle}>{t("player.playbackSpeed")}</Text>{[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0].map((val) => <Pressable key={val} style={[styles.modalItem, speed === val && styles.modalItemActive]} onPress={() => { setSpeed(val); lockedSpeed.current = val; setActivePanel(null); }}><Text style={[styles.modalItemText, speed === val && styles.modalItemTextActive]}>{val === 1.0 ? "1.0x (Normal)" : `${val}x`}</Text>{speed === val && <Check size={20} color={nothing.red} weight="bold" />}</Pressable>)}</View></Pressable></Modal>
 
     {/* Quality & Server Picker Modal */}
     <Modal
       visible={activePanel === "quality"}
       transparent
+      statusBarTranslucent
+      navigationBarTranslucent
       animationType="fade"
       onRequestClose={() => setActivePanel(null)}
     >
@@ -3978,6 +3987,8 @@ export default function WatchScreen() {
     <Modal
       visible={activePanel === "language"}
       transparent
+      statusBarTranslucent
+      navigationBarTranslucent
       animationType="fade"
       onRequestClose={() => setActivePanel(null)}
     >
@@ -4076,6 +4087,8 @@ export default function WatchScreen() {
     <Modal
       visible={activePanel === "download"}
       transparent
+      statusBarTranslucent
+      navigationBarTranslucent
       animationType="fade"
       onRequestClose={() => setActivePanel(null)}
     >
@@ -4168,7 +4181,7 @@ export default function WatchScreen() {
     </Modal>
 
     {/* Chapter List Modal */}
-    <Modal visible={activePanel === "chapters" && !playerLocked} transparent animationType="fade"><Pressable style={styles.modalBackdrop} onPress={() => setActivePanel(null)}><View style={styles.chapterModalSheet}>
+    <Modal visible={activePanel === "chapters" && !playerLocked} transparent statusBarTranslucent navigationBarTranslucent animationType="fade"><Pressable style={styles.modalBackdrop} onPress={() => setActivePanel(null)}><View style={styles.chapterModalSheet}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}><Text style={styles.modalTitle}>{t("player.chapters")}</Text><Pressable onPress={() => setActivePanel(null)}><X size={20} color={nothing.muted} weight="bold" /></Pressable></View>
       {duration <= 0 ? <Text style={styles.chapterEmptyText}>No duration data available yet.</Text> : (
         <View style={styles.chapterList}>
