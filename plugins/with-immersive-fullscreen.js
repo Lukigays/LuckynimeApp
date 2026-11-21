@@ -1,18 +1,18 @@
-const { withAndroidStyles } = require("expo/config-plugins");
+const { withAndroidStyles, withMainActivity } = require("expo/config-plugins");
 
 /**
  * Ensures true edge-to-edge immersive fullscreen video playback on Android:
  * - Disables forced navigation bar contrast scrim behind gesture pill bars
- * - Extends fullscreen video smoothly into short-edge display cutouts in landscape
+ * - Extends fullscreen video across the entire physical screen including
+ *   camera punch-hole / display cutout regions in landscape (API 28–36+)
  */
 module.exports = function withImmersiveFullscreen(config) {
-  return withAndroidStyles(config, (cfg) => {
+  config = withAndroidStyles(config, (cfg) => {
     const styles = cfg.modResults?.resources?.style ?? [];
     const appTheme = styles.find((s) => s?.$?.name === "AppTheme");
     if (appTheme) {
       appTheme.item = Array.isArray(appTheme.item) ? appTheme.item : [];
 
-      // Disable forced contrast scrim on Android 10+ gesture pill bar
       const contrastIdx = appTheme.item.findIndex(
         (it) => it?.$?.name === "android:enforceNavigationBarContrast"
       );
@@ -26,7 +26,6 @@ module.exports = function withImmersiveFullscreen(config) {
         appTheme.item.push(contrastItem);
       }
 
-      // Allow fullscreen landscape video to span edge-to-edge across camera cutouts
       const cutoutIdx = appTheme.item.findIndex(
         (it) => it?.$?.name === "android:windowLayoutInDisplayCutoutMode"
       );
@@ -42,4 +41,27 @@ module.exports = function withImmersiveFullscreen(config) {
     }
     return cfg;
   });
+
+  config = withMainActivity(config, (cfg) => {
+    let contents = cfg.modResults.contents;
+    if (!contents.includes("LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS")) {
+      const cutoutSnippet = [
+        "    super.onCreate(null)",
+        "    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {",
+        "      window.attributes = window.attributes.apply {",
+        "        layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS",
+        "      }",
+        "    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {",
+        "      window.attributes = window.attributes.apply {",
+        "        layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES",
+        "      }",
+        "    }",
+      ].join("\n");
+      contents = contents.replace("    super.onCreate(null)", cutoutSnippet);
+      cfg.modResults.contents = contents;
+    }
+    return cfg;
+  });
+
+  return config;
 };

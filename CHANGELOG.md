@@ -6,6 +6,11 @@ This is the public record of meaningful native Android releases. For the current
 
 ## Unreleased
 
+## v1.1.3 — Mode Full Semua Layar & Layar Normal (16:9) + Tampilan Atas Player Bersih
+
+- **Tombol Full Layar <-> Normal (16:9) & Cubit 2 Jari (Pinch-to-Zoom)**: Menambahkan tombol langsung **Full Layar / Normal** di kontrol bawah fullscreen serta gesture cubit 2 jari (regangkan untuk penuh ke seluruh layar tanpa sisa bar hitam termasuk area kamera depan, cubit masuk untuk kembali ke ukuran normal 16:9).
+- **Hapus Ikon Pengaturan & Subtitle di Atas Video**: Menghilangkan ikon subtitle dan pengaturan di pojok kanan atas video agar tampilan atas player jauh lebih bersih.
+
 ## v1.1.2 — Fullscreen Immersive Penuh (Sembunyikan Pill Bar / Navigation Bar Android)
 
 - **Sembunyikan Pill Bar & Navigation Bar Saat Fullscreen**: Mengintegrasikan modul native `expo-navigation-bar` + sinkronisasi `RNEdgeToEdge` dalam mode *Sticky Immersive* (`overlay-swipe`), sehingga garis gesture pill bar / tombol navigasi Android di bagian bawah layar benar-benar hilang saat menonton fullscreen dan tidak muncul saat layar diketuk.

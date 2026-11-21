@@ -353,8 +353,35 @@ export default function WatchScreen() {
   const [refreshNonce, setRefreshNonce] = useState(0);
   const [sourceRevision, setSourceRevision] = useState(0);
   const [speed, setSpeed] = useState(1);
-  // Video fit: "contain" letterboxes, "cover" crop-zooms to fill the shell.
+  // Video fit: "contain" letterboxes (16:9 normal), "cover" zoom-fills the entire screen.
   const [fillMode, setFillMode] = useState<"contain" | "cover">("contain");
+  const [fillModeToast, setFillModeToast] = useState<string | null>(null);
+  const fillModeToastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fillModeRef = useRef<"contain" | "cover">("contain");
+  useEffect(() => { fillModeRef.current = fillMode; }, [fillMode]);
+  const showFillToast = useCallback((mode: "contain" | "cover") => {
+    if (fillModeToastTimer.current) clearTimeout(fillModeToastTimer.current);
+    setFillModeToast(mode === "cover" ? "Full Semua Layar" : "Layar Normal (16:9)");
+    fillModeToastTimer.current = setTimeout(() => {
+      setFillModeToast(null);
+      fillModeToastTimer.current = null;
+    }, 1300);
+  }, []);
+  const applyFillMode = useCallback((nextMode: "contain" | "cover", silent = false) => {
+    setFillMode(nextMode);
+    fillModeRef.current = nextMode;
+    void AsyncStorage.setItem("luckynime.watch.fillMode.v1", nextMode).catch(() => {});
+    if (!silent) {
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+      showFillToast(nextMode);
+    }
+  }, [showFillToast]);
+  const toggleFillMode = useCallback(() => {
+    const next = fillModeRef.current === "cover" ? "contain" : "cover";
+    applyFillMode(next);
+  }, [applyFillMode]);
+  const applyFillModeRef = useRef(applyFillMode);
+  useEffect(() => { applyFillModeRef.current = applyFillMode; }, [applyFillMode]);
   const [preferencesReady, setPreferencesReady] = useState(false);
   const [showControls, setShowControls] = useState(true);
   type ActivePanel = "settings" | "subtitles" | "speed" | "server" | "chapters" | "source" | "quality" | "download" | "language" | null;
@@ -882,8 +909,9 @@ export default function WatchScreen() {
     void Promise.all([
       AsyncStorage.getItem("luckynime.watch.preferences"),
       AsyncStorage.getItem("luckynime.watch.autonext.v2"),
+      AsyncStorage.getItem("luckynime.watch.fillMode.v1"),
       loadPlaybackSettings(),
-    ]).then(([stored, storedAutoNextV2, pb]) => {
+    ]).then(([stored, storedAutoNextV2, storedFillMode, pb]) => {
       if (!active) return;
       if (stored) {
         try {
@@ -895,6 +923,10 @@ export default function WatchScreen() {
         setAutoPlayNext(storedAutoNextV2 === "true");
       } else {
         setAutoPlayNext(true);
+      }
+      if (storedFillMode === "cover" || storedFillMode === "contain") {
+        setFillMode(storedFillMode);
+        fillModeRef.current = storedFillMode;
       }
       if (pb) {
         setGesturesEnabled(pb.gestures);
@@ -1874,9 +1906,20 @@ export default function WatchScreen() {
   //   left 40% double/triple → -10s / -20s · right 40% → +10s / +30s · center double → play/pause
   // Modes are exclusive: pending → swiping | holding | released-as-tap. Moving
   // cancels holding, holding ignores swipes, taps require <10px movement.
-  type GestureMode = "idle" | "pending" | "swiping" | "holding";
+  type GestureMode = "idle" | "pending" | "swiping" | "holding" | "pinching";
   type GestureZone = "left" | "center" | "right";
   const gestureModeRef = useRef<GestureMode>("idle");
+  const pinchStartDistRef = useRef(0);
+  const pinchTriggeredRef = useRef(false);
+  const manualFullscreenRef = useRef(manualFullscreen);
+  useEffect(() => { manualFullscreenRef.current = manualFullscreen; }, [manualFullscreen]);
+  const enterFullscreenRef = useRef<() => void>(() => {});
+  const touchDist = (touches: readonly { pageX: number; pageY: number }[]) => {
+    if (!touches || touches.length < 2) return 0;
+    const dx = touches[0].pageX - touches[1].pageX;
+    const dy = touches[0].pageY - touches[1].pageY;
+    return Math.hypot(dx, dy);
+  };
   const gestureStartX = useRef(0);
   const gestureStartY = useRef(0);
   const gestureStartTime = useRef(0);
@@ -1922,6 +1965,7 @@ export default function WatchScreen() {
       if (unlockArmTimer.current) clearTimeout(unlockArmTimer.current);
       if (tapCountTimer.current) clearTimeout(tapCountTimer.current);
       if (holdSeekTimeout.current) clearTimeout(holdSeekTimeout.current);
+      if (fillModeToastTimer.current) clearTimeout(fillModeToastTimer.current);
       pendingMultiSeekRef.current = null;
     };
   }, []);
@@ -1978,8 +2022,20 @@ export default function WatchScreen() {
         onStartShouldSetPanResponder: () => !playerLocked,
         onMoveShouldSetPanResponder: () => !playerLocked,
 
-        onPanResponderGrant: (_evt, gesture) => {
+        onPanResponderGrant: (evt, gesture) => {
           if (playerLocked) { gestureModeRef.current = "idle"; return; }
+          if (evt.nativeEvent.touches && evt.nativeEvent.touches.length >= 2) {
+            if (singleTapTimeout.current) { clearTimeout(singleTapTimeout.current); singleTapTimeout.current = null; }
+            if (holdSeekTimeout.current) { clearTimeout(holdSeekTimeout.current); holdSeekTimeout.current = null; }
+            pendingMultiSeekRef.current = null;
+            cancelLongPress();
+            stopHoldSpeed();
+            clearSkipHold();
+            gestureModeRef.current = "pinching";
+            pinchStartDistRef.current = touchDist(evt.nativeEvent.touches);
+            pinchTriggeredRef.current = false;
+            return;
+          }
           const now = Date.now();
           gestureStartX.current = gesture.x0;
           gestureStartY.current = gesture.y0;
@@ -2089,8 +2145,36 @@ export default function WatchScreen() {
           }
         },
 
-        onPanResponderMove: (_evt, gesture) => {
+        onPanResponderMove: (evt, gesture) => {
           if (playerLocked || gestureModeRef.current === "idle") return;
+          if (evt.nativeEvent.touches && evt.nativeEvent.touches.length >= 2) {
+            if (gestureModeRef.current !== "pinching") {
+              if (singleTapTimeout.current) { clearTimeout(singleTapTimeout.current); singleTapTimeout.current = null; }
+              if (holdSeekTimeout.current) { clearTimeout(holdSeekTimeout.current); holdSeekTimeout.current = null; }
+              pendingMultiSeekRef.current = null;
+              cancelLongPress();
+              stopHoldSpeed();
+              clearSkipHold();
+              gestureModeRef.current = "pinching";
+              pinchStartDistRef.current = touchDist(evt.nativeEvent.touches);
+              pinchTriggeredRef.current = false;
+              return;
+            }
+            const dist = touchDist(evt.nativeEvent.touches);
+            if (!pinchTriggeredRef.current && pinchStartDistRef.current > 10 && dist > 10) {
+              const deltaDist = dist - pinchStartDistRef.current;
+              if (deltaDist > 34) {
+                pinchTriggeredRef.current = true;
+                if (!manualFullscreenRef.current) enterFullscreenRef.current();
+                applyFillModeRef.current("cover");
+              } else if (deltaDist < -34) {
+                pinchTriggeredRef.current = true;
+                applyFillModeRef.current("contain");
+              }
+            }
+            return;
+          }
+          if (gestureModeRef.current === "pinching") return;
           const mode = gestureModeRef.current;
           const absDx = Math.abs(gesture.dx);
           const absDy = Math.abs(gesture.dy);
@@ -2170,6 +2254,11 @@ export default function WatchScreen() {
           gestureModeRef.current = "idle";
           cancelLongPress();
 
+          if (mode === "pinching") {
+            pinchStartDistRef.current = 0;
+            pinchTriggeredRef.current = false;
+            return;
+          }
           if (mode === "holding") {
             stopHoldSpeed();
             clearSkipHold();
@@ -2866,7 +2955,7 @@ export default function WatchScreen() {
       {embedSource && !source ? <EmbedPlayer uri={embedSource.url} headers={nativePlaybackHeaders(playbackHeaders)} onError={() => handleProviderBlockedRef.current("player")} onLoaded={() => { embedReadyRef.current = true; setShowControls(true); }} /> : null}
       {source ? <Video key={activeProvider?.id ?? "default"} ref={videoRef} style={StyleSheet.absoluteFill} useTextureView={Platform.OS === "android"} source={{ uri: videoSourceUri, headers: videoSourceHeaders, type: videoContentType, bufferConfig: videoBufferConfig }}
         selectedTextTrack={{ type: "disabled" } as any}
-        paused={!isPlaying} rate={is2xSeeking ? 2.0 : speed} resizeMode={fillMode} muted={muted} volume={volume}
+        paused={!isPlaying} rate={is2xSeeking ? 2.0 : speed} resizeMode={manualFullscreen ? fillMode : "contain"} muted={muted} volume={volume}
         maxBitRate={adaptiveBitrateCap ?? undefined}
         onLoad={(data: OnLoadData) => {
           if (__DEV__) {
@@ -3026,7 +3115,7 @@ export default function WatchScreen() {
           ]}
           pointerEvents={showControls && !playerLocked ? "box-none" : "none"}
         >
-          {/* TOP BAR (clean & minimal) */}
+          {/* TOP BAR (clean & minimal — right-side subtitle & settings icons removed) */}
           <View style={[styles.topBar, manualFullscreen && styles.topBarFullscreen]} pointerEvents="box-none">
             <Pressable
               onPress={handleBackPress}
@@ -3044,34 +3133,6 @@ export default function WatchScreen() {
             ) : (
               <View pointerEvents="none" style={{ flex: 1 }} />
             )}
-            <View style={styles.topRightRow} pointerEvents="box-none">
-              <Pressable
-                onPress={() => setActivePanel(activePanel === "subtitles" ? null : "subtitles")}
-                accessibilityRole="button"
-                accessibilityLabel="Subtitles"
-                style={[styles.iconButton, activePanel === "subtitles" && styles.iconButtonActive]}
-                hitSlop={8}
-              >
-                <Subtitles
-                  size={18}
-                  color={activePanel === "subtitles" ? "#FF0000" : "rgba(255,255,255,0.9)"}
-                  weight="bold"
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => setActivePanel(activePanel === "settings" ? null : "settings")}
-                accessibilityRole="button"
-                accessibilityLabel="Settings"
-                style={[styles.iconButton, activePanel === "settings" && styles.iconButtonActive]}
-                hitSlop={8}
-              >
-                <Gear
-                  size={18}
-                  color={activePanel === "settings" ? "#FF0000" : "rgba(255,255,255,0.9)"}
-                  weight="bold"
-                />
-              </Pressable>
-            </View>
           </View>
 
           {/* CENTER 5-BUTTON TRANSPORT ROW */}
@@ -3239,6 +3300,26 @@ export default function WatchScreen() {
                 >
                   <Text style={styles.bottomControlLabel}>{speedBadge}</Text>
                 </Pressable>
+
+                {/* Full-screen stretch/zoom toggle (Full Semua Layar <-> Normal 16:9) */}
+                {manualFullscreen ? (
+                  <Pressable
+                    onPress={toggleFillMode}
+                    accessibilityRole="button"
+                    accessibilityLabel={fillMode === "cover" ? "Ubah ke layar normal 16:9" : "Ubah ke full semua layar"}
+                    style={[styles.fillModeBtn, fillMode === "cover" && styles.fillModeBtnActive]}
+                    hitSlop={8}
+                  >
+                    {fillMode === "cover" ? (
+                      <ArrowsIn size={13} color="#FFFFFF" weight="bold" />
+                    ) : (
+                      <ArrowsOut size={13} color="#FFFFFF" weight="bold" />
+                    )}
+                    <Text style={styles.fillModeBtnText}>
+                      {fillMode === "cover" ? "Normal" : "Full Layar"}
+                    </Text>
+                  </Pressable>
+                ) : null}
 
                 {/* Fullscreen corners */}
                 <Pressable
@@ -4405,6 +4486,48 @@ const styles = StyleSheet.create({
     height: 26,
     alignItems: "center",
     justifyContent: "center",
+  },
+  fillModeBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.16)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.28)",
+  },
+  fillModeBtnActive: {
+    backgroundColor: "rgba(229,9,20,0.88)",
+    borderColor: "rgba(255,255,255,0.45)",
+  },
+  fillModeBtnText: {
+    color: "#FFFFFF",
+    fontSize: 11.5,
+    fontWeight: "800",
+    letterSpacing: 0.1,
+  },
+  fillModeToast: {
+    position: "absolute",
+    top: 16,
+    alignSelf: "center",
+    zIndex: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 13,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: "rgba(12,12,15,0.84)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
+  },
+  fillModeToastText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.15,
   },
   edgeSeekbarHitbox: {
     width: "100%",
