@@ -6,6 +6,11 @@ This is the public record of meaningful native Android releases. For the current
 
 ## Unreleased
 
+## v1.1.5 — Menu Pilihan Kualitas Video Ala Wibuku & Auto-Resume Instan Tanpa Klik Lanjutkan
+
+- **Menu `Pilihan Kualitas Video` Baru**: Bottom sheet gelap dengan tampilan identik (`360P (Hemat)`, `480P (Standar)` hijau, `720P (Bagus)` oranye, `1080P (Premium)` emas) lengkap dengan centang aktif & deskripsi detail, sekaligus mempertahankan detik tontonan saat berganti kualitas.
+- **Auto-Resume Otomatis Tanpa Tombol "Lanjutkan"**: Anime otomatis langsung melanjutkan pemutaran tepat di menit & detik terakhir yang ditonton (baik dari player penuh maupun mini player) tanpa perlu menekan tombol `Lanjutkan`.
+
 ## v1.1.4 — NuePet Zoo Full-Screen Tanpa Bar Web Atas & Sinkronisasi Penuh Akun
 
 - **Hapus Bar Web Atas di NuePet Zoo**: Menghilangkan bar hitam in-app browser di bagian atas NuePet Zoo (beserta ikon buka web luar & refresh) sehingga tampilan langit 3D langsung penuh menyatu dengan layar aplikasi, dilengkapi tombol kembali bulat yang menyatu di dalam HUD game.

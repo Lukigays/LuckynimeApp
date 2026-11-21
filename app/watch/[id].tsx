@@ -3,7 +3,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import { parseRouteEpisode, parseRouteId } from "@/lib/route-params";
-import { ActivityIndicator, Alert, Animated, BackHandler, Dimensions, FlatList, LayoutChangeEvent, Linking, Modal, PanResponder, Platform, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Animated, AppState, BackHandler, Dimensions, FlatList, LayoutChangeEvent, Linking, Modal, PanResponder, Platform, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View } from "react-native";
 import { Image } from "expo-image";
 import { UniversalVideo as Video } from "@/components/universal-video";
 import type { OnProgressData, OnLoadData, OnBufferData, VideoRef } from "react-native-video";
@@ -639,6 +639,9 @@ export default function WatchScreen() {
   const parsedCuesRef = useRef<SubtitleCue[]>([]);
   const currentTimeRef = useRef(0);
   currentTimeRef.current = currentTime;
+  const durationRef = useRef(0);
+  durationRef.current = duration;
+  const lastLocalHistorySave = useRef(0);
   // Timing-offset mirror: the subtitle fetch effect reads it without
   // re-running whenever the user nudges the value, while the active-cue
   // effect below re-runs on every offset change.
@@ -842,6 +845,8 @@ export default function WatchScreen() {
     rebufferSeen.current = false;
     intentionalSeekUntil.current = 0;
     pendingResume.current = null;
+    initialHistoryResumeApplied.current = false;
+    historyResumeRequestedFor.current = null;
     setResumePosition(null);
   }, []);
 
@@ -1258,22 +1263,37 @@ export default function WatchScreen() {
     return () => clearTimeout(timer);
   }, [embedSource, source]);
 
+  const tryApplyAutoResume = useCallback((knownDuration?: number) => {
+    if (initialHistoryResumeApplied.current) return;
+    const target = pendingResume.current;
+    if (typeof target !== "number" || !Number.isFinite(target) || target <= 2) return;
+    const dur = knownDuration && knownDuration > 0 ? knownDuration : durationRef.current;
+    if (!sourceStarted.current && dur <= 0) return;
+    if (dur > 0 && (target >= dur - 8 || target / dur >= 0.96)) {
+      pendingResume.current = null;
+      initialHistoryResumeApplied.current = true;
+      setResumePosition(null);
+      return;
+    }
+    initialHistoryResumeApplied.current = true;
+    pendingResume.current = null;
+    setResumePosition(null);
+    intentionalSeekUntil.current = Date.now() + 1_800;
+    lastStablePlaybackTime.current = target;
+    videoRef.current?.seek(target);
+    currentTimeRef.current = target;
+    setCurrentTime(target);
+  }, []);
+
   useEffect(() => {
     if (hasConfirmedPlaybackStart({ isPlaying, currentTime, firstFrameRendered: sourceFirstFrame.current })) {
       sourceStarted.current = true;
       void markMissionProgress("misi-anime");
     }
-    const pendingPosition = pendingResume.current;
-    if (shouldApplyInitialHistoryResume({
-      currentTime, hasPendingResume: isResumablePosition(pendingPosition),
-      isPlaying, resumeAppliedForSource: initialHistoryResumeApplied.current, status: playerStatus,
-    })) {
-      initialHistoryResumeApplied.current = true;
-      videoRef.current?.seek(pendingPosition!);
-      pendingResume.current = null;
-      setResumePosition(null);
+    if (!initialHistoryResumeApplied.current && pendingResume.current !== null && (sourceStarted.current || isPlaying || playerStatus === "playing")) {
+      tryApplyAutoResume();
     }
-  }, [currentTime, isPlaying, playerStatus]);
+  }, [currentTime, isPlaying, playerStatus, tryApplyAutoResume]);
 
   useEffect(() => {
     if (playerStatus !== "error" || !source?.url || sourceFailureHandled.current === source.url) return;
@@ -1350,76 +1370,109 @@ export default function WatchScreen() {
     return () => { cancelled = true; controller.abort(); };
   }, [animeId, animeQuery.data, applySkipSegments, duration, episode]);
 
-  // ── History resume ──
-  // Conflict rule (Track 4): prefer max(local, server), not last-write. A
-  // device that kept watching offline must not lose its lead to an older
-  // server row, and vice versa.
-  useEffect(() => {
-    if (!history.history.isSuccess) return;
-    const historyKey = `${animeId}:${episode}`;
-    if (historyResumeRequestedFor.current === historyKey) return;
-    historyResumeRequestedFor.current = historyKey;
-    setResumePosition(null);
-    pendingResume.current = null;
-    const serverEntry = history.history.data?.find((item) => item.anime_id === animeId && item.episode_number === episode);
-    const server = serverEntry ? { progress: serverEntry.progress, duration: serverEntry.duration } : null;
-    void AsyncStorage.getItem(`luckynime-watch-local:${animeId}:${episode}`).then((stored) => {
-      let local: { progress: number; duration: number } | null = null;
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored) as { progress?: number; duration?: number };
-          if (Number.isFinite(parsed.progress) && Number.isFinite(parsed.duration)) {
-            local = { progress: Number(parsed.progress), duration: Number(parsed.duration) };
-          }
-        } catch { /* ignore malformed */ }
-      }
-      const best = resolveHistoryResume(local, server);
-      if (best !== null) {
-        pendingResume.current = best;
-        setResumePosition(best);
-      }
-    }).catch(() => {
-      const best = resolveHistoryResume(null, server);
-      if (best !== null) {
-        pendingResume.current = best;
-        setResumePosition(best);
-      }
-    });
-  }, [animeId, episode, history.history.data, history.history.isSuccess]);
+  // ── Instant Automatic History Resume (Local + Supabase, zero button click needed) ──
+  const pickValidResume = useCallback((progress?: number | null, total?: number | null): number | null => {
+    const p = Number(progress);
+    const d = Number(total);
+    if (!Number.isFinite(p) || p <= 3) return null;
+    if (Number.isFinite(d) && d > 0) {
+      if (p >= d - 8 || p / d >= 0.96) return null;
+    }
+    return p;
+  }, []);
 
-  // Local resume fallback for logged-out users (Anilab parity).
+  // 1) Read local AsyncStorage immediately on episode mount (0ms network wait) for ALL users
   useEffect(() => {
-    if (auth.user || !Number.isFinite(animeId) || animeId <= 0) return;
-    const historyKey = `local:${animeId}:${episode}`;
-    if (historyResumeRequestedFor.current === historyKey) return;
-    historyResumeRequestedFor.current = historyKey;
+    if (!Number.isFinite(animeId) || animeId <= 0) return;
+    let cancelled = false;
     void AsyncStorage.getItem(`luckynime-watch-local:${animeId}:${episode}`).then((stored) => {
-      if (!stored) return;
+      if (cancelled || !stored) return;
       try {
         const parsed = JSON.parse(stored) as { progress?: number; duration?: number };
-        const progress = Number(parsed.progress);
-        const total = Number(parsed.duration);
-        if (Number.isFinite(progress) && progress > RESUME_MIN_TIME && Number.isFinite(total) && progress < total - 10) {
-          pendingResume.current = progress;
-          setResumePosition(progress);
+        const candidate = pickValidResume(parsed.progress, parsed.duration);
+        if (candidate !== null && !initialHistoryResumeApplied.current) {
+          const prev = pendingResume.current ?? 0;
+          if (candidate > prev) {
+            pendingResume.current = candidate;
+            tryApplyAutoResume();
+          }
         }
-      } catch {}
+      } catch { /* ignore malformed */ }
     }).catch(() => {});
-  }, [animeId, auth.user, episode]);
+    return () => { cancelled = true; };
+  }, [animeId, episode, pickValidResume, tryApplyAutoResume]);
 
-  // Anonymous progress is also remembered locally while watching.
+  // 2) Merge with Supabase watch_history when available — prefer max(local, server)
   useEffect(() => {
-    if (auth.user || !source || currentTime < 1 || duration <= 0 || currentTime - lastHistorySync.current < 10) return;
-    lastHistorySync.current = currentTime;
-    void AsyncStorage.setItem(`luckynime-watch-local:${animeId}:${episode}`, JSON.stringify({ progress: currentTime, duration, savedAt: Date.now() })).catch(() => {});
-  }, [animeId, auth.user, currentTime, duration, episode, source]);
+    if (!history.history.isSuccess || !Number.isFinite(animeId) || animeId <= 0) return;
+    const serverEntry = history.history.data?.find((item) => item.anime_id === animeId && item.episode_number === episode);
+    const serverCandidate = serverEntry ? pickValidResume(serverEntry.progress, serverEntry.duration) : null;
+    if (serverCandidate === null) return;
+    const historyKey = `${animeId}:${episode}:${Math.floor(serverCandidate)}`;
+    if (historyResumeRequestedFor.current === historyKey) return;
+    historyResumeRequestedFor.current = historyKey;
 
-  // ── History sync ──
+    if (!initialHistoryResumeApplied.current) {
+      const best = Math.max(pendingResume.current ?? 0, serverCandidate);
+      pendingResume.current = best;
+      tryApplyAutoResume();
+    } else if (currentTimeRef.current < 8 && serverCandidate > currentTimeRef.current + 5) {
+      // Server history arrived slightly after video started from 0s — jump right to saved minute
+      pendingResume.current = serverCandidate;
+      initialHistoryResumeApplied.current = false;
+      tryApplyAutoResume();
+    }
+  }, [animeId, episode, history.history.data, history.history.isSuccess, pickValidResume, tryApplyAutoResume]);
+
+  const flushWatchProgress = useCallback((forceServer = false) => {
+    const pos = currentTimeRef.current;
+    const dur = durationRef.current;
+    if (!Number.isFinite(animeId) || animeId <= 0 || !Number.isFinite(pos) || pos < 3 || !Number.isFinite(dur) || dur <= 0) {
+      return;
+    }
+    void AsyncStorage.setItem(
+      `luckynime-watch-local:${animeId}:${episode}`,
+      JSON.stringify({ progress: pos, duration: dur, savedAt: Date.now() }),
+    ).catch(() => {});
+    if (auth.user && (forceServer || Math.abs(pos - lastHistorySync.current) >= 8)) {
+      lastHistorySync.current = pos;
+      history.save.mutate({
+        animeId,
+        animeTitle: title,
+        animeImage: image || null,
+        episode,
+        episodeTitle: selectedEpisode?.title || null,
+        episodeThumbnail: selectedEpisode?.thumbnail || null,
+        progress: pos,
+        duration: dur,
+      });
+    }
+  }, [animeId, auth.user, episode, history.save, image, selectedEpisode?.thumbnail, selectedEpisode?.title, title]);
+
+  const flushWatchProgressRef = useRef(flushWatchProgress);
+  useEffect(() => { flushWatchProgressRef.current = flushWatchProgress; }, [flushWatchProgress]);
+
+  // Save locally every 3s for ALL users (logged-in + guest) and sync to Supabase every 8s
   useEffect(() => {
-    if (!auth.user || !source || currentTime < 1 || duration <= 0 || currentTime - lastHistorySync.current < 10) return;
-    lastHistorySync.current = currentTime;
-    history.save.mutate({ animeId, animeTitle: title, animeImage: image || null, episode, episodeTitle: selectedEpisode?.title || null, episodeThumbnail: selectedEpisode?.thumbnail || null, progress: currentTime, duration });
-  }, [animeId, auth.user, currentTime, duration, episode, history.save, image, selectedEpisode?.title, selectedEpisode?.thumbnail, source, title]);
+    if (!source || currentTime < 3 || duration <= 0) return;
+    if (Math.abs(currentTime - lastLocalHistorySave.current) >= 3) {
+      lastLocalHistorySave.current = currentTime;
+      flushWatchProgress(false);
+    }
+  }, [currentTime, duration, flushWatchProgress, source]);
+
+  // Flush exact last-watched timestamp on backgrounding or leaving the watch screen
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (state) => {
+      if (state !== "active") {
+        flushWatchProgressRef.current(true);
+      }
+    });
+    return () => {
+      sub.remove();
+      flushWatchProgressRef.current(true);
+    };
+  }, [animeId, episode]);
 
   useEffect(() => {
     if (!auth.user || !source || currentTime < 1 || duration <= 0 || providerSync.connected.length === 0 || currentTime - lastProviderSync.current < 90) return;
@@ -1740,11 +1793,11 @@ export default function WatchScreen() {
     setError(null);
   };
 
-  const selectQuality = (next: StreamSource) => {
-    // Quality switch preserves position too: the variant playlist starts at
-    // 0, so stash the current time for the resume effect to re-apply.
-    const stashed = resolveResumeOnSwitch(currentTime, duration);
-    if (stashed !== null) {
+  const selectQuality = (next: StreamSource, explicitLabel?: string) => {
+    // Quality switch preserves position even if watched < 30s so switching
+    // resolution never restarts the episode from 00:00.
+    const stashed = currentTimeRef.current > 1 ? currentTimeRef.current : resolveResumeOnSwitch(currentTime, duration);
+    if (stashed !== null && stashed > 1) {
       pendingResume.current = stashed;
       initialHistoryResumeApplied.current = false;
     }
@@ -1755,11 +1808,11 @@ export default function WatchScreen() {
     setUseSourceProxy(isProxySource(next));
     setSourceRevision((v) => v + 1);
     setPlaybackHeaders(stream?.headers ?? activeProvider?.headers);
-    setRequestedQuality(isAutoQuality(next) ? "auto" : next.quality || "auto");
+    setRequestedQuality(explicitLabel || (isAutoQuality(next) ? "auto" : next.quality || "auto"));
     setActivePanel(null);
     // Remember manual quality per server; picking Auto (or a saved offline
     // copy) clears it. The parse effect re-applies it on the next Auto mount.
-    const rememberedLabel = (next.quality || "").split("·")[0].trim().toLowerCase();
+    const rememberedLabel = (explicitLabel || next.quality || "").split("·")[0].trim().toLowerCase();
     const persistable = rememberedLabel && rememberedLabel !== "auto" && !/saved/i.test(next.quality || "") ? rememberedLabel : null;
     void rememberProviderQuality(activeProvider?.id, persistable);
   };
@@ -2476,6 +2529,7 @@ export default function WatchScreen() {
 
   const goToEpisode = useCallback((targetEpisode: number) => {
     if (!canonicalEpisodes.some((item) => item.number === targetEpisode)) return;
+    flushWatchProgressRef.current(true);
 
     const isFuture = isConfirmedFutureRelease({
       episodeNumber: targetEpisode,
@@ -2799,6 +2853,7 @@ export default function WatchScreen() {
       exitFullscreen();
       return;
     }
+    flushWatchProgressRef.current(true);
     const activeUri = videoSourceUri || source?.url || embedSource?.url;
     if (activeUri && animeId > 0 && Number.isFinite(currentTimeRef.current || currentTime)) {
       minimizePlayer({
@@ -2920,16 +2975,75 @@ export default function WatchScreen() {
   const bufferPct = duration > 0 && playableDuration > 0 ? Math.min(100, (playableDuration / duration) * 100) : 0;
   // Segmented track tint from real OP/ED ranges (provider + AniSkip merged).
   const chapterTrack = useMemo(() => chapterTrackSegments(skipSegments, duration), [skipSegments, duration]);
-  const playerQualityBadge = useMemo(() => {
-    if (displayedQuality && displayedQuality.toLowerCase() !== "auto") {
-      return displayedQuality;
-    }
-    if (liveHeight && liveHeight > 0) {
-      return `${liveHeight}p`;
-    }
-    const firstSpecific = displayedQualityOptions.find((o) => o.label.toLowerCase() !== "auto");
-    return firstSpecific?.label || displayedQuality || "720p";
-  }, [displayedQuality, liveHeight, displayedQualityOptions]);
+  const activeQualityTierHeight = useMemo<360 | 480 | 720 | 1080>(() => {
+    const parseHeight = (raw?: string | null): number | null => {
+      if (!raw) return null;
+      const m = String(raw).match(/(2160|1440|1080|720|480|360)/);
+      return m ? Number(m[1]) : null;
+    };
+    const h =
+      parseHeight(requestedQuality !== "auto" ? requestedQuality : null) ??
+      parseHeight(displayedQuality !== "Auto" ? displayedQuality : null) ??
+      (liveHeight && liveHeight > 0 ? liveHeight : null) ??
+      parseHeight(displayedQualityOptions.find((o) => o.label.toLowerCase() !== "auto")?.label) ??
+      720;
+    if (h <= 360) return 360;
+    if (h <= 480) return 480;
+    if (h <= 720) return 720;
+    return 1080;
+  }, [requestedQuality, displayedQuality, liveHeight, displayedQualityOptions]);
+
+  const playerQualityBadge = useMemo(() => `${activeQualityTierHeight}p`, [activeQualityTierHeight]);
+
+  const handleSelectWibukuQuality = useCallback(
+    (tier: { height: 360 | 480 | 720 | 1080; code: string; bitrateCap: number | null }) => {
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+      setActivePanel(null);
+      setRequestedQuality(tier.code);
+      void savePlaybackSetting("quality", tier.code);
+
+      const heightOf = (opt: WatchQualityOption): number | null => {
+        const m = String(opt.label || opt.requestQuality || "").match(/(2160|1440|1080|720|480|360)/);
+        return m ? Number(m[1]) : null;
+      };
+
+      const nonAuto = displayedQualityOptions.filter((opt) => opt.label.toLowerCase() !== "auto");
+      const exact = nonAuto.find((opt) => heightOf(opt) === tier.height);
+      if (exact) {
+        if (exact.isAdaptiveCap) {
+          setAdaptiveBitrateCap(exact.maxVideoBitrate ?? tier.bitrateCap);
+          return;
+        }
+        if (exact.source) {
+          selectQuality(exact.source, tier.code);
+          return;
+        }
+        if (source) {
+          void selectAdaptiveQuality(exact);
+          return;
+        }
+      }
+
+      // Closest available rendition at or below requested height (or highest if 1080p)
+      const withSource = nonAuto
+        .map((opt) => ({ opt, h: heightOf(opt) ?? 0 }))
+        .filter((x) => x.h > 0 && Boolean(x.opt.source))
+        .sort((a, b) => b.h - a.h);
+      if (withSource.length > 0) {
+        const bestBelow = withSource.find((x) => x.h <= tier.height) ?? withSource[withSource.length - 1];
+        if (bestBelow?.opt.source) {
+          selectQuality(bestBelow.opt.source, tier.code);
+          return;
+        }
+      }
+
+      // Master adaptive HLS/DASH fallback: apply smooth ExoPlayer bitrate cap
+      setAdaptiveBitrateCap(tier.bitrateCap);
+      void rememberProviderQuality(activeProvider?.id, tier.code);
+    },
+    [activeProvider?.id, displayedQualityOptions, selectAdaptiveQuality, selectQuality, source],
+  );
+
   const speedBadge = useMemo(() => `${Number.isInteger(speed) ? speed : speed}x`, [speed]);
 
   useImmersiveSystemBars(manualFullscreen, [showControls, activePanel, reportModalVisible]);
@@ -2961,10 +3075,12 @@ export default function WatchScreen() {
           if (__DEV__) {
             console.log(`[PlaybackMetrics] Metadata Loaded (onLoad): duration=${data.duration}s t=${Date.now() - screenMountTime}ms provider=${activeProvider?.provider ?? activeProvider?.id ?? "?"}`);
           }
+          durationRef.current = data.duration;
           setDuration(data.duration);
           sourceStarted.current = true;
           setLastPlayerError(null);
           setShowControls(true);
+          tryApplyAutoResume(data.duration);
         }}
         onReadyForDisplay={() => {
           if (!sourceFirstFrame.current) {
@@ -2974,6 +3090,7 @@ export default function WatchScreen() {
             }
             setPlayerStatus("playing");
             setIsPlaying(true);
+            tryApplyAutoResume(durationRef.current);
           }
         }}
         onProgress={handleVideoProgress}
@@ -3228,23 +3345,6 @@ export default function WatchScreen() {
 
           {/* BOTTOM CONTROLS + EDGE-TO-EDGE RED SEEKBAR */}
           <View style={styles.bottomDeck} pointerEvents="box-none">
-            {(resumePosition && (duration <= 0 || resumePosition < duration * 0.9)) ? (
-              <View style={[styles.contextActions, { paddingHorizontal: manualFullscreen ? 20 : 12 }]}>
-                <Pressable
-                  onPress={() => {
-                    pendingResume.current = resumePosition;
-                    videoRef.current?.seek(resumePosition);
-                    setResumePosition(null);
-                  }}
-                  accessibilityRole="button"
-                  style={styles.resumeBtn}
-                >
-                  <Play size={12} color="#FFF" weight="fill" />
-                  <Text style={styles.resumeBtnText}>{`Lanjutkan ${formatClockTime(resumePosition)}`}</Text>
-                </Pressable>
-              </View>
-            ) : null}
-
             {/* Bottom info & action row: 00:06 / 24:12  |  Autonext  360p  1x  [ ] */}
             <View
               style={[
@@ -3945,120 +4045,94 @@ export default function WatchScreen() {
     {/* ── Modal Pickers ── */}
     <Modal visible={activePanel === "speed"} transparent statusBarTranslucent navigationBarTranslucent animationType="fade"><Pressable style={styles.modalBackdrop} onPress={() => setActivePanel(null)}><View style={styles.modalSheet}><Text style={styles.modalTitle}>{t("player.playbackSpeed")}</Text>{[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0].map((val) => <Pressable key={val} style={[styles.modalItem, speed === val && styles.modalItemActive]} onPress={() => { setSpeed(val); lockedSpeed.current = val; setActivePanel(null); }}><Text style={[styles.modalItemText, speed === val && styles.modalItemTextActive]}>{val === 1.0 ? "1.0x (Normal)" : `${val}x`}</Text>{speed === val && <Check size={20} color={nothing.red} weight="bold" />}</Pressable>)}</View></Pressable></Modal>
 
-    {/* Quality & Server Picker Modal */}
+    {/* Pilihan Kualitas Video — Wibuku-identical Bottom Sheet */}
     <Modal
       visible={activePanel === "quality"}
       transparent
       statusBarTranslucent
       navigationBarTranslucent
-      animationType="fade"
+      animationType="slide"
       onRequestClose={() => setActivePanel(null)}
     >
-      <Pressable style={styles.serverModalBackdrop} onPress={() => setActivePanel(null)}>
+      <Pressable style={styles.wibukuQualityBackdrop} onPress={() => setActivePanel(null)}>
         <Pressable
-          style={styles.serverModalSheet}
+          style={styles.wibukuQualitySheet}
           onPress={(e) => {
             e.stopPropagation?.();
           }}
         >
-          <View style={styles.serverSheetHandle} />
-          <View style={styles.serverSheetHeader}>
-            <View style={{ flex: 1, gap: 2 }}>
-              <View style={styles.serverTitleRow}>
-                <PlayCircle size={16} color="#E2E8F0" weight="bold" />
-                <Text style={styles.serverSheetTitle}>PILIH KUALITAS & SERVER</Text>
-              </View>
-              <Text style={styles.serverSheetSubtitle}>
-                {`Aktif: ${playerQualityBadge} · ${activeProvider?.label || "Server Utama"}`}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => setActivePanel(null)}
-              hitSlop={12}
-              style={({ pressed }) => [styles.serverCloseBtn, pressed && { opacity: 0.6 }]}
-              accessibilityRole="button"
-              accessibilityLabel="Tutup Pilihan Kualitas"
-            >
-              <X size={16} color="#94A3B8" weight="bold" />
-            </Pressable>
-          </View>
+          <View style={styles.wibukuQualityHandle} />
+          <Text style={styles.wibukuQualityHeading}>Pilihan Kualitas Video</Text>
 
           <ScrollView
-            style={styles.serverScrollList}
-            contentContainerStyle={styles.serverScrollContent}
+            style={styles.wibukuQualityScroll}
+            contentContainerStyle={styles.wibukuQualityList}
             showsVerticalScrollIndicator={false}
           >
-            {displayedQualityOptions.length ? (
-              displayedQualityOptions.map((item: WatchQualityOption) => {
-                const selected = displayedQuality.toLowerCase() === item.label.toLowerCase();
-                return (
-                  <Pressable
-                    key={item.id}
-                    onPress={() => {
-                      if (source) {
-                        void selectAdaptiveQuality(item);
-                      } else if (item.source) {
-                        selectQuality(item.source);
-                      }
-                      setActivePanel(null);
-                    }}
-                    style={({ pressed }) => [
-                      styles.serverItemCard,
-                      selected && styles.serverItemCardActive,
-                      pressed && styles.serverItemCardPressed,
-                    ]}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Pilih kualitas ${item.label}`}
-                  >
-                    <View style={styles.serverItemLeft}>
-                      <Text style={[styles.serverItemTitle, selected && styles.serverItemTitleActive]}>
-                        {item.label}
-                      </Text>
-                    </View>
-                    {selected ? <Check size={18} color="#FF0000" weight="bold" /> : null}
-                  </Pressable>
-                );
-              })
-            ) : (
-              <View style={styles.serverEmptyBox}>
-                <Text style={styles.serverEmptyText}>Resolusi diatur otomatis oleh server.</Text>
-              </View>
-            )}
-
-            {activeProviders.length > 1 ? (
-              <View style={{ marginTop: 8, gap: 6 }}>
-                <Text style={[ps.sectionLabel, { paddingHorizontal: 4 }]}>PILIHAN SERVER</Text>
-                {activeProviders.map((prov, idx) => {
-                  const isCurrentServer = idx === serverIndex;
-                  return (
-                    <Pressable
-                      key={prov.id}
-                      onPress={() => {
-                        if (idx !== serverIndex) {
-                          setServerIndex(idx);
-                        }
-                        setActivePanel(null);
-                      }}
-                      style={({ pressed }) => [
-                        styles.serverItemCard,
-                        isCurrentServer && styles.serverItemCardActive,
-                        pressed && styles.serverItemCardPressed,
-                      ]}
-                    >
-                      <View style={styles.serverItemLeft}>
-                        <Text style={[styles.serverNumText, isCurrentServer && styles.serverNumTextActive]}>
-                          {String(idx + 1).padStart(2, "0")}
-                        </Text>
-                        <Text style={[styles.serverItemTitle, isCurrentServer && styles.serverItemTitleActive]}>
-                          {prov.label || `Server ${idx + 1}`}
-                        </Text>
-                      </View>
-                      {isCurrentServer ? <Check size={18} color="#FF0000" weight="bold" /> : null}
-                    </Pressable>
-                  );
-                })}
-              </View>
-            ) : null}
+            {(
+              [
+                {
+                  height: 360 as const,
+                  code: "360p",
+                  title: "360P (Hemat)",
+                  color: "#E4E4E7",
+                  bitrateCap: 850_000,
+                  description:
+                    "Memiliki kualitas rendah, kecepatan streaming cepat dan ukuran video yang lebih ekonomis",
+                },
+                {
+                  height: 480 as const,
+                  code: "480p",
+                  title: "480P (Standar)",
+                  color: "#7CB342",
+                  bitrateCap: 1_500_000,
+                  description:
+                    "Memiliki kualitas sedang dan kecepatan streaming lumayan cepat",
+                },
+                {
+                  height: 720 as const,
+                  code: "720p",
+                  title: "720P (Bagus)",
+                  color: "#FB8C00",
+                  bitrateCap: 3_200_000,
+                  description:
+                    "Memiliki kualitas lumayan dan kecepatan streaming mungkin memerlukan internet yang layak",
+                },
+                {
+                  height: 1080 as const,
+                  code: "1080p",
+                  title: "1080P (Premium)",
+                  color: "#FDD835",
+                  bitrateCap: null,
+                  description:
+                    "Fitur khusus premium dengan kualitas streaming tertinggi untuk pengalaman menonton di Smartphone, memerlukan internet yang cepat",
+                },
+              ] as const
+            ).map((tier) => {
+              const selected = activeQualityTierHeight === tier.height;
+              return (
+                <Pressable
+                  key={tier.code}
+                  onPress={() => handleSelectWibukuQuality(tier)}
+                  style={({ pressed }) => [
+                    styles.wibukuQualityRow,
+                    pressed && styles.wibukuQualityRowPressed,
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Pilih kualitas ${tier.title}`}
+                >
+                  <View style={styles.wibukuQualityCheckCol}>
+                    {selected ? <Check size={20} color="#FFFFFF" weight="bold" /> : null}
+                  </View>
+                  <View style={styles.wibukuQualityTextCol}>
+                    <Text style={[styles.wibukuQualityTitle, { color: tier.color }]}>
+                      {tier.title}
+                    </Text>
+                    <Text style={styles.wibukuQualityDesc}>{tier.description}</Text>
+                  </View>
+                </Pressable>
+              );
+            })}
           </ScrollView>
         </Pressable>
       </Pressable>
@@ -5045,6 +5119,73 @@ const styles = StyleSheet.create({
   providerDiscoveryCopy: { alignItems: "center", gap: 3 },
   providerDiscoveryTitle: { color: nothing.white, fontFamily: nothing.mono, fontSize: 10, fontWeight: "900", letterSpacing: 1 },
   providerDiscoveryDetail: { color: nothing.muted, fontFamily: nothing.mono, fontSize: 10, fontWeight: "800", letterSpacing: 0.6 },
+  wibukuQualityBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.58)",
+    justifyContent: "flex-end",
+  },
+  wibukuQualitySheet: {
+    backgroundColor: "#17181A",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 12,
+    paddingBottom: 28,
+    paddingHorizontal: 20,
+    maxHeight: "84%",
+  },
+  wibukuQualityHandle: {
+    alignSelf: "center",
+    width: 44,
+    height: 4.5,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 255, 255, 0.28)",
+    marginBottom: 18,
+  },
+  wibukuQualityHeading: {
+    color: "#F4F4F5",
+    fontSize: 18,
+    fontWeight: "600",
+    letterSpacing: -0.1,
+    marginBottom: 16,
+    paddingHorizontal: 2,
+  },
+  wibukuQualityScroll: {
+    width: "100%",
+  },
+  wibukuQualityList: {
+    gap: 6,
+    paddingBottom: 6,
+  },
+  wibukuQualityRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 11,
+    paddingRight: 4,
+    borderRadius: 12,
+  },
+  wibukuQualityRowPressed: {
+    backgroundColor: "rgba(255, 255, 255, 0.06)",
+  },
+  wibukuQualityCheckCol: {
+    width: 38,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  wibukuQualityTextCol: {
+    flex: 1,
+    gap: 3,
+  },
+  wibukuQualityTitle: {
+    fontSize: 15.5,
+    fontWeight: "600",
+    letterSpacing: 0.1,
+  },
+  wibukuQualityDesc: {
+    color: "#A1A1AA",
+    fontSize: 13,
+    lineHeight: 18.5,
+    fontWeight: "400",
+  },
 });
 
 // Memoized: the watch screen re-renders every second (progress clock), and
