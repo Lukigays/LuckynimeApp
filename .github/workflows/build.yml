@@ -184,6 +184,29 @@ jobs:
       - name: List APKs
         run: ls -lh ./artifacts/*.apk
 
+      - name: Prepare Release Notes
+        run: |
+          python3 - <<'PY'
+          import os, re
+          tag = os.environ.get("RELEASE_TAG", "v1.1.0")
+          notes = ""
+          if os.path.exists("CHANGELOG.md"):
+              text = open("CHANGELOG.md", encoding="utf-8").read()
+              m = re.search(rf"^##\s+{re.escape(tag)}\b[^\n]*\n(.*?)(?=^##\s+|\Z)", text, flags=re.M | re.S)
+              if m:
+                  notes = m.group(1).strip()
+          if not notes:
+              notes = (
+                  "- **Perbaikan Total Subtitle Video Player**: Teks putih & outline hitam presisi tanpa bertumpuk di portrait maupun fullscreen.\n"
+                  "- **Sinopsis Bahasa Indonesia Bersih**: Deskripsi anime otomatis Bahasa Indonesia tanpa atribusi Source.\n"
+                  "- **Notifikasi EXP Ringkas + Swipe Up**: Popup EXP lebih pas dan bisa digeser ke atas untuk ditutup.\n"
+                  "- **Auto-Update Otomatis via GitHub Release**: Mendukung pembaruan langsung dari `Lukigays/Luckynime-Release`."
+              )
+          body = f"## Luckynime {tag}\n\n{notes}\n\nDownload file APK di bawah ini (**arm64** direkomendasikan untuk mayoritas perangkat Android modern).\n"
+          open("RELEASE_NOTES.md", "w", encoding="utf-8").write(body)
+          print(body)
+          PY
+
       - name: Publish Public APK Release (Lukigays/Luckynime-Release)
         if: ${{ env.PUBLIC_RELEASE_TOKEN != '' }}
         uses: softprops/action-gh-release@v2
@@ -195,14 +218,7 @@ jobs:
           name: Luckynime ${{ env.RELEASE_TAG }}
           draft: false
           prerelease: false
-          body: |
-            ## Luckynime ${{ env.RELEASE_TAG }}
-
-            - **Tampilan Video Player Gaya Wibuku**: Kontrol tengah 5 tombol (`Episode sebelumnya`, `-10s`, tombol Play putih besar, `+10s`, `Episode selanjutnya`), baris bawah (`00:00 / 24:00`, `Autonext`, pemilih resolusi, kecepatan `1x`, Fullscreen), serta seekbar merah penuh di tepi bawah.
-            - **Subtitle Otomatis Bahasa Indonesia Putih Bersih**: Aktif otomatis ke Bahasa Indonesia (`id`), teks putih bersih ber-outline hitam tajam tanpa kotak gelap.
-            - **Auto-Update Publik Terintegrasi**: Mendukung pengunduhan & pembaruan otomatis langsung melalui repositori rilis publik resmi (`Lukigays/Luckynime-Release`) tanpa mengekspos source code.
-
-            Download file APK di bawah ini (**arm64** direkomendasikan untuk mayoritas perangkat Android modern).
+          body_path: RELEASE_NOTES.md
           files: ./artifacts/*.apk
 
       - name: Create Internal GitHub Release

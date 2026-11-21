@@ -141,20 +141,34 @@ function formatClockTime(seconds: number) {
 
 function cleanSynopsisText(raw?: string | null): string {
   if (!raw) return "Tidak ada deskripsi tersedia.";
-  return raw
+  const cleaned = raw
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<\/p>/gi, "\n\n")
     .replace(/<[^>]+>/g, "")
     .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'")
+    .replace(/&#0*39;/g, "'")
     .replace(/&apos;/g, "'")
     .replace(/&amp;/g, "&")
     .replace(/&mdash;/g, "—")
     .replace(/&ndash;/g, "–")
+    .replace(/&nbsp;/g, " ")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
+    .replace(
+      /\(\s*(?:source|sumber|written\s+by|ditulis\s+oleh|translated\s+by|diterjemahkan\s+oleh|credit|courtesy\s+of)\s*:?[^)]*\)/gi,
+      ""
+    )
+    .replace(
+      /\[\s*(?:source|sumber|written\s+by|ditulis\s+oleh|translated\s+by|diterjemahkan\s+oleh|credit)\s*:?[^\]]*\]/gi,
+      ""
+    )
+    .replace(
+      /^[ \t]*(?:source|sumber|written\s+by|ditulis\s+oleh|translated\s+by|diterjemahkan\s+oleh)\s*:\s*[^\n]+$/gim,
+      ""
+    )
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+  return cleaned || "Tidak ada deskripsi tersedia.";
 }
 
 function formatCount(num?: number | null, fallback = "0"): string {
@@ -674,10 +688,14 @@ export default function WatchScreen() {
       normalizeSubtitleLang(activeSubtitleTrack.lang) === "id" ||
       normalizeSubtitleLang(activeSubtitleTrack.label) === "id" ||
       baseSubtitleUrl.includes("translate=id");
-    const subtitleUrl =
-      wantsIndonesian && !trackIsIndonesian && !selectedTrackUrl && baseSubtitleUrl.includes("/api/v1/proxy?")
-        ? `${baseSubtitleUrl}&translate=id`
+    const versionedBaseUrl =
+      baseSubtitleUrl.includes("/api/v1/proxy?") && !baseSubtitleUrl.includes("sv=")
+        ? `${baseSubtitleUrl}&sv=2`
         : baseSubtitleUrl;
+    const subtitleUrl =
+      wantsIndonesian && !trackIsIndonesian && !selectedTrackUrl && versionedBaseUrl.includes("/api/v1/proxy?")
+        ? `${versionedBaseUrl}&translate=id`
+        : versionedBaseUrl;
 
     let cancelled = false;
     const loadTrack = async () => {
@@ -2891,11 +2909,13 @@ export default function WatchScreen() {
       </View>}
 
       {/* ── Subtitle Layer: crisp white text with black outline at bottom-center ── */}
-      {subtitlePrefs ? (
+      {subtitlePrefs && source && !embedSource ? (
         <View
           style={[
             styles.subtitleWrapper,
+            showControls && !manualFullscreen ? styles.subtitleWrapperWithControls : null,
             manualFullscreen ? styles.subtitleWrapperFullscreen : null,
+            manualFullscreen && showControls ? styles.subtitleWrapperFullscreenControls : null,
           ]}
           pointerEvents="none"
         >
@@ -4253,10 +4273,10 @@ const styles = StyleSheet.create({
   miniProgressPlayed: { position: "absolute", top: 0, left: 0, bottom: 0, backgroundColor: "#FF0000" },
   statusToast: { position: "absolute", bottom: 34, alignSelf: "center", zIndex: 14, flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 13, paddingVertical: 8, borderRadius: 8, backgroundColor: "rgba(0,0,0,0.82)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
   statusToastText: { color: "#FFF", fontSize: 11, fontWeight: "600", letterSpacing: 0.2 },
-  subtitleWrapper: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end", alignItems: "center", paddingBottom: 14, zIndex: 2, elevation: 2 },
-  subtitleWrapperWithControls: { paddingBottom: 14 },
-  subtitleWrapperFullscreen: { paddingBottom: 28 },
-  subtitleWrapperFullscreenControls: { paddingBottom: 28 },
+  subtitleWrapper: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end", alignItems: "center", paddingBottom: 12, zIndex: 2, elevation: 2 },
+  subtitleWrapperWithControls: { paddingBottom: 42 },
+  subtitleWrapperFullscreen: { paddingBottom: 24 },
+  subtitleWrapperFullscreenControls: { paddingBottom: 68 },
   controlsBackdrop: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 3,

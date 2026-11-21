@@ -18,6 +18,8 @@ import { AppIcon } from "@/components/app-icon";
 import {
   checkForLuckynimeUpdate,
   getDeviceAbi,
+  isReleaseNewer,
+  LUCKYNIME_GITHUB_RELEASE_PAGE_URL,
   updateDismissalKey,
   abiLabel,
   ABI_PRIORITY,
@@ -29,6 +31,7 @@ import {
   downloadAndInstallApk,
   type DownloadProgress,
 } from "@/lib/android-app-installer";
+import { supabase } from "@/lib/supabase";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -36,7 +39,7 @@ const installedVersion =
   Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? "0.0.1";
 
 function formatBytes(bytes: number): string {
-  if (bytes <= 0) return "0 MB";
+  if (bytes <= 0) return "";
   const mb = bytes / (1024 * 1024);
   return mb < 100 ? `${mb.toFixed(1)} MB` : `${Math.round(mb)} MB`;
 }
@@ -51,12 +54,7 @@ function parseChangelog(body?: string): ChangelogItem[] {
   const lines = body
     .split(/\r?\n/)
     .map((l) => l.trim())
-    .filter(
-      (l) =>
-        l.length > 0 &&
-        !l.startsWith("#") &&
-        !l.match(/^<!--/)
-    )
+    .filter((l) => l.length > 0 && !l.startsWith("#") && !l.match(/^<!--/))
     .map((l) => l.replace(/^[-*•]\s*/, "").trim())
     .filter(Boolean);
 
@@ -87,6 +85,7 @@ type Phase =
   | "checking-permission"
   | "downloading"
   | "installing"
+  | "rechecking"
   | "error";
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -121,51 +120,116 @@ export function AppUpdatePrompt() {
     setSelectedAsset(recommended ?? null);
   }, [release, deviceAbi]);
 
-  // ── Update check ──
-  const check = useCallback(async () => {
+  // ── Update check against GitHub Release (and mirror/Supabase fallback) ──
+  const check = useCallback(async (force = false) => {
     try {
-      const result = await checkForLuckynimeUpdate(installedVersion);
-      if (!result.available || !result.release) return;
+      const result = await checkForLuckynimeUpdate(installedVersion, { force });
+      if (!result.available || !result.release) {
+        setRelease(null);
+        return;
+      }
+
+      // Whenever installed version is older than the latest GitHub Release,
+      // enforce mandatory update without allowing dismissal bypass.
+      const mustForceUpdate =
+        isReleaseNewer(installedVersion, result.release.version) ||
+        Boolean(result.release.mandatory);
+
+      if (mustForceUpdate) {
+        setRelease({ ...result.release, mandatory: true });
+        return;
+      }
+
       const dismissed = await AsyncStorage.getItem(
         updateDismissalKey(result.release.version)
       ).catch(() => null);
-      if (!dismissed) setRelease(result.release);
+      if (!dismissed) {
+        setRelease(result.release);
+      }
     } catch {}
   }, []);
 
   useEffect(() => {
-    void check();
+    void check(true);
+
     const sub = AppState.addEventListener("change", (s) => {
-      if (s === "active") void check();
+      if (s === "active") void check(true);
     });
-    return () => sub.remove();
+
+    // Also subscribe to realtime Supabase `system_configs` (`app_release`) updates
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      const chName = `realtime-app-release-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 7)}`;
+      channel = supabase
+        .channel(chName)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "system_configs",
+            filter: "key=eq.app_release",
+          },
+          () => {
+            void check(true);
+          }
+        )
+        .subscribe();
+    } catch {}
+
+    return () => {
+      sub.remove();
+      if (channel) {
+        try {
+          supabase.removeChannel(channel).catch(() => {});
+        } catch {}
+      }
+    };
   }, [check]);
+
+  const isForceUpdate = Boolean(
+    release &&
+      (release.mandatory !== false ||
+        isReleaseNewer(installedVersion, release.version))
+  );
 
   // ── Actions ──
   const dismiss = useCallback(async () => {
-    if (busyRef.current) return;
-    if (release)
+    // Block dismissal completely when outdated / mandatory
+    if (busyRef.current || isForceUpdate) return;
+    if (release) {
       await AsyncStorage.setItem(
         updateDismissalKey(release.version),
         "1"
       ).catch(() => {});
+    }
     setRelease(null);
     setPhase("idle");
     setProgress(null);
     setErrorMsg(null);
     setShowAbiMenu(false);
-  }, [release]);
+  }, [isForceUpdate, release]);
 
   const isAndroid = Platform.OS === "android";
   const isDownloading = phase === "downloading";
   const isInstalling = phase === "installing";
-  const isBusy = isDownloading || isInstalling;
+  const isRechecking = phase === "rechecking";
+  const isBusy = isDownloading || isInstalling || isRechecking;
+
+  const openGitHubReleasePage = useCallback(() => {
+    const targetUrl =
+      release?.releaseUrl ||
+      selectedAsset?.downloadUrl ||
+      LUCKYNIME_GITHUB_RELEASE_PAGE_URL;
+    void Linking.openURL(targetUrl).catch(() => {});
+  }, [release, selectedAsset]);
 
   const handleUpdate = useCallback(async () => {
     if (!release || busyRef.current) return;
 
-    if (isAndroid) {
-      if (!selectedAsset) return;
+    if (isAndroid && selectedAsset && selectedAsset.size > 0) {
       busyRef.current = true;
       setPhase("downloading");
       setProgress(null);
@@ -177,7 +241,9 @@ export function AppUpdatePrompt() {
         setPhase("installing");
       } catch (e) {
         setErrorMsg(
-          e instanceof Error ? e.message : "Terjadi kesalahan saat mengunduh."
+          e instanceof Error
+            ? `${e.message} Kamu juga bisa mengunduh langsung lewat tombol GitHub Release di bawah.`
+            : "Gagal mengunduh otomatis. Silakan unduh melalui tombol GitHub Release di bawah."
         );
         setPhase("error");
       } finally {
@@ -186,17 +252,28 @@ export function AppUpdatePrompt() {
       return;
     }
 
-    // Web / other platforms: open download URL
+    // Fallback or non-sized asset: open direct APK or GitHub Release page
     const targetUrl =
       selectedAsset?.downloadUrl ||
-      release.assets[0]?.downloadUrl ||
-      (release as any).html_url ||
-      (release as any).url;
+      release.downloadUrl ||
+      release.releaseUrl ||
+      LUCKYNIME_GITHUB_RELEASE_PAGE_URL;
 
     if (targetUrl) {
-      void Linking.openURL(targetUrl);
+      void Linking.openURL(targetUrl).catch(() => {});
     }
   }, [release, selectedAsset, isAndroid]);
+
+  const handleRecheck = useCallback(async () => {
+    if (busyRef.current) return;
+    setPhase("rechecking");
+    setErrorMsg(null);
+    try {
+      await check(true);
+    } finally {
+      setPhase("idle");
+    }
+  }, [check]);
 
   const changelog = useMemo(
     () => parseChangelog(release?.body),
@@ -205,12 +282,17 @@ export function AppUpdatePrompt() {
 
   const progressFraction = progress?.fraction ?? 0;
   const progressPct = Math.round(progressFraction * 100);
-  const progressLabel =
-    isInstalling
-      ? "Membuka paket instalasi..."
-      : isDownloading && progress
-      ? `Mengunduh... ${progressPct}%  (${formatBytes(progress.bytesWritten)} / ${formatBytes(progress.totalBytes)})`
-      : null;
+  const progressLabel = isInstalling
+    ? "Membuka paket instalasi Android..."
+    : isDownloading && progress
+    ? `Mengunduh APK... ${progressPct}%${
+        progress.totalBytes > 0
+          ? ` (${formatBytes(progress.bytesWritten)} / ${formatBytes(
+              progress.totalBytes
+            )})`
+          : ""
+      }`
+    : null;
 
   // ── Sorted asset list for ABI menu ──
   const sortedAssets = useMemo(() => {
@@ -229,12 +311,17 @@ export function AppUpdatePrompt() {
       transparent
       visible
       animationType="fade"
-      onRequestClose={() => { void dismiss(); }}
+      statusBarTranslucent
+      onRequestClose={() => {
+        if (!isForceUpdate) {
+          void dismiss();
+        }
+      }}
     >
       <View style={styles.backdrop}>
         <View style={styles.dialog} accessibilityViewIsModal>
-          {/* Close Button Top-Right */}
-          {!isBusy && (
+          {/* Close Button ONLY if optional (hidden when version is outdated) */}
+          {!isBusy && !isForceUpdate && (
             <Pressable
               onPress={() => void dismiss()}
               accessibilityRole="button"
@@ -250,10 +337,14 @@ export function AppUpdatePrompt() {
           )}
 
           {/* ── Header ── */}
-          <View style={styles.header}>
+          <View style={[styles.header, isForceUpdate && { paddingRight: 0 }]}>
             <View style={styles.updateBadge}>
               <View style={styles.updateDot} />
-              <Text style={styles.updateBadgeText}>PEMBARUAN TERSEDIA</Text>
+              <Text style={styles.updateBadgeText}>
+                {isForceUpdate
+                  ? "PEMBARUAN WAJIB • GITHUB RELEASE"
+                  : "PEMBARUAN TERSEDIA"}
+              </Text>
             </View>
 
             <View style={styles.versionRow}>
@@ -266,7 +357,7 @@ export function AppUpdatePrompt() {
             </View>
 
             <Text style={styles.subtitle}>
-              Versi terbaru Luckynime dengan fitur dan peningkatan performa siap digunakan.
+              Versi aplikasi kamu (v{installedVersion}) sudah lama. Perbarui terlebih dahulu ke v{release.version} melalui rilis resmi GitHub Release untuk melanjutkan menggunakan Luckynime.
             </Text>
           </View>
 
@@ -300,11 +391,11 @@ export function AppUpdatePrompt() {
           )}
 
           {/* ── Mandatory notice ── */}
-          {release.mandatory && (
+          {isForceUpdate && (
             <View style={styles.mandatoryRow}>
               <AppIcon name="alert-circle-outline" size={15} color="#F43F5E" />
               <Text style={styles.mandatoryText}>
-                Pembaruan ini wajib dipasang untuk menjaga kelancaran layanan.
+                Versi lama tidak dapat digunakan lagi. Silakan unduh & pasang versi terbaru dari GitHub Release.
               </Text>
             </View>
           )}
@@ -331,7 +422,7 @@ export function AppUpdatePrompt() {
                         ? abiLabel(selectedAsset.abi)
                         : "Pilih arsitektur"}
                     </Text>
-                    {selectedAsset?.size ? (
+                    {selectedAsset && selectedAsset.size > 0 ? (
                       <Text style={styles.abiSelectorSize}>
                         Ukuran: {formatBytes(selectedAsset.size)}
                       </Text>
@@ -349,10 +440,9 @@ export function AppUpdatePrompt() {
                 <View style={styles.abiMenu}>
                   {sortedAssets.map((asset) => {
                     const isSelected = asset.name === selectedAsset?.name;
-                    const isRecommended =
-                      deviceAbi
-                        ? asset.abi === deviceAbi
-                        : asset.abi === "universal";
+                    const isRecommended = deviceAbi
+                      ? asset.abi === deviceAbi
+                      : asset.abi === "universal";
                     return (
                       <Pressable
                         key={asset.name}
@@ -385,15 +475,13 @@ export function AppUpdatePrompt() {
                           )}
                         </View>
                         <View style={styles.abiMenuItemRight}>
-                          <Text style={styles.abiMenuItemSize}>
-                            {formatBytes(asset.size)}
-                          </Text>
+                          {asset.size > 0 ? (
+                            <Text style={styles.abiMenuItemSize}>
+                              {formatBytes(asset.size)}
+                            </Text>
+                          ) : null}
                           {isSelected && (
-                            <AppIcon
-                              name="check"
-                              size={14}
-                              color="#10B981"
-                            />
+                            <AppIcon name="check" size={14} color="#10B981" />
                           )}
                         </View>
                       </Pressable>
@@ -434,7 +522,7 @@ export function AppUpdatePrompt() {
           )}
 
           {/* ── Actions ── */}
-          <View style={styles.actions}>
+          <View style={styles.actionsColumn}>
             <Pressable
               disabled={isBusy}
               onPress={() => void handleUpdate()}
@@ -452,27 +540,57 @@ export function AppUpdatePrompt() {
                   <AppIcon name="download" size={17} color="#FFFFFF" />
                   <Text style={styles.primaryBtnText}>
                     {phase === "error"
-                      ? "Coba Lagi"
+                      ? "Coba Unduh Lagi"
                       : isAndroid
-                      ? "Unduh & Pasang Sekarang"
-                      : "Unduh File APK"}
+                      ? `Unduh & Pasang v${release.version}`
+                      : `Unduh APK v${release.version}`}
                   </Text>
                 </View>
               )}
             </Pressable>
 
-            {!isBusy && (
+            <View style={styles.secondaryRow}>
               <Pressable
-                onPress={() => void dismiss()}
+                disabled={isBusy}
+                onPress={openGitHubReleasePage}
                 style={({ pressed }) => [
-                  styles.laterBtn,
-                  pressed && styles.btnPressedSubtle,
+                  styles.githubBtn,
+                  pressed && !isBusy && styles.btnPressedSubtle,
                 ]}
                 accessibilityRole="button"
               >
-                <Text style={styles.laterBtnText}>Nanti</Text>
+                <AppIcon name="github" size={15} color="#E2E8F0" />
+                <Text style={styles.githubBtnText}>Buka GitHub Release</Text>
               </Pressable>
-            )}
+
+              {isForceUpdate ? (
+                <Pressable
+                  disabled={isBusy}
+                  onPress={() => void handleRecheck()}
+                  style={({ pressed }) => [
+                    styles.recheckBtn,
+                    pressed && !isBusy && styles.btnPressedSubtle,
+                  ]}
+                  accessibilityRole="button"
+                >
+                  <AppIcon name="refresh" size={14} color="#94A3B8" />
+                  <Text style={styles.laterBtnText}>Cek Ulang</Text>
+                </Pressable>
+              ) : (
+                !isBusy && (
+                  <Pressable
+                    onPress={() => void dismiss()}
+                    style={({ pressed }) => [
+                      styles.recheckBtn,
+                      pressed && styles.btnPressedSubtle,
+                    ]}
+                    accessibilityRole="button"
+                  >
+                    <Text style={styles.laterBtnText}>Nanti</Text>
+                  </Pressable>
+                )
+              )}
+            </View>
           </View>
         </View>
       </View>
@@ -487,22 +605,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.76)",
+    backgroundColor: "rgba(0, 0, 0, 0.84)",
     padding: 16,
   },
   dialog: {
     width: "100%",
     maxWidth: 420,
-    maxHeight: "88%",
+    maxHeight: "90%",
     backgroundColor: "#0F131C",
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.09)",
+    borderColor: "rgba(255, 255, 255, 0.1)",
     padding: 20,
-    gap: 14,
+    gap: 13,
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.55,
+    shadowOpacity: 0.6,
     shadowRadius: 24,
     elevation: 24,
   },
@@ -519,12 +637,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     zIndex: 10,
-    ...(Platform.OS === "web" ? ({ cursor: "pointer" } as any) : {}),
   },
 
   // Header
   header: {
-    gap: 5,
+    gap: 6,
     paddingRight: 28,
   },
   updateBadge: {
@@ -532,9 +649,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     alignSelf: "flex-start",
-    backgroundColor: "rgba(239, 68, 68, 0.12)",
+    backgroundColor: "rgba(244, 63, 94, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(239, 68, 68, 0.28)",
+    borderColor: "rgba(244, 63, 94, 0.34)",
     borderRadius: 20,
     paddingHorizontal: 9,
     paddingVertical: 3.5,
@@ -548,25 +665,26 @@ const styles = StyleSheet.create({
   updateBadgeText: {
     fontSize: 9.5,
     fontWeight: "800",
-    color: "#F43F5E",
-    letterSpacing: 0.8,
+    color: "#FB7185",
+    letterSpacing: 0.7,
   },
   versionRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
     marginTop: 2,
+    flexWrap: "wrap",
   },
   versionText: {
-    fontSize: 22,
+    fontSize: 21,
     fontWeight: "900",
     color: "#FFFFFF",
-    letterSpacing: -0.5,
+    letterSpacing: -0.4,
   },
   versionCompareBadge: {
     backgroundColor: "rgba(56, 189, 248, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.25)",
+    borderColor: "rgba(56, 189, 248, 0.28)",
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 2.5,
@@ -579,13 +697,13 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 12,
     color: "#94A3B8",
-    lineHeight: 16,
+    lineHeight: 17,
     marginTop: 1,
   },
 
   // Section
   changelogSection: {
-    gap: 8,
+    gap: 7,
   },
   sectionHeaderRow: {
     flexDirection: "row",
@@ -599,7 +717,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   changelogScroll: {
-    maxHeight: 165,
+    maxHeight: 150,
   },
   changelogContentContainer: {
     gap: 6,
@@ -613,7 +731,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.05)",
     paddingHorizontal: 12,
-    paddingVertical: 9,
+    paddingVertical: 8,
   },
   changelogBullet: {
     width: 5,
@@ -628,10 +746,10 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   changelogItemTitle: {
-    fontSize: 12.5,
+    fontSize: 12,
     fontWeight: "700",
     color: "#F1F5F9",
-    lineHeight: 17,
+    lineHeight: 16,
   },
   changelogItemDesc: {
     fontSize: 11.5,
@@ -644,17 +762,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "rgba(239, 68, 68, 0.08)",
+    backgroundColor: "rgba(244, 63, 94, 0.09)",
     borderWidth: 1,
-    borderColor: "rgba(239, 68, 68, 0.22)",
+    borderColor: "rgba(244, 63, 94, 0.25)",
     borderRadius: 10,
     paddingHorizontal: 12,
-    paddingVertical: 9,
+    paddingVertical: 8,
   },
   mandatoryText: {
-    fontSize: 12,
+    fontSize: 11.5,
     fontWeight: "600",
-    color: "#F43F5E",
+    color: "#FDA4AF",
     flex: 1,
     lineHeight: 16,
   },
@@ -766,7 +884,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: 6,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#0284C7",
     borderRadius: 3,
   },
   progressLabel: {
@@ -780,51 +898,38 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 8,
-    backgroundColor: "rgba(239, 68, 68, 0.08)",
+    backgroundColor: "rgba(244, 63, 94, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(239, 68, 68, 0.22)",
+    borderColor: "rgba(244, 63, 94, 0.22)",
     borderRadius: 10,
     padding: 10,
   },
   errorText: {
     fontSize: 11.5,
-    color: "#F43F5E",
+    color: "#FDA4AF",
     flex: 1,
     lineHeight: 16,
   },
 
   // Actions
-  actions: {
-    flexDirection: "row",
-    gap: 10,
+  actionsColumn: {
+    gap: 8,
     marginTop: 2,
   },
   btnRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 7,
+    gap: 8,
   },
   primaryBtn: {
-    flex: 1,
+    width: "100%",
     minHeight: 46,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
-    borderWidth: 1.2,
-    borderColor: "rgba(255, 255, 255, 0.25)",
+    backgroundColor: "#0284C7",
+    borderWidth: 1,
+    borderColor: "rgba(56, 189, 248, 0.45)",
     borderRadius: 14,
-    elevation: 0,
-    shadowColor: "transparent",
-    shadowOpacity: 0,
-    shadowRadius: 0,
-    shadowOffset: { width: 0, height: 0 },
-    ...(Platform.OS === "web"
-      ? ({
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-        cursor: "pointer",
-      } as any)
-      : {}),
   },
   primaryBtnText: {
     fontSize: 13.5,
@@ -832,43 +937,54 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     letterSpacing: 0.2,
   },
-  laterBtn: {
-    minWidth: 85,
-    minHeight: 46,
+  secondaryRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  githubBtn: {
+    flex: 1,
+    minHeight: 40,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1.2,
-    borderColor: "rgba(255, 255, 255, 0.12)",
-    borderRadius: 14,
+    gap: 7,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.14)",
+    borderRadius: 12,
     backgroundColor: "rgba(255, 255, 255, 0.05)",
-    elevation: 0,
-    shadowColor: "transparent",
-    shadowOpacity: 0,
-    shadowRadius: 0,
-    shadowOffset: { width: 0, height: 0 },
-    ...(Platform.OS === "web"
-      ? ({
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-        cursor: "pointer",
-      } as any)
-      : {}),
+    paddingHorizontal: 10,
+  },
+  githubBtnText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#E2E8F0",
+  },
+  recheckBtn: {
+    minHeight: 40,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 12,
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
+    paddingHorizontal: 12,
   },
   laterBtnText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "700",
     color: "#94A3B8",
   },
 
   btnDisabled: {
-    opacity: 0.5,
+    opacity: 0.55,
   },
   btnPressed: {
-    opacity: 0.8,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    transform: [{ scale: 0.98 }],
+    opacity: 0.88,
+    transform: [{ scale: 0.985 }],
   },
   btnPressedSubtle: {
-    opacity: 0.7,
+    opacity: 0.72,
   },
 });

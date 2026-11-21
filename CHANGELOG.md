@@ -2,9 +2,17 @@
 
 # Changelog
 
-This is the public record of meaningful native Android releases. For the currently installable build, open [GitHub Releases](https://github.com/Lukigays/LuckynimeApp/releases/latest).
+This is the public record of meaningful native Android releases. For the currently installable build, open [GitHub Releases](https://github.com/Lukigays/Luckynime-Release/releases/latest).
 
 ## Unreleased
+
+## v1.1.0 — Subtitle Rapi Anti-Tumpuk, Sinopsis Bahasa Indonesia Bersih, Notifikasi EXP Compact & Auto-Update Wajib
+
+- **Perbaikan Total Subtitle Video Player**: Render per-baris presisi (`boxWidth` bulat + `textBreakStrategy="simple"`) sehingga teks putih dan outline hitam selalu sejajar rapi tanpa pernah bertumpuk di mode portrait maupun fullscreen, ditambah pembungkusan kalimat seimbang & posisi otomatis naik saat kontrol player aktif.
+- **Sinopsis Anime Otomatis Bahasa Indonesia & Bersih**: Seluruh sinopsis/deskripsi anime kini diterjemahkan ke Bahasa Indonesia dan semua atribusi `(Source: ...)` dihapus bersih.
+- **Notifikasi EXP & Level Lebih Ringkas + Geser ke Atas**: Popup perolehan EXP kini berukuran lebih pas dan dapat digeser ke atas (*swipe up*) untuk langsung ditutup layaknya notifikasi ponsel.
+- **Wajib Update Otomatis via GitHub Release**: Versi aplikasi lama kini otomatis diarahkan untuk memperbarui ke rilis terbaru dari `Lukigays/Luckynime-Release` lengkap dengan mirror anti-rate-limit dan pemilih APK sesuai arsitektur perangkat (`arm64` / `arm32` / `universal`).
+- **Perbaikan Klaim Hadiah & Dunia Luckynime**: Feedback instan saat klaim border hadiah serta perbaikan rekrutmen anggota klan di Dunia Luckynime.
 
 ## v5.7.3 — Offline AniList mirror + keyless closed-app notifications
 

@@ -50,7 +50,7 @@ export default function EpisodeInfoScreen() {
     <View style={styles.hero}>{image ? <Image source={{ uri: getOptimizedImageUri(image, THUMBNAIL_W) }} style={styles.thumbnail} contentFit="cover" transition={150} cachePolicy="memory-disk" /> : <View style={styles.thumbnail} />}<View style={styles.heroCopy}><DotLabel tone="live">EPISODE {String(episodeNumber).padStart(2, "0")}</DotLabel><Text style={styles.animeTitle} numberOfLines={2}>{title}</Text><Text style={styles.meta}>{`EPISODE ${episodeNumber} OF ${rows.length || "?"}${selected?.isFiller ? " · FILLER" : ""}`}</Text></View></View>
     <DotLabel>EPISODE DETAILS</DotLabel>
     <Text style={styles.episodeTitle}>{selected?.title || params.episodeTitle || `Episode ${episodeNumber}`}</Text>
-    <Text style={styles.description}>{selected?.description || "A description is not available from the current provider for this episode."}</Text>
+    <Text style={styles.description}>{(selected?.description || "").replace(/\(\s*(?:source|sumber|written\s+by)\s*:?[^)]*\)/gi, "").trim() || "Deskripsi untuk episode ini belum tersedia."}</Text>
     {selected?.isFiller ? <Text style={styles.filler}>FILLER / RECAP</Text> : null}
     <NothingButton label={`WATCH EPISODE ${episodeNumber}`} onPress={() => openWatch()} />
     <View style={styles.navigation}>

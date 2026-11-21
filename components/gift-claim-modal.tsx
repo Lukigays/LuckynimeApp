@@ -34,11 +34,15 @@ export function GiftClaimModal({
 }: GiftClaimModalProps) {
   const auth = useLuckynimeAuth();
   const [claiming, setClaiming] = useState(false);
+  const [claimSuccessText, setClaimSuccessText] = useState<string | null>(null);
+  const [claimErrorText, setClaimErrorText] = useState<string | null>(null);
   const [borderInfo, setBorderInfo] = useState<AvatarBorder | null>(() => {
     return gift && gift.giftType === "border" ? getBorderById(gift.giftValue) || null : null;
   });
 
   React.useEffect(() => {
+    setClaimSuccessText(null);
+    setClaimErrorText(null);
     if (gift && gift.giftType === "border") {
       const syncB = getBorderById(gift.giftValue);
       if (syncB) {
@@ -51,43 +55,41 @@ export function GiftClaimModal({
     } else {
       setBorderInfo(null);
     }
-  }, [gift?.giftType, gift?.giftValue]);
+  }, [gift?.id, gift?.giftType, gift?.giftValue, visible]);
 
   if (!gift) return null;
 
-  const isClaimed = Boolean(gift.isClaimed);
+  const isClaimed = Boolean(gift.isClaimed) || Boolean(claimSuccessText);
 
   const handleClaim = async () => {
     if (claiming || isClaimed) return;
     hapticLight();
     setClaiming(true);
+    setClaimErrorText(null);
 
     try {
       const res = await claimGiftForUser(gift.id, auth.user?.id);
       if (!res.success) {
         hapticWarning();
-        Alert.alert("Gagal Klaim", res.error || "Terjadi kesalahan saat mengklaim hadiah.");
+        setClaimErrorText(res.error || "Terjadi kesalahan saat mengklaim hadiah.");
         setClaiming(false);
         return;
       }
 
       hapticSuccess();
-      const bMeta = gift.giftType === "border" ? getBorderById(gift.giftValue) : null;
+      const bMeta = gift.giftType === "border" ? borderInfo || getBorderById(gift.giftValue) : null;
       const rewardText =
         gift.giftType === "crystal"
-          ? `+${gift.giftValue} Dylan Crystal`
+          ? `+${Number(gift.giftValue).toLocaleString("id-ID")} Dylan Crystal`
           : `Border Avatar "${bMeta?.name || gift.giftValue}"`;
 
-      Alert.alert(
-        "Klaim Berhasil 🎉",
+      setClaimSuccessText(
         `Selamat! Kamu berhasil mendapatkan hadiah ${rewardText} yang telah dimasukkan ke akunmu.`
       );
-
       onClaimSuccess?.(gift, res.newBalance);
-      onClose();
     } catch (err: any) {
       hapticWarning();
-      Alert.alert("Error", err?.message || "Gagal memproses klaim.");
+      setClaimErrorText(err?.message || "Gagal memproses klaim.");
     } finally {
       setClaiming(false);
     }
@@ -164,18 +166,40 @@ export function GiftClaimModal({
             )}
           </View>
 
+          {claimSuccessText && (
+            <View style={styles.successBanner}>
+              <Text style={styles.successTitle}>Klaim Berhasil</Text>
+              <Text style={styles.successMessage}>{claimSuccessText}</Text>
+            </View>
+          )}
+
+          {claimErrorText && (
+            <View style={styles.errorBanner}>
+              <Text style={styles.errorMessage}>{claimErrorText}</Text>
+            </View>
+          )}
+
           {/* Claim Button */}
           <Pressable
-            disabled={claiming || isClaimed}
-            onPress={handleClaim}
+            disabled={claiming || (Boolean(gift.isClaimed) && !claimSuccessText)}
+            onPress={claimSuccessText ? onClose : handleClaim}
             style={({ pressed }) => [
               styles.claimBtn,
-              isClaimed ? styles.claimBtnDisabled : styles.claimBtnActive,
-              pressed && !isClaimed && { opacity: 0.8 },
+              claimSuccessText
+                ? styles.claimBtnSuccess
+                : isClaimed
+                ? styles.claimBtnDisabled
+                : styles.claimBtnActive,
+              pressed && { opacity: 0.85 },
             ]}
           >
             {claiming ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : claimSuccessText ? (
+              <>
+                <AppIcon name="check" size={18} color="#FFFFFF" />
+                <Text style={styles.claimBtnTextActive}>Selesai</Text>
+              </>
             ) : isClaimed ? (
               <>
                 <AppIcon name="check" size={18} color="#94A3B8" />
@@ -328,5 +352,46 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#CBD5E1",
     marginTop: 1,
+  },
+  successBanner: {
+    width: "100%",
+    backgroundColor: "rgba(16, 185, 129, 0.14)",
+    borderColor: "rgba(16, 185, 129, 0.4)",
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    alignItems: "center",
+    gap: 4,
+  },
+  successTitle: {
+    fontFamily: "Nunito-Black",
+    fontSize: 14,
+    color: "#34D399",
+  },
+  successMessage: {
+    fontFamily: "Nunito-Regular",
+    fontSize: 12,
+    color: "#E2E8F0",
+    textAlign: "center",
+    lineHeight: 17,
+  },
+  errorBanner: {
+    width: "100%",
+    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    borderColor: "rgba(244, 63, 94, 0.4)",
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 10,
+  },
+  errorMessage: {
+    fontFamily: "Nunito-Bold",
+    fontSize: 12,
+    color: "#FDA4AF",
+    textAlign: "center",
+  },
+  claimBtnSuccess: {
+    backgroundColor: "#059669",
+    borderWidth: 1,
+    borderColor: "#34D399",
   },
 });

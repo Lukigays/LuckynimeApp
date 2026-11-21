@@ -54,13 +54,18 @@ function cleanText(raw: string): string {
     .replace(/\{[^}]*\}/g, "")
     .replace(/\\N/g, "\n")
     .replace(/\\n/g, "\n")
+    .replace(/\\h/g, " ")
+    .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<[^>]*>/g, "")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replace(/&#39;|&apos;/g, "'")
     .replace(/&nbsp;/g, " ")
+    .replace(/&(lrm|rlm);/gi, "")
+    .replace(/[\u200E\u200F\uFEFF]/g, "")
+    .replace(/[ \t]+/g, " ")
     .trim();
 }
 
@@ -154,8 +159,10 @@ function parseASS(content: string): ParsedSubtitle {
     if (textIdx < 0 || startIdx < 0 || endIdx < 0) continue;
     const startTime = parseASSTime(parts[startIdx]);
     const endTime = parseASSTime(parts[endIdx]);
-    if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) continue;
+    if (!Number.isFinite(startTime) || !Number.isFinite(endTime) || endTime <= startTime) continue;
     const rawText = parts.slice(textIdx).join(",").trim();
+    // Skip ASS vector drawing commands ({\p1}...{\p0}) so polygon coordinates never render as text.
+    if (/\{\\p[1-9]\b/i.test(rawText)) continue;
     const text = cleanText(rawText);
     if (!text) continue;
     cues.push({ id: ++id, startTime, endTime, text });
@@ -292,5 +299,15 @@ export function parseSubtitle(content: string, format: "vtt" | "srt" | "ass"): P
 }
 
 export function findActiveCues(cues: SubtitleCue[], currentTime: number): SubtitleCue[] {
-  return cues.filter((cue) => currentTime >= cue.startTime && currentTime <= cue.endTime);
+  const seen = new Set<string>();
+  const active: SubtitleCue[] = [];
+  for (const cue of cues) {
+    if (currentTime >= cue.startTime && currentTime < cue.endTime) {
+      const normalizedKey = cue.text.replace(/\s+/g, " ").trim().toLowerCase();
+      if (!normalizedKey || seen.has(normalizedKey)) continue;
+      seen.add(normalizedKey);
+      active.push(cue);
+    }
+  }
+  return active;
 }

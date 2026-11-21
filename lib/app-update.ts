@@ -1,11 +1,29 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NativeModules, Platform } from "react-native";
-import { supabase } from "@/lib/supabase";
+import { APP_CONFIG } from "@/lib/app-config";
 
+async function readStorageItem(key: string): Promise<string | null> {
+  try {
+    const mod = require("@react-native-async-storage/async-storage");
+    const storage = mod?.default ?? mod;
+    return await storage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+async function writeStorageItem(key: string, value: string): Promise<void> {
+  try {
+    const mod = require("@react-native-async-storage/async-storage");
+    const storage = mod?.default ?? mod;
+    await storage.setItem(key, value);
+  } catch {}
+}
+
+export const LUCKYNIME_GITHUB_RELEASE_PAGE_URL =
+  "https://github.com/Lukigays/Luckynime-Release/releases/latest";
 export const LUCKYNIME_LATEST_RELEASE_URL =
   "https://api.github.com/repos/Lukigays/Luckynime-Release/releases/latest";
-export const UPDATE_CHECK_CACHE_KEY = "luckynime.update.latest-release.v3";
-export const UPDATE_CHECK_TTL_MS = 6 * 60 * 60 * 1000;
+export const UPDATE_CHECK_CACHE_KEY = "luckynime.update.latest-release.v4";
+export const UPDATE_CHECK_TTL_MS = 60 * 1000;
 
 export const TRUSTED_RELEASE_DOWNLOAD_PREFIXES = [
   "/Lukigays/Luckynime-Release/releases/download/",
@@ -20,17 +38,17 @@ export type ApkAbi = "arm64-v8a" | "armeabi-v7a" | "x86_64" | "universal";
 export const ABI_PRIORITY: ApkAbi[] = ["arm64-v8a", "armeabi-v7a", "x86_64", "universal"];
 
 const ABI_LABELS: Record<ApkAbi, string> = {
-  "arm64-v8a":   "ARM64 (64-bit)",
+  "arm64-v8a": "ARM64 (64-bit)",
   "armeabi-v7a": "ARM (32-bit)",
-  "x86_64":      "x86_64 (emulator/PC)",
-  universal:     "Universal",
+  "x86_64": "x86_64 (emulator/PC)",
+  universal: "Universal",
 };
 
 const ABI_PATTERNS: Array<{ abi: ApkAbi; pattern: RegExp }> = [
-  { abi: "arm64-v8a",   pattern: /arm64(?:[-_]?v8a)?/i },
+  { abi: "arm64-v8a", pattern: /arm64(?:[-_]?v8a)?/i },
   { abi: "armeabi-v7a", pattern: /armeabi(?:[-_]?v7a)?|arm32/i },
-  { abi: "x86_64",      pattern: /x86_64|x86-64/i },
-  { abi: "universal",   pattern: /universal/i },
+  { abi: "x86_64", pattern: /x86_64|x86-64/i },
+  { abi: "universal", pattern: /universal/i },
 ];
 
 export function detectAssetAbi(assetName: string): ApkAbi | null {
@@ -47,8 +65,9 @@ export function abiLabel(abi: ApkAbi | null): string {
 
 /** Returns the device's primary supported ABI (android only). */
 export async function getDeviceAbi(): Promise<ApkAbi | null> {
-  if (Platform.OS !== "android") return null;
   try {
+    const { NativeModules, Platform } = require("react-native");
+    if (Platform.OS !== "android") return null;
     const constants = NativeModules.PlatformConstants as
       | { CPU_ABI?: string; CPU_ABI2?: string }
       | undefined;
@@ -204,7 +223,8 @@ export function parseGitHubRelease(payload: unknown): AppRelease | null {
         ? record.published_at
         : undefined,
     body,
-    mandatory: false,
+    // Every newer GitHub release requires updating older installed builds first
+    mandatory: true,
   };
 }
 
@@ -219,8 +239,25 @@ export function updateDismissalKey(releaseVersion: string) {
   return `luckynime.update.dismissed:${normalizeVersion(releaseVersion)}`;
 }
 
+async function fetchBackendProxyRelease(
+  fetcher: typeof fetch
+): Promise<AppRelease | null> {
+  try {
+    const base = APP_CONFIG.apiBaseUrl?.replace(/\/$/, "");
+    if (!base) return null;
+    const res = await fetcher(`${base}/api/v1/release/latest`, {
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) return null;
+    return parseGitHubRelease(await res.json());
+  } catch {
+    return null;
+  }
+}
+
 async function fetchSupabaseFallbackRelease(): Promise<AppRelease | null> {
   try {
+    const { supabase } = require("@/lib/supabase");
     const { data, error } = await supabase
       .from("system_configs")
       .select("value")
@@ -265,7 +302,7 @@ async function fetchSupabaseFallbackRelease(): Promise<AppRelease | null> {
       assetName: arm64Asset.name,
       assetSize: 0,
       body: val?.changelog ?? val?.release_notes ?? `Pembaruan Luckynime v${version}`,
-      mandatory: Boolean(val?.force_update ?? val?.forceUpdate),
+      mandatory: val?.force_update === false ? false : true,
     };
   } catch {
     return null;
@@ -278,46 +315,57 @@ export async function getLatestLuckynimeRelease(options?: {
   now?: number;
 }): Promise<AppRelease | null> {
   const now = options?.now ?? Date.now();
+  const activeFetcher = options?.fetcher ?? fetch;
+
   if (!options?.force) {
-    const cached = await AsyncStorage.getItem(UPDATE_CHECK_CACHE_KEY).catch(
-      () => null
-    );
+    const cached = await readStorageItem(UPDATE_CHECK_CACHE_KEY);
     if (cached) {
       try {
         const parsed = JSON.parse(cached) as CachedRelease;
-        if (parsed.release && now - parsed.fetchedAt < UPDATE_CHECK_TTL_MS)
+        if (parsed.release && now - parsed.fetchedAt < UPDATE_CHECK_TTL_MS) {
           return parsed.release;
+        }
       } catch {}
     }
   }
 
+  // 1. Primary: Official GitHub Releases API (Lukigays/Luckynime-Release)
   try {
-    const response = await (options?.fetcher ?? fetch)(
-      LUCKYNIME_LATEST_RELEASE_URL,
-      { headers: { Accept: "application/vnd.github+json" } }
-    );
+    const response = await activeFetcher(LUCKYNIME_LATEST_RELEASE_URL, {
+      headers: { Accept: "application/vnd.github+json" },
+    });
     if (response.ok) {
       const release = parseGitHubRelease(await response.json());
       if (release) {
-        void AsyncStorage.setItem(
+        void writeStorageItem(
           UPDATE_CHECK_CACHE_KEY,
           JSON.stringify({ fetchedAt: now, release })
-        ).catch(() => {});
+        );
         return release;
       }
     }
   } catch {
-    // Fall through to Supabase fallback when custom fetcher isn't passed
+    // Fall through to Luckynime API mirror & Supabase fallback
   }
 
-  // Only fall back to Supabase in live runtime (when no mock test fetcher was injected)
+  // 2. Secondary (live runtime): Luckynime-API GitHub Release proxy (immune to GitHub IP rate limits)
   if (!options?.fetcher) {
+    const proxied = await fetchBackendProxyRelease(activeFetcher);
+    if (proxied) {
+      void writeStorageItem(
+        UPDATE_CHECK_CACHE_KEY,
+        JSON.stringify({ fetchedAt: now, release: proxied })
+      );
+      return proxied;
+    }
+
+    // 3. Tertiary: Supabase system_configs (`app_release`)
     const fallback = await fetchSupabaseFallbackRelease();
     if (fallback) {
-      void AsyncStorage.setItem(
+      void writeStorageItem(
         UPDATE_CHECK_CACHE_KEY,
         JSON.stringify({ fetchedAt: now, release: fallback })
-      ).catch(() => {});
+      );
       return fallback;
     }
   }
@@ -330,10 +378,17 @@ export async function checkForLuckynimeUpdate(
   options?: { force?: boolean; fetcher?: typeof fetch; now?: number }
 ) {
   const release = await getLatestLuckynimeRelease(options);
+  const available = Boolean(
+    release && isReleaseNewer(installedVersion, release.version)
+  );
   return {
-    release,
-    available: Boolean(
-      release && isReleaseNewer(installedVersion, release.version)
-    ),
+    release: release
+      ? {
+          ...release,
+          // Outdated app versions must always update first via GitHub Release
+          mandatory: available ? true : Boolean(release.mandatory),
+        }
+      : null,
+    available,
   };
 }

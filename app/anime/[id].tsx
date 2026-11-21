@@ -39,20 +39,34 @@ import { hapticLight, hapticSuccess } from "@/lib/haptics";
 
 function cleanSynopsisText(raw?: string | null): string {
   if (!raw) return "Tidak ada sinopsis tersedia.";
-  return raw
+  const cleaned = raw
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<\/p>/gi, "\n\n")
     .replace(/<[^>]+>/g, "")
     .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'")
+    .replace(/&#0*39;/g, "'")
     .replace(/&apos;/g, "'")
     .replace(/&amp;/g, "&")
     .replace(/&mdash;/g, "—")
     .replace(/&ndash;/g, "–")
+    .replace(/&nbsp;/g, " ")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
+    .replace(
+      /\(\s*(?:source|sumber|written\s+by|ditulis\s+oleh|translated\s+by|diterjemahkan\s+oleh|credit|courtesy\s+of)\s*:?[^)]*\)/gi,
+      ""
+    )
+    .replace(
+      /\[\s*(?:source|sumber|written\s+by|ditulis\s+oleh|translated\s+by|diterjemahkan\s+oleh|credit)\s*:?[^\]]*\]/gi,
+      ""
+    )
+    .replace(
+      /^[ \t]*(?:source|sumber|written\s+by|ditulis\s+oleh|translated\s+by|diterjemahkan\s+oleh)\s*:\s*[^\n]+$/gim,
+      ""
+    )
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+  return cleaned || "Tidak ada sinopsis tersedia.";
 }
 
 function formatAiringDate(airingAt?: number | null): string {
