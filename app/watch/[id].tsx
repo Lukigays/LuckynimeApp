@@ -116,6 +116,17 @@ const SKIP_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const ANISKIP_TIMEOUT_MS = 8_000;
 const UP_NEXT_AUTOPLAY_SECONDS = 5;
 const EMPTY_EPISODES: Episode[] = [];
+const MEMORY_WATCH_PROGRESS = new Map<string, { progress: number; duration: number }>();
+
+function sanitizeResumeSeconds(progress?: number | null, total?: number | null): number | null {
+  const p = Number(progress);
+  const d = Number(total);
+  if (!Number.isFinite(p) || p <= 3) return null;
+  if (Number.isFinite(d) && d > 0) {
+    if (p >= d - 8 || p / d >= 0.96) return null;
+  }
+  return p;
+}
 
 type CachedStream = { savedAt: number; data: StreamResponse };
 type WatchPreferences = { speed?: number; autoPlayNext?: boolean };
@@ -321,11 +332,28 @@ export default function WatchScreen() {
   }, []);
 
   // ── Player state (react-native-video) ──
+  const syncInitialResumeSec = useMemo(() => {
+    if (isReturningFromMini && playerData) {
+      return playerData.currentTime > 0 ? playerData.currentTime : 0;
+    }
+    const paramTime = sanitizeResumeSeconds(Number(params.resumeTime), null) ?? 0;
+    const memEntry = MEMORY_WATCH_PROGRESS.get(`${animeId}:${episode}`);
+    const memTime = memEntry ? (sanitizeResumeSeconds(memEntry.progress, memEntry.duration) ?? 0) : 0;
+    const histRow = history.displayRows?.find(
+      (r: any) => Number(r?.anime_id) === animeId && Number(r?.episode_number) === episode,
+    );
+    const histTime = histRow ? (sanitizeResumeSeconds(histRow.progress, histRow.duration) ?? 0) : 0;
+    return Math.max(paramTime, memTime, histTime);
+  }, [animeId, episode]);
+
   const videoRef = useRef<VideoRef>(null);
-  const [playerStatus, setPlayerStatus] = useState<"idle" | "loading" | "playing" | "paused" | "error">(() => (isReturningFromMini ? "playing" : "idle"));
-  const [currentTime, setCurrentTime] = useState(() => (isReturningFromMini ? playerData!.currentTime : 0));
+  const userPausedRef = useRef(false);
+  const episodeTargetResumeRef = useRef<number>(syncInitialResumeSec);
+  const [resumeBootReady, setResumeBootReady] = useState<boolean>(() => isReturningFromMini || syncInitialResumeSec > 3);
+  const [playerStatus, setPlayerStatus] = useState<"idle" | "loading" | "playing" | "paused" | "error">(() => (isReturningFromMini ? "playing" : "loading"));
+  const [currentTime, setCurrentTime] = useState(() => syncInitialResumeSec);
   const [duration, setDuration] = useState(() => (isReturningFromMini ? playerData!.duration : 0));
-  const [isPlaying, setIsPlaying] = useState(() => (isReturningFromMini ? playerData!.isPlaying : false));
+  const [isPlaying, setIsPlaying] = useState(() => (isReturningFromMini ? playerData!.isPlaying : true));
   const [muted, setMuted] = useState(false);
   const [buffering, setBuffering] = useState(false);
   const [playableDuration, setPlayableDuration] = useState(0);
@@ -513,7 +541,7 @@ export default function WatchScreen() {
   const lastHistorySync = useRef(0);
   const lastProviderSync = useRef(0);
   const skipSegmentsRef = useRef(skipSegments);
-  const pendingResume = useRef<number | null>(isReturningFromMini && playerData ? playerData.currentTime : null);
+  const pendingResume = useRef<number | null>(syncInitialResumeSec > 3 ? syncInitialResumeSec : null);
   const historyResumeRequestedFor = useRef<string | null>(null);
   const initialHistoryResumeApplied = useRef(false);
   const activeProviderId = useRef<string | null>(null);
@@ -846,6 +874,10 @@ export default function WatchScreen() {
     rebufferSeen.current = false;
     intentionalSeekUntil.current = 0;
     pendingResume.current = null;
+    episodeTargetResumeRef.current = 0;
+    userPausedRef.current = false;
+    setIsPlaying(true);
+    setResumeBootReady(false);
     initialHistoryResumeApplied.current = false;
     historyResumeRequestedFor.current = null;
     setResumePosition(null);
@@ -1261,7 +1293,7 @@ export default function WatchScreen() {
     return () => clearTimeout(timer);
   }, [embedSource, source]);
 
-  const tryApplyAutoResume = useCallback((knownDuration?: number) => {
+  const tryApplyAutoResume = useCallback((knownDuration?: number, actualCurrentTime?: number) => {
     if (initialHistoryResumeApplied.current) return;
     const target = pendingResume.current;
     if (typeof target !== "number" || !Number.isFinite(target) || target <= 2) return;
@@ -1269,6 +1301,7 @@ export default function WatchScreen() {
     if (!sourceStarted.current && dur <= 0) return;
     if (dur > 0 && (target >= dur - 8 || target / dur >= 0.96)) {
       pendingResume.current = null;
+      episodeTargetResumeRef.current = 0;
       initialHistoryResumeApplied.current = true;
       setResumePosition(null);
       return;
@@ -1276,11 +1309,14 @@ export default function WatchScreen() {
     initialHistoryResumeApplied.current = true;
     pendingResume.current = null;
     setResumePosition(null);
-    intentionalSeekUntil.current = Date.now() + 1_800;
+    intentionalSeekUntil.current = Date.now() + 2_200;
     lastStablePlaybackTime.current = target;
-    videoRef.current?.seek(target);
     currentTimeRef.current = target;
     setCurrentTime(target);
+    // If native startPosition already landed within 2.5s of target, skip redundant JS seek so ExoPlayer never rebuffers twice.
+    if (typeof actualCurrentTime !== "number" || !Number.isFinite(actualCurrentTime) || Math.abs(actualCurrentTime - target) > 2.5) {
+      videoRef.current?.seek(target);
+    }
   }, []);
 
   useEffect(() => {
@@ -1379,31 +1415,82 @@ export default function WatchScreen() {
     return p;
   }, []);
 
-  // 1) Read local AsyncStorage immediately on episode mount (0ms network wait) for ALL users
+  // 1) Read local AsyncStorage + memory + cached history BEFORE <Video> mounts (<10ms, capped at 70ms)
   useEffect(() => {
-    if (!Number.isFinite(animeId) || animeId <= 0) return;
+    if (!Number.isFinite(animeId) || animeId <= 0) {
+      setResumeBootReady(true);
+      return;
+    }
     let cancelled = false;
-    void AsyncStorage.getItem(`luckynime-watch-local:${animeId}:${episode}`).then((stored) => {
-      if (cancelled || !stored) return;
-      try {
-        const parsed = JSON.parse(stored) as { progress?: number; duration?: number };
-        const candidate = pickValidResume(parsed.progress, parsed.duration);
-        if (candidate !== null && !initialHistoryResumeApplied.current) {
-          const prev = pendingResume.current ?? 0;
-          if (candidate > prev) {
-            pendingResume.current = candidate;
-            tryApplyAutoResume();
+    const memEntry = MEMORY_WATCH_PROGRESS.get(`${animeId}:${episode}`);
+    const memCandidate = memEntry ? pickValidResume(memEntry.progress, memEntry.duration) : null;
+    const cachedRow = history.displayRows?.find(
+      (item: any) => Number(item?.anime_id) === animeId && Number(item?.episode_number) === episode,
+    );
+    const cachedCandidate = cachedRow ? pickValidResume(cachedRow.progress, cachedRow.duration) : null;
+    const syncBest = Math.max(pendingResume.current ?? 0, memCandidate ?? 0, cachedCandidate ?? 0);
+    if (syncBest > 3 && !initialHistoryResumeApplied.current) {
+      pendingResume.current = syncBest;
+      episodeTargetResumeRef.current = syncBest;
+      if (!sourceStarted.current) {
+        currentTimeRef.current = syncBest;
+        setCurrentTime(syncBest);
+      }
+    } else if (!sourceStarted.current && !isReturningFromMini) {
+      currentTimeRef.current = 0;
+      setCurrentTime(0);
+    }
+
+    const safetyTimer = setTimeout(() => {
+      if (!cancelled) setResumeBootReady(true);
+    }, 70);
+
+    void AsyncStorage.getItem(`luckynime-watch-local:${animeId}:${episode}`)
+      .then((stored) => {
+        if (cancelled) return;
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored) as { progress?: number; duration?: number };
+            if (Number.isFinite(Number(parsed.progress)) && Number.isFinite(Number(parsed.duration))) {
+              MEMORY_WATCH_PROGRESS.set(`${animeId}:${episode}`, {
+                progress: Number(parsed.progress),
+                duration: Number(parsed.duration),
+              });
+            }
+            const candidate = pickValidResume(parsed.progress, parsed.duration);
+            if (candidate !== null && !initialHistoryResumeApplied.current) {
+              const best = Math.max(pendingResume.current ?? 0, candidate);
+              pendingResume.current = best;
+              episodeTargetResumeRef.current = best;
+              if (!sourceStarted.current) {
+                currentTimeRef.current = best;
+                setCurrentTime(best);
+              }
+              tryApplyAutoResume();
+            }
+          } catch {
+            /* ignore malformed */
           }
         }
-      } catch { /* ignore malformed */ }
-    }).catch(() => {});
-    return () => { cancelled = true; };
+      })
+      .catch(() => {})
+      .finally(() => {
+        clearTimeout(safetyTimer);
+        if (!cancelled) setResumeBootReady(true);
+      });
+
+    return () => {
+      cancelled = true;
+      clearTimeout(safetyTimer);
+    };
   }, [animeId, episode, pickValidResume, tryApplyAutoResume]);
 
-  // 2) Merge with Supabase watch_history when available — prefer max(local, server)
+  // 2) Merge with Supabase watch_history / offline cache when available — prefer max(local, server)
   useEffect(() => {
-    if (!history.history.isSuccess || !Number.isFinite(animeId) || animeId <= 0) return;
-    const serverEntry = history.history.data?.find((item) => item.anime_id === animeId && item.episode_number === episode);
+    if (!Number.isFinite(animeId) || animeId <= 0) return;
+    const rows = history.displayRows ?? history.history.data;
+    if (!rows?.length) return;
+    const serverEntry = rows.find((item: any) => Number(item?.anime_id) === animeId && Number(item?.episode_number) === episode);
     const serverCandidate = serverEntry ? pickValidResume(serverEntry.progress, serverEntry.duration) : null;
     if (serverCandidate === null) return;
     const historyKey = `${animeId}:${episode}:${Math.floor(serverCandidate)}`;
@@ -1413,14 +1500,20 @@ export default function WatchScreen() {
     if (!initialHistoryResumeApplied.current) {
       const best = Math.max(pendingResume.current ?? 0, serverCandidate);
       pendingResume.current = best;
+      episodeTargetResumeRef.current = best;
+      if (!sourceStarted.current) {
+        currentTimeRef.current = best;
+        setCurrentTime(best);
+      }
       tryApplyAutoResume();
     } else if (currentTimeRef.current < 8 && serverCandidate > currentTimeRef.current + 5) {
       // Server history arrived slightly after video started from 0s — jump right to saved minute
       pendingResume.current = serverCandidate;
+      episodeTargetResumeRef.current = serverCandidate;
       initialHistoryResumeApplied.current = false;
       tryApplyAutoResume();
     }
-  }, [animeId, episode, history.history.data, history.history.isSuccess, pickValidResume, tryApplyAutoResume]);
+  }, [animeId, episode, history.displayRows, history.history.data, pickValidResume, tryApplyAutoResume]);
 
   const flushWatchProgress = useCallback((forceServer = false) => {
     const pos = currentTimeRef.current;
@@ -1428,6 +1521,7 @@ export default function WatchScreen() {
     if (!Number.isFinite(animeId) || animeId <= 0 || !Number.isFinite(pos) || pos < 3 || !Number.isFinite(dur) || dur <= 0) {
       return;
     }
+    MEMORY_WATCH_PROGRESS.set(`${animeId}:${episode}`, { progress: pos, duration: dur });
     void AsyncStorage.setItem(
       `luckynime-watch-local:${animeId}:${episode}`,
       JSON.stringify({ progress: pos, duration: dur, savedAt: Date.now() }),
@@ -1720,13 +1814,28 @@ export default function WatchScreen() {
     return t === "hls" ? "m3u8" : t === "dash" ? "mpd" : undefined;
   }, [source?.url]);
 
-  // Real ExoPlayer LoadControl — matches Luckynime proven buffer configuration
+  // Real ExoPlayer LoadControl — tuned for fast resume & steady playback
   const videoBufferConfig = useMemo(() => ({
     minBufferMs: 15_000,
     maxBufferMs: 120_000,
-    bufferForPlaybackMs: 2_500,
-    bufferForPlaybackAfterRebufferMs: 5_000,
+    bufferForPlaybackMs: 1_500,
+    bufferForPlaybackAfterRebufferMs: 4_000,
   }), []);
+
+  // Native startPosition (ms) tells ExoPlayer / AVPlayer to seek BEFORE
+  // downloading segment 0, eliminating the "plays from 00:00 for a few seconds
+  // before jumping to saved position" delay.
+  const videoSourceObject = useMemo(() => {
+    const resumeTarget = Math.max(pendingResume.current ?? 0, episodeTargetResumeRef.current);
+    const startPosition = resumeTarget > 2 ? Math.round(resumeTarget * 1000) : undefined;
+    return {
+      uri: videoSourceUri,
+      headers: videoSourceHeaders,
+      type: videoContentType,
+      bufferConfig: videoBufferConfig,
+      ...(startPosition ? { startPosition } : {}),
+    };
+  }, [videoSourceUri, videoSourceHeaders, videoContentType, videoBufferConfig, sourceRevision, resumeBootReady]);
 
   // ── Actions ──
   const selectLanguage = (next: Language) => {
@@ -1764,8 +1873,15 @@ export default function WatchScreen() {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
     // Server-switch preserves position (Track 4): stash via the tested
     // resolveResumeOnSwitch helper so the new source re-seeks here.
-    const stashed = resolveResumeOnSwitch(currentTime, duration);
-    if (stashed !== null) pendingResume.current = stashed;
+    const stashed = Math.max(
+      resolveResumeOnSwitch(currentTime, duration) ?? 0,
+      pendingResume.current ?? 0,
+      episodeTargetResumeRef.current,
+    );
+    if (stashed > 2) {
+      pendingResume.current = stashed;
+      episodeTargetResumeRef.current = stashed;
+    }
     // Reset the mount flag or the new provider's stream resolves but never
     // mounts (permanent spinner) — this stalled every manual server switch.
     sourceStarted.current = false;
@@ -1792,11 +1908,18 @@ export default function WatchScreen() {
   };
 
   const selectQuality = (next: StreamSource, explicitLabel?: string) => {
-    // Quality switch preserves position even if watched < 30s so switching
-    // resolution never restarts the episode from 00:00.
-    const stashed = currentTimeRef.current > 1 ? currentTimeRef.current : resolveResumeOnSwitch(currentTime, duration);
-    if (stashed !== null && stashed > 1) {
+    // Quality switch preserves position even if watched < 30s (or while initial
+    // resume is still settling during applyRemembered) so switching resolution
+    // never restarts the episode from 00:00.
+    const stashed = Math.max(
+      currentTimeRef.current > 1 ? currentTimeRef.current : 0,
+      pendingResume.current ?? 0,
+      episodeTargetResumeRef.current,
+      resolveResumeOnSwitch(currentTime, duration) ?? 0,
+    );
+    if (stashed > 1) {
       pendingResume.current = stashed;
+      episodeTargetResumeRef.current = stashed;
       initialHistoryResumeApplied.current = false;
     }
     sourceMounted.current = true;
@@ -1909,12 +2032,16 @@ export default function WatchScreen() {
 
   const seekBy = useCallback((seconds: number) => {
     const next = Math.max(0, Math.min(duration, currentTime + seconds));
+    episodeTargetResumeRef.current = 0;
+    pendingResume.current = null;
     intentionalSeekUntil.current = Date.now() + 1000;
     videoRef.current?.seek(next);
     setCurrentTime(next);
   }, [currentTime, duration]);
 
   const seekTo = useCallback((targetSeconds: number) => {
+    episodeTargetResumeRef.current = 0;
+    pendingResume.current = null;
     if (duration > 0) {
       const target = Math.max(0, Math.min(duration, targetSeconds));
       markIntentionalSeek(target);
@@ -1926,6 +2053,22 @@ export default function WatchScreen() {
   }, [duration]);
 
   const handleVideoProgress = useCallback((data: OnProgressData) => {
+    // Once ExoPlayer reaches the resumed minute, release the initial resume floor
+    // so the user can freely scrub anywhere (including 00:00) afterwards.
+    if (episodeTargetResumeRef.current > 3 && data.currentTime >= episodeTargetResumeRef.current - 2.5) {
+      episodeTargetResumeRef.current = 0;
+    }
+    // Suppress transient 0.0s ticks while an initial resume seek is still settling
+    // so the seekbar and time label never flicker to 0:00.
+    if (
+      episodeTargetResumeRef.current > 5 &&
+      data.currentTime < 2 &&
+      (pendingResume.current !== null || Date.now() < intentionalSeekUntil.current)
+    ) {
+      playableDurationRef.current = data.playableDuration;
+      if (!pipActiveRef.current) setPlayableDuration(data.playableDuration);
+      return;
+    }
     currentTimeRef.current = data.currentTime;
     playableDurationRef.current = data.playableDuration;
     // While PiP is active the system owns the frame — refs keep tracking and
@@ -2154,7 +2297,10 @@ export default function WatchScreen() {
               doubleTapTouch.current = true;
               gestureModeRef.current = "pending";
               if (!isTriple) {
-                setIsPlaying((p) => !p);
+                setIsPlaying((p) => {
+                  userPausedRef.current = p;
+                  return !p;
+                });
                 void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
               }
               return;
@@ -3099,7 +3245,7 @@ export default function WatchScreen() {
         native Video SurfaceView eats touches aimed behind it. */}
     <View style={[styles.videoShell, manualFullscreen && ps.videoShellFullscreen]}>
       {embedSource && !source ? <EmbedPlayer uri={embedSource.url} headers={nativePlaybackHeaders(playbackHeaders)} onError={() => handleProviderBlockedRef.current("player")} onLoaded={() => { embedReadyRef.current = true; setShowControls(true); }} /> : null}
-      {source ? <Video key={activeProvider?.id ?? "default"} ref={videoRef} style={StyleSheet.absoluteFill} useTextureView={Platform.OS === "android"} source={{ uri: videoSourceUri, headers: videoSourceHeaders, type: videoContentType, bufferConfig: videoBufferConfig }}
+      {source && resumeBootReady ? <Video key={activeProvider?.id ?? "default"} ref={videoRef} style={StyleSheet.absoluteFill} useTextureView={Platform.OS === "android"} source={videoSourceObject}
         selectedTextTrack={{ type: "disabled" } as any}
         selectedAudioTrack={resolvedAudioTrack}
         ignoreSilentSwitch="ignore"
@@ -3112,14 +3258,17 @@ export default function WatchScreen() {
         }}
         onLoad={(data: OnLoadData) => {
           if (__DEV__) {
-            console.log(`[PlaybackMetrics] Metadata Loaded (onLoad): duration=${data.duration}s t=${Date.now() - screenMountTime}ms provider=${activeProvider?.provider ?? activeProvider?.id ?? "?"}`);
+            console.log(`[PlaybackMetrics] Metadata Loaded (onLoad): duration=${data.duration}s currentTime=${data.currentTime}s t=${Date.now() - screenMountTime}ms provider=${activeProvider?.provider ?? activeProvider?.id ?? "?"}`);
           }
           durationRef.current = data.duration;
           setDuration(data.duration);
           sourceStarted.current = true;
           setLastPlayerError(null);
-          setShowControls(true);
-          tryApplyAutoResume(data.duration);
+          if (!userPausedRef.current) {
+            setPlayerStatus("playing");
+            setIsPlaying(true);
+          }
+          tryApplyAutoResume(data.duration, data.currentTime);
         }}
         onReadyForDisplay={() => {
           if (!sourceFirstFrame.current) {
@@ -3127,8 +3276,10 @@ export default function WatchScreen() {
             if (__DEV__) {
               console.log(`[PlaybackMetrics] First Frame Displayed (onReadyForDisplay): totalTimeToFirstFrame=${Date.now() - screenMountTime}ms provider=${activeProvider?.provider ?? activeProvider?.id ?? "?"}`);
             }
-            setPlayerStatus("playing");
-            setIsPlaying(true);
+            if (!userPausedRef.current) {
+              setPlayerStatus("playing");
+              setIsPlaying(true);
+            }
             tryApplyAutoResume(durationRef.current);
           }
         }}
@@ -3330,7 +3481,10 @@ export default function WatchScreen() {
             <Pressable
               onPress={() => {
                 void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-                setIsPlaying((p) => !p);
+                setIsPlaying((p) => {
+                  userPausedRef.current = p;
+                  return !p;
+                });
               }}
               onLongPress={beginHoldSpeed}
               onPressOut={endHoldSpeed}

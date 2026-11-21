@@ -370,6 +370,15 @@ export default function AnimeDetailScreen() {
     }
 
     hapticLight();
+    const matchedHistory = history.displayRows?.find(
+      (entry: any) => Number(entry?.anime_id) === id && Number(entry?.episode_number) === episodeNumber,
+    );
+    const savedProgress = Number(matchedHistory?.progress ?? 0);
+    const savedDuration = Number(matchedHistory?.duration ?? 0);
+    const canResume =
+      Number.isFinite(savedProgress) &&
+      savedProgress > 3 &&
+      (!Number.isFinite(savedDuration) || savedDuration <= 0 || (savedProgress < savedDuration - 8 && savedProgress / savedDuration < 0.96));
     router.push({
       pathname: "/watch/[id]",
       params: {
@@ -377,6 +386,7 @@ export default function AnimeDetailScreen() {
         episode: String(episodeNumber),
         title,
         image: data.coverImage?.extraLarge || data.coverImage?.large || "",
+        ...(canResume ? { resumeTime: String(Math.floor(savedProgress)) } : {}),
       },
     } as never);
   };

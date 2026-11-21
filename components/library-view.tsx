@@ -352,6 +352,12 @@ export function LibraryView({
           accessibilityLabel={`Lanjutkan ${item.anime_title || "Anime"} episode ${item.episode_number}`}
           onPress={() => {
             hapticLight();
+            const savedProgress = Number(item?.progress ?? 0);
+            const savedDuration = Number(item?.duration ?? 0);
+            const canResume =
+              Number.isFinite(savedProgress) &&
+              savedProgress > 3 &&
+              (!Number.isFinite(savedDuration) || savedDuration <= 0 || (savedProgress < savedDuration - 8 && savedProgress / savedDuration < 0.96));
             router.push({
               pathname: "/watch/[id]",
               params: {
@@ -359,6 +365,7 @@ export function LibraryView({
                 episode: String(item.episode_number),
                 title: item.anime_title ?? "Anime",
                 image: item.anime_image ?? "",
+                ...(canResume ? { resumeTime: String(Math.floor(savedProgress)) } : {}),
               },
             } as never);
           }}
