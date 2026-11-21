@@ -6,6 +6,11 @@ This is the public record of meaningful native Android releases. For the current
 
 ## Unreleased
 
+## v1.1.1 — Layar Tonton Bersih Tanpa Garis Merah di Bawah
+
+- **Hapus Garis Progress Merah Saat Menonton**: Menghilangkan garis merah tipis (`miniProgress`) di tepi bawah layar saat kontrol player tersembunyi sehingga tampilan video inline maupun fullscreen benar-benar bersih 100% (seekbar merah hanya tampil ketika layar diketuk untuk membuka kontrol).
+- **Termasuk Semua Perbaikan v1.1.0**: Subtitle rapi presisi anti-tumpuk, sinopsis Bahasa Indonesia bersih tanpa `(Source: ...)`, notifikasi EXP ringkas + *swipe up*, dan pembaruan wajib otomatis via GitHub Release.
+
 ## v1.1.0 — Subtitle Rapi Anti-Tumpuk, Sinopsis Bahasa Indonesia Bersih, Notifikasi EXP Compact & Auto-Update Wajib
 
 - **Perbaikan Total Subtitle Video Player**: Render per-baris presisi (`boxWidth` bulat + `textBreakStrategy="simple"`) sehingga teks putih dan outline hitam selalu sejajar rapi tanpa pernah bertumpuk di mode portrait maupun fullscreen, ditambah pembungkusan kalimat seimbang & posisi otomatis naik saat kontrol player aktif.

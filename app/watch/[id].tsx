@@ -2987,15 +2987,6 @@ export default function WatchScreen() {
         </View>
       ) : null}
 
-      {/* ── Mini progress: always visible when chrome is hidden, so inline
-          never looks dead and matches the reference layout's timeline. ── */}
-      {source && !showControls && !playerLocked && duration > 0 ? (
-        <View style={styles.miniProgress} pointerEvents="none">
-          <View style={[styles.miniProgressBuffered, { width: `${bufferPct}%` }]} />
-          <View style={[styles.miniProgressPlayed, { width: `${progressPct}%` }]} />
-        </View>
-      ) : null}
-
       {/* ── Download / status toast (auto-dismisses) ── */}
       {downloadMessage ? (
         <View style={styles.statusToast} pointerEvents="none">
@@ -4268,9 +4259,6 @@ const styles = StyleSheet.create({
   embedBottomDeck: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" },
   embedBottomInfo: { flex: 1, flexShrink: 1, marginRight: 6 },
   embedBottomLabel: { color: "rgba(255,255,255,0.75)", fontSize: 11, fontWeight: "700", letterSpacing: 0.3 },
-  miniProgress: { position: "absolute", left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: "rgba(255,255,255,0.22)", zIndex: 2 },
-  miniProgressBuffered: { position: "absolute", top: 0, left: 0, bottom: 0, backgroundColor: "rgba(255,255,255,0.38)" },
-  miniProgressPlayed: { position: "absolute", top: 0, left: 0, bottom: 0, backgroundColor: "#FF0000" },
   statusToast: { position: "absolute", bottom: 34, alignSelf: "center", zIndex: 14, flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 13, paddingVertical: 8, borderRadius: 8, backgroundColor: "rgba(0,0,0,0.82)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
   statusToastText: { color: "#FFF", fontSize: 11, fontWeight: "600", letterSpacing: 0.2 },
   subtitleWrapper: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end", alignItems: "center", paddingBottom: 12, zIndex: 2, elevation: 2 },
