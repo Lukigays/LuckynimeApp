@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
-  Linking,
   Platform,
   Pressable,
   StyleSheet,
@@ -8,7 +7,8 @@ import {
   View,
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { AppIcon } from "@/components/app-icon";
 import { hapticLight } from "@/lib/haptics";
 import { useLuckynimeAuth } from "@/providers/auth-provider";
@@ -17,12 +17,17 @@ import { DuniaView } from "@/components/dunia/dunia-view";
 import { getCrystalBalance, deductCrystalBalance, addCrystalBalance } from "@/lib/topup-service";
 import { getBorderByIdAsync } from "@/lib/avatar-borders";
 
-// URL resmi Vercel NuePet Zoo
+// URL resmi Vercel NuePet Zoo (terhubung langsung ke database Supabase Luckynime)
+const RAW_NUEPET_URL = process.env.EXPO_PUBLIC_NUEPET_URL;
 const DEFAULT_NUEPET_URL =
-  process.env.EXPO_PUBLIC_NUEPET_URL || "https://nuepet-zoo.vercel.app";
+  RAW_NUEPET_URL &&
+  !RAW_NUEPET_URL.includes("localhost") &&
+  !RAW_NUEPET_URL.includes("192.168.") &&
+  !RAW_NUEPET_URL.includes("nuepet-zoo.vercel.app")
+    ? RAW_NUEPET_URL
+    : "https://nuepet-zoo-seven.vercel.app";
 
 export default function NuePetZooScreen() {
-  const insets = useSafeAreaInsets();
   const auth = useLuckynimeAuth();
   const routeParams = useLocalSearchParams<{
     tab?: string;
@@ -70,23 +75,34 @@ export default function NuePetZooScreen() {
     };
   }, [auth.user?.id, isVisiting]);
 
-  // Handle postMessage dari NuePet Zoo webview/iframe jika ada konsumsi atau penukaran saldo crystal (hanya untuk pemilik)
+  const handleBack = useCallback(() => {
+    hapticLight();
+    router.back();
+  }, []);
+
+  // Handle postMessage dari NuePet Zoo webview/iframe (termasuk tombol kembali in-app & sinkron crystal)
   useEffect(() => {
-    if (Platform.OS !== "web" || typeof window === "undefined" || isVisiting) return;
+    if (Platform.OS !== "web" || typeof window === "undefined") return;
 
     const handleWebMessage = async (event: MessageEvent) => {
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-        if (data && data.type === "UPDATE_CRYSTALS" && typeof data.crystals === "number") {
+        if (!data) return;
+        if (data.type === "CLOSE_NUEPET") {
+          handleBack();
+          return;
+        }
+        if (isVisiting) return;
+        if (data.type === "UPDATE_CRYSTALS" && typeof data.crystals === "number") {
           setUserCrystals(data.crystals);
-        } else if (data && data.type === "ADD_CRYSTALS") {
+        } else if (data.type === "ADD_CRYSTALS") {
           const amount = Number(data.amount) || 0;
           if (amount > 0) {
             await addCrystalBalance(auth.user?.id, amount);
             const newBal = await getCrystalBalance(auth.user?.id);
             setUserCrystals(newBal);
           }
-        } else if (data && data.type === "DEDUCT_CRYSTALS") {
+        } else if (data.type === "DEDUCT_CRYSTALS") {
           const amount = Number(data.amount) || 0;
           if (amount > 0) {
             await deductCrystalBalance(auth.user?.id, amount);
@@ -99,7 +115,7 @@ export default function NuePetZooScreen() {
 
     window.addEventListener("message", handleWebMessage);
     return () => window.removeEventListener("message", handleWebMessage);
-  }, [auth.user?.id, isVisiting]);
+  }, [auth.user?.id, isVisiting, handleBack]);
 
   // Identitas profil pengguna
   const userLevel = Number(auth.profile?.level) || 1;
@@ -148,6 +164,7 @@ export default function NuePetZooScreen() {
     const userExp = Number(auth.profile?.exp) || 0;
     const initialCrystals = initialCrystalsRef.current ?? userCrystals;
     const params = new URLSearchParams({
+      inApp: "1",
       uid: targetOwnerId,
       targetUid: targetOwnerId,
       targetName: targetOwnerName,
@@ -180,12 +197,9 @@ export default function NuePetZooScreen() {
     isVip,
     initialTab,
     reloadKey,
+    userCrystals,
+    auth.profile?.exp,
   ]);
-
-  const handleBack = () => {
-    hapticLight();
-    router.back();
-  };
 
   const handleRefresh = () => {
     hapticLight();
@@ -193,98 +207,60 @@ export default function NuePetZooScreen() {
     setReloadKey((k) => k + 1);
   };
 
-  const handleOpenExternal = () => {
-    hapticLight();
-    void Linking.openURL(targetUrl);
-  };
-
   return (
-    <SafeAreaView edges={["top", "left", "right"]} style={styles.container}>
-      {/* ─── HEADER BAR ─── */}
-      <View style={styles.header}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Kembali"
-          onPress={handleBack}
-          style={({ pressed }) => [styles.headerBtn, pressed && styles.btnPressed]}
-          hitSlop={10}
-        >
-          <AppIcon name="arrow-left" size={22} color="#FFFFFF" />
-        </Pressable>
+    <SafeAreaView
+      edges={["top", "left", "right"]}
+      style={[styles.container, !hasError && styles.skyContainer]}
+    >
+      <StatusBar style={hasError ? "light" : "dark"} translucent backgroundColor="transparent" />
 
-        <View style={styles.headerTitleWrap}>
-          <View style={styles.titleRow}>
-            <Text style={styles.headerIcon}>🐾</Text>
-            <Text style={styles.headerTitle} numberOfLines={1}>
-              {isVisiting ? `Wilayah ${targetOwnerName}` : "NuePet Zoo"}
-            </Text>
-            {isVisiting && (
-              <View style={styles.visitorHeaderBadge}>
-                <Text style={styles.visitorHeaderBadgeText}>PENGUNJUNG</Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-        <View style={styles.headerRightActions}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Muat Ulang"
-            onPress={handleRefresh}
-            style={({ pressed }) => [styles.headerBtn, pressed && styles.btnPressed]}
-            hitSlop={10}
-          >
-            <AppIcon name="refresh" size={19} color="#94A3B8" />
-          </Pressable>
-
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Buka di Browser"
-            onPress={handleOpenExternal}
-            style={({ pressed }) => [styles.headerBtn, pressed && styles.btnPressed]}
-            hitSlop={10}
-          >
-            <AppIcon name="open-in-new" size={19} color="#94A3B8" />
-          </Pressable>
-        </View>
-      </View>
-
-      {/* ─── OFFLINE / ERROR STATE (Hanya tampil jika server tidak merespons) ─── */}
       {hasError ? (
         <View style={styles.errorContainer}>
           <AppIcon name="alert-circle" size={48} color="#EF4444" />
           <Text style={styles.errorTitle}>Koneksi Terputus</Text>
           <Text style={styles.errorDesc}>
-            Gagal terhubung ke server NuePet Zoo ({DEFAULT_NUEPET_URL}).
-            {"\n\n"}Pastikan koneksi internet aktif dan server Vercel dapat diakses.
+            Gagal memuat NuePet Zoo. Pastikan koneksi internet aktif lalu coba lagi.
           </Text>
-          <Pressable
-            onPress={handleRefresh}
-            style={({ pressed }) => [styles.retryBtn, pressed && styles.btnPressed]}
-          >
-            <AppIcon name="refresh" size={18} color="#FFFFFF" />
-            <Text style={styles.retryBtnText}>Coba Hubungkan Ulang</Text>
-          </Pressable>
+          <View style={styles.errorBtnRow}>
+            <Pressable
+              onPress={handleBack}
+              style={({ pressed }) => [styles.backErrorBtn, pressed && styles.btnPressed]}
+            >
+              <AppIcon name="arrow-left" size={18} color="#FFFFFF" />
+              <Text style={styles.retryBtnText}>Kembali</Text>
+            </Pressable>
+            <Pressable
+              onPress={handleRefresh}
+              style={({ pressed }) => [styles.retryBtn, pressed && styles.btnPressed]}
+            >
+              <AppIcon name="refresh" size={18} color="#FFFFFF" />
+              <Text style={styles.retryBtnText}>Coba Lagi</Text>
+            </Pressable>
+          </View>
         </View>
       ) : (
-        /* ─── LANGSUNG TAMPILKAN WEBVIEW / CANVAS 3D NUEPET ZOO TANPA LOADING GANDA ─── */
         <View style={styles.webviewContainer}>
           <DuniaView
             key={reloadKey}
             url={targetUrl}
             onError={() => setHasError(true)}
             onMessage={(data) => {
+              if (!data) return;
+              if (data.type === "CLOSE_NUEPET") {
+                handleBack();
+                return;
+              }
               if (isVisiting) return;
-              if (data && data.type === "UPDATE_CRYSTALS" && typeof data.crystals === "number") {
+              if (data.type === "UPDATE_CRYSTALS" && typeof data.crystals === "number") {
                 setUserCrystals(data.crystals);
-              } else if (data && data.type === "ADD_CRYSTALS") {
+              } else if (data.type === "ADD_CRYSTALS") {
                 const amount = Number(data.amount) || 0;
                 if (amount > 0) {
                   void addCrystalBalance(auth.user?.id, amount)
                     .then(() => getCrystalBalance(auth.user?.id))
                     .then((newBal) => setUserCrystals(newBal));
                 }
-              } else if (data && data.type === "DEDUCT_CRYSTALS") {
+              } else if (data.type === "DEDUCT_CRYSTALS") {
                 const amount = Number(data.amount) || 0;
                 if (amount > 0) {
                   void deductCrystalBalance(auth.user?.id, amount)
@@ -305,136 +281,65 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0B0E14",
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    backgroundColor: "#0F131C",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.08)",
-  },
-  headerBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    alignItems: "center",
-    justifyContent: "center",
+  skyContainer: {
+    backgroundColor: "#7CC5F8",
   },
   btnPressed: {
-    opacity: 0.7,
-    transform: [{ scale: 0.95 }],
-  },
-  headerTitleWrap: {
-    alignItems: "center",
-  },
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  headerIcon: {
-    fontSize: 18,
-  },
-  headerTitle: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
-  },
-  headerRightActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  visitorBanner: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(14, 165, 233, 0.12)",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(56, 189, 248, 0.25)",
-    paddingHorizontal: 14,
-    paddingVertical: 9,
-    gap: 8,
-  },
-  visitorBannerText: {
-    flex: 1,
-    fontSize: 12.5,
-    color: "#E2E8F0",
-    fontWeight: "600",
-  },
-  visitorBannerHighlight: {
-    color: "#38BDF8",
-    fontWeight: "800",
-  },
-  visitorHeaderBadge: {
-    backgroundColor: "rgba(56, 189, 248, 0.2)",
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.45)",
-    marginLeft: 4,
-  },
-  visitorHeaderBadgeText: {
-    fontSize: 9,
-    fontWeight: "800",
-    color: "#38BDF8",
-    letterSpacing: 0.5,
-  },
-  visitorBadge: {
-    backgroundColor: "rgba(56, 189, 248, 0.2)",
-    paddingHorizontal: 8,
-    paddingVertical: 2.5,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.45)",
-  },
-  visitorBadgeText: {
-    fontSize: 9.5,
-    fontWeight: "800",
-    color: "#38BDF8",
-    letterSpacing: 0.5,
+    opacity: 0.75,
+    transform: [{ scale: 0.96 }],
   },
   webviewContainer: {
     flex: 1,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#7CC5F8",
   },
   errorContainer: {
     flex: 1,
+    backgroundColor: "#0B0E14",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 30,
-    backgroundColor: "#0B0E14",
+    paddingHorizontal: 32,
+    gap: 14,
   },
   errorTitle: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: 19,
+    fontWeight: "800",
     color: "#FFFFFF",
-    marginTop: 14,
-    marginBottom: 8,
   },
   errorDesc: {
-    fontSize: 13,
+    fontSize: 13.5,
     color: "#94A3B8",
     textAlign: "center",
     lineHeight: 20,
-    marginBottom: 24,
+  },
+  errorBtnRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 8,
+  },
+  backErrorBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 11,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
   },
   retryBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#EAB308",
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 11,
     borderRadius: 12,
+    backgroundColor: "#2563EB",
   },
   retryBtnText: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#0F172A",
+    color: "#FFFFFF",
   },
 });

@@ -6,6 +6,11 @@ This is the public record of meaningful native Android releases. For the current
 
 ## Unreleased
 
+## v1.1.4 — NuePet Zoo Full-Screen Tanpa Bar Web Atas & Sinkronisasi Penuh Akun
+
+- **Hapus Bar Web Atas di NuePet Zoo**: Menghilangkan bar hitam in-app browser di bagian atas NuePet Zoo (beserta ikon buka web luar & refresh) sehingga tampilan langit 3D langsung penuh menyatu dengan layar aplikasi, dilengkapi tombol kembali bulat yang menyatu di dalam HUD game.
+- **Sinkronisasi Penuh Server & Saldo Crystal NuePet Zoo**: Menghubungkan NuePet Zoo langsung ke server resmi `nuepet-zoo-seven.vercel.app` (Supabase utama Luckynime) sehingga saldo Crystal, Peti 7 Jam, Gacha Pet, dan penukaran Koin $\rightarrow$ Crystal tersinkron otomatis.
+
 ## v1.1.3 — Mode Full Semua Layar & Layar Normal (16:9) + Tampilan Atas Player Bersih
 
 - **Tombol Full Layar <-> Normal (16:9) & Cubit 2 Jari (Pinch-to-Zoom)**: Menambahkan tombol langsung **Full Layar / Normal** di kontrol bawah fullscreen serta gesture cubit 2 jari (regangkan untuk penuh ke seluruh layar tanpa sisa bar hitam termasuk area kamera depan, cubit masuk untuk kembali ke ukuran normal 16:9).
