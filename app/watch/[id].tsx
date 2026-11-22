@@ -14,6 +14,7 @@ import { applyAndroidImmersiveBars, useImmersiveSystemBars } from "@/lib/immersi
 import * as Brightness from "expo-brightness";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
+import * as Network from "expo-network";
 import {
   ArrowLeft, Gear, Speedometer, Subtitles, SpeakerHigh, SpeakerNone,
   SkipBack, SkipForward, Play, Pause, ArrowsOut, ArrowsIn, Check, X,
@@ -29,14 +30,12 @@ import {
   autoQualityLine,
   chapterTrackSegments,
   directSources,
-  embedSources,
   episodePageCount,
   episodePageFor,
   episodePageSlice,
   hasConfirmedPlaybackStart,
   humanPlayerError,
   isAutoQuality,
-  isHentaiAnime,
   isOfflinePlaybackSource,
   isProxySource,
   isResumablePosition,
@@ -51,7 +50,6 @@ import {
   normalizeAniSkipSegments,
   providerSkipSegments,
   proxySources,
-  shouldPreferEmbed,
   shouldRefreshSameProvider,
   shouldRetryProxiedSourceAfterDirect,
   shouldApplyInitialHistoryResume,
@@ -78,7 +76,6 @@ import { findOfflineDownload, removeOfflineDownload, selectDownloadSourceForQual
 import { adaptiveBitrateCapOptions, selectedWatchQuality, watchQualityOptions, type WatchQualityOption } from "@/lib/watch-quality";
 import { buildDashQualityOptions, buildHlsQualityOptions, hlsVariantsCacheKey, originalStreamUrl, parseDashRepresentations, parseHlsMasterVariants, shouldRefetchVariants, shouldRefreshMasterOnVariantError, variantUrlForHeight, type HlsVariant, type VariantsCacheScope } from "@/lib/hls-variants";
 import { AppIcon } from "@/components/app-icon";
-import { EmbedPlayer } from "@/components/embed-player";
 import { DotLabel, NothingButton, NothingCard, nothing } from "@/components/nothing-ui";
 import { NativeScreen } from "@/components/screen";
 import { SubtitleRenderer } from "@/components/subtitle-renderer";
@@ -126,6 +123,12 @@ function sanitizeResumeSeconds(progress?: number | null, total?: number | null):
     if (p >= d - 8 || p / d >= 0.96) return null;
   }
   return p;
+}
+
+function isLikelyNetworkError(detail: string): boolean {
+  return /network|unable to resolve host|unknownhost|connectexception|sockettimeout|timeout|enetunreach|econn|no address associated|2001|2002|io_network|internet|offline|unreachable|failed to connect|broken pipe|connection reset/i.test(
+    detail,
+  );
 }
 
 type CachedStream = { savedAt: number; data: StreamResponse };
@@ -279,11 +282,6 @@ export default function WatchScreen() {
     nextAiringEpisode: animeQuery.data?.nextAiringEpisode,
     hasConfirmedEpisodeList: episodeQuery.isSuccess && canonicalEpisodes.length > 0,
   });
-  // Hentai titles have no direct/proxy streams — route them to embedded WebView.
-  const isHentai = useMemo(
-    () => isHentaiAnime({ isAdult: animeQuery.data?.isAdult, genres: animeQuery.data?.genres }),
-    [animeQuery.data?.isAdult, animeQuery.data?.genres],
-  );
   // Safe WakeLock lifecycle (mencegah NotAllowedError di web saat tab tidak terlihat / background)
   useEffect(() => {
     let active = true;
@@ -371,7 +369,11 @@ export default function WatchScreen() {
   const [serverIndex, setServerIndex] = useState(() => (isReturningFromMini && typeof playerData?.cachedServerIndex === "number" ? playerData.cachedServerIndex : 0));
   const [stream, setStream] = useState<StreamResponse | null>(() => (isReturningFromMini && playerData?.cachedStream ? playerData.cachedStream : null));
   const [source, setSource] = useState<StreamSource | null>(() => (isReturningFromMini && playerData?.cachedSource ? playerData.cachedSource : null));
-  const [embedSource, setEmbedSource] = useState<StreamSource | null>(null);
+  const [isDeviceOffline, setIsDeviceOffline] = useState(false);
+  const [waitingNetworkRecovery, setWaitingNetworkRecovery] = useState(false);
+  const [serverRecoveryNonce, setServerRecoveryNonce] = useState(0);
+  const isDeviceOfflineRef = useRef(false);
+  const waitingNetworkRecoveryRef = useRef(false);
   const [useSourceProxy, setUseSourceProxy] = useState(false);
   const [playbackHeaders, setPlaybackHeaders] = useState<Record<string, string> | undefined>(() => (isReturningFromMini && playerData?.cachedStream?.headers ? playerData.cachedStream.headers : undefined));
   const [loadingServers, setLoadingServers] = useState(() => !isReturningFromMini);
@@ -567,28 +569,69 @@ export default function WatchScreen() {
   const activeProviders = providers[language] ?? [];
   const activeProvider = activeProviders[serverIndex];
 
-  // Embed-only catalog (hentai): the backend ships embed sources and zero
-  // native ones across EVERY discovered server. Mount the first embed
-  // immediately — no refresh + rotation rounds — exactly like the website.
-  // This does not depend on the isAdult metadata flag, so titles whose
-  // metadata lacks the flag still play.
-  const discoveredServers = useMemo(() => [...providers.sub, ...providers.dub], [providers]);
-  const discoveredNativeCount = useMemo(() => {
-    let count = 0;
-    for (const server of discoveredServers) {
-      const initial = { sources: server.sources ?? [] };
-      if (directSources(initial).length > 0 || proxySources(initial).length > 0) count += 1;
-    }
-    return count;
-  }, [discoveredServers]);
-  const discoveredEmbed = useMemo(() => {
-    for (const server of discoveredServers) {
-      const first = embedSources({ sources: server.sources ?? [] })[0];
-      if (first) return first;
-    }
-    return null;
-  }, [discoveredServers]);
-  const embedOnlyCatalog = discoveredServers.length > 0 && discoveredNativeCount === 0 && discoveredEmbed != null;
+  // Real-time connectivity monitor: preserves buffered playback when WiFi/data
+  // drops and seamlessly resumes from the exact second once signal returns.
+  const sourcePresentRef = useRef(false);
+  sourcePresentRef.current = Boolean(source);
+  useEffect(() => {
+    let mounted = true;
+    const applyNetworkState = (offline: boolean) => {
+      if (!mounted) return;
+      const wasOffline = isDeviceOfflineRef.current;
+      isDeviceOfflineRef.current = offline;
+      setIsDeviceOffline(offline);
+      if (!offline && (wasOffline || waitingNetworkRecoveryRef.current)) {
+        const neededRecovery = waitingNetworkRecoveryRef.current;
+        waitingNetworkRecoveryRef.current = false;
+        setWaitingNetworkRecovery(false);
+        setLastPlayerError(null);
+        if (neededRecovery) {
+          setError(null);
+          if (sourcePresentRef.current) {
+            const resumeSec = Math.max(currentTimeRef.current, episodeTargetResumeRef.current);
+            if (resumeSec > 2) {
+              pendingResume.current = resumeSec;
+              episodeTargetResumeRef.current = resumeSec;
+              initialHistoryResumeApplied.current = false;
+            }
+            sourceFailureHandled.current = null;
+            setPlayerStatus("playing");
+            if (!userPausedRef.current) setIsPlaying(true);
+            setSourceRevision((v) => v + 1);
+          } else {
+            setServerRecoveryNonce((v) => v + 1);
+          }
+        }
+      }
+    };
+
+    const checkNow = () => {
+      void Network.getNetworkStateAsync()
+        .then((state) => {
+          const offline = !(state.isConnected && state.isInternetReachable !== false);
+          applyNetworkState(offline);
+        })
+        .catch(() => {});
+    };
+
+    checkNow();
+    const sub = Network.addNetworkStateListener((state) => {
+      const offline = !(state.isConnected && state.isInternetReachable !== false);
+      applyNetworkState(offline);
+    });
+    const poll = setInterval(() => {
+      if (isDeviceOfflineRef.current || waitingNetworkRecoveryRef.current) {
+        checkNow();
+      }
+    }, 3_000);
+
+    return () => {
+      mounted = false;
+      sub.remove();
+      clearInterval(poll);
+    };
+  }, []);
+
   const [localHistoryMap, setLocalHistoryMap] = useState<Record<number, number>>({});
 
   useEffect(() => {
@@ -855,8 +898,9 @@ export default function WatchScreen() {
     videoRef.current?.pause();
     setStream(null);
     setSource(null);
-    setEmbedSource(null);
     setLastPlayerError(null);
+    waitingNetworkRecoveryRef.current = false;
+    setWaitingNetworkRecovery(false);
     markedComplete.current = false;
     awarded5MinXp.current = false;
     setUseSourceProxy(false);
@@ -882,6 +926,17 @@ export default function WatchScreen() {
   }, []);
 
   const handleProviderBlocked = useCallback((reason: RetryReason = "player") => {
+    // When WiFi/mobile data is down, keep the current <Video> mounted so the
+    // user can finish watching buffered segments and auto-resume when back online.
+    if (isDeviceOfflineRef.current) {
+      waitingNetworkRecoveryRef.current = true;
+      setWaitingNetworkRecovery(true);
+      setLoadingStream(false);
+      if (!sourcePresentRef.current) {
+        setError("Koneksi internet terputus. Video akan dimuat otomatis saat sinyal kembali.");
+      }
+      return;
+    }
     const current = activeProviders[serverIndex];
     if (!current) return;
     // Retry honesty: the same provider is re-fetched ONCE with refresh:true;
@@ -910,32 +965,9 @@ export default function WatchScreen() {
       setServerIndex(next);
       return;
     }
-    // ALL servers exhausted — mount the first verified embed across current stream & all servers.
-    if (!embedSource) {
-      const allEmbeds = [
-        ...embedSources(stream ?? { sources: current.sources ?? [] }),
-        ...activeProviders.flatMap((p) => embedSources({ sources: p.sources ?? [] })),
-      ];
-      const fallbackEmbed = allEmbeds[0];
-      if (fallbackEmbed) {
-        videoRef.current?.pause();
-        sourceStarted.current = false;
-        sourceFirstFrame.current = false;
-        sourceFailureHandled.current = null;
-        setSource(null);
-        setEmbedSource(fallbackEmbed);
-        setLoadingStream(false);
-        setActivePanel(null);
-        return;
-      }
-    }
     setLoadingStream(false);
-    setError(
-      isHentai
-        ? "This title plays via embedded player only. No embed source responded — try again shortly."
-        : "We don't have a working stream for this episode right now.",
-    );
-  }, [activeProviders, serverIndex, embedSource, stream, isHentai]);
+    setError("Server streaming belum merespons untuk episode ini. Silakan coba lagi sebentar lagi.");
+  }, [activeProviders, serverIndex]);
 
   const handleProviderBlockedRef = useRef(handleProviderBlocked);
   useEffect(() => { handleProviderBlockedRef.current = handleProviderBlocked; }, [handleProviderBlocked]);
@@ -986,6 +1018,7 @@ export default function WatchScreen() {
 
   // ── Server discovery ──
   const isReturningFromMiniRef = useRef(isReturningFromMini);
+  const lastClearedEpisodeKeyRef = useRef<string>("");
   useEffect(() => {
     if (!Number.isFinite(animeId) || animeId <= 0) return;
     if (isReturningFromMiniRef.current && source) {
@@ -993,10 +1026,14 @@ export default function WatchScreen() {
       return;
     }
     let cancelled = false;
-    clearEpisodePlayback();
-    setProviders({ sub: [], dub: [] });
-    setLanguage("sub");
-    setServerIndex(0);
+    const epKey = `${animeId}:${episode}`;
+    if (lastClearedEpisodeKeyRef.current !== epKey) {
+      lastClearedEpisodeKeyRef.current = epKey;
+      clearEpisodePlayback();
+      setProviders({ sub: [], dub: [] });
+      setLanguage("sub");
+      setServerIndex(0);
+    }
     setLoadingServers(true);
     setServerAttempt(0);
     setLoadingStream(false);
@@ -1023,21 +1060,10 @@ export default function WatchScreen() {
       const primaryServers = await primaryPromise;
       if (cancelled) return;
 
-      const hasNativeInitial = (list: Server[]) => list.some((item) => {
-        const initial = { sources: item.sources ?? [] };
-        return directSources(initial).length > 0 || proxySources(initial).length > 0;
-      });
-      const hasEmbedInitial = (item: Server) => embedSources({ sources: item.sources ?? [] }).length > 0;
-
       if (primaryServers.length > 0) {
         setProviders((prev) => ({ ...prev, [primaryLang]: primaryServers }));
         setLanguage(primaryLang);
         setLoadingServers(false);
-
-        if (!hasNativeInitial(primaryServers)) {
-          const embedIdx = primaryServers.findIndex(hasEmbedInitial);
-          if (embedIdx >= 0) setServerIndex(embedIdx);
-        }
 
         // Merge secondary language asynchronously in background without blocking player
         void secondaryPromise.then((secServers) => {
@@ -1055,10 +1081,14 @@ export default function WatchScreen() {
         setProviders({ [primaryLang]: [], [secondaryLang]: secondaryServers } as { sub: Server[]; dub: Server[] });
         setLanguage(secondaryLang);
         setLoadingServers(false);
-        if (!hasNativeInitial(secondaryServers)) {
-          const embedIdx = secondaryServers.findIndex(hasEmbedInitial);
-          if (embedIdx >= 0) setServerIndex(embedIdx);
-        }
+        return;
+      }
+
+      if (isDeviceOfflineRef.current) {
+        waitingNetworkRecoveryRef.current = true;
+        setWaitingNetworkRecovery(true);
+        setLoadingServers(false);
+        setError("Koneksi internet terputus. Video akan dimuat otomatis saat sinyal kembali.");
         return;
       }
 
@@ -1070,29 +1100,28 @@ export default function WatchScreen() {
       }
 
       setLoadingServers(false);
-      setError("We don't have streaming for this episode.");
+      setError("Server streaming belum tersedia untuk episode ini.");
     };
     void fetchServers(0);
     return () => { cancelled = true; };
-  }, [animeId, clearEpisodePlayback, episode]);
+  }, [animeId, clearEpisodePlayback, episode, serverRecoveryNonce]);
 
   useEffect(() => {
     if (episodeQuery.isPending || animeQuery.isPending) return;
     if (futureRelease) {
       videoRef.current?.pause();
       setSource(null);
-      setEmbedSource(null);
       setLoadingServers(false);
       setLoadingStream(false);
       setError(FUTURE_RELEASE_MESSAGE);
       return;
     }
-    if (invalidEpisode && !source && !embedSource && !loadingServers && !loadingStream) {
+    if (invalidEpisode && !source && !loadingServers && !loadingStream) {
       setError(`Episode ${episode} is not available.`);
     }
-  }, [animeQuery.isPending, embedSource, episode, episodeQuery.isPending, futureRelease, invalidEpisode, loadingServers, loadingStream, source]);
+  }, [animeQuery.isPending, episode, episodeQuery.isPending, futureRelease, invalidEpisode, loadingServers, loadingStream, source]);
 
-  // ── Stream loading ──
+  // ── Stream loading (Native HLS/MP4/DASH only — Embed completely removed) ──
   useEffect(() => {
     if (futureRelease || !activeProvider) return;
     let cancelled = false;
@@ -1101,52 +1130,17 @@ export default function WatchScreen() {
     const initial: StreamResponse = { sources: activeProvider.sources ?? [], headers: activeProvider.headers };
     const initialDirect = directSources(initial);
     const initialProxies = proxySources(initial);
-    const initialEmbeds = embedSources(initial);
     // Capture mount state at effect start to avoid stale reads across async boundary
     const alreadyMounted = sourceMounted.current;
     const forceThisRequest = forceRefresh.current;
     forceRefresh.current = false;
     const hasInitial = initialDirect.length > 0 || initialProxies.length > 0;
-    const preferEmbed = shouldPreferEmbed({
-      isHentai,
-      directCount: initialDirect.length,
-      proxyCount: initialProxies.length,
-      embedCount: initialEmbeds.length,
-    });
-
-    // Embed-only catalog (hentai): mount the first embed and skip the native
-    // network round trip entirely — the website plays these the same way.
-    if (embedOnlyCatalog && !forceThisRequest && initialEmbeds.length > 0 && !alreadyMounted) {
-      setError(null);
-      setStream(initial);
-      setPlaybackHeaders(activeProvider.headers);
-      sourceMounted.current = true;
-      setSource(null);
-      setEmbedSource(initialEmbeds[0]);
-      setSourceRevision((v) => v + 1);
-      applySkipSegments(providerSkipSegments(initial));
-      setLoadingStream(false);
-      return () => { cancelled = true; };
-    }
 
     setError(null);
-    // Native HLS/MP4 servers are always sorted ahead of pure embed servers in
-    // getServers(). Therefore, when activeProvider is a pure embed server
-    // (!hasInitial && initialEmbeds.length > 0) — either selected manually in
-    // Pilihan Server or reached after native servers failed — mount its embed
-    // directly instead of rejecting it.
-    const isPureEmbedServer = !hasInitial && initialEmbeds.length > 0;
-    const mountEmbedImmediately =
-      initialEmbeds.length > 0 && (isHentai || embedOnlyCatalog || isPureEmbedServer);
-    if ((hasInitial || mountEmbedImmediately) && !alreadyMounted && !forceThisRequest) {
+    if (hasInitial && !alreadyMounted && !forceThisRequest) {
       setStream(initial);
       setPlaybackHeaders(activeProvider.headers);
-      if (mountEmbedImmediately) {
-        sourceMounted.current = true;
-        setSource(null);
-        setEmbedSource(initialEmbeds[0]);
-        setSourceRevision((v) => v + 1);
-      } else if (initialDirect.length) {
+      if (initialDirect.length) {
         sourceMounted.current = true;
         setSource(initialDirect[0]);
         setUseSourceProxy(false);
@@ -1159,10 +1153,7 @@ export default function WatchScreen() {
       }
       applySkipSegments(providerSkipSegments(initial));
       setLoadingStream(false);
-      if (isPureEmbedServer) {
-        return () => { cancelled = true; };
-      }
-    } else if (!hasInitial && !mountEmbedImmediately) {
+    } else if (!hasInitial) {
       setLoadingStream(true);
     }
 
@@ -1174,19 +1165,10 @@ export default function WatchScreen() {
     if (!forceThisRequest && cached && Date.now() - cached.savedAt < STREAM_CACHE_TTL_MS) {
       const cachedDirect = directSources(cached.data);
       const cachedProxies = proxySources(cached.data);
-      const cachedEmbeds = embedSources(cached.data);
-      const isPureCachedEmbed = !cachedDirect.length && !cachedProxies.length && cachedEmbeds.length > 0;
-      const mountCachedEmbed =
-        cachedEmbeds.length > 0 && (isHentai || embedOnlyCatalog || isPureCachedEmbed);
-      if (!alreadyMounted && (cachedDirect.length || cachedProxies.length || mountCachedEmbed)) {
+      if (!alreadyMounted && (cachedDirect.length || cachedProxies.length)) {
         setStream(cached.data);
         setPlaybackHeaders(cached.data.headers ?? activeProvider.headers);
-        if (mountCachedEmbed) {
-          sourceMounted.current = true;
-          setSource(null);
-          setEmbedSource(cachedEmbeds[0]);
-          setSourceRevision((v) => v + 1);
-        } else if (cachedDirect.length) {
+        if (cachedDirect.length) {
           sourceMounted.current = true;
           setSource(cachedDirect[0]);
           setUseSourceProxy(false);
@@ -1215,21 +1197,12 @@ export default function WatchScreen() {
         }
         const refreshedDirect = directSources(response);
         const refreshedProxies = proxySources(response);
-        const refreshedEmbeds = embedSources(response);
         const hasNative = refreshedDirect.length > 0 || refreshedProxies.length > 0;
         if (!hasNative) {
           streamCache.current.set(cacheKey, { savedAt: Date.now(), data: response });
           setStream(response);
           setPlaybackHeaders(response.headers ?? activeProvider.headers);
           applySkipSegments(providerSkipSegments(response));
-          if (refreshedEmbeds.length > 0 && shouldMountReplacementSource(sourceMounted.current, forceThisRequest)) {
-            sourceMounted.current = true;
-            setSource(null);
-            setEmbedSource(refreshedEmbeds[0]);
-            setSourceRevision((v) => v + 1);
-            setLoadingStream(false);
-            return;
-          }
           if (!sourceMounted.current) {
             handleProviderBlockedRef.current("stream");
           }
@@ -1254,10 +1227,19 @@ export default function WatchScreen() {
       })
       .catch(() => {
         if (cancelled || activeProviderId.current !== providerId) return;
+        if (isDeviceOfflineRef.current) {
+          waitingNetworkRecoveryRef.current = true;
+          setWaitingNetworkRecovery(true);
+          setLoadingStream(false);
+          if (!sourceMounted.current) {
+            setError("Koneksi internet terputus. Video akan dimuat otomatis saat sinyal kembali.");
+          }
+          return;
+        }
         if (!hasInitial || forceThisRequest) handleProviderBlockedRef.current("stream");
       });
     return () => { cancelled = true; };
-  }, [activeProvider, animeId, applySkipSegments, embedOnlyCatalog, episode, futureRelease, isHentai, language, refreshNonce]);
+  }, [activeProvider, animeId, applySkipSegments, episode, futureRelease, language, refreshNonce]);
 
   // ── Source loading with direct → proxy fallback ──
   // Offline saved copies never touch the stream path: no watchdog, no
@@ -1272,6 +1254,11 @@ export default function WatchScreen() {
     // Video source: try direct, proxy already handled by useSourceProxy state
     const watchdog = setTimeout(() => {
       if (sourceAttempt.current !== attempt || sourceStarted.current) return;
+      if (isDeviceOfflineRef.current) {
+        waitingNetworkRecoveryRef.current = true;
+        setWaitingNetworkRecovery(true);
+        return;
+      }
       if (shouldRetryProxiedSourceAfterDirect(useSourceProxy, sourceStarted.current)) {
         setUseSourceProxy(true);
         setSourceRevision((v) => v + 1);
@@ -1290,18 +1277,6 @@ export default function WatchScreen() {
       return;
     }
   }, [adaptiveBitrateCap, source]);
-
-  // Embeds had no startup watchdog — a dead embed page spun forever. If the
-  // WebView never finishes loading, fall through to the next server.
-  const embedReadyRef = useRef(false);
-  useEffect(() => {
-    if (!embedSource || source) return;
-    embedReadyRef.current = false;
-    const timer = setTimeout(() => {
-      if (!embedReadyRef.current) handleProviderBlockedRef.current("startup");
-    }, 15_000);
-    return () => clearTimeout(timer);
-  }, [embedSource, source]);
 
   const tryApplyAutoResume = useCallback((knownDuration?: number, actualCurrentTime?: number) => {
     if (initialHistoryResumeApplied.current) return;
@@ -1341,6 +1316,7 @@ export default function WatchScreen() {
 
   useEffect(() => {
     if (playerStatus !== "error" || !source?.url || sourceFailureHandled.current === source.url) return;
+    if (isDeviceOfflineRef.current || waitingNetworkRecoveryRef.current) return;
     // Offline files stay offline: surface the player error, never proxy or
     // fail over to a network server.
     if (isOfflinePlaybackSource(source)) {
@@ -1817,11 +1793,18 @@ export default function WatchScreen() {
   }, [source?.url]);
 
   // Real ExoPlayer LoadControl — tuned for fast resume & steady playback
+  // Real ExoPlayer LoadControl + RNVSimpleCache — pre-renders up to 10 minutes
+  // ahead in memory, keeps 3 minutes of back-buffer, and caches segments in an
+  // automatic 300 MB LRU app-cache (not a manual download) so playback keeps
+  // running smoothly if WiFi/mobile signal drops mid-episode.
   const videoBufferConfig = useMemo(() => ({
-    minBufferMs: 15_000,
-    maxBufferMs: 120_000,
+    minBufferMs: 45_000,
+    maxBufferMs: 600_000,
     bufferForPlaybackMs: 1_500,
-    bufferForPlaybackAfterRebufferMs: 4_000,
+    bufferForPlaybackAfterRebufferMs: 3_000,
+    backBufferDurationMs: 180_000,
+    cacheSizeMB: 300,
+    maxHeapAllocationPercent: 0.45,
   }), []);
 
   // Native startPosition (ms) tells ExoPlayer / AVPlayer to seek BEFORE
@@ -1835,6 +1818,7 @@ export default function WatchScreen() {
       headers: videoSourceHeaders,
       type: videoContentType,
       bufferConfig: videoBufferConfig,
+      minLoadRetryCount: 120,
       ...(startPosition ? { startPosition } : {}),
     };
   }, [videoSourceUri, videoSourceHeaders, videoContentType, videoBufferConfig, sourceRevision]);
@@ -1861,7 +1845,6 @@ export default function WatchScreen() {
     activeProviderId.current = null;
     setStream(null);
     setSource(null);
-    setEmbedSource(null);
     setLastPlayerError(null);
     setUseSourceProxy(false);
     setPlaybackHeaders(undefined);
@@ -1894,7 +1877,6 @@ export default function WatchScreen() {
     variantTokenRefreshAttempted.current = null;
     videoRef.current?.pause();
     setSource(null);
-    setEmbedSource(null);
     setLastPlayerError(null);
     setUseSourceProxy(false);
     setAdaptiveBitrateCap(null);
@@ -1926,7 +1908,6 @@ export default function WatchScreen() {
     }
     sourceMounted.current = true;
     setAdaptiveBitrateCap(null);
-    setEmbedSource(null);
     setSource(next);
     setUseSourceProxy(isProxySource(next));
     setSourceRevision((v) => v + 1);
@@ -2579,7 +2560,6 @@ export default function WatchScreen() {
     variantTokenRefreshAttempted.current = null;
     forceRefresh.current = true;
     sourceMounted.current = false;
-    setEmbedSource(null);
     setLastPlayerError(null);
     setError(null);
     setRefreshNonce((v) => v + 1);
@@ -2792,10 +2772,10 @@ export default function WatchScreen() {
     `Episode: ${episode} (${language === "sub" ? "Subtitled" : "Dubbed"})`,
     `Provider: ${activeProvider?.provider || "unknown"}`,
     `Server: ${activeProvider?.label || "unknown"}`,
-    `Route: ${embedSource ? "EMBED" : useSourceProxy ? "PROXY" : "DIRECT"} · ${source?.type?.toUpperCase() || "HLS"}`,
+    `Route: ${useSourceProxy ? "PROXY" : "DIRECT"} · ${source?.type?.toUpperCase() || "HLS"}`,
     `Error: ${lastPlayerError || error || "playback failed"}`,
     `Support: ${SAWERIA_URL}`,
-  ].join("\n"), [activeProvider?.label, activeProvider?.provider, embedSource, episode, error, language, lastPlayerError, source?.type, title, useSourceProxy]);
+  ].join("\n"), [activeProvider?.label, activeProvider?.provider, episode, error, language, lastPlayerError, source?.type, title, useSourceProxy]);
 
   const reportBrokenSource = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -3011,7 +2991,7 @@ export default function WatchScreen() {
       return;
     }
     flushWatchProgressRef.current(true);
-    const activeUri = videoSourceUri || source?.url || embedSource?.url;
+    const activeUri = videoSourceUri || source?.url;
     if (activeUri && animeId > 0 && Number.isFinite(currentTimeRef.current || currentTime)) {
       minimizePlayer({
         animeId,
@@ -3039,7 +3019,6 @@ export default function WatchScreen() {
     exitFullscreen,
     videoSourceUri,
     source,
-    embedSource,
     animeId,
     episode,
     title,
@@ -3074,18 +3053,14 @@ export default function WatchScreen() {
   }, [manualFullscreen, exitFullscreen, handleBackPress]);
 
   useEffect(() => {
-    const hasPlayable = Boolean(source) || Boolean(embedSource);
+    const hasPlayable = Boolean(source);
     if (!hasPlayable || !showControls || activePanel) return;
     if (dragPct !== null) return; // never hide the chrome out from under a scrub
     // NOTE: currentTime is deliberately NOT a dep — progress ticks every
     // second and would reset this timer forever, so chrome could never hide.
     const timer = setTimeout(() => setShowControls(false), 3_500);
     return () => clearTimeout(timer);
-  }, [showControls, activePanel, manualFullscreen, source?.url, embedSource?.url, dragPct]);
-
-  useEffect(() => {
-    if (embedSource && !source) setShowControls(true);
-  }, [embedSource?.url, source]);
+  }, [showControls, activePanel, manualFullscreen, source?.url, dragPct]);
 
   // Controls fade instead of popping — 180ms opacity, cause → effect only.
   const controlsOpacity = useRef(new Animated.Value(0)).current;
@@ -3246,8 +3221,8 @@ export default function WatchScreen() {
         Parent-level onStartShouldSetPanResponder stole Pressable touches and the
         native Video SurfaceView eats touches aimed behind it. */}
     <View style={[styles.videoShell, manualFullscreen && ps.videoShellFullscreen]}>
-      {embedSource && !source ? <EmbedPlayer uri={embedSource.url} headers={nativePlaybackHeaders(playbackHeaders)} onError={() => handleProviderBlockedRef.current("player")} onLoaded={() => { embedReadyRef.current = true; setShowControls(true); }} /> : null}
       {source ? <Video key={activeProvider?.id ?? "default"} ref={videoRef} style={StyleSheet.absoluteFill} useTextureView={Platform.OS === "android"} source={videoSourceObject}
+        disableDisconnectError={true}
         selectedTextTrack={{ type: "disabled" } as any}
         selectedAudioTrack={resolvedAudioTrack}
         ignoreSilentSwitch="ignore"
@@ -3265,6 +3240,8 @@ export default function WatchScreen() {
           durationRef.current = data.duration;
           setDuration(data.duration);
           sourceStarted.current = true;
+          waitingNetworkRecoveryRef.current = false;
+          setWaitingNetworkRecovery(false);
           setLastPlayerError(null);
           if (!userPausedRef.current) {
             setPlayerStatus("playing");
@@ -3290,7 +3267,56 @@ export default function WatchScreen() {
         onVideoTracks={handleVideoTracks}
         onBandwidthUpdate={handleBandwidthUpdate}
         onPictureInPictureStatusChanged={onPipStatusChanged}
-        onError={(event: any) => { const detail = event?.error?.errorString || event?.error?.errorCode || "Unknown player error"; const mountedUrl = source?.url ?? null; if (shouldRefreshMasterOnVariantError({ errorDetail: String(detail), variantUrl: mountedUrl, refreshedAlready: variantTokenRefreshAttempted.current === mountedUrl })) { variantTokenRefreshAttempted.current = mountedUrl; void refreshVariantFromMaster(); return; } setLastPlayerError(String(detail)); setPlayerStatus("error"); if (!useSourceProxy) { setUseSourceProxy(true); setSourceRevision((v) => v + 1); return; } handleProviderBlockedRef.current("player"); }}
+        onError={(event: any) => {
+          const detail = String(event?.error?.errorString || event?.error?.errorCode || "Unknown player error");
+          // If signal/WiFi/data dropped, NEVER unmount <Video> or destroy buffered segments!
+          // Keep <Video> alive so buffered minutes stay playable and auto-resume when back online.
+          if (isDeviceOfflineRef.current || isLikelyNetworkError(detail)) {
+            void Network.getNetworkStateAsync()
+              .then((net) => {
+                const offlineNow = !(net.isConnected && net.isInternetReachable !== false);
+                if (offlineNow || sourceStarted.current) {
+                  isDeviceOfflineRef.current = offlineNow;
+                  setIsDeviceOffline(offlineNow);
+                  waitingNetworkRecoveryRef.current = true;
+                  setWaitingNetworkRecovery(true);
+                  const safePos = Math.max(currentTimeRef.current, episodeTargetResumeRef.current);
+                  if (safePos > 2) {
+                    pendingResume.current = safePos;
+                    episodeTargetResumeRef.current = safePos;
+                  }
+                  return;
+                }
+                setLastPlayerError(detail);
+                setPlayerStatus("error");
+                if (!useSourceProxy) {
+                  setUseSourceProxy(true);
+                  setSourceRevision((v) => v + 1);
+                  return;
+                }
+                handleProviderBlockedRef.current("player");
+              })
+              .catch(() => {
+                waitingNetworkRecoveryRef.current = true;
+                setWaitingNetworkRecovery(true);
+              });
+            return;
+          }
+          const mountedUrl = source?.url ?? null;
+          if (shouldRefreshMasterOnVariantError({ errorDetail: detail, variantUrl: mountedUrl, refreshedAlready: variantTokenRefreshAttempted.current === mountedUrl })) {
+            variantTokenRefreshAttempted.current = mountedUrl;
+            void refreshVariantFromMaster();
+            return;
+          }
+          setLastPlayerError(detail);
+          setPlayerStatus("error");
+          if (!useSourceProxy) {
+            setUseSourceProxy(true);
+            setSourceRevision((v) => v + 1);
+            return;
+          }
+          handleProviderBlockedRef.current("player");
+        }}
         onEnd={() => {
           const reachedEnd = duration > 30 && currentTime >= Math.max(1, duration - 2);
           if (!sourceStarted.current || !reachedEnd) return;
@@ -3305,7 +3331,7 @@ export default function WatchScreen() {
           }
           showUpNext();
         }}
-      /> : (embedSource && !error) ? null : <View style={styles.videoPlaceholder}>
+      /> : <View style={styles.videoPlaceholder}>
         {loadingServers ? <ProviderDiscoveryLoader attempt={serverAttempt} /> : error ? <Text style={styles.errorText}>{error}</Text> : <View style={styles.thumbnailLoading}>
           <Image source={{ uri: selectedEpisode?.thumbnail || watchBackdrop || image || "" }} style={StyleSheet.absoluteFillObject} contentFit="cover" cachePolicy="memory-disk" />
           <View style={styles.thumbnailLoadingShade} />
@@ -3314,7 +3340,7 @@ export default function WatchScreen() {
       </View>}
 
       {/* ── Subtitle Layer: crisp white text with black outline at bottom-center ── */}
-      {subtitlePrefs && source && !embedSource ? (
+      {subtitlePrefs && source ? (
         <View
           style={[
             styles.subtitleWrapper,
@@ -3340,55 +3366,20 @@ export default function WatchScreen() {
 
       {/* Center buffering veil — visible with chrome hidden too, so buffering
           never reads as "frozen". */}
-      {source && buffering && !embedSource ? (
+      {source && buffering ? (
         <View pointerEvents="none" style={styles.bufferingVeil}>
           <ActivityIndicator size="large" color="#FFF" />
         </View>
       ) : null}
 
-      {/* ── Embed frame: the same player silhouette as native inline — scrimmed
-          top bar (back / title / EMBED pill) and scrimmed bottom deck
-          (provider line / fullscreen). The WebView keeps its own playback
-          controls; this frame only makes it read as the same player. Taps
-          pass through to the WebView (box-none), buttons stay hittable. */}
-      {embedSource && !source ? (
-        <View style={styles.embedFrame} pointerEvents="box-none">
-          {showControls && !playerLocked ? (
-            <View style={styles.embedChromeGroup} pointerEvents="box-none">
-              <View pointerEvents="none" style={styles.scrimTopSoft} />
-              <View pointerEvents="none" style={styles.scrimTopMain} />
-              <View pointerEvents="none" style={styles.scrimBottomSoft} />
-              <View pointerEvents="none" style={styles.scrimBottomMain} />
-              <View style={styles.embedTopBar} pointerEvents="box-none">
-                <Pressable onPress={handleBackPress} accessibilityRole="button" accessibilityLabel="Go back" style={styles.iconButton} hitSlop={10}>
-                  <ArrowLeft size={22} color="#FFF" weight="bold" />
-                </Pressable>
-                <View pointerEvents="none" style={styles.playerTitleWrap}>
-                  <Text style={styles.playerTitle} numberOfLines={1} ellipsizeMode="tail">{`${title} - Episode ${episode}`}</Text>
-                </View>
-                <View pointerEvents="box-none" style={styles.topRightRow}>
-                  <Pressable onPress={() => setShowControls(false)} accessibilityRole="button" accessibilityLabel="Hide overlay" style={styles.subPillBadge} hitSlop={8}>
-                    <Text style={styles.subPillBadgeText}>EMBED</Text>
-                  </Pressable>
-                </View>
-              </View>
-              <View style={styles.embedBottomDeck} pointerEvents="box-none">
-                <View pointerEvents="none" style={styles.embedBottomInfo}>
-                  <Text style={styles.embedBottomLabel} numberOfLines={1}>{activeProvider ? `${activeProvider.label} · EMBEDDED STREAM` : "EMBEDDED STREAM"}</Text>
-                </View>
-                <Pressable onPress={manualFullscreen ? exitFullscreen : enterFullscreen} accessibilityRole="button" accessibilityLabel={manualFullscreen ? "Exit fullscreen" : "Enter fullscreen"} style={styles.iconButton} hitSlop={8}>
-                  {manualFullscreen ? <ArrowsIn size={20} color="#FFF" weight="bold" /> : <ArrowsOut size={20} color="#FFF" weight="bold" />}
-                </Pressable>
-              </View>
-            </View>
-          ) : null}
-          {!showControls && !playerLocked ? (
-            <View style={styles.embedHiddenToggle} pointerEvents="box-none">
-              <Pressable onPress={() => setShowControls(true)} accessibilityRole="button" accessibilityLabel="Show player overlay" style={styles.embedShowButton} hitSlop={10}>
-                <ArrowsOut size={16} color="#FFF" weight="bold" />
-              </Pressable>
-            </View>
-          ) : null}
+      {/* Subtle offline-buffer indicator when WiFi/data drops while watching */}
+      {source && (isDeviceOffline || waitingNetworkRecovery) ? (
+        <View style={styles.statusToast} pointerEvents="none">
+          <Text style={styles.statusToastText}>
+            {playableDuration > currentTime + 1.5
+              ? `TANPA SINYAL • MEMUTAR BUFFER (${Math.max(1, Math.floor(playableDuration - currentTime))}s)`
+              : "SINYAL HILANG • OTOMATIS LANJUT SAAT TERSAMBUNG"}
+          </Text>
         </View>
       ) : null}
 
@@ -3811,7 +3802,7 @@ export default function WatchScreen() {
           </View>
           <View style={ps.infoRow}>
             <Text style={ps.infoLabel}>Source</Text>
-            <Text style={ps.infoValue}>{embedSource ? "Embed" : useSourceProxy ? "Proxied" : "Direct"}</Text>
+            <Text style={ps.infoValue}>{useSourceProxy ? "Proxied" : "Direct"}</Text>
           </View>
           <View style={ps.infoRow}>
             <Text style={ps.infoLabel}>Format</Text>
