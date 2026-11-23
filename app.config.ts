@@ -13,7 +13,7 @@ const env = {
 const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
-  version: "2.1.4",
+  version: "2.1.5",
   orientation: "default",
   icon: "./assets/images/logo-app.png",
   scheme: env.scheme,
@@ -28,7 +28,7 @@ const config: ExpoConfig = {
     infoPlist: { ITSAppUsesNonExemptEncryption: false },
   },
   android: {
-    versionCode: 36,
+    versionCode: 37,
     adaptiveIcon: { backgroundColor: "#121316", foregroundImage: "./assets/images/android-icon-foreground.png" },
     edgeToEdgeEnabled: true,
     softwareKeyboardLayoutMode: "resize",
@@ -86,6 +86,17 @@ const config: ExpoConfig = {
   // Keep file-route typing, but remove optional compiler/runtime experiments
   // from the compatibility build's startup path.
   experiments: { typedRoutes: true },
+  // Over-the-air JS/asset updates (expo-updates). Only JS and asset changes
+  // ship this way; native changes still need a new APK. runtimeVersion ties an
+  // OTA bundle to a native build: 2.1.5 bundles only reach 2.1.5 APKs.
+  runtimeVersion: { policy: "appVersion" },
+  updates: {
+    url: `https://u.expo.dev/${env.easProjectId}`,
+    enabled: true,
+    checkAutomatically: "ON_LOAD",
+    fallbackToCacheTimeout: 0,
+    requestHeaders: { "expo-channel-name": "production" },
+  },
   extra: { eas: { projectId: env.easProjectId } },
 };
 

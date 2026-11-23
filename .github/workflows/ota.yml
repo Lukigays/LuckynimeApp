@@ -1,0 +1,49 @@
+name: Publish OTA Update
+
+# Publishes a JavaScript/asset-only update to EAS Update (channel "production").
+# Installed apps pick it up on next launch without downloading a new APK.
+# Only use it for changes that do NOT touch native code or native dependencies;
+# those still need a new APK (build.yml). Bump nothing here: runtimeVersion is
+# the app version, so the OTA only reaches APKs built from the same version.
+#
+# Requires the repository secret EXPO_TOKEN (Expo access token).
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "Short description of this OTA update"
+        required: true
+        default: "OTA update"
+
+jobs:
+  publish:
+    name: eas update (production)
+    runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+      EXPO_PUBLIC_ANILIST_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_ANILIST_CLIENT_ID }}
+      EXPO_PUBLIC_ANILIST_GRAPHQL_URL: "https://graphql.anilist.co"
+      EXPO_PUBLIC_API_BASE_URL: ${{ secrets.EXPO_PUBLIC_API_BASE_URL }}
+      EXPO_PUBLIC_MAL_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_MAL_CLIENT_ID }}
+      EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - name: Check token
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then echo "EXPO_TOKEN secret is not set"; exit 1; fi
+
+      - name: Publish update
+        run: npx --yes eas-cli@latest update --channel production --platform android --non-interactive --message "${{ github.event.inputs.message }}"
