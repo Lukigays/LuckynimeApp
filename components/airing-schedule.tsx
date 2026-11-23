@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#9CA3AF",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
   finaleBadge: {
     backgroundColor: "rgba(239, 68, 68, 0.2)",

@@ -666,7 +666,7 @@ const styles = StyleSheet.create({
     fontSize: 9.5,
     fontWeight: "800",
     color: "#FFFFFF",
-    letterSpacing: 0.7,
+    letterSpacing: 0.2,
   },
   versionRow: {
     flexDirection: "row",
@@ -714,7 +714,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "800",
     color: "#8E93A2",
-    letterSpacing: 0.8,
+    letterSpacing: 0.2,
   },
   changelogScroll: {
     maxHeight: 150,

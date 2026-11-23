@@ -165,6 +165,6 @@ const styles = StyleSheet.create({
     color: nothing.black,
     fontSize: 12,
     fontWeight: "900",
-    letterSpacing: 0.8,
+    letterSpacing: 0.2,
   },
 });

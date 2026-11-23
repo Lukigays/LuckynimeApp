@@ -122,7 +122,7 @@ export function ChoiceSheetProvider({ children }: { children: ReactNode }) {
 const styles = StyleSheet.create({
   backdrop: { flex: 1, padding: 20, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.76)" },
   sheet: { gap: 0, padding: 4, borderRadius: 12, borderWidth: 1, borderColor: nothing.line, backgroundColor: nothing.surface },
-  kicker: { fontFamily: nothing.mono, fontSize: 10, fontWeight: "800", letterSpacing: 1, textTransform: "uppercase", color: nothing.red, paddingHorizontal: 14, paddingTop: 12 },
+  kicker: { fontFamily: nothing.mono, fontSize: 10, fontWeight: "800", letterSpacing: 0.2, textTransform: "uppercase", color: nothing.red, paddingHorizontal: 14, paddingTop: 12 },
   header: { paddingHorizontal: 14, paddingTop: 10, paddingBottom: 12, gap: 5 },
   title: { color: nothing.white, fontSize: 16, fontWeight: "900", letterSpacing: -0.3, lineHeight: 21 },
   message: { color: nothing.muted, fontSize: 13, lineHeight: 19 },

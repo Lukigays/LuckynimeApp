@@ -1670,7 +1670,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#FFFFFF",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
   historyShortcutBtn: {
     flexDirection: "row",

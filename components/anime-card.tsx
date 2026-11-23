@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     color: nothing.sakura,
     fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
-    letterSpacing: 1.2,
+    letterSpacing: 0.2,
   },
   sheetTitle: { color: nothing.white, fontFamily: "Nunito-Bold", fontSize: 16 },
   divider: { height: 1, backgroundColor: nothing.line, marginHorizontal: 10, marginBottom: 4 },

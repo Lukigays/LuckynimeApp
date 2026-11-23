@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   loungeTag: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    letterSpacing: 0.9,
+    letterSpacing: 0.2,
     color: "#FFFFFF",
   },
   snippetRow: {

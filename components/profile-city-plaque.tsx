@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-Bold',
     fontSize: 11.5,
     color: '#FFFFFF',
-    letterSpacing: 0.8,
+    letterSpacing: 0.2,
   },
   cityNameTextCompact: {
     fontSize: 9.5,

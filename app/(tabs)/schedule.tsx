@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#FFFFFF",
-    letterSpacing: 1.1,
+    letterSpacing: 0.2,
   },
   headerTitle: {
     fontFamily: "Nunito-Bold",
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#8E93A2",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
   dateShortActive: {
     color: "#FFE4E6",

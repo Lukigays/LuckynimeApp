@@ -1716,7 +1716,6 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 9,
     color: "#FFFFFF",
-    textTransform: "uppercase",
   },
   relationAnimeTitle: {
     fontFamily: "Nunito-Bold",

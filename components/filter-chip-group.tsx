@@ -60,8 +60,7 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    letterSpacing: 0.6,
-    textTransform: "uppercase",
+    letterSpacing: 0.2,
   },
   chips: {
     flexDirection: "row",

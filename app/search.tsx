@@ -986,7 +986,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 12,
     fontWeight: "800",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
 
   btnPressed: {

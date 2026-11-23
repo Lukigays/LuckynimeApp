@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     color: "#9CA3AF",
     fontSize: 11.5,
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
 
   // ─── HERO STEP 1 (MODERN SCREENSHOT LAYOUT) ───

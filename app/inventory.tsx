@@ -935,7 +935,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#4ADE80",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
   headerSpacer: {
     width: 32,

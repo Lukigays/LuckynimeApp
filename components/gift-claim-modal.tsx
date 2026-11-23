@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#A78BFA",
-    letterSpacing: 0.8,
+    letterSpacing: 0.2,
   },
   messageBox: {
     width: "100%",
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#10B981",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
   rewardAmount: {
     fontFamily: "Nunito-Bold",

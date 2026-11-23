@@ -884,7 +884,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
     color: "#FFFFFF",
-    letterSpacing: 1.2,
+    letterSpacing: 0.2,
     marginTop: 12,
   },
   skeletonRailRow: {
@@ -923,8 +923,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
     color: "#FFFFFF",
-    letterSpacing: 0.6,
-    textTransform: "uppercase",
+    letterSpacing: 0.2,
   },
   greetingUser: {
     fontFamily: "Nunito-Bold",
@@ -1011,7 +1010,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
     color: "#FFFFFF",
-    letterSpacing: 0.7,
+    letterSpacing: 0.2,
   },
   diceBtn: {
     width: 44,
@@ -1063,7 +1062,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: 10,
     color: "#FFFFFF",
-    letterSpacing: 0.9,
+    letterSpacing: 0.2,
   },
   stageCounterPill: {
     paddingHorizontal: 9,
@@ -1077,7 +1076,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: 10,
     color: "#D1D5DB",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
   stageBodyRow: {
     flexDirection: "row",
@@ -1286,8 +1285,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
     color: "#FFFFFF",
-    letterSpacing: 1,
-    textTransform: "uppercase",
+    letterSpacing: 0.2,
   },
   sectionTitle: {
     fontFamily: "Nunito-Bold",
@@ -1344,7 +1342,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
     color: "#D1D5DB",
-    letterSpacing: 0.7,
+    letterSpacing: 0.2,
   },
   continueAnimeTitle: {
     fontFamily: "Nunito-Bold",

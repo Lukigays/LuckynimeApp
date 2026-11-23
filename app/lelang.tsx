@@ -2112,49 +2112,33 @@ export default function LelangScreen() {
                 ══════════════════════════════════════════════════════ */}
             {activeTab === "home" && (
               <>
-                {/* HERO CARD */}
-                <View style={styles.heroCard}>
+                {/* FEATURED (Wibuku-style: satu banner bersih + satu CTA) */}
+                <View style={wbL.featured}>
                   <Image
                     source={LELANG_BANNER_IMG}
-                    style={styles.heroBannerImg}
+                    style={wbL.featuredImg}
                     contentFit="cover"
                   />
-                  <View style={styles.heroOverlay}>
-                    <View style={styles.heroBadgeRow}>
-                      <View style={styles.heroLiveBadge}>
-                        <Text style={styles.heroLiveText}>EVENT LELANG LIVE</Text>
-                      </View>
-                      <Text style={styles.heroLiveMeta}>
-                        {activeLelangCount > 0
-                          ? `${activeLelangCount} Item Eksklusif Aktif`
-                          : "Sesi Lelang Selesai"}
-                      </Text>
-                    </View>
-
-                    <Text style={styles.heroTitle}>
+                  <View style={wbL.featuredBody}>
+                    <Text style={wbL.featuredTitle} numberOfLines={2}>
                       {activeLelangCount > 0
-                        ? `Lelang Luckynime: ${activeLelangItems
-                            .slice(0, 2)
-                            .map((i) => `${i.type === "banner" ? "Banner" : "Border"} ${i.title}`)
-                            .join(" & ")}`
-                        : "Lelang Luckynime: Banner & Border Eksklusif"}
+                        ? `${activeLelangCount} item eksklusif sedang dilelang`
+                        : "Sesi lelang sedang tutup"}
                     </Text>
-                    <Text style={styles.heroDesc}>
-                      Tawar dengan Crystal dan menangkan Banner & Border langka ke koleksi profilmu!
+                    <Text style={wbL.featuredDesc} numberOfLines={2}>
+                      Tawar dengan Crystal dan menangkan Banner & Border langka untuk profilmu.
                     </Text>
-
-                    <View style={styles.heroActionRow}>
+                    <View style={wbL.featuredActions}>
                       <Pressable
+                        accessibilityRole="button"
                         onPress={() => {
                           hapticLight();
                           setActiveTab("lelang");
                         }}
-                        style={({ pressed }) => [styles.heroPrimaryBtn, pressed && styles.btnPressed]}
+                        style={({ pressed }) => [wbL.primaryCta, pressed && styles.btnPressed]}
                       >
-                        <AppIcon name="gavel" size={15} color="#121316" />
-                        <Text style={styles.heroPrimaryBtnText}>Masuk Ruang Lelang</Text>
+                        <Text style={wbL.primaryCtaText}>Ikut Lelang</Text>
                       </Pressable>
-
                       <Pressable
                         accessibilityRole="button"
                         accessibilityLabel="Informasi Lelang"
@@ -2162,58 +2146,33 @@ export default function LelangScreen() {
                           hapticLight();
                           setIsInfoLelangOpen(true);
                         }}
-                        style={({ pressed }) => [styles.heroSecondaryBtn, pressed && styles.btnPressed]}
+                        style={({ pressed }) => [wbL.textBtn, pressed && styles.btnPressed]}
                       >
-                        <AppIcon name="information-outline" size={14} color="#F3F4F6" />
-                        <Text style={styles.heroSecondaryBtnText}>Info Lelang</Text>
+                        <Text style={wbL.textBtnText}>Info lelang</Text>
                       </Pressable>
                     </View>
                   </View>
                 </View>
 
-                {/* 3 QUICK ACCESS BUTTONS (Lelang, Misi Crystal, Koleksi) */}
-                <View style={styles.quickNavRow}>
-                  <Pressable
-                    onPress={() => {
-                      hapticLight();
-                      setActiveTab("lelang");
-                    }}
-                    style={({ pressed }) => [
-                      styles.quickNavCard,
-                      pressed && styles.btnPressed,
-                    ]}
-                  >
-                    <View style={[styles.quickNavIconBox, { backgroundColor: "rgba(255, 255, 255, 0.08)" }]}>
-                      <AppIcon name="gavel" size={18} color="#FFFFFF" />
-                    </View>
-                    <Text style={styles.quickNavText}>Lelang</Text>
-                  </Pressable>
-
-                  <Pressable
-                    onPress={() => {
-                      hapticLight();
-                      setActiveTab("event");
-                    }}
-                    style={({ pressed }) => [styles.quickNavCard, pressed && styles.btnPressed]}
-                  >
-                    <View style={[styles.quickNavIconBox, { backgroundColor: "rgba(245, 197, 24, 0.12)" }]}>
-                      <AppIcon name="trophy" size={18} color="#F5C518" />
-                    </View>
-                    <Text style={styles.quickNavText}>Misi Crystal</Text>
-                  </Pressable>
-
-                  <Pressable
-                    onPress={() => {
-                      hapticLight();
-                      setActiveTab("koleksi");
-                    }}
-                    style={({ pressed }) => [styles.quickNavCard, pressed && styles.btnPressed]}
-                  >
-                    <View style={[styles.quickNavIconBox, { backgroundColor: "rgba(255, 255, 255, 0.12)" }]}>
-                      <AppIcon name="layers" size={18} color="#FFFFFF" />
-                    </View>
-                    <Text style={styles.quickNavText}>Koleksi</Text>
-                  </Pressable>
+                {/* Pintasan sebagai pill teks */}
+                <View style={wbL.pillRow}>
+                  {[
+                    { label: "Lelang", tab: "lelang" },
+                    { label: "Misi Crystal", tab: "event" },
+                    { label: "Koleksi", tab: "koleksi" },
+                  ].map((q) => (
+                    <Pressable
+                      key={q.label}
+                      accessibilityRole="button"
+                      onPress={() => {
+                        hapticLight();
+                        setActiveTab(q.tab as any);
+                      }}
+                      style={({ pressed }) => [wbL.pill, pressed && styles.btnPressed]}
+                    >
+                      <Text style={wbL.pillText}>{q.label}</Text>
+                    </Pressable>
+                  ))}
                 </View>
 
                 {/* SECTION: LELANG SEDANG BERLANGSUNG */}
@@ -3644,10 +3603,8 @@ const styles = StyleSheet.create({
   compactAuctionCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(18, 19, 22, 0.72)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.11)",
-    borderRadius: 10,
+    backgroundColor: "#1B1D22",
+    borderRadius: 14,
     padding: 10,
     gap: 12,
   },
@@ -3718,10 +3675,8 @@ const styles = StyleSheet.create({
 
   /* ── AUCTION CARDS (TAB LELANG) ── */
   auctionCard: {
-    backgroundColor: "rgba(18, 19, 22, 0.72)",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.11)",
+    backgroundColor: "#1B1D22",
+    borderRadius: 14,
     padding: 12,
     marginBottom: 10,
   },
@@ -4738,7 +4693,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 18,
     color: "#FFFFFF",
-    letterSpacing: 1.5,
+    letterSpacing: 0.2,
   },
   timerSubText: {
     fontFamily: "Nunito-Bold",
@@ -6249,4 +6204,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 18,
   },
+});
+
+const wbL = StyleSheet.create({
+  featured: { borderRadius: 14, overflow: "hidden", backgroundColor: "#1B1D22" },
+  featuredImg: { width: "100%", height: 160, backgroundColor: "#22252D" },
+  featuredBody: { padding: 14, gap: 6 },
+  featuredTitle: { color: "#F3F4F6", fontFamily: "Nunito-Bold", fontSize: 17, lineHeight: 23 },
+  featuredDesc: { color: "#9CA3AF", fontFamily: "Nunito-Regular", fontSize: 13, lineHeight: 18 },
+  featuredActions: { flexDirection: "row", alignItems: "center", gap: 14, marginTop: 8 },
+  primaryCta: { backgroundColor: "#FFFFFF", borderRadius: 999, height: 40, paddingHorizontal: 20, alignItems: "center", justifyContent: "center" },
+  primaryCtaText: { color: "#121316", fontFamily: "Nunito-Bold", fontSize: 13.5 },
+  textBtn: { height: 40, justifyContent: "center" },
+  textBtnText: { color: "#9CA3AF", fontFamily: "Nunito-SemiBold", fontSize: 13.5 },
+  pillRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  pill: { backgroundColor: "#22252D", borderRadius: 999, paddingHorizontal: 14, height: 34, alignItems: "center", justifyContent: "center" },
+  pillText: { color: "#F3F4F6", fontFamily: "Nunito-SemiBold", fontSize: 13 },
 });

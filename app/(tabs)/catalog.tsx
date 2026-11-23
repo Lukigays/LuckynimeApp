@@ -975,6 +975,6 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
     fontSize: 11.5,
     fontWeight: "800",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
 });

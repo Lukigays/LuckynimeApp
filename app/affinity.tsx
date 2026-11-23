@@ -1541,7 +1541,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     color: "#FFFFFF",
-    letterSpacing: 1.5,
+    letterSpacing: 0.2,
   },
   topBarRight: {
     flexDirection: "row",
@@ -2094,7 +2094,7 @@ const styles = StyleSheet.create({
   rank1BadgeText: {
     fontSize: 10.5,
     fontWeight: "700",
-    letterSpacing: 0.8,
+    letterSpacing: 0.2,
     color: "#FFFFFF",
   },
   spotlightDuoNames: {
@@ -2126,7 +2126,7 @@ const styles = StyleSheet.create({
   totalAfinitasLabel: {
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.8,
+    letterSpacing: 0.2,
     color: "#FFFFFF",
   },
   totalAfinitasValRow: {

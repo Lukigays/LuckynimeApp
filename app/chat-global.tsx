@@ -1600,8 +1600,7 @@ const styles = StyleSheet.create({
   rankTierText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    letterSpacing: 0.6,
-    textTransform: "uppercase",
+    letterSpacing: 0.2,
   },
   levelPill: {
     flexDirection: "row",

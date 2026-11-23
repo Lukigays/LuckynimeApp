@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#9CA3AF",
-    letterSpacing: 1,
+    letterSpacing: 0.2,
   },
   headerTitle: {
     fontFamily: "Nunito-Bold",
@@ -346,7 +346,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#F3F4F6",
     letterSpacing: 0.5,
-    textTransform: "uppercase",
   },
   contactRow: {
     flexDirection: "row",

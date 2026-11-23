@@ -1064,9 +1064,8 @@ const styles = StyleSheet.create({
   communityBadge: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    letterSpacing: 1.2,
+    letterSpacing: 0.2,
     color: "rgba(255, 255, 255, 0.45)",
-    textTransform: "uppercase",
   },
   title: {
     fontFamily: "Nunito-Bold",
@@ -1190,7 +1189,7 @@ const styles = StyleSheet.create({
   toolText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
     color: "rgba(255, 255, 255, 0.6)",
   },
   toolTextActive: {
@@ -1346,7 +1345,6 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     letterSpacing: 0.5,
-    textTransform: "uppercase",
   },
   levelPill: {
     flexDirection: "row",

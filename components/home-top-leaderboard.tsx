@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     color: "#FFFFFF",
     fontSize: 9.5,
-    letterSpacing: 1.1,
+    letterSpacing: 0.2,
   },
   titleLine: {
     flexDirection: "row",

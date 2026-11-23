@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
   filterTextActive: { color: "#FFFFFF" },
   filterGiftTextActive: { color: "#F5C518" },

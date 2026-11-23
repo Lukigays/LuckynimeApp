@@ -2120,7 +2120,6 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
     color: "#9CA3AF",
-    textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   replyListScroll: {

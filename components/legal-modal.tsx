@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#FFFFFF",
-    letterSpacing: 1.2,
+    letterSpacing: 0.2,
   },
   headerTitle: {
     fontFamily: "Nunito-Bold",

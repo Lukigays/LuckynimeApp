@@ -2425,7 +2425,6 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#F3F4F6",
-    textTransform: "uppercase",
   },
   inventorySubtitle: {
     fontFamily: "Nunito-Regular",
@@ -2492,7 +2491,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#FFFFFF",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
   infoBoardTitle: {
     fontFamily: "Nunito-Bold",
@@ -2548,7 +2547,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#F3F4F6",
-    letterSpacing: 0.6,
+    letterSpacing: 0.2,
   },
   featureCardTitle: {
     fontFamily: "Nunito-Bold",
@@ -3315,7 +3314,6 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#9CA3AF",
-    textTransform: "uppercase",
   },
   bookmarkBody: {
     padding: 10,
@@ -3834,7 +3832,6 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
     color: "#9CA3AF",
-    textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   replyListScroll: {
