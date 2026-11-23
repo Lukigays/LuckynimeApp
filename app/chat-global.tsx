@@ -61,14 +61,14 @@ function formatChatTime(dateStr: string): string {
 
 // Generate nama warna yang harmonis dan konsisten berdasarkan string username
 const NAME_COLORS = [
-  "#FB7185", // Cyan Sky
+  "#FFFFFF", // Cyan Sky
   "#4ADE80", // Emerald Green
-  "#F43F5E", // Rose Red
-  "#A855F7", // Purple
-  "#F59E0B", // Amber Gold
+  "#EF4444", // Rose Red
+  "#9CA3AF", // Purple
+  "#F5C518", // Amber Gold
   "#2DD4BF", // Teal
-  "#EC4899", // Pink
-  "#FB7185", // Blue
+  "#9CA3AF", // Pink
+  "#FFFFFF", // Blue
 ];
 
 function getUsernameColor(name: string): string {
@@ -93,33 +93,33 @@ function getTierPillColors(tierName: string) {
       };
     case "eternal":
       return {
-        bg: "rgba(168, 85, 247, 0.16)",
-        border: "rgba(168, 85, 247, 0.45)",
+        bg: "rgba(156,163,175, 0.16)",
+        border: "rgba(156,163,175, 0.45)",
         text: "#D8B4FE",
       };
     case "celestial":
       return {
-        bg: "rgba(251, 146, 60, 0.16)",
-        border: "rgba(251, 146, 60, 0.45)",
+        bg: "rgba(245,197,24, 0.16)",
+        border: "rgba(245,197,24, 0.45)",
         text: "#FDBA74",
       };
     case "ruby star":
       return {
-        bg: "rgba(251, 113, 133, 0.16)",
-        border: "rgba(251, 113, 133, 0.45)",
-        text: "#FDA4AF",
+        bg: "rgba(255, 255, 255, 0.16)",
+        border: "rgba(255, 255, 255, 0.45)",
+        text: "#D1D5DB",
       };
     case "amethyst":
       return {
-        bg: "rgba(192, 132, 252, 0.16)",
-        border: "rgba(192, 132, 252, 0.45)",
+        bg: "rgba(156,163,175, 0.16)",
+        border: "rgba(156,163,175, 0.45)",
         text: "#E9D5FF",
       };
     case "sapphire":
       return {
-        bg: "rgba(251, 113, 133, 0.16)",
-        border: "rgba(251, 113, 133, 0.45)",
-        text: "#FDA4AF",
+        bg: "rgba(255, 255, 255, 0.16)",
+        border: "rgba(255, 255, 255, 0.45)",
+        text: "#D1D5DB",
       };
     case "emerald":
       return {
@@ -135,21 +135,21 @@ function getTierPillColors(tierName: string) {
       };
     case "silver":
       return {
-        bg: "rgba(237, 224, 229, 0.16)",
-        border: "rgba(237, 224, 229, 0.45)",
-        text: "#F5E9EE",
+        bg: "rgba(243,244,246, 0.16)",
+        border: "rgba(243,244,246, 0.45)",
+        text: "#F3F4F6",
       };
     case "bronze":
       return {
-        bg: "rgba(217, 119, 6, 0.16)",
-        border: "rgba(217, 119, 6, 0.45)",
+        bg: "rgba(245,197,24, 0.16)",
+        border: "rgba(245,197,24, 0.45)",
         text: "#FDBA74",
       };
     default:
       return {
-        bg: "rgba(196, 166, 179, 0.16)",
-        border: "rgba(196, 166, 179, 0.45)",
-        text: "#EDE0E5",
+        bg: "rgba(156,163,175, 0.16)",
+        border: "rgba(156,163,175, 0.45)",
+        text: "#F3F4F6",
       };
   }
 }
@@ -291,7 +291,7 @@ const ChatMessageItem = React.memo(
                     tierInfo?.isInfinity && {
                       color: "#EF4444",
                       fontSize: 13,
-                      fontFamily: "Nunito-Black",
+                      fontFamily: "Nunito-Bold",
                     },
                   ]}
                 >
@@ -331,7 +331,7 @@ const ChatMessageItem = React.memo(
                     <AppIcon
                       name="arrow-up"
                       size={12}
-                      color="#FB7185"
+                      color="#FFFFFF"
                       style={{ marginLeft: "auto" }}
                     />
                   </View>
@@ -437,7 +437,7 @@ const ChatInputBar = React.memo(
         <View style={styles.inputMetaRow}>
           {cooldownRemaining > 0 ? (
             <View style={styles.cooldownBadge}>
-              <AppIcon name="timer-outline" size={12} color="#F59E0B" />
+              <AppIcon name="timer-outline" size={12} color="#F5C518" />
               <Text style={styles.cooldownBadgeText}>Jeda chat: {cooldownRemaining}s</Text>
             </View>
           ) : (
@@ -462,7 +462,7 @@ const ChatInputBar = React.memo(
             <AppIcon
               name="emoticon-happy-outline"
               size={22}
-              color={showStickerPicker ? "#FB7185" : "#C4A6B3"}
+              color={showStickerPicker ? "#FFFFFF" : "#9CA3AF"}
             />
           </Pressable>
 
@@ -474,7 +474,7 @@ const ChatInputBar = React.memo(
                 ? `Tunggu ${cooldownRemaining} detik...`
                 : "Silakan masukkan pesan..."
             }
-            placeholderTextColor="#8F727F"
+            placeholderTextColor="#8E93A2"
             value={text}
             onChangeText={setText}
             onFocus={onFocusInput}
@@ -1061,7 +1061,7 @@ export default function ChatGlobalScreen() {
       {/* ─── B. WARNING BANNER ─── */}
       <View style={styles.warningBannerContainer}>
         <View style={styles.warningBanner}>
-          <AppIcon name="alert" size={16} color="#F59E0B" />
+          <AppIcon name="alert" size={16} color="#F5C518" />
           <Text style={styles.warningBannerText}>
             Dilarang toksik atau spam, akan otomatis terblokir
           </Text>
@@ -1198,13 +1198,13 @@ export default function ChatGlobalScreen() {
                 <RefreshControl
                   refreshing={refreshing}
                   onRefresh={() => loadMessages(true)}
-                  tintColor="#FB7185"
+                  tintColor="#FFFFFF"
                 />
               }
               ListEmptyComponent={
                 <View style={styles.emptyContainer}>
                   <View style={styles.emptyIconCircle}>
-                    <AppIcon name="chat" size={32} color="#8F727F" />
+                    <AppIcon name="chat" size={32} color="#8E93A2" />
                   </View>
                   <Text style={styles.emptyTitle}>Belum Ada Pesan</Text>
                   <Text style={styles.emptySubtitle}>
@@ -1246,7 +1246,7 @@ export default function ChatGlobalScreen() {
         {replyingTo && (
           <View style={styles.replyingBar}>
             <View style={styles.replyingBarLeft}>
-              <AppIcon name="reply" size={16} color="#FB7185" />
+              <AppIcon name="reply" size={16} color="#FFFFFF" />
               <View style={{ flex: 1 }}>
                 <Text style={styles.replyingTargetName} numberOfLines={1}>
                   Membalas {replyingTo.senderName}
@@ -1261,7 +1261,7 @@ export default function ChatGlobalScreen() {
               hitSlop={8}
               style={styles.replyingCloseBtn}
             >
-              <AppIcon name="close" size={16} color="#C4A6B3" />
+              <AppIcon name="close" size={16} color="#9CA3AF" />
             </Pressable>
           </View>
         )}
@@ -1357,7 +1357,7 @@ export default function ChatGlobalScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F1115",
+    backgroundColor: "#121316",
   },
   btnPressed: {
     opacity: 0.8,
@@ -1371,7 +1371,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#1F131B",
-    backgroundColor: "#0F1115",
+    backgroundColor: "#121316",
   },
   headerBackBtn: {
     width: 36,
@@ -1409,7 +1409,7 @@ const styles = StyleSheet.create({
   },
   warningBannerText: {
     fontSize: 12.5,
-    color: "#D97706",
+    color: "#F5C518",
     fontWeight: "600",
     flex: 1,
   },
@@ -1434,21 +1434,21 @@ const styles = StyleSheet.create({
     borderColor: "#222D3D",
   },
   roomPillActive: {
-    borderColor: "#E11D48",
-    backgroundColor: "rgba(2, 132, 199, 0.15)",
+    borderColor: "#EF4444",
+    backgroundColor: "rgba(156,163,175, 0.15)",
   },
   roomPillHash: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   roomPillHashActive: {
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   roomPillLabel: {
     fontSize: 12.5,
     fontWeight: "600",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   roomPillLabelActive: {
     color: "#FFFFFF",
@@ -1463,7 +1463,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   loadingText: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 13,
     marginTop: 10,
   },
@@ -1492,7 +1492,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     maxWidth: 280,
     lineHeight: 18,
@@ -1525,21 +1525,21 @@ const styles = StyleSheet.create({
     width: "100%", // Panjang / lebar akhir rata dan seragam untuk semua pesan
   },
   messageCardHighlighted: {
-    borderColor: "#FB7185",
+    borderColor: "#FFFFFF",
     borderWidth: 1.5,
-    shadowColor: "#FB7185",
+    shadowColor: "#FFFFFF",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.9,
     shadowRadius: 10,
     elevation: 8,
     ...(Platform.OS === "web"
       ? ({
-        boxShadow: "0 0 10px rgba(251, 113, 133, 0.6)",
+        boxShadow: "0 0 10px rgba(255, 255, 255, 0.6)",
       } as any)
       : {}),
   },
   messageCardSticker: {
-    backgroundColor: "rgba(22, 27, 36, 0.45)",
+    backgroundColor: "rgba(27,29,34, 0.45)",
     borderColor: "rgba(34, 45, 61, 0.5)",
   },
   messageCardPressed: {
@@ -1569,7 +1569,7 @@ const styles = StyleSheet.create({
   },
   memberTagText: {
     fontSize: 10,
-    color: "#8F727F",
+    color: "#8E93A2",
     fontWeight: "500",
   },
   cityClanRow: {
@@ -1598,7 +1598,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   rankTierText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     letterSpacing: 0.6,
     textTransform: "uppercase",
@@ -1619,7 +1619,7 @@ const styles = StyleSheet.create({
   levelPillText: {
     fontSize: 9.5,
     fontWeight: "700",
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── REPLY QUOTE BOX ───
@@ -1634,7 +1634,7 @@ const styles = StyleSheet.create({
   },
   quoteBoxPressed: {
     opacity: 0.7,
-    backgroundColor: "rgba(251, 113, 133, 0.16)",
+    backgroundColor: "rgba(255, 255, 255, 0.16)",
   },
   quoteAccentLine: {
     width: 2.5,
@@ -1656,23 +1656,23 @@ const styles = StyleSheet.create({
   },
   quoteMemberNumber: {
     fontSize: 9.5,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   quoteText: {
     fontSize: 10.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 1,
   },
 
   // ─── MESSAGE TEXT & TIMESTAMP ───
   messageText: {
     fontSize: 12.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     lineHeight: 17.5,
   },
   timestampText: {
     fontSize: 9.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     alignSelf: "flex-end",
     marginTop: 2,
     marginRight: 2,
@@ -1685,7 +1685,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "#131A26",
     borderTopWidth: 1,
-    borderTopColor: "#1E2738",
+    borderTopColor: "#1B1D22",
     paddingHorizontal: 16,
     paddingVertical: 7,
   },
@@ -1698,11 +1698,11 @@ const styles = StyleSheet.create({
   replyingTargetName: {
     fontSize: 11.5,
     fontWeight: "700",
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   replyingTextSnippet: {
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   replyingCloseBtn: {
     padding: 4,
@@ -1710,7 +1710,7 @@ const styles = StyleSheet.create({
 
   // ─── INPUT BAR (PERSIS SCREENSHOT) ───
   inputContainer: {
-    backgroundColor: "#0F1115",
+    backgroundColor: "#121316",
     borderTopWidth: 1,
     borderTopColor: "#1F131B",
     paddingHorizontal: 16,
@@ -1727,8 +1727,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(245, 158, 11, 0.14)",
-    borderColor: "rgba(245, 158, 11, 0.35)",
+    backgroundColor: "rgba(245, 197, 24, 0.14)",
+    borderColor: "rgba(245, 197, 24, 0.35)",
     borderWidth: 1,
     paddingHorizontal: 7,
     paddingVertical: 2,
@@ -1737,11 +1737,11 @@ const styles = StyleSheet.create({
   cooldownBadgeText: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   charCounterText: {
     fontSize: 10,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   inputRow: {
     flexDirection: "row",
@@ -1771,31 +1771,31 @@ const styles = StyleSheet.create({
     borderColor: "#222D3D",
   },
   stickerToggleBtnActive: {
-    backgroundColor: "rgba(2, 132, 199, 0.18)",
-    borderColor: "#E11D48",
+    backgroundColor: "rgba(156,163,175, 0.18)",
+    borderColor: "#EF4444",
   },
   sendBtn: {
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
   },
   sendBtnDisabled: {
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     opacity: 0.6,
   },
   sendBtnCooldown: {
-    backgroundColor: "rgba(245, 158, 11, 0.22)",
-    borderColor: "rgba(245, 158, 11, 0.45)",
+    backgroundColor: "rgba(245, 197, 24, 0.22)",
+    borderColor: "rgba(245, 197, 24, 0.45)",
     borderWidth: 1,
     opacity: 1,
   },
   sendBtnCooldownText: {
     fontSize: 12,
     fontWeight: "800",
-    color: "#F59E0B",
+    color: "#F5C518",
   },
 
   // ─── BOTTOM NAVIGATION (GLOBAL | CLAN | TEMAN) (PERSIS SCREENSHOT) ───
@@ -1803,7 +1803,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    backgroundColor: "#0F1115",
+    backgroundColor: "#121316",
     borderTopWidth: 1,
     borderTopColor: "#1F131B",
     paddingTop: 8,
@@ -1821,12 +1821,12 @@ const styles = StyleSheet.create({
     width: 32,
     height: 3,
     borderRadius: 2,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
   },
   bottomNavText: {
     fontSize: 13.5,
     fontWeight: "600",
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   bottomNavTextActive: {
     color: "#FFFFFF",
@@ -1850,7 +1850,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     backgroundColor: "#161D2B",
     borderWidth: 1.5,
-    borderColor: "rgba(251, 113, 133, 0.45)",
+    borderColor: "rgba(255, 255, 255, 0.45)",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -1875,7 +1875,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 4,
     borderWidth: 1.5,
-    borderColor: "#0F1115",
+    borderColor: "#121316",
   },
   scrollBadgeText: {
     color: "#FFFFFF",

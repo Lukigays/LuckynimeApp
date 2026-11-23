@@ -960,7 +960,7 @@ export default function NobarWatchPartyScreen() {
   if (loadingRoom) {
     return (
       <View style={[styles.container, styles.center]}>
-        <ActivityIndicator size="small" color="#EDE0E5" />
+        <ActivityIndicator size="small" color="#F3F4F6" />
         <Text style={styles.loadingText}>Menghubungkan ke room nobar...</Text>
       </View>
     );
@@ -1007,7 +1007,7 @@ export default function NobarWatchPartyScreen() {
                 accessibilityRole="button"
                 accessibilityLabel="Salin Tag Room"
               >
-                <AppIcon name="pound" size={9} color="#F5E9EE" />
+                <AppIcon name="pound" size={9} color="#F3F4F6" />
                 <Text style={styles.roomTagHeaderText}>{getRoomCode(room)}</Text>
               </Pressable>
               <View style={styles.liveBadgeTop}>
@@ -1039,7 +1039,7 @@ export default function NobarWatchPartyScreen() {
               <AppIcon
                 name={voice.isMicOn ? "microphone" : "microphone-off"}
                 size={13}
-                color={voice.isMicOn ? "#10B981" : "#C4A6B3"}
+                color={voice.isMicOn ? "#10B981" : "#9CA3AF"}
               />
               <Text
                 style={[
@@ -1056,7 +1056,7 @@ export default function NobarWatchPartyScreen() {
             </Pressable>
 
             <View style={styles.viewerCountPill}>
-              <AppIcon name="account-group" size={14} color="#EDE0E5" />
+              <AppIcon name="account-group" size={14} color="#F3F4F6" />
               <Text style={styles.viewerCountText}>{participants.length || 1}</Text>
             </View>
           </View>
@@ -1067,7 +1067,7 @@ export default function NobarWatchPartyScreen() {
       <View style={[styles.playerContainer, isFullscreen && styles.playerFullscreen]}>
         {loadingStream ? (
           <View style={styles.playerFallbackBox}>
-            <ActivityIndicator size="small" color="#EDE0E5" />
+            <ActivityIndicator size="small" color="#F3F4F6" />
             <Text style={styles.playerLoadingText}>Memuat tayangan video...</Text>
           </View>
         ) : streamError ? (
@@ -1080,7 +1080,7 @@ export default function NobarWatchPartyScreen() {
                 onPress={() => loadStream(room.anime_id, currentEpisode)}
                 style={styles.retryBtn}
               >
-                <AppIcon name="refresh" size={14} color="#0D080B" />
+                <AppIcon name="refresh" size={14} color="#121316" />
                 <Text style={styles.retryBtnText}>Coba Lagi</Text>
               </Pressable>
             )}
@@ -1168,7 +1168,7 @@ export default function NobarWatchPartyScreen() {
             {/* Buffering Indicator */}
             {isBuffering && (
               <View style={styles.bufferingOverlay} pointerEvents="none">
-                <ActivityIndicator size="small" color="#EDE0E5" />
+                <ActivityIndicator size="small" color="#F3F4F6" />
               </View>
             )}
 
@@ -1195,7 +1195,7 @@ export default function NobarWatchPartyScreen() {
                 <View style={styles.controlsTopRow} pointerEvents="box-none">
                   {isHost ? (
                     <View style={styles.hostControlBadge}>
-                      <AppIcon name="crown" size={12} color="#F5E9EE" />
+                      <AppIcon name="crown" size={12} color="#F3F4F6" />
                       <Text style={styles.hostControlText}>Anda Host (Kontrol Aktif)</Text>
                     </View>
                   ) : (
@@ -1208,7 +1208,7 @@ export default function NobarWatchPartyScreen() {
                         onPress={() => setNobarSubEnabled((v) => !v)}
                         style={[
                           styles.controlIconBtn,
-                          nobarSubEnabled && { backgroundColor: "rgba(255,77,77,0.28)", borderColor: "#FF4D4D" },
+                          nobarSubEnabled && { backgroundColor: "rgba(239,68,68,0.28)", borderColor: "#EF4444" },
                         ]}
                         hitSlop={8}
                       >
@@ -1262,7 +1262,7 @@ export default function NobarWatchPartyScreen() {
                         <AppIcon
                           name={isPlaying ? "pause" : "play"}
                           size={32}
-                          color="#0D080B"
+                          color="#121316"
                         />
                       </Pressable>
 
@@ -1280,7 +1280,7 @@ export default function NobarWatchPartyScreen() {
                         <AppIcon
                           name={isPlaying ? "play" : "pause"}
                           size={22}
-                          color="#EDE0E5"
+                          color="#F3F4F6"
                         />
                       </View>
                       <Text style={styles.viewerSyncText}>
@@ -1395,7 +1395,7 @@ export default function NobarWatchPartyScreen() {
               <AppIcon
                 name="chat"
                 size={14}
-                color={activeTab === "chat" ? "#F5E9EE" : "#C4A6B3"}
+                color={activeTab === "chat" ? "#F3F4F6" : "#9CA3AF"}
               />
               <Text
                 style={[
@@ -1417,7 +1417,7 @@ export default function NobarWatchPartyScreen() {
               <AppIcon
                 name="account-group"
                 size={14}
-                color={activeTab === "participants" ? "#F5E9EE" : "#C4A6B3"}
+                color={activeTab === "participants" ? "#F3F4F6" : "#9CA3AF"}
               />
               <Text
                 style={[
@@ -1443,7 +1443,7 @@ export default function NobarWatchPartyScreen() {
                   if (item.is_system) {
                     return (
                       <View style={styles.systemMessageWrap}>
-                        <AppIcon name="information-outline" size={13} color="#C4A6B3" />
+                        <AppIcon name="information-outline" size={13} color="#9CA3AF" />
                         <Text style={styles.systemMessageText}>{item.message}</Text>
                       </View>
                     );
@@ -1536,14 +1536,14 @@ export default function NobarWatchPartyScreen() {
                   <AppIcon
                     name={voice.isMicOn ? "microphone" : "microphone-off"}
                     size={16}
-                    color={voice.isMicOn ? "#10B981" : "#C4A6B3"}
+                    color={voice.isMicOn ? "#10B981" : "#9CA3AF"}
                   />
                 </Pressable>
 
                 <TextInput
                   style={styles.chatTextInput}
                   placeholder="Kirim pesan ke room..."
-                  placeholderTextColor="#8F727F"
+                  placeholderTextColor="#8E93A2"
                   value={inputText}
                   onChangeText={setInputText}
                   maxLength={300}
@@ -1556,7 +1556,7 @@ export default function NobarWatchPartyScreen() {
                     (!inputText.trim() || sendingMessage) && styles.sendBtnDisabled,
                   ]}
                 >
-                  <AppIcon name="send" size={14} color="#0D080B" />
+                  <AppIcon name="send" size={14} color="#121316" />
                 </Pressable>
               </View>
             </View>
@@ -1626,7 +1626,7 @@ export default function NobarWatchPartyScreen() {
 
                     {isItemHost ? (
                       <View style={styles.hostRolePill}>
-                        <AppIcon name="crown" size={11} color="#F5E9EE" />
+                        <AppIcon name="crown" size={11} color="#F3F4F6" />
                         <Text style={styles.hostRoleText}>HOST</Text>
                       </View>
                     ) : isSpecial ? (
@@ -1665,7 +1665,7 @@ export default function NobarWatchPartyScreen() {
             <TextInput
               style={styles.episodeModalInput}
               placeholder="Nomor episode (contoh: 2)"
-              placeholderTextColor="#8F727F"
+              placeholderTextColor="#8E93A2"
               keyboardType="numeric"
               value={newEpisodeInput}
               onChangeText={setNewEpisodeInput}
@@ -1709,7 +1709,7 @@ export default function NobarWatchPartyScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.confirmModalCard}>
             <View style={styles.confirmModalIconWrap}>
-              <AppIcon name="door-open" size={24} color="#F5E9EE" />
+              <AppIcon name="door-open" size={24} color="#F3F4F6" />
             </View>
             <Text style={styles.confirmModalTitle}>Tutup Sesi Nobar?</Text>
             <Text style={styles.confirmModalSub}>
@@ -1731,7 +1731,7 @@ export default function NobarWatchPartyScreen() {
                 style={styles.confirmExitBtn}
               >
                 {closingRoomInProgress ? (
-                  <ActivityIndicator size="small" color="#0D080B" />
+                  <ActivityIndicator size="small" color="#121316" />
                 ) : (
                   <Text style={styles.confirmExitText}>Tutup & Hapus</Text>
                 )}
@@ -1753,7 +1753,7 @@ export default function NobarWatchPartyScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.confirmModalCard}>
             <View style={styles.confirmModalIconWrap}>
-              <AppIcon name="film-strip" size={24} color="#EDE0E5" />
+              <AppIcon name="film-strip" size={24} color="#F3F4F6" />
             </View>
             <Text style={styles.confirmModalTitle}>Sesi Nobar Selesai</Text>
             <Text style={styles.confirmModalSub}>
@@ -1776,7 +1776,7 @@ export default function NobarWatchPartyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     height: Platform.OS === "web" ? ("100vh" as any) : "100%",
     maxHeight: Platform.OS === "web" ? ("100vh" as any) : undefined,
     overflow: "hidden",
@@ -1790,7 +1790,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     marginTop: 10,
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   errorTitle: {
     fontFamily: "Nunito-Bold",
@@ -1801,21 +1801,21 @@ const styles = StyleSheet.create({
   errorSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     marginTop: 4,
   },
   backBtnAction: {
     marginTop: 16,
-    backgroundColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
     paddingHorizontal: 16,
     paddingVertical: 9,
     borderRadius: 6,
   },
   backBtnActionText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#0D080B",
+    color: "#121316",
   },
   topBar: {
     flexDirection: "row",
@@ -1862,7 +1862,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   roomTagHeaderText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#FFFFFF",
     letterSpacing: 0.5,
@@ -1896,7 +1896,7 @@ const styles = StyleSheet.create({
   topBarSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 1,
   },
   topBarRightActions: {
@@ -1922,7 +1922,7 @@ const styles = StyleSheet.create({
   voiceTopPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   voiceTopPillTextActive: {
     color: "#10B981",
@@ -1941,7 +1941,7 @@ const styles = StyleSheet.create({
   viewerCountText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   playerContainer: {
     width: "100%",
@@ -1965,7 +1965,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     marginTop: 8,
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   playerErrorTitle: {
     fontFamily: "Nunito-Bold",
@@ -1976,14 +1976,14 @@ const styles = StyleSheet.create({
   playerErrorSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     marginTop: 3,
   },
   retryBtn: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
@@ -1991,9 +1991,9 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   retryBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#0D080B",
+    color: "#121316",
   },
   bufferingOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -2025,13 +2025,13 @@ const styles = StyleSheet.create({
     paddingVertical: 3.5,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
     gap: 4,
   },
   hostControlText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   viewerControlBadge: {
     flexDirection: "row",
@@ -2047,7 +2047,7 @@ const styles = StyleSheet.create({
   viewerControlText: {
     fontFamily: "Nunito-Regular",
     fontSize: 9.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   controlsRightActions: {
     flexDirection: "row",
@@ -2062,13 +2062,13 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
     gap: 4,
   },
   syncBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   controlIconBtn: {
     width: 30,
@@ -2100,7 +2100,7 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: 27,
-    backgroundColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2119,7 +2119,7 @@ const styles = StyleSheet.create({
   viewerSyncText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   controlsBottomRow: {
     flexDirection: "row",
@@ -2141,7 +2141,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: "100%",
-    backgroundColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
   },
   changeEpsPill: {
     backgroundColor: "rgba(0, 0, 0, 0.65)",
@@ -2159,7 +2159,7 @@ const styles = StyleSheet.create({
   lowerSection: {
     flex: 1,
     minHeight: 0,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     overflow: "hidden",
   },
   // Episode List (Persis UI Image yang Dikirim User)
@@ -2171,7 +2171,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 10,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.12)",
+    borderColor: "rgba(255, 255, 255, 0.12)",
   },
   episodeListHeader: {
     flexDirection: "row",
@@ -2180,7 +2180,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   episodeListTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     color: "#FFFFFF",
     letterSpacing: -0.2,
@@ -2191,12 +2191,12 @@ const styles = StyleSheet.create({
     paddingVertical: 2.5,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.15)",
+    borderColor: "rgba(255, 255, 255, 0.15)",
   },
   episodeTotalText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   episodeScrollContent: {
     flexDirection: "row",
@@ -2210,7 +2210,7 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     backgroundColor: "rgba(255, 255, 255, 0.06)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.14)",
+    borderColor: "rgba(255, 255, 255, 0.14)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2221,12 +2221,12 @@ const styles = StyleSheet.create({
   episodeSquareText: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   episodeSquareTextActive: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15,
-    color: "#0D080B",
+    color: "#121316",
   },
   flexList: {
     flex: 1,
@@ -2255,16 +2255,16 @@ const styles = StyleSheet.create({
   },
   sectionTabActive: {
     backgroundColor: "rgba(255, 255, 255, 0.12)",
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    borderColor: "rgba(255, 255, 255, 0.35)",
   },
   sectionTabText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   sectionTabTextActive: {
-    color: "#F5E9EE",
-    fontFamily: "Nunito-Black",
+    color: "#F3F4F6",
+    fontFamily: "Nunito-Bold",
   },
   chatWrapper: {
     flex: 1,
@@ -2289,7 +2289,7 @@ const styles = StyleSheet.create({
   systemMessageText: {
     fontFamily: "Nunito-Regular",
     fontSize: 10.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   chatRow: {
     flexDirection: "row",
@@ -2299,7 +2299,7 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
   },
   chatAvatarPlaceholder: {
     width: 26,
@@ -2310,14 +2310,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chatAvatarInitial: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   chatBubble: {
     flex: 1,
     marginLeft: 8,
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 8,
     padding: 8,
     borderWidth: 1,
@@ -2331,7 +2331,7 @@ const styles = StyleSheet.create({
   chatSenderName: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     marginRight: 6,
   },
   chatHostBadge: {
@@ -2340,18 +2340,18 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
     borderRadius: 3,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
     marginRight: 6,
   },
   chatHostBadgeText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 8,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   chatTime: {
     fontFamily: "Nunito-Regular",
     fontSize: 9,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginLeft: "auto",
   },
   chatMessageText: {
@@ -2365,7 +2365,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 12,
     paddingTop: 8,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderTopWidth: 1,
     borderTopColor: "rgba(255, 255, 255, 0.08)",
     gap: 8,
@@ -2400,7 +2400,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 6,
-    backgroundColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2414,7 +2414,7 @@ const styles = StyleSheet.create({
   participantRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     padding: 9,
     borderRadius: 8,
     borderWidth: 1,
@@ -2454,9 +2454,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   participantInitial: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   participantMeta: {
     flex: 1,
@@ -2477,7 +2477,7 @@ const styles = StyleSheet.create({
   participantStatus: {
     fontFamily: "Nunito-Regular",
     fontSize: 10,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 1,
   },
   levelBadgePill: {
@@ -2491,7 +2491,7 @@ const styles = StyleSheet.create({
   levelBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   hostRolePill: {
     flexDirection: "row",
@@ -2501,13 +2501,13 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
     gap: 3,
   },
   hostRoleText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   specialRolePill: {
     backgroundColor: "rgba(239, 68, 68, 0.15)",
@@ -2518,22 +2518,22 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239, 68, 68, 0.35)",
   },
   specialRoleText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#EF4444",
   },
   memberRolePill: {
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
   },
   memberRoleText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   viewerRolePill: {
     backgroundColor: "rgba(255, 255, 255, 0.05)",
@@ -2546,7 +2546,7 @@ const styles = StyleSheet.create({
   viewerRoleText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   chatLevelPill: {
     backgroundColor: "rgba(255, 255, 255, 0.08)",
@@ -2560,7 +2560,7 @@ const styles = StyleSheet.create({
   chatLevelPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 8.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   chatSpecialBadge: {
     backgroundColor: "rgba(239, 68, 68, 0.15)",
@@ -2572,23 +2572,23 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   chatSpecialBadgeText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 8,
     color: "#EF4444",
   },
   chatMemberBadge: {
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     paddingHorizontal: 4,
     paddingVertical: 1,
     borderRadius: 3,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
     marginRight: 6,
   },
   chatMemberBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 8,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   modalOverlay: {
     flex: 1,
@@ -2607,14 +2607,14 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.12)",
   },
   episodeModalTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15,
     color: "#FFFFFF",
   },
   episodeModalSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 3,
     lineHeight: 16,
   },
@@ -2648,19 +2648,19 @@ const styles = StyleSheet.create({
   episodeCancelText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   episodeApplyBtn: {
     flex: 1,
-    backgroundColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
     paddingVertical: 9,
     borderRadius: 6,
     alignItems: "center",
   },
   episodeApplyText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#0D080B",
+    color: "#121316",
   },
   confirmModalCard: {
     width: "100%",
@@ -2684,7 +2684,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   confirmModalTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
     textAlign: "center",
@@ -2692,7 +2692,7 @@ const styles = StyleSheet.create({
   confirmModalSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     marginTop: 6,
     lineHeight: 18,
@@ -2715,32 +2715,32 @@ const styles = StyleSheet.create({
   confirmCancelText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   confirmExitBtn: {
     flex: 1.2,
-    backgroundColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
     paddingVertical: 10,
     borderRadius: 7,
     alignItems: "center",
     justifyContent: "center",
   },
   confirmExitText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#0D080B",
+    color: "#121316",
   },
   confirmDismissBtn: {
     width: "100%",
-    backgroundColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
     paddingVertical: 11,
     borderRadius: 7,
     alignItems: "center",
     marginTop: 18,
   },
   confirmDismissText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#0D080B",
+    color: "#121316",
   },
 });

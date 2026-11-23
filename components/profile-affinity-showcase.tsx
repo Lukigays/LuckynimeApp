@@ -47,27 +47,27 @@ const TIER_THEMES: Record<
   }
 > = {
   pasangan: {
-    glowColor: "#F43F5E",
-    borderColor: "rgba(244, 63, 94, 0.4)",
+    glowColor: "#EF4444",
+    borderColor: "rgba(239, 68, 68, 0.4)",
     avatarBorderColor: "#E2B876", // Golden metallic frame
     label: "Pasangan",
   },
   orang_kepercayaan: {
-    glowColor: "#F59E0B",
-    borderColor: "rgba(245, 158, 11, 0.4)",
-    avatarBorderColor: "#F59E0B",
+    glowColor: "#F5C518",
+    borderColor: "rgba(245, 197, 24, 0.4)",
+    avatarBorderColor: "#F5C518",
     label: "Kepercayaan",
   },
   sahabat: {
-    glowColor: "#EC4899",
-    borderColor: "rgba(236, 72, 153, 0.4)",
-    avatarBorderColor: "#EC4899",
+    glowColor: "#9CA3AF",
+    borderColor: "rgba(156,163,175, 0.4)",
+    avatarBorderColor: "#9CA3AF",
     label: "Sahabat",
   },
   saudara: {
-    glowColor: "#06B6D4",
-    borderColor: "rgba(6, 182, 212, 0.4)",
-    avatarBorderColor: "#06B6D4",
+    glowColor: "#9CA3AF",
+    borderColor: "rgba(156,163,175, 0.4)",
+    avatarBorderColor: "#9CA3AF",
     label: "Saudara",
   },
 };
@@ -178,7 +178,7 @@ export const ProfileAffinityShowcase: React.FC<ProfileAffinityShowcaseProps> = R
           <Svg style={styles.waveSvg} viewBox="0 0 60 22" preserveAspectRatio="none">
             <Path
               d="M 0 11 L 18 11 L 24 16 L 31 3 L 38 19 L 43 11 L 60 11"
-              stroke="rgba(244, 63, 94, 0.6)"
+              stroke="rgba(239, 68, 68, 0.6)"
               strokeWidth={1.5}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -364,12 +364,12 @@ const styles = StyleSheet.create({
   avatarFallback: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarInitial: {
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 13,
     fontWeight: "700",
   },
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
   },

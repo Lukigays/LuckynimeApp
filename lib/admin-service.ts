@@ -1324,7 +1324,7 @@ export async function getUserFullHistory(params: {
             description: `Metode: ${t.payment_method?.toUpperCase()} • Total: ${t.total_payment ? `Rp ${t.total_payment.toLocaleString("id-ID")}` : "-"} • Status: ${t.status}`,
             createdAt: t.created_at || new Date().toISOString(),
             badge: t.status === "berhasil" ? "Sukses" : t.status,
-            badgeColor: t.status === "berhasil" ? "#10B981" : "#F59E0B",
+            badgeColor: t.status === "berhasil" ? "#10B981" : "#F5C518",
           });
         }
       }
@@ -1346,7 +1346,7 @@ export async function getUserFullHistory(params: {
             description: `Tingkat: ${b.rarity || "Custom"} • Pembelian resmi katalog`,
             createdAt: b.purchased_at || new Date().toISOString(),
             badge: "Border",
-            badgeColor: "#38BDF8",
+            badgeColor: "#9CA3AF",
           });
         }
       }
@@ -1370,7 +1370,7 @@ export async function getUserFullHistory(params: {
             description: `Hasil: ${Array.isArray(g.results) ? g.results.map((r: any) => r.name || r.bannerName || "Item").join(", ") : "Hadiah diperoleh"}`,
             createdAt: g.created_at || new Date().toISOString(),
             badge: "Gacha Spin",
-            badgeColor: "#A855F7",
+            badgeColor: "#9CA3AF",
           });
         }
       }
@@ -1394,7 +1394,7 @@ export async function getUserFullHistory(params: {
             description: `Progress: ${Math.round(w.progress || 0)}s / ${Math.round(w.duration || 0)}s`,
             createdAt: w.updated_at || new Date().toISOString(),
             badge: "Streaming",
-            badgeColor: "#06B6D4",
+            badgeColor: "#9CA3AF",
           });
         }
       }
@@ -1443,7 +1443,7 @@ export async function getUserFullHistory(params: {
             description: `Pelaksana: ${a.admin_email || "Admin"} • Catatan: ${a.details?.reason || JSON.stringify(a.details || {})}`,
             createdAt: a.created_at || new Date().toISOString(),
             badge: a.action,
-            badgeColor: isBan ? "#EF4444" : isBal ? "#38BDF8" : isRole ? "#F59E0B" : "#A855F7",
+            badgeColor: isBan ? "#EF4444" : isBal ? "#9CA3AF" : isRole ? "#F5C518" : "#9CA3AF",
           });
         }
       }

@@ -33,8 +33,8 @@ export const DEFAULT_DEVELOPERS: DeveloperMember[] = [
     role: "Perancang Luckynime, Desain Luckynime, Backend & Frontend",
     avatarUri: "https://i.ibb.co.com/5h7WVZ0Z/32d6acf9127007583429953eb35f37ec.jpg",
     accentColor: "#E2E8F0",
-    badgeBg: "rgba(226, 232, 240, 0.12)",
-    badgeBorder: "rgba(226, 232, 240, 0.3)",
+    badgeBg: "rgba(243,244,246, 0.12)",
+    badgeBorder: "rgba(243,244,246, 0.3)",
     social: [
       { icon: "facebook", label: "Facebook", url: "" },
       { icon: "instagram", label: "Instagram", url: "" },
@@ -48,9 +48,9 @@ export const DEFAULT_DEVELOPERS: DeveloperMember[] = [
     tag: "Founder Luckynime",
     role: "Founder Luckynime, Marketing & Sosial Media",
     avatarUri: undefined,
-    accentColor: "#38BDF8",
-    badgeBg: "rgba(56, 189, 248, 0.15)",
-    badgeBorder: "rgba(56, 189, 248, 0.4)",
+    accentColor: "#9CA3AF",
+    badgeBg: "rgba(156,163,175, 0.15)",
+    badgeBorder: "rgba(156,163,175, 0.4)",
     social: [
       { icon: "facebook", label: "Facebook", url: "" },
       { icon: "instagram", label: "Instagram", url: "" },

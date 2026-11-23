@@ -172,7 +172,7 @@ const SakuraScheduleCard = memo(function SakuraScheduleCard({
             </View>
             <Text style={styles.statDot}>•</Text>
             <View style={styles.cardStatItem}>
-              <AppIcon name="fire" size={11} color="#FB7185" />
+              <AppIcon name="fire" size={11} color="#FFFFFF" />
               <Text style={styles.popText}>{popVal} penonton</Text>
             </View>
           </View>
@@ -196,7 +196,7 @@ const SakuraScheduleCard = memo(function SakuraScheduleCard({
           <AppIcon
             name={notify.enabled ? "bell" : "bell-outline"}
             size={16}
-            color={notify.enabled ? "#FFFFFF" : "#C4A6B3"}
+            color={notify.enabled ? "#FFFFFF" : "#9CA3AF"}
           />
         </Pressable>
       </Pressable>
@@ -309,7 +309,7 @@ export default function ScheduleScreen() {
           }}
           style={({ pressed }) => [styles.headerSearchBtn, pressed && styles.btnPressed]}
         >
-          <AppIcon name="magnify" size={19} color="#FB7185" />
+          <AppIcon name="magnify" size={19} color="#FFFFFF" />
         </Pressable>
       </View>
 
@@ -358,13 +358,13 @@ export default function ScheduleScreen() {
       {currentGroup ? (
         <View style={styles.summaryBanner}>
           <LinearGradient
-            colors={["rgba(244, 63, 94, 0.18)", "rgba(25, 16, 22, 0.90)"]}
+            colors={["rgba(239, 68, 68, 0.18)", "rgba(18, 19, 22, 0.90)"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={StyleSheet.absoluteFill}
           />
           <View style={styles.summaryLeft}>
-            <AppIcon name="calendar-check" size={16} color="#FB7185" />
+            <AppIcon name="calendar-check" size={16} color="#FFFFFF" />
             <Text style={styles.summaryDayText}>
               {currentGroup.dayName}, {currentGroup.dateLabel}
             </Text>
@@ -397,7 +397,7 @@ export default function ScheduleScreen() {
             <RefreshControl
               refreshing={schedule.isFetching && !schedule.isPending}
               onRefresh={() => void schedule.refetch()}
-              tintColor="#F43F5E"
+              tintColor="#EF4444"
             />
           }
           renderItem={({ item, index }) => (
@@ -430,7 +430,7 @@ export default function ScheduleScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   btnPressed: {
     opacity: 0.84,
@@ -453,27 +453,27 @@ const styles = StyleSheet.create({
     width: 4,
     height: 28,
     borderRadius: 99,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
   },
   headerEyebrow: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 1.1,
   },
   headerTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 23,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     letterSpacing: -0.4,
   },
   headerSearchBtn: {
     width: 40,
     height: 40,
     borderRadius: 13,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.24)",
+    borderColor: "rgba(255, 255, 255, 0.24)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -490,29 +490,29 @@ const styles = StyleSheet.create({
     width: 58,
     paddingVertical: 9,
     borderRadius: 16,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.16)",
+    borderColor: "rgba(255, 255, 255, 0.16)",
     alignItems: "center",
     gap: 3,
   },
   dateCardActive: {
-    backgroundColor: "#E11D48",
-    borderColor: "#FDA4AF",
+    backgroundColor: "#EF4444",
+    borderColor: "#D1D5DB",
   },
   dateShort: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#9A7D8A",
+    color: "#8E93A2",
     letterSpacing: 0.6,
   },
   dateShortActive: {
     color: "#FFE4E6",
   },
   dateNumber: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 17,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   dateNumberActive: {
     color: "#FFFFFF",
@@ -521,15 +521,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     paddingVertical: 1.5,
     borderRadius: 99,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
   },
   dateCountDotActive: {
-    backgroundColor: "rgba(13, 8, 11, 0.34)",
+    backgroundColor: "rgba(18,19,22, 0.34)",
   },
   dateCountText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   dateCountTextActive: {
     color: "#FFFFFF",
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
     paddingHorizontal: 14,
     paddingVertical: 9,
     flexDirection: "row",
@@ -556,20 +556,20 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   summaryDayText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   summaryCountPill: {
     paddingHorizontal: 10,
     paddingVertical: 3.5,
     borderRadius: 99,
-    backgroundColor: "rgba(244, 63, 94, 0.20)",
+    backgroundColor: "rgba(239, 68, 68, 0.20)",
   },
   summaryCountText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#FDA4AF",
+    color: "#D1D5DB",
   },
 
   // ─── TIMELINE LIST ───
@@ -596,7 +596,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#1C1118",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
     marginBottom: 7,
   },
   timeBadgeAired: {
@@ -604,9 +604,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(52, 211, 153, 0.35)",
   },
   timeBadgeText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FDA4AF",
+    color: "#D1D5DB",
   },
   timeBadgeTextAired: {
     color: "#6EE7B7",
@@ -615,9 +615,9 @@ const styles = StyleSheet.create({
     width: 9,
     height: 9,
     borderRadius: 4.5,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     borderWidth: 1.5,
-    borderColor: "#FDA4AF",
+    borderColor: "#D1D5DB",
     zIndex: 2,
   },
   railNodeAired: {
@@ -629,17 +629,17 @@ const styles = StyleSheet.create({
     top: 44,
     bottom: -16,
     width: 1.5,
-    backgroundColor: "rgba(251, 113, 133, 0.22)",
+    backgroundColor: "rgba(255, 255, 255, 0.22)",
     zIndex: 1,
   },
 
   // ─── RELEASE CARD ───
   releaseCard: {
     flex: 1,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.17)",
+    borderColor: "rgba(255, 255, 255, 0.17)",
     padding: 10,
     flexDirection: "row",
     alignItems: "center",
@@ -649,9 +649,9 @@ const styles = StyleSheet.create({
     width: 68,
     height: 96,
     borderRadius: 13,
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
   },
   cardBody: {
     flex: 1,
@@ -667,14 +667,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 6,
-    backgroundColor: "rgba(244, 63, 94, 0.20)",
+    backgroundColor: "rgba(239, 68, 68, 0.20)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    borderColor: "rgba(255, 255, 255, 0.35)",
   },
   epRibbonText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#FDA4AF",
+    color: "#D1D5DB",
   },
   airStatePill: {
     paddingHorizontal: 7,
@@ -688,21 +688,21 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(251, 191, 36, 0.14)",
   },
   airStateText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9,
     letterSpacing: 0.5,
   },
   airStateTextDone: {
-    color: "#34D399",
+    color: "#10B981",
   },
   airStateTextSoon: {
-    color: "#FBBF24",
+    color: "#F5C518",
   },
   cardTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     lineHeight: 18,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   cardStatsRow: {
     flexDirection: "row",
@@ -716,21 +716,21 @@ const styles = StyleSheet.create({
   },
   starIcon: {
     fontSize: 11,
-    color: "#FBBF24",
+    color: "#F5C518",
   },
   scoreText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FDE68A",
+    color: "#F5C518",
   },
   statDot: {
-    color: "#7F6270",
+    color: "#6B7280",
     fontSize: 10,
   },
   popText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   bellBtn: {
     width: 34,
@@ -738,21 +738,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
   },
   bellBtnActive: {
-    backgroundColor: "#F43F5E",
-    borderColor: "#FDA4AF",
+    backgroundColor: "#EF4444",
+    borderColor: "#D1D5DB",
   },
   floatingNextBtn: {
     position: "absolute",
     bottom: 88,
     right: 18,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
     borderWidth: 1,
-    borderColor: "#FDA4AF",
+    borderColor: "#D1D5DB",
     borderRadius: 99,
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -767,7 +767,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   floatingNextText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 12.5,
     color: "#FFFFFF",
   },

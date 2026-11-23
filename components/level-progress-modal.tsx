@@ -43,7 +43,7 @@ export const LEVEL_TIERS: readonly LevelTier[] = [
     minLevel: 2,
     maxLevel: 4,
     rangeLabel: "Level 2 - 4",
-    color: "#D97706",
+    color: "#F5C518",
     imageUrl: "https://i.ibb.co.com/vxjGKNQB/2.png",
   },
   {
@@ -61,7 +61,7 @@ export const LEVEL_TIERS: readonly LevelTier[] = [
     minLevel: 10,
     maxLevel: 19,
     rangeLabel: "Level 10 - 19",
-    color: "#FBBF24",
+    color: "#F5C518",
     imageUrl: "https://i.ibb.co.com/39LhRyPW/4.png",
   },
   {
@@ -70,7 +70,7 @@ export const LEVEL_TIERS: readonly LevelTier[] = [
     minLevel: 20,
     maxLevel: 34,
     rangeLabel: "Level 20 - 34",
-    color: "#34D399",
+    color: "#10B981",
     imageUrl: "https://i.ibb.co.com/chpNM56V/5.png",
   },
   {
@@ -79,7 +79,7 @@ export const LEVEL_TIERS: readonly LevelTier[] = [
     minLevel: 35,
     maxLevel: 49,
     rangeLabel: "Level 35 - 49",
-    color: "#38BDF8",
+    color: "#9CA3AF",
     imageUrl: "https://i.ibb.co.com/VWY9GPKh/6.png",
   },
   {
@@ -88,7 +88,7 @@ export const LEVEL_TIERS: readonly LevelTier[] = [
     minLevel: 50,
     maxLevel: 74,
     rangeLabel: "Level 50 - 74",
-    color: "#C084FC",
+    color: "#9CA3AF",
     imageUrl: "https://i.ibb.co.com/bM2Mvdbg/7.png",
   },
   {
@@ -97,7 +97,7 @@ export const LEVEL_TIERS: readonly LevelTier[] = [
     minLevel: 75,
     maxLevel: 99,
     rangeLabel: "Level 75 - 99",
-    color: "#FB7185",
+    color: "#FFFFFF",
     imageUrl: "https://i.ibb.co.com/Ndtxp5Cj/8.png",
   },
   {
@@ -106,7 +106,7 @@ export const LEVEL_TIERS: readonly LevelTier[] = [
     minLevel: 100,
     maxLevel: 149,
     rangeLabel: "Level 100 - 149",
-    color: "#FB923C",
+    color: "#F5C518",
     imageUrl: "https://i.ibb.co.com/W8Nx0bR/9.png",
   },
   {
@@ -304,7 +304,7 @@ export const LevelProgressModal = memo(function LevelProgressModal({
                   styles.progressBarFillOuter,
                   {
                     width: `${isInfinity ? 100 : Math.max(4, Math.min(100, levelInfo.progressPercent))}%`,
-                    backgroundColor: currentTier.color || "#38BDF8",
+                    backgroundColor: currentTier.color || "#9CA3AF",
                   },
                 ]}
               />
@@ -415,7 +415,7 @@ export const LevelProgressModal = memo(function LevelProgressModal({
                         </View>
                       ) : isActive ? (
                         <View style={styles.activeBadge}>
-                          <AppIcon name="check" size={11} color="#170E14" />
+                          <AppIcon name="check" size={11} color="#1B1D22" />
                         </View>
                       ) : (
                         <View style={styles.lockedBadge}>
@@ -436,7 +436,7 @@ export const LevelProgressModal = memo(function LevelProgressModal({
             >
               {xpHistoryQuery.isPending ? (
                 <View style={styles.historyLoadingWrap}>
-                  <ActivityIndicator size="small" color="#38BDF8" />
+                  <ActivityIndicator size="small" color="#9CA3AF" />
                   <Text style={styles.historyEmptyText}>Memuat riwayat EXP...</Text>
                 </View>
               ) : !xpHistoryQuery.data?.length ? (
@@ -471,7 +471,7 @@ export const LevelProgressModal = memo(function LevelProgressModal({
                               : "arrow-up"
                           }
                           size={15}
-                          color={isPositive ? "#38BDF8" : "#EF4444"}
+                          color={isPositive ? "#9CA3AF" : "#EF4444"}
                         />
                       </View>
 
@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
   },
   progressBarTrackOuter: {
     height: 5,
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     borderRadius: 3,
     marginVertical: 6,
     overflow: "hidden",
@@ -633,7 +633,7 @@ const styles = StyleSheet.create({
   progressPercentLabel: {
     fontSize: 10,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#9CA3AF",
   },
   tabRow: {
     flexDirection: "row",
@@ -715,7 +715,7 @@ const styles = StyleSheet.create({
     width: 17,
     height: 17,
     borderRadius: 8.5,
-    backgroundColor: "#38BDF8",
+    backgroundColor: "#9CA3AF",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -764,7 +764,7 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
+    backgroundColor: "rgba(156,163,175, 0.12)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -783,7 +783,7 @@ const styles = StyleSheet.create({
   historyXpBadge: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#9CA3AF",
   },
   footer: {
     marginTop: 10,

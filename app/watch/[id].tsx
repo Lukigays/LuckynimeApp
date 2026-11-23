@@ -4016,7 +4016,7 @@ export default function WatchScreen() {
             <Text style={styles.actionPillText}>
               {language === "sub" ? "SUB" : "DUB"}
             </Text>
-            <CaretDown size={12} color="#C4A6B3" weight="bold" />
+            <CaretDown size={12} color="#9CA3AF" weight="bold" />
           </Pressable>
         ) : null}
 
@@ -4048,7 +4048,7 @@ export default function WatchScreen() {
               <Text style={styles.animeSubMetaText}>Episode {episode}</Text>
               <Text style={styles.animeSubMetaDot}>•</Text>
               <View style={styles.viewsRow}>
-                <Eye size={12} color="#C4A6B3" />
+                <Eye size={12} color="#9CA3AF" />
                 <Text style={styles.animeSubMetaText}>
                   {formatCount(animeQuery.data?.popularity ? animeQuery.data.popularity * 12 : 1273878)}
                 </Text>
@@ -4066,7 +4066,7 @@ export default function WatchScreen() {
             onPress={reportBrokenSource}
             style={styles.reportPillBtn}
           >
-            <Flag size={13} color="#170E14" weight="fill" />
+            <Flag size={13} color="#1B1D22" weight="fill" />
             <Text style={styles.reportPillText}>Report</Text>
           </Pressable>
         </View>
@@ -4156,7 +4156,7 @@ export default function WatchScreen() {
 
       {/* ── 6. Informasi Aturan Komunitas ── */}
       <View style={styles.communityRuleCard}>
-        <Info size={18} color="#FB7185" weight="bold" />
+        <Info size={18} color="#FFFFFF" weight="bold" />
         <Text style={styles.communityRuleText}>
           Jangan lupa untuk membuat komentar yang sopan dan santun dan mengikuti{" "}
           <Text
@@ -4347,7 +4347,7 @@ export default function WatchScreen() {
           <View style={styles.serverSheetHeader}>
             <View style={{ flex: 1, gap: 2 }}>
               <View style={styles.serverTitleRow}>
-                <Subtitles size={16} color="#F5E9EE" weight="bold" />
+                <Subtitles size={16} color="#F3F4F6" weight="bold" />
                 <Text style={styles.serverSheetTitle}>PILIH AUDIO / BAHASA</Text>
               </View>
               <Text style={styles.serverSheetSubtitle}>
@@ -4366,7 +4366,7 @@ export default function WatchScreen() {
               accessibilityRole="button"
               accessibilityLabel="Tutup Pilihan Audio"
             >
-              <X size={16} color="#C4A6B3" weight="bold" />
+              <X size={16} color="#9CA3AF" weight="bold" />
             </Pressable>
           </View>
 
@@ -4447,7 +4447,7 @@ export default function WatchScreen() {
           <View style={styles.serverSheetHeader}>
             <View style={{ flex: 1, gap: 2 }}>
               <View style={styles.serverTitleRow}>
-                <DownloadSimple size={16} color="#F5E9EE" weight="bold" />
+                <DownloadSimple size={16} color="#F3F4F6" weight="bold" />
                 <Text style={styles.serverSheetTitle}>
                   {`DOWNLOAD · ${language.toUpperCase()} · EP ${episode}`}
                 </Text>
@@ -4468,7 +4468,7 @@ export default function WatchScreen() {
               accessibilityRole="button"
               accessibilityLabel="Tutup Pilihan Download"
             >
-              <X size={16} color="#C4A6B3" weight="bold" />
+              <X size={16} color="#9CA3AF" weight="bold" />
             </Pressable>
           </View>
 
@@ -4505,7 +4505,7 @@ export default function WatchScreen() {
                     </View>
                   </View>
                   <View style={styles.downloadIconWrap}>
-                    <Download size={16} color="#F5E9EE" weight="bold" />
+                    <Download size={16} color="#F3F4F6" weight="bold" />
                   </View>
                 </Pressable>
               ))
@@ -4570,11 +4570,11 @@ export default function WatchScreen() {
 // ── Styles ──
 const ps = StyleSheet.create({
   videoShellFullscreen: { position: "absolute", zIndex: 50, elevation: 50, top: 0, right: 0, bottom: 0, left: 0, width: "100%", height: "100%", aspectRatio: undefined, backgroundColor: "#000000", justifyContent: "center" },
-  settingsOverlay: { position: "absolute", zIndex: 8, elevation: 8, top: 6, right: 6, bottom: 6, width: 240, maxWidth: "76%", borderRadius: 4, backgroundColor: "rgba(9,9,9,0.92)", overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" },
+  settingsOverlay: { position: "absolute", zIndex: 8, elevation: 8, top: 6, right: 6, bottom: 6, width: 240, maxWidth: "76%", borderRadius: 4, backgroundColor: "rgba(18,19,22,0.92)", overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" },
   settingsHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.06)" },
   settingsHeaderText: { color: "#FFF", fontSize: 11, fontWeight: "800", letterSpacing: 0.3 },
   settingsContent: { padding: 8, paddingBottom: 10, gap: 1 },
-  sectionLabel: { color: "#FF4D4D", fontSize: 9, fontWeight: "800", letterSpacing: 0.8, marginTop: 6, marginBottom: 2, textTransform: "uppercase" },
+  sectionLabel: { color: "#EF4444", fontSize: 9, fontWeight: "800", letterSpacing: 0.8, marginTop: 6, marginBottom: 2, textTransform: "uppercase" },
   chipRow: { flexDirection: "row", flexWrap: "wrap", gap: 4, marginTop: 2 },
   chip: { minHeight: 26, paddingHorizontal: 8, borderRadius: 3, borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", backgroundColor: "transparent", alignItems: "center", justifyContent: "center" },
   chipActive: { backgroundColor: nothing.red, borderColor: nothing.red },
@@ -4587,8 +4587,8 @@ const ps = StyleSheet.create({
   diagnosticLine: { color: "rgba(255,255,255,0.3)", fontSize: 9, fontWeight: "600", letterSpacing: 0.3, marginTop: 6 },
   offsetValue: { minHeight: 26, paddingHorizontal: 10, borderRadius: 3, borderWidth: 1, borderColor: "rgba(255,255,255,0.18)", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)" },
   offsetValueText: { color: "#FFFFFF", fontSize: 11, fontWeight: "800", fontVariant: ["tabular-nums"], letterSpacing: 0.3 },
-  reportButton: { minHeight: 30, marginTop: 10, borderRadius: 3, borderWidth: 1, borderColor: "rgba(255,77,77,0.55)", alignItems: "center", justifyContent: "center" },
-  reportButtonText: { color: "#FF4D4D", fontSize: 10, fontWeight: "800", letterSpacing: 0.5 },
+  reportButton: { minHeight: 30, marginTop: 10, borderRadius: 3, borderWidth: 1, borderColor: "rgba(239,68,68,0.55)", alignItems: "center", justifyContent: "center" },
+  reportButtonText: { color: "#EF4444", fontSize: 10, fontWeight: "800", letterSpacing: 0.5 },
 });
 
 const styles = StyleSheet.create({
@@ -4644,7 +4644,7 @@ const styles = StyleSheet.create({
   topRightRow: { flexDirection: "row", alignItems: "center", gap: 4, flexShrink: 0 },
   iconButton: { width: 32, height: 32, padding: 2, justifyContent: "center", alignItems: "center", flexShrink: 0 },
   iconButtonActive: { backgroundColor: "rgba(255,0,0,0.16)", borderRadius: 6 },
-  orientationBadge: { backgroundColor: "rgba(255,77,77,0.85)", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3 },
+  orientationBadge: { backgroundColor: "rgba(239,68,68,0.85)", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3 },
   orientationBadgeText: { color: nothing.white, fontFamily: nothing.mono, fontSize: 10, fontWeight: "900", letterSpacing: 0.5 },
   subPillBadge: { backgroundColor: nothing.red, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 5, flexShrink: 0 },
   subPillBadgeText: { color: nothing.black, fontSize: 10, fontWeight: "800", letterSpacing: 0.2, textTransform: "uppercase" },
@@ -4815,7 +4815,7 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     height: 3,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
   },
   edgeSeekbarThick: {
     height: 4.5,
@@ -4825,7 +4825,7 @@ const styles = StyleSheet.create({
     width: 13,
     height: 13,
     borderRadius: 6.5,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     marginLeft: -6.5,
     bottom: -5,
     elevation: 4,
@@ -4880,7 +4880,7 @@ const styles = StyleSheet.create({
   doubleTapText: { color: "#FFF", fontSize: 12, fontWeight: "800", marginTop: 3 },
   chapterMarker: { position: "absolute", height: 3, backgroundColor: "#FFD600", bottom: 0 },
   skipButtonOverlay: { position: "absolute", bottom: 120, right: 12, backgroundColor: "rgba(255,255,255,0.92)", paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, flexDirection: "row", alignItems: "center", gap: 4, zIndex: 15, elevation: 6, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 8 },
-  upNextCard: { position: "absolute", bottom: 120, right: 12, zIndex: 15, elevation: 6, flexDirection: "row", gap: 8, alignItems: "center", maxWidth: 260, backgroundColor: "rgba(9,9,9,0.88)", borderRadius: 8, padding: 8, borderWidth: 1, borderColor: "rgba(255,255,255,0.12)" },
+  upNextCard: { position: "absolute", bottom: 120, right: 12, zIndex: 15, elevation: 6, flexDirection: "row", gap: 8, alignItems: "center", maxWidth: 260, backgroundColor: "rgba(18,19,22,0.88)", borderRadius: 8, padding: 8, borderWidth: 1, borderColor: "rgba(255,255,255,0.12)" },
   upNextPoster: { width: 44, height: 62, borderRadius: 4, backgroundColor: nothing.raised },
   upNextCopy: { flex: 1, gap: 3 },
   upNextKicker: { color: nothing.red, fontSize: 10, fontWeight: "800", letterSpacing: 0.6, fontVariant: ["tabular-nums"] },
@@ -4906,7 +4906,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 22,
     borderWidth: 1,
     borderBottomWidth: 0,
-    borderColor: "rgba(251, 113, 133, 0.24)",
+    borderColor: "rgba(255, 255, 255, 0.24)",
     maxHeight: "52%",
     paddingTop: 10,
     paddingBottom: Platform.OS === "ios" ? 28 : 16,
@@ -4926,7 +4926,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(251, 113, 133, 0.35)",
+    backgroundColor: "rgba(255, 255, 255, 0.35)",
     alignSelf: "center",
     marginBottom: 10,
   },
@@ -4937,7 +4937,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(251, 113, 133, 0.14)",
+    borderBottomColor: "rgba(255, 255, 255, 0.14)",
   },
   serverTitleRow: {
     flexDirection: "row",
@@ -4945,13 +4945,13 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   serverSheetTitle: {
-    color: "#FFF5F7",
-    fontFamily: "Nunito-ExtraBold",
+    color: "#F3F4F6",
+    fontFamily: "Nunito-Bold",
     fontSize: 13.5,
     letterSpacing: 0.6,
   },
   serverSheetSubtitle: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
   },
@@ -4996,31 +4996,31 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   serverNumText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#8F727F",
+    color: "#8E93A2",
     minWidth: 24,
   },
   serverNumTextActive: {
     color: "#FFFFFF",
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
   },
   serverItemTitle: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
   },
   serverItemTitleActive: {
     color: "#FFFFFF",
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
   },
   serverItemSub: {
-    color: "#785D6A",
-    fontFamily: "Nunito-Medium",
+    color: "#6B7280",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 11,
   },
   serverItemSubActive: {
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   serverEmptyBox: {
     paddingVertical: 24,
@@ -5028,7 +5028,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   serverEmptyText: {
-    color: "#8F727F",
+    color: "#8E93A2",
     fontFamily: "Nunito-SemiBold",
     fontSize: 12,
   },
@@ -5041,17 +5041,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   modalBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.8)", justifyContent: "flex-end" },
-  modalSheet: { backgroundColor: "rgba(9,9,9,0.96)", borderTopLeftRadius: 2, borderTopRightRadius: 2, padding: 14, gap: 1, borderWidth: 1, borderColor: "rgba(255,255,255,0.06)" },
+  modalSheet: { backgroundColor: "rgba(18,19,22,0.96)", borderTopLeftRadius: 2, borderTopRightRadius: 2, padding: 14, gap: 1, borderWidth: 1, borderColor: "rgba(255,255,255,0.06)" },
   modalTitle: { color: "#FFF", fontSize: 12, fontWeight: "800", letterSpacing: 0.3, marginBottom: 4, textTransform: "uppercase" },
   modalItem: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.04)" },
-  modalItemActive: { backgroundColor: "rgba(255,77,77,0.06)" },
+  modalItemActive: { backgroundColor: "rgba(239,68,68,0.06)" },
   modalItemText: { color: "rgba(255,255,255,0.8)", fontSize: 12, fontWeight: "600" },
   modalItemSub: { color: "rgba(255,255,255,0.4)", fontSize: 10, fontWeight: "600", marginTop: 1 },
   modalItemTextActive: { color: nothing.red, fontWeight: "700" },
-  chapterModalSheet: { backgroundColor: "rgba(9,9,9,0.96)", borderTopLeftRadius: 2, borderTopRightRadius: 2, padding: 14, gap: 4, maxHeight: "70%", borderWidth: 1, borderColor: "rgba(255,255,255,0.06)" },
+  chapterModalSheet: { backgroundColor: "rgba(18,19,22,0.96)", borderTopLeftRadius: 2, borderTopRightRadius: 2, padding: 14, gap: 4, maxHeight: "70%", borderWidth: 1, borderColor: "rgba(255,255,255,0.06)" },
   chapterList: { gap: 1 },
   chapterItem: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 9, paddingHorizontal: 8, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.04)" },
-  chapterItemActive: { backgroundColor: "rgba(255,77,77,0.06)" },
+  chapterItemActive: { backgroundColor: "rgba(239,68,68,0.06)" },
   chapterItemPast: { opacity: 0.45 },
   chapterItemLeft: { flexDirection: "row", alignItems: "center", gap: 8, flex: 1 },
   chapterDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: nothing.dim },
@@ -5065,10 +5065,10 @@ const styles = StyleSheet.create({
   chapterDuration: { color: nothing.dim, fontSize: 9, fontWeight: "600", fontVariant: ["tabular-nums"] },
   chapterEmptyText: { color: nothing.muted, fontSize: 11, textAlign: "center", paddingVertical: 12 },
   contextActions: { alignSelf: "flex-end", alignItems: "flex-end", gap: 4 },
-  videoPlaceholder: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10, backgroundColor: "#090909" },
-  thumbnailLoading: { ...StyleSheet.absoluteFillObject, overflow: "hidden", justifyContent: "flex-end", backgroundColor: "#090909" },
+  videoPlaceholder: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10, backgroundColor: "#121316" },
+  thumbnailLoading: { ...StyleSheet.absoluteFillObject, overflow: "hidden", justifyContent: "flex-end", backgroundColor: "#121316" },
   thumbnailLoadingShade: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.32)" },
-  thumbnailLoadingContent: { zIndex: 1, gap: 6, padding: 14, paddingTop: 48, backgroundColor: "rgba(9,9,9,0.68)" },
+  thumbnailLoadingContent: { zIndex: 1, gap: 6, padding: 14, paddingTop: 48, backgroundColor: "rgba(18,19,22,0.68)" },
   thumbnailPlay: { width: 34, height: 34, alignItems: "center", justifyContent: "center", backgroundColor: nothing.white, borderRadius: 4 },
   thumbnailEpisode: { color: nothing.muted, fontSize: 10, fontWeight: "800", letterSpacing: 0.5 },
   thumbnailTitle: { color: nothing.white, fontSize: 14, lineHeight: 18, fontWeight: "900" },
@@ -5112,14 +5112,14 @@ const styles = StyleSheet.create({
   errorAction: { paddingHorizontal: 12, paddingTop: 10 },
   errorCard: { gap: 6, padding: 12 },
   errorCopy: { color: nothing.muted, fontSize: 12, lineHeight: 16 },
-  scroll: { backgroundColor: "#0D080B", padding: 14, gap: 14, paddingBottom: 40 },
+  scroll: { backgroundColor: "#121316", padding: 14, gap: 14, paddingBottom: 40 },
   actionPillsRail: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   mergedReactionPill: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
     borderRadius: 22,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -5133,34 +5133,34 @@ const styles = StyleSheet.create({
   reactionDivider: {
     width: 1,
     height: 14,
-    backgroundColor: "rgba(251, 113, 133, 0.24)",
+    backgroundColor: "rgba(255, 255, 255, 0.24)",
   },
-  actionPill: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#191016", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.18)", borderRadius: 22, paddingHorizontal: 14, paddingVertical: 8 },
-  actionPillSubtitleOn: { backgroundColor: "#23161F" },
-  actionPillActive: { backgroundColor: "rgba(244, 63, 94, 0.18)", borderColor: "#FB7185" },
-  actionPillServer: { backgroundColor: "rgba(244, 63, 94, 0.14)", borderColor: "rgba(251, 113, 133, 0.32)" },
+  actionPill: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#1B1D22", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.18)", borderRadius: 22, paddingHorizontal: 14, paddingVertical: 8 },
+  actionPillSubtitleOn: { backgroundColor: "#23262F" },
+  actionPillActive: { backgroundColor: "rgba(239, 68, 68, 0.18)", borderColor: "#FFFFFF" },
+  actionPillServer: { backgroundColor: "rgba(239, 68, 68, 0.14)", borderColor: "rgba(255, 255, 255, 0.32)" },
   actionPillLang: { backgroundColor: "rgba(251, 191, 36, 0.12)", borderColor: "rgba(251, 191, 36, 0.30)" },
-  actionPillText: { color: "#FFF5F7", fontSize: 12, fontWeight: "700" },
-  actionPillTextLiked: { color: "#FB7185" },
-  audioServerCard: { backgroundColor: "#180F15", borderRadius: 16, padding: 12, gap: 10, borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
+  actionPillText: { color: "#F3F4F6", fontSize: 12, fontWeight: "700" },
+  actionPillTextLiked: { color: "#FFFFFF" },
+  audioServerCard: { backgroundColor: "#1B1D22", borderRadius: 16, padding: 12, gap: 10, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.16)" },
   subDubPills: { flexDirection: "row", gap: 8 },
-  subDubPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 10, backgroundColor: "#23161F", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
-  subDubPillActive: { backgroundColor: "#F43F5E", borderColor: "#FDA4AF" },
-  subDubPillText: { color: "#C4A6B3", fontSize: 11, fontWeight: "800" },
+  subDubPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 10, backgroundColor: "#23262F", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.16)" },
+  subDubPillActive: { backgroundColor: "#EF4444", borderColor: "#D1D5DB" },
+  subDubPillText: { color: "#9CA3AF", fontSize: 11, fontWeight: "800" },
   subDubPillTextActive: { color: "#FFFFFF" },
   serverPillsScroll: { flexDirection: "row", gap: 8 },
-  serverPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: "#23161F", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
-  serverPillActive: { backgroundColor: "#F43F5E", borderColor: "#FDA4AF" },
-  serverPillText: { color: "#C4A6B3", fontSize: 11, fontWeight: "700" },
+  serverPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: "#23262F", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.16)" },
+  serverPillActive: { backgroundColor: "#EF4444", borderColor: "#D1D5DB" },
+  serverPillText: { color: "#9CA3AF", fontSize: 11, fontWeight: "700" },
   serverPillTextActive: { color: "#FFFFFF", fontWeight: "800" },
   animeInfoCard: { paddingVertical: 2, gap: 10 },
   animeInfoHeaderRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-  animeAvatar: { width: 48, height: 48, borderRadius: 16, backgroundColor: "#23161F", borderWidth: 1.5, borderColor: "rgba(251, 113, 133, 0.32)" },
+  animeAvatar: { width: 48, height: 48, borderRadius: 16, backgroundColor: "#23262F", borderWidth: 1.5, borderColor: "rgba(255, 255, 255, 0.32)" },
   animeInfoMetaCol: { flex: 1, gap: 3 },
-  animeMainTitle: { color: "#FFF5F7", fontSize: 16, fontWeight: "800", letterSpacing: -0.2 },
+  animeMainTitle: { color: "#F3F4F6", fontSize: 16, fontWeight: "800", letterSpacing: -0.2 },
   animeSubMetaRow: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 5 },
-  animeSubMetaText: { color: "#C4A6B3", fontSize: 12, fontWeight: "600" },
-  animeSubMetaDot: { color: "#8F727F", fontSize: 12 },
+  animeSubMetaText: { color: "#9CA3AF", fontSize: 12, fontWeight: "600" },
+  animeSubMetaDot: { color: "#8E93A2", fontSize: 12 },
   viewsRow: { flexDirection: "row", alignItems: "center", gap: 3 },
   reportPillBtn: {
     flexDirection: "row",
@@ -5173,38 +5173,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: 7,
   },
-  reportPillText: { color: "#FDE68A", fontSize: 12, fontWeight: "800" },
+  reportPillText: { color: "#F5C518", fontSize: 12, fontWeight: "800" },
   animeDescText: { color: "#D9BECA", fontSize: 13, lineHeight: 19 },
   descToggleBtn: { alignSelf: "flex-start", marginTop: -4 },
-  descToggleText: { color: "#FB7185", fontSize: 12, fontWeight: "700" },
-  crystalBannerCard: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 16, backgroundColor: "#180F15", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.20)", flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
+  descToggleText: { color: "#FFFFFF", fontSize: 12, fontWeight: "700" },
+  crystalBannerCard: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 16, backgroundColor: "#1B1D22", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.20)", flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
   crystalBannerLeft: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
   crystalIconImg: { width: 44, height: 44 },
   crystalTextCol: { flex: 1, gap: 2 },
   crystalTag: { flexDirection: "row", alignItems: "center" },
-  crystalTagText: { color: "#FB7185", fontSize: 9, fontWeight: "900", letterSpacing: 0.6 },
-  crystalTitle: { color: "#FFF5F7", fontSize: 13, fontWeight: "800" },
-  crystalDesc: { color: "#C4A6B3", fontSize: 11, lineHeight: 15 },
-  crystalBtn: { backgroundColor: "#F43F5E", borderRadius: 11, paddingHorizontal: 13, paddingVertical: 8 },
+  crystalTagText: { color: "#FFFFFF", fontSize: 9, fontWeight: "900", letterSpacing: 0.6 },
+  crystalTitle: { color: "#F3F4F6", fontSize: 13, fontWeight: "800" },
+  crystalDesc: { color: "#9CA3AF", fontSize: 11, lineHeight: 15 },
+  crystalBtn: { backgroundColor: "#EF4444", borderRadius: 11, paddingHorizontal: 13, paddingVertical: 8 },
   crystalBtnText: { color: "#FFFFFF", fontSize: 11, fontWeight: "800" },
-  episodeSectionCard: { backgroundColor: "#180F15", borderRadius: 18, padding: 14, gap: 12, borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.18)" },
+  episodeSectionCard: { backgroundColor: "#1B1D22", borderRadius: 18, padding: 14, gap: 12, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.18)" },
   episodeHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  episodeSectionTitle: { color: "#FFF5F7", fontSize: 17, fontWeight: "900", letterSpacing: -0.3 },
-  episodeTotalCountBadge: { color: "#FDA4AF", fontSize: 12, fontWeight: "700", backgroundColor: "rgba(244, 63, 94, 0.16)", paddingHorizontal: 9, paddingVertical: 3, borderRadius: 99 },
+  episodeSectionTitle: { color: "#F3F4F6", fontSize: 17, fontWeight: "900", letterSpacing: -0.3 },
+  episodeTotalCountBadge: { color: "#D1D5DB", fontSize: 12, fontWeight: "700", backgroundColor: "rgba(239, 68, 68, 0.16)", paddingHorizontal: 9, paddingVertical: 3, borderRadius: 99 },
   episodeGridWrap: { gap: 10 },
   rangePillsRow: { flexDirection: "row", gap: 8, paddingBottom: 2 },
-  rangePill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: "#23161F", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
-  rangePillActive: { backgroundColor: "#F43F5E", borderColor: "#FDA4AF" },
-  rangePillText: { color: "#C4A6B3", fontSize: 12, fontWeight: "700" },
+  rangePill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: "#23262F", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.16)" },
+  rangePillActive: { backgroundColor: "#EF4444", borderColor: "#D1D5DB" },
+  rangePillText: { color: "#9CA3AF", fontSize: 12, fontWeight: "700" },
   rangePillTextActive: { color: "#FFFFFF", fontWeight: "800" },
   episodeCardsScroll: { flexDirection: "row", gap: 8, paddingVertical: 4 },
-  modernEpCard: { width: 54, height: 54, borderRadius: 14, backgroundColor: "#23161F", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" },
-  modernEpCardActive: { backgroundColor: "#F43F5E" },
+  modernEpCard: { width: 54, height: 54, borderRadius: 14, backgroundColor: "#23262F", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" },
+  modernEpCardActive: { backgroundColor: "#EF4444" },
   modernEpNum: { color: "#D9BECA", fontSize: 14, fontWeight: "700" },
   modernEpNumActive: { color: "#FFFFFF", fontSize: 16, fontWeight: "900" },
-  communityRuleCard: { flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: "#180F15", borderRadius: 14, padding: 12, borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
-  communityRuleText: { flex: 1, color: "#C4A6B3", fontSize: 12, lineHeight: 17 },
-  communityRuleLink: { color: "#FB7185", fontWeight: "700", textDecorationLine: "underline" },
+  communityRuleCard: { flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: "#1B1D22", borderRadius: 14, padding: 12, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.16)" },
+  communityRuleText: { flex: 1, color: "#9CA3AF", fontSize: 12, lineHeight: 17 },
+  communityRuleLink: { color: "#FFFFFF", fontWeight: "700", textDecorationLine: "underline" },
   commentsContainer: { gap: 12 },
   episodeLoading: { minHeight: 72, alignItems: "center", justifyContent: "center", gap: 7, borderTopWidth: 1, borderTopColor: nothing.line },
   episodeLoadingText: { color: nothing.muted, fontFamily: nothing.mono, fontSize: 10, fontWeight: "900", letterSpacing: 0.7 },
@@ -5219,9 +5219,9 @@ const styles = StyleSheet.create({
   episodeSwipeContainer: { overflow: "hidden" },
   watchCommunitySection: { gap: 10, paddingTop: 2 },
   ratingCard: {
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
     borderRadius: 16,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -5241,13 +5241,13 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   ratingMainTitle: {
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 15,
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     letterSpacing: -0.2,
   },
   ratingSubtitle: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 11.5,
     fontFamily: "Nunito-Bold",
   },
@@ -5261,9 +5261,9 @@ const styles = StyleSheet.create({
     height: 28,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
     borderRadius: 7,
     ...(Platform.OS === "web"
       ? ({
@@ -5273,21 +5273,21 @@ const styles = StyleSheet.create({
       : {}),
   },
   ratingRectBoxActive: {
-    backgroundColor: "rgba(244, 63, 94, 0.25)",
-    borderColor: "#FB7185",
+    backgroundColor: "rgba(239, 68, 68, 0.25)",
+    borderColor: "#FFFFFF",
   },
   ratingRectBoxExact: {
-    backgroundColor: "#F43F5E",
-    borderColor: "#FDA4AF",
+    backgroundColor: "#EF4444",
+    borderColor: "#D1D5DB",
   },
   ratingRectText: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
   },
   ratingRectTextActive: {
     color: "#FFFFFF",
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
   },
   btnPressed: {
     opacity: 0.8,
@@ -5295,7 +5295,7 @@ const styles = StyleSheet.create({
   },
   languageRow: { flexDirection: "row", gap: 4 },
   language: { minWidth: 48, minHeight: 28, alignItems: "center", justifyContent: "center", paddingHorizontal: 8, borderRadius: 3, borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", backgroundColor: "transparent" },
-  languageActive: { borderColor: nothing.red, backgroundColor: "rgba(255,77,77,0.06)" },
+  languageActive: { borderColor: nothing.red, backgroundColor: "rgba(239,68,68,0.06)" },
   languageDisabled: { opacity: 0.3 },
   languageText: { color: "rgba(255,255,255,0.5)", fontFamily: nothing.mono, fontSize: 9, fontWeight: "900", letterSpacing: 0.2 },
   languageTextActive: { color: nothing.red },

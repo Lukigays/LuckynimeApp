@@ -297,9 +297,9 @@ export default function InventoryScreen() {
       {/* Dark overlay untuk kontras optimal */}
       <LinearGradient
         colors={[
-          "rgba(13, 8, 11, 0.72)",
-          "rgba(13, 8, 11, 0.85)",
-          "rgba(13, 8, 11, 0.95)",
+          "rgba(18,19,22, 0.72)",
+          "rgba(18,19,22, 0.85)",
+          "rgba(18,19,22, 0.95)",
         ]}
         style={StyleSheet.absoluteFillObject}
       />
@@ -307,7 +307,7 @@ export default function InventoryScreen() {
       {/* ─── TOAST NOTIFICATION ─── */}
       {toastNotice && (
         <View style={styles.toastNoticeBox}>
-          <AppIcon name="clock-outline" size={17} color="#F59E0B" />
+          <AppIcon name="clock-outline" size={17} color="#F5C518" />
           <Text style={styles.toastNoticeText}>{toastNotice}</Text>
         </View>
       )}
@@ -385,7 +385,7 @@ export default function InventoryScreen() {
                 contentFit="contain"
               />
               <Text style={styles.crystalPillText}>{crystalBalance.toLocaleString("id-ID")}</Text>
-              <AppIcon name="plus" size={11} color="#FB7185" style={{ marginLeft: 2 }} />
+              <AppIcon name="plus" size={11} color="#FFFFFF" style={{ marginLeft: 2 }} />
             </Pressable>
           </View>
 
@@ -470,7 +470,7 @@ export default function InventoryScreen() {
                   style={styles.modalCloseBtn}
                   hitSlop={10}
                 >
-                  <AppIcon name="close" size={20} color="#C4A6B3" />
+                  <AppIcon name="close" size={20} color="#9CA3AF" />
                 </Pressable>
               </View>
 
@@ -564,7 +564,7 @@ export default function InventoryScreen() {
                   style={styles.modalCloseBtn}
                   hitSlop={10}
                 >
-                  <AppIcon name="close" size={20} color="#C4A6B3" />
+                  <AppIcon name="close" size={20} color="#9CA3AF" />
                 </Pressable>
               </View>
 
@@ -626,7 +626,7 @@ export default function InventoryScreen() {
                   style={styles.modalCloseBtn}
                   hitSlop={10}
                 >
-                  <AppIcon name="close" size={20} color="#C4A6B3" />
+                  <AppIcon name="close" size={20} color="#9CA3AF" />
                 </Pressable>
               </View>
 
@@ -638,7 +638,7 @@ export default function InventoryScreen() {
                     contentFit="cover"
                   />
                   <LinearGradient
-                    colors={["transparent", "rgba(13, 8, 11, 0.95)"]}
+                    colors={["transparent", "rgba(18,19,22, 0.95)"]}
                     style={StyleSheet.absoluteFill}
                   />
                   <View style={styles.gachaBannerOverlayTextWrap}>
@@ -731,11 +731,11 @@ export default function InventoryScreen() {
             <View style={styles.modalContainer}>
               <View style={styles.modalHeader}>
                 <View style={styles.modalTitleRow}>
-                  <AppIcon name="shield-crown" size={20} color="#FB7185" />
+                  <AppIcon name="shield-crown" size={20} color="#FFFFFF" />
                   <Text style={styles.modalTitle}>Clans & Squad</Text>
                 </View>
                 <Pressable onPress={() => setActiveModal(null)} style={styles.modalCloseBtn}>
-                  <AppIcon name="close" size={20} color="#C4A6B3" />
+                  <AppIcon name="close" size={20} color="#9CA3AF" />
                 </Pressable>
               </View>
 
@@ -788,11 +788,11 @@ export default function InventoryScreen() {
             <View style={styles.modalContainer}>
               <View style={styles.modalHeader}>
                 <View style={styles.modalTitleRow}>
-                  <AppIcon name="information" size={20} color="#FB7185" />
+                  <AppIcon name="information" size={20} color="#FFFFFF" />
                   <Text style={styles.modalTitle}>Panduan Inventory</Text>
                 </View>
                 <Pressable onPress={() => setActiveModal(null)} style={styles.modalCloseBtn}>
-                  <AppIcon name="close" size={20} color="#C4A6B3" />
+                  <AppIcon name="close" size={20} color="#9CA3AF" />
                 </Pressable>
               </View>
 
@@ -858,7 +858,7 @@ export default function InventoryScreen() {
                   <Text style={styles.comingSoonTitle}>{comingSoonModal.title}</Text>
 
                   <View style={styles.comingSoonStatusPill}>
-                    <AppIcon name="clock-outline" size={13} color="#F59E0B" />
+                    <AppIcon name="clock-outline" size={13} color="#F5C518" />
                     <Text style={styles.comingSoonStatusText}>Segera Hadir • Coming Soon</Text>
                   </View>
 
@@ -884,7 +884,7 @@ export default function InventoryScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   safeContainer: {
     flex: 1,
@@ -918,7 +918,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   titleText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 21,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -932,7 +932,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(34, 197, 94, 0.4)",
   },
   betaBadgeText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#4ADE80",
     letterSpacing: 0.6,
@@ -954,7 +954,7 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 14,
     borderRadius: 14,
-    backgroundColor: "rgba(18, 23, 34, 0.82)",
+    backgroundColor: "rgba(27,29,34, 0.82)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.15)",
     ...(Platform.OS === "web"
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
   },
   avatarInitialWrap: {
     width: 48,
@@ -1007,7 +1007,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   accountNameText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15.5,
     color: "#FFFFFF",
     letterSpacing: -0.2,
@@ -1015,7 +1015,7 @@ const styles = StyleSheet.create({
   accountSubtitleText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   crystalPill: {
     flexDirection: "row",
@@ -1033,9 +1033,9 @@ const styles = StyleSheet.create({
     height: 16,
   },
   crystalPillText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── SECTION "MENU" ───
@@ -1044,7 +1044,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   sectionTitleText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
     letterSpacing: -0.2,
@@ -1077,7 +1077,7 @@ const styles = StyleSheet.create({
     height: 116,
   },
   menuTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16.5,
     color: "#FFFFFF",
     textAlign: "center",
@@ -1089,7 +1089,7 @@ const styles = StyleSheet.create({
   menuSubtitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     textAlign: "center",
     textShadowColor: "rgba(0, 0, 0, 0.85)",
     textShadowOffset: { width: 0, height: 1.5 },
@@ -1108,14 +1108,14 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   clanHeroTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16.5,
     color: "#FFFFFF",
   },
   clanHeroDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 17,
   },
@@ -1149,7 +1149,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   modalTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 17,
     color: "#FFFFFF",
   },
@@ -1159,7 +1159,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 18,
   },
   modalBodyScroll: {
@@ -1179,8 +1179,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   itemCardActive: {
-    borderColor: "#FB7185",
-    backgroundColor: "rgba(251, 113, 133, 0.08)",
+    borderColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
   },
   itemThumbImg: {
     width: 68,
@@ -1196,27 +1196,27 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   itemRarityMythic: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#EC4899",
+    color: "#9CA3AF",
     letterSpacing: 0.5,
   },
   itemRarityLegend: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#EAB308",
     letterSpacing: 0.5,
   },
   itemRarityEpic: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#A855F7",
+    color: "#9CA3AF",
     letterSpacing: 0.5,
   },
   itemDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   equipBtn: {
     paddingHorizontal: 12,
@@ -1227,8 +1227,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.15)",
   },
   equipBtnActive: {
-    backgroundColor: "#FB7185",
-    borderColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
+    borderColor: "#FFFFFF",
   },
   equipBtnText: {
     fontFamily: "Nunito-Bold",
@@ -1236,8 +1236,8 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   equipBtnTextActive: {
-    fontFamily: "Nunito-Black",
-    color: "#0D080B",
+    fontFamily: "Nunito-Bold",
+    color: "#121316",
   },
 
   // ─── GACHA WALLPAPER ───
@@ -1258,14 +1258,14 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   gachaBannerTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
   },
   gachaBannerDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     marginTop: 2,
   },
   gachaBalanceRow: {
@@ -1283,7 +1283,7 @@ const styles = StyleSheet.create({
   gachaBalanceLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   gachaBalancePill: {
     flexDirection: "row",
@@ -1295,20 +1295,20 @@ const styles = StyleSheet.create({
     height: 15,
   },
   gachaBalanceVal: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   gachaTopUpLink: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
-    backgroundColor: "rgba(251, 113, 133, 0.15)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
   },
   gachaTopUpLinkText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   feedbackAlert: {
     padding: 10,
@@ -1345,12 +1345,12 @@ const styles = StyleSheet.create({
     borderColor: "#9333EA",
   },
   spinBtnLabel: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
     color: "#FFFFFF",
   },
   spinBtnLabelMulti: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
     color: "#E9D5FF",
   },
@@ -1366,7 +1366,7 @@ const styles = StyleSheet.create({
   spinCostText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── CLANS ───
@@ -1396,7 +1396,7 @@ const styles = StyleSheet.create({
   clanMeta: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   clanJoinedTag: {
     paddingHorizontal: 8,
@@ -1405,7 +1405,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(34, 197, 94, 0.16)",
   },
   clanJoinedText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#4ADE80",
   },
@@ -1413,14 +1413,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
-    backgroundColor: "rgba(251, 113, 133, 0.16)",
+    backgroundColor: "rgba(255, 255, 255, 0.16)",
     borderWidth: 1,
-    borderColor: "#FB7185",
+    borderColor: "#FFFFFF",
   },
   clanJoinBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── TUTORIAL ───
@@ -1434,9 +1434,9 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: "rgba(251, 113, 133, 0.2)",
-    color: "#FB7185",
-    fontFamily: "Nunito-Black",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    color: "#FFFFFF",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
     textAlign: "center",
     lineHeight: 26,
@@ -1453,7 +1453,7 @@ const styles = StyleSheet.create({
   tutorialStepDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 17,
   },
 
@@ -1467,8 +1467,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(21, 13, 18, 0.95)",
-    borderColor: "rgba(245, 158, 11, 0.5)",
+    backgroundColor: "rgba(27,29,34, 0.95)",
+    borderColor: "rgba(245, 197, 24, 0.5)",
     borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -1493,7 +1493,7 @@ const styles = StyleSheet.create({
   comingSoonPill: {
     position: "absolute",
     bottom: -4,
-    backgroundColor: "rgba(245, 158, 11, 0.92)",
+    backgroundColor: "rgba(245, 197, 24, 0.92)",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
@@ -1502,13 +1502,13 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   comingSoonPillText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 8.5,
     color: "#000000",
     letterSpacing: 0.4,
   },
   menuSubtitleComingSoon: {
-    color: "#F59E0B",
+    color: "#F5C518",
     fontFamily: "Nunito-Bold",
   },
 
@@ -1519,7 +1519,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#111625",
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.3)",
+    borderColor: "rgba(245, 197, 24, 0.3)",
     padding: 24,
     alignItems: "center",
   },
@@ -1535,7 +1535,7 @@ const styles = StyleSheet.create({
     height: 74,
   },
   comingSoonTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
     color: "#FFFFFF",
     textAlign: "center",
@@ -1545,9 +1545,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(245, 158, 11, 0.15)",
+    backgroundColor: "rgba(245, 197, 24, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.4)",
+    borderColor: "rgba(245, 197, 24, 0.4)",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 20,
@@ -1556,18 +1556,18 @@ const styles = StyleSheet.create({
   comingSoonStatusText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   comingSoonDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 19,
     marginBottom: 20,
   },
   comingSoonBtn: {
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 12,

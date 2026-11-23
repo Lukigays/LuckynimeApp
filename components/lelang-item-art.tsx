@@ -120,12 +120,12 @@ export function LelangItemArt({
           <Svg width={size} height={size} viewBox="0 0 100 100" style={StyleSheet.absoluteFillObject}>
             <Defs>
               <LinearGradient id="nebulaGradAll" x1="0%" y1="0%" x2="100%" y2="100%">
-                <Stop offset="0%" stopColor="#C084FC" />
+                <Stop offset="0%" stopColor="#9CA3AF" />
                 <Stop offset="50%" stopColor="#9333EA" />
                 <Stop offset="100%" stopColor="#6366F1" />
               </LinearGradient>
             </Defs>
-            <Circle cx="50" cy="50" r="38" fill="#A855F7" opacity="0.18" />
+            <Circle cx="50" cy="50" r="38" fill="#9CA3AF" opacity="0.18" />
             <Circle cx="50" cy="50" r="28" stroke="url(#nebulaGradAll)" strokeWidth="4" fill="none" />
             <Circle
               cx="50"
@@ -139,7 +139,7 @@ export function LelangItemArt({
             />
             <Path
               d="M 50 14 L 52 20 L 50 26 L 48 20 Z M 50 86 L 52 80 L 50 74 L 48 80 Z M 14 50 L 20 52 L 26 50 L 20 48 Z M 86 50 L 80 52 L 74 50 L 80 48 Z"
-              fill="#C084FC"
+              fill="#9CA3AF"
             />
             <Circle cx="28" cy="28" r="2.5" fill="#F472B6" />
             <Circle cx="72" cy="28" r="2.5" fill="#818CF8" />
@@ -152,11 +152,11 @@ export function LelangItemArt({
             <Defs>
               <LinearGradient id="goldFlameGradAll" x1="0%" y1="0%" x2="100%" y2="100%">
                 <Stop offset="0%" stopColor="#FDE047" />
-                <Stop offset="50%" stopColor="#F59E0B" />
+                <Stop offset="50%" stopColor="#F5C518" />
                 <Stop offset="100%" stopColor="#B45309" />
               </LinearGradient>
             </Defs>
-            <Circle cx="50" cy="50" r="38" fill="#F59E0B" opacity="0.2" />
+            <Circle cx="50" cy="50" r="38" fill="#F5C518" opacity="0.2" />
             <Path
               d="
                 M 50 12 L 55 24 L 67 15 L 65 29 L 79 25 L 72 37 L 87 39 L 76 48
@@ -173,12 +173,12 @@ export function LelangItemArt({
           <Svg width={size} height={size} viewBox="0 0 100 100" style={StyleSheet.absoluteFillObject}>
             <Defs>
               <LinearGradient id="procRingGradAll" x1="0%" y1="0%" x2="100%" y2="100%">
-                <Stop offset="0%" stopColor={item.accentColor || "#38BDF8"} />
+                <Stop offset="0%" stopColor={item.accentColor || "#9CA3AF"} />
                 <Stop offset="50%" stopColor={item.glowColor || "#818CF8"} />
-                <Stop offset="100%" stopColor={item.accentColor || "#38BDF8"} />
+                <Stop offset="100%" stopColor={item.accentColor || "#9CA3AF"} />
               </LinearGradient>
             </Defs>
-            <Circle cx="50" cy="50" r="38" fill={item.accentColor || "#38BDF8"} opacity="0.16" />
+            <Circle cx="50" cy="50" r="38" fill={item.accentColor || "#9CA3AF"} opacity="0.16" />
             <Circle cx="50" cy="50" r="28" stroke="url(#procRingGradAll)" strokeWidth="3" fill="none" />
             <Circle
               cx="50"
@@ -192,7 +192,7 @@ export function LelangItemArt({
             />
             <Path
               d="M 50 14 L 52 20 L 50 26 L 48 20 Z M 50 86 L 52 80 L 50 74 L 48 80 Z M 14 50 L 20 52 L 26 50 L 20 48 Z M 86 50 L 80 52 L 74 50 L 80 48 Z"
-              fill={item.accentColor || "#38BDF8"}
+              fill={item.accentColor || "#9CA3AF"}
             />
           </Svg>
         )}
@@ -259,19 +259,19 @@ export function LelangItemArt({
       <Svg width={size} height={size} viewBox="0 0 100 100">
         <Defs>
           <RadialGradient id="crimsonMoonGrad" cx="50%" cy="35%" r="40%">
-            <Stop offset="0%" stopColor="#FF4D4D" stopOpacity="1" />
+            <Stop offset="0%" stopColor="#EF4444" stopOpacity="1" />
             <Stop offset="70%" stopColor="#DC2626" stopOpacity="1" />
             <Stop offset="100%" stopColor="#7F1D1D" stopOpacity="0.8" />
           </RadialGradient>
 
           <RadialGradient id="lunarGrad" cx="50%" cy="40%" r="45%">
             <Stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
-            <Stop offset="60%" stopColor="#38BDF8" stopOpacity="0.9" />
+            <Stop offset="60%" stopColor="#9CA3AF" stopOpacity="0.9" />
             <Stop offset="100%" stopColor="#0369A1" stopOpacity="0.7" />
           </RadialGradient>
 
           <LinearGradient id="fallbackBannerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <Stop offset="0%" stopColor={item.accentColor || "#3B82F6"} />
+            <Stop offset="0%" stopColor={item.accentColor || "#9CA3AF"} />
             <Stop offset="100%" stopColor="#0B132B" />
           </LinearGradient>
         </Defs>
@@ -294,7 +294,7 @@ export function LelangItemArt({
           </G>
         ) : isLunarEclipse ? (
           <G>
-            <Circle cx="50" cy="35" r="28" fill="#38BDF8" opacity="0.22" />
+            <Circle cx="50" cy="35" r="28" fill="#9CA3AF" opacity="0.22" />
             <Circle cx="50" cy="35" r="20" fill="url(#lunarGrad)" />
             <Path d="M 0 100 Q 50 70 100 100 Z" fill="#061226" />
             <Circle cx="50" cy="62" r="3" fill="#0C2044" />
@@ -303,12 +303,12 @@ export function LelangItemArt({
             <Circle cx="80" cy="20" r="1.5" fill="#BAE6FD" />
             <Circle cx="85" cy="45" r="1" fill="#BAE6FD" />
             <Circle cx="15" cy="48" r="1" fill="#BAE6FD" />
-            <Path d="M 50 6 L 54 10 L 46 10 Z M 50 94 L 54 90 L 46 90 Z" fill="#38BDF8" />
+            <Path d="M 50 6 L 54 10 L 46 10 Z M 50 94 L 54 90 L 46 90 Z" fill="#9CA3AF" />
           </G>
         ) : (
           <G>
             <Rect width="100" height="100" fill="url(#fallbackBannerGrad)" opacity="0.4" />
-            <Circle cx="50" cy="40" r="20" fill={item.accentColor || "#38BDF8"} opacity="0.4" />
+            <Circle cx="50" cy="40" r="20" fill={item.accentColor || "#9CA3AF"} opacity="0.4" />
             <Circle cx="50" cy="40" r="14" fill="#FFFFFF" opacity="0.9" />
             <Path d="M 0 95 L 35 65 L 65 85 L 85 55 L 100 95 Z" fill="#090E17" />
           </G>
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   bannerCard: {
     borderRadius: 10,
     borderWidth: 1.2,
-    backgroundColor: "rgba(10, 14, 23, 0.95)",
+    backgroundColor: "rgba(22,24,30, 0.95)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",

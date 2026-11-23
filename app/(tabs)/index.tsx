@@ -273,6 +273,10 @@ export default function HomeScreen() {
     auth.user?.email?.split("@")[0] ||
     "Sobat Luckynime";
 
+  const wbMemberNo = auth.profile?.member_number ?? 1;
+  const wbLevel = Number(auth.profile?.level) || 1;
+  const wbAvatar = auth.profile?.avatar_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.container}>
       <InAppEpisodeAlertMonitor />
@@ -280,84 +284,76 @@ export default function HomeScreen() {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#F43F5E" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#EF4444" />
         }
         showsVerticalScrollIndicator={false}
       >
         {/* ══════════════════════════════════════════════════════════════
             1. KURO-SAKURA HEADER + INTEGRATED SEARCH PILL BAR
             ══════════════════════════════════════════════════════════════ */}
-        <View style={styles.headerBlock}>
-          <View style={styles.topHeaderBar}>
-            <View style={styles.brandCluster}>
+        {/* ── Wibuku-style user bar + full-width search capsule ── */}
+        <View style={wbHome.headerBlock}>
+          <View style={wbHome.userBar}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Buka profil"
+              onPress={() => {
+                hapticLight();
+                router.push("/(tabs)/profile" as never);
+              }}
+              style={({ pressed }) => [pressed && styles.btnPressed]}
+            >
+              <Image source={{ uri: wbAvatar }} style={wbHome.avatar} contentFit="cover" />
+            </Pressable>
+            <View style={wbHome.userText}>
+              <Text style={wbHome.userName} numberOfLines={1}>{greetingName}</Text>
+              <Text style={wbHome.userSub} numberOfLines={1}>{`#${wbMemberNo} • Level ${wbLevel}`}</Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Top Up Crystal"
+              onPress={() => {
+                hapticLight();
+                router.push("/topup" as never);
+              }}
+              style={({ pressed }) => [wbHome.crystalChip, pressed && styles.btnPressed]}
+              hitSlop={8}
+            >
               <Image
-                source={require("@/assets/images/luckynime-logo.png")}
-                style={styles.brandLogoImg}
+                source={require("@/assets/images/topup/topup-crystal.png")}
+                style={styles.headerCrystalImg}
                 contentFit="contain"
               />
-              <View style={styles.greetingWrap}>
-                <Text style={styles.greetingSub}>{getTimeGreeting()}</Text>
-                <Text style={styles.greetingUser} numberOfLines={1}>
-                  {greetingName}
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.topHeaderActions}>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Top Up Crystal"
-                onPress={() => {
-                  hapticLight();
-                  router.push("/topup" as never);
-                }}
-                style={({ pressed }) => [styles.crystalPillBtn, pressed && styles.btnPressed]}
-                hitSlop={10}
-              >
-                <Image
-                  source={require("@/assets/images/topup/topup-crystal.png")}
-                  style={styles.headerCrystalImg}
-                  contentFit="contain"
-                />
-                <Text style={styles.crystalPillLabel}>Crystal</Text>
-              </Pressable>
-
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Kotak Masuk dan Notifikasi"
-                onPress={() => {
-                  hapticLight();
-                  setNotifSheetVisible(true);
-                }}
-                style={({ pressed }) => [styles.headerActionCircle, pressed && styles.btnPressed]}
-                hitSlop={10}
-              >
-                <AppIcon name="bell" size={19} color="#FFF5F7" />
-                {unreadNotifCount > 0 ? <View style={styles.notifBadgeDot} /> : null}
-              </Pressable>
-            </View>
+              <Text style={wbHome.crystalText}>Crystal</Text>
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Kotak Masuk dan Notifikasi"
+              onPress={() => {
+                hapticLight();
+                setNotifSheetVisible(true);
+              }}
+              style={({ pressed }) => [wbHome.bellBtn, pressed && styles.btnPressed]}
+              hitSlop={8}
+            >
+              <AppIcon name="bell-outline" size={20} color="#F3F4F6" />
+              {unreadNotifCount > 0 ? <View style={styles.notifBadgeDot} /> : null}
+            </Pressable>
           </View>
 
-          {/* Integrated Search Capsule + Quick Random Pick */}
-          <View style={styles.searchStripRow}>
+          <View style={wbHome.searchRow}>
             <Pressable
               accessibilityRole="search"
-              accessibilityLabel="Cari judul anime, genre, atau studio"
+              accessibilityLabel="Cari anime di sini"
               onPress={() => {
                 hapticLight();
                 router.push("/search" as never);
               }}
-              style={({ pressed }) => [styles.searchCapsule, pressed && styles.btnPressed]}
+              style={({ pressed }) => [wbHome.searchCapsule, pressed && styles.btnPressed]}
             >
-              <AppIcon name="magnify" size={18} color="#FB7185" />
-              <Text style={styles.searchPlaceholder} numberOfLines={1}>
-                Cari anime, genre, atau musim...
-              </Text>
-              <View style={styles.searchKbdTag}>
-                <Text style={styles.searchKbdText}>CARI</Text>
-              </View>
+              <AppIcon name="magnify" size={18} color="#9CA3AF" />
+              <Text style={wbHome.searchText} numberOfLines={1}>Cari Anime Di Sini</Text>
             </Pressable>
-
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Pilih anime acak dari trending"
@@ -371,9 +367,9 @@ export default function HomeScreen() {
                   router.push("/(tabs)/random" as never);
                 }
               }}
-              style={({ pressed }) => [styles.diceBtn, pressed && styles.btnPressed]}
+              style={({ pressed }) => [wbHome.diceBtn, pressed && styles.btnPressed]}
             >
-              <AppIcon name="shuffle-variant" size={18} color="#FFF5F7" />
+              <AppIcon name="shuffle-variant" size={18} color="#F3F4F6" />
             </Pressable>
           </View>
         </View>
@@ -421,9 +417,9 @@ export default function HomeScreen() {
               />
               <LinearGradient
                 colors={[
-                  "rgba(13, 8, 11, 0.35)",
+                  "rgba(18,19,22, 0.35)",
                   "rgba(20, 10, 16, 0.84)",
-                  "rgba(13, 8, 11, 0.98)",
+                  "rgba(18,19,22, 0.98)",
                 ]}
                 locations={[0, 0.52, 1]}
                 style={StyleSheet.absoluteFill}
@@ -561,7 +557,7 @@ export default function HomeScreen() {
               style={({ pressed }) => [styles.quickHubCard, pressed && styles.btnPressed]}
             >
               <View style={styles.quickHubIconWrap}>
-                <AppIcon name={hub.icon as any} size={17} color="#FB7185" />
+                <AppIcon name={hub.icon as any} size={17} color="#FFFFFF" />
               </View>
               <Text style={styles.quickHubTitle} numberOfLines={1}>
                 {hub.label}
@@ -580,11 +576,7 @@ export default function HomeScreen() {
           <View style={styles.sectionBlock}>
             <View style={styles.sectionHead}>
               <View style={styles.sectionHeadLeft}>
-                <View style={styles.sakuraGem}>
-                  <View style={styles.sakuraGemInner} />
-                </View>
                 <View>
-                  <Text style={styles.sectionEyebrow}>TERAKHIR DIPUTAR</Text>
                   <Text style={styles.sectionTitle}>Lanjutkan Tontonan</Text>
                 </View>
               </View>
@@ -593,7 +585,7 @@ export default function HomeScreen() {
                 style={({ pressed }) => [styles.sectionMorePill, pressed && styles.btnPressed]}
               >
                 <Text style={styles.sectionMoreText}>Jejak</Text>
-                <AppIcon name="arrow-right" size={12} color="#FB7185" />
+                <AppIcon name="arrow-right" size={12} color="#FFFFFF" />
               </Pressable>
             </View>
 
@@ -629,7 +621,7 @@ export default function HomeScreen() {
                       contentFit="cover"
                     />
                     <LinearGradient
-                      colors={["rgba(13,8,11,0.20)", "rgba(13,8,11,0.92)"]}
+                      colors={["rgba(18,19,22,0.20)", "rgba(18,19,22,0.92)"]}
                       style={StyleSheet.absoluteFill}
                     />
                     <View style={styles.continuePlayCircle}>
@@ -663,11 +655,7 @@ export default function HomeScreen() {
         <View style={styles.sectionBlock}>
           <View style={styles.sectionHead}>
             <View style={styles.sectionHeadLeft}>
-              <View style={styles.sakuraGem}>
-                <View style={styles.sakuraGemInner} />
-              </View>
               <View>
-                <Text style={styles.sectionEyebrow}>CHART HARIAN</Text>
                 <Text style={styles.sectionTitle}>Top 10 Paling Dicari</Text>
               </View>
             </View>
@@ -681,7 +669,7 @@ export default function HomeScreen() {
               style={({ pressed }) => [styles.sectionMorePill, pressed && styles.btnPressed]}
             >
               <Text style={styles.sectionMoreText}>Semua</Text>
-              <AppIcon name="arrow-right" size={12} color="#FB7185" />
+              <AppIcon name="arrow-right" size={12} color="#FFFFFF" />
             </Pressable>
           </View>
 
@@ -727,7 +715,7 @@ export default function HomeScreen() {
                       cachePolicy="memory-disk"
                     />
                     <LinearGradient
-                      colors={["transparent", "rgba(13,8,11,0.35)", "rgba(13,8,11,0.95)"]}
+                      colors={["transparent", "rgba(18,19,22,0.35)", "rgba(18,19,22,0.95)"]}
                       locations={[0.35, 0.68, 1]}
                       style={StyleSheet.absoluteFill}
                     />
@@ -764,7 +752,6 @@ export default function HomeScreen() {
         <View style={styles.genrePanel}>
           <View style={styles.genreHeaderRow}>
             <View>
-              <Text style={styles.sectionEyebrow}>KURASI KATEGORI</Text>
               <Text style={styles.sectionTitle}>Jelajah Genre Pilihan</Text>
             </View>
             <Pressable
@@ -779,7 +766,7 @@ export default function HomeScreen() {
               style={({ pressed }) => [styles.sectionMorePill, pressed && styles.btnPressed]}
             >
               <Text style={styles.sectionMoreText}>{selectedGenre}</Text>
-              <AppIcon name="arrow-right" size={12} color="#FB7185" />
+              <AppIcon name="arrow-right" size={12} color="#FFFFFF" />
             </Pressable>
           </View>
 
@@ -882,7 +869,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   scrollContent: {
     paddingHorizontal: 16,
@@ -894,9 +881,9 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.98 }],
   },
   skeletonRailLabel: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 1.2,
     marginTop: 12,
   },
@@ -929,20 +916,20 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     borderLeftWidth: 1,
-    borderLeftColor: "rgba(251, 113, 133, 0.22)",
+    borderLeftColor: "rgba(255, 255, 255, 0.22)",
     paddingLeft: 10,
   },
   greetingSub: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 0.6,
     textTransform: "uppercase",
   },
   greetingUser: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   topHeaderActions: {
     flexDirection: "row",
@@ -956,26 +943,26 @@ const styles = StyleSheet.create({
     height: 36,
     paddingHorizontal: 10,
     borderRadius: 99,
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.30)",
+    borderColor: "rgba(255, 255, 255, 0.30)",
   },
   headerCrystalImg: {
     width: 20,
     height: 20,
   },
   crystalPillLabel: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   headerActionCircle: {
     width: 36,
     height: 36,
     borderRadius: 12,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -987,9 +974,9 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     borderWidth: 1.5,
-    borderColor: "#191016",
+    borderColor: "#1B1D22",
   },
   searchStripRow: {
     flexDirection: "row",
@@ -1000,9 +987,9 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 44,
     borderRadius: 14,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.20)",
+    borderColor: "rgba(255, 255, 255, 0.20)",
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 13,
@@ -1012,27 +999,27 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#9A7D8A",
+    color: "#8E93A2",
   },
   searchKbdTag: {
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 7,
-    backgroundColor: "rgba(244, 63, 94, 0.16)",
+    backgroundColor: "rgba(239, 68, 68, 0.16)",
   },
   searchKbdText: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 0.7,
   },
   diceBtn: {
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
     borderWidth: 1,
-    borderColor: "#FB7185",
+    borderColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1044,9 +1031,9 @@ const styles = StyleSheet.create({
   heroStageCard: {
     borderRadius: 24,
     overflow: "hidden",
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.26)",
+    borderColor: "rgba(255, 255, 255, 0.26)",
     padding: 15,
     gap: 13,
   },
@@ -1062,18 +1049,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 99,
-    backgroundColor: "rgba(225, 29, 72, 0.88)",
+    backgroundColor: "rgba(239, 68, 68, 0.88)",
     borderWidth: 1,
-    borderColor: "rgba(253, 164, 175, 0.45)",
+    borderColor: "rgba(255,255,255, 0.45)",
   },
   spotlightPulse: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: "#FFF5F7",
+    backgroundColor: "#F3F4F6",
   },
   spotlightRibbonText: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 10,
     color: "#FFFFFF",
     letterSpacing: 0.9,
@@ -1082,14 +1069,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 3.5,
     borderRadius: 99,
-    backgroundColor: "rgba(13, 8, 11, 0.72)",
+    backgroundColor: "rgba(18,19,22, 0.72)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.24)",
+    borderColor: "rgba(255, 255, 255, 0.24)",
   },
   stageCounterText: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 10,
-    color: "#FDA4AF",
+    color: "#D1D5DB",
     letterSpacing: 0.6,
   },
   stageBodyRow: {
@@ -1102,9 +1089,9 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 15,
     overflow: "hidden",
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     borderWidth: 1.5,
-    borderColor: "rgba(253, 164, 175, 0.40)",
+    borderColor: "rgba(255,255,255, 0.40)",
   },
   stageInfoCol: {
     flex: 1,
@@ -1112,10 +1099,10 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   stageTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18.5,
     lineHeight: 23,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     letterSpacing: -0.3,
   },
   stageChipsRow: {
@@ -1136,37 +1123,37 @@ const styles = StyleSheet.create({
     borderColor: "rgba(251, 191, 36, 0.38)",
   },
   stageStar: {
-    color: "#FBBF24",
+    color: "#F5C518",
     fontSize: 10,
   },
   stageScoreVal: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#FDE68A",
+    color: "#F5C518",
   },
   stageEpChip: {
     paddingHorizontal: 7,
     paddingVertical: 2.5,
     borderRadius: 7,
-    backgroundColor: "rgba(244, 63, 94, 0.20)",
+    backgroundColor: "rgba(239, 68, 68, 0.20)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    borderColor: "rgba(255, 255, 255, 0.35)",
   },
   stageEpText: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 10,
-    color: "#FDA4AF",
+    color: "#D1D5DB",
   },
   stageSubChip: {
     paddingHorizontal: 7,
     paddingVertical: 2.5,
     borderRadius: 7,
-    backgroundColor: "rgba(255, 245, 247, 0.10)",
+    backgroundColor: "rgba(243,244,246, 0.10)",
   },
   stageSubText: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   stageGenresLine: {
     fontFamily: "Nunito-SemiBold",
@@ -1183,14 +1170,14 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 38,
     borderRadius: 11,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
   },
   stagePrimaryBtnText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
     color: "#FFFFFF",
   },
@@ -1198,16 +1185,16 @@ const styles = StyleSheet.create({
     height: 38,
     paddingHorizontal: 13,
     borderRadius: 11,
-    backgroundColor: "rgba(255, 245, 247, 0.10)",
+    backgroundColor: "rgba(243,244,246, 0.10)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.28)",
+    borderColor: "rgba(255, 255, 255, 0.28)",
     alignItems: "center",
     justifyContent: "center",
   },
   stageSecondaryBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   stageSegmentsRow: {
     flexDirection: "row",
@@ -1221,10 +1208,10 @@ const styles = StyleSheet.create({
     borderRadius: 99,
   },
   stageSegmentActive: {
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
   },
   stageSegmentIdle: {
-    backgroundColor: "rgba(255, 245, 247, 0.16)",
+    backgroundColor: "rgba(243,244,246, 0.16)",
   },
 
   // ─── 3. BENTO QUICK HUBS ───
@@ -1236,9 +1223,9 @@ const styles = StyleSheet.create({
   quickHubCard: {
     flex: 1,
     borderRadius: 16,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.16)",
+    borderColor: "rgba(255, 255, 255, 0.16)",
     paddingVertical: 11,
     paddingHorizontal: 8,
     alignItems: "center",
@@ -1248,20 +1235,20 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 10,
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 2,
   },
   quickHubTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   quickHubSub: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
-    color: "#9A7D8A",
+    color: "#8E93A2",
   },
 
   // ─── SHARED SECTION HEADERS ───
@@ -1282,9 +1269,9 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 6,
-    backgroundColor: "rgba(244, 63, 94, 0.18)",
+    backgroundColor: "rgba(239, 68, 68, 0.18)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.42)",
+    borderColor: "rgba(255, 255, 255, 0.42)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1292,20 +1279,20 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 2,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     transform: [{ rotate: "45deg" }],
   },
   sectionEyebrow: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 1,
     textTransform: "uppercase",
   },
   sectionTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 17,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     letterSpacing: -0.3,
   },
   sectionMorePill: {
@@ -1315,14 +1302,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     paddingVertical: 5,
     borderRadius: 99,
-    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
   },
   sectionMoreText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── 4. CONTINUE WATCHING ───
@@ -1335,9 +1322,9 @@ const styles = StyleSheet.create({
     height: 116,
     borderRadius: 16,
     overflow: "hidden",
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
     padding: 11,
     justifyContent: "space-between",
   },
@@ -1346,7 +1333,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "rgba(244, 63, 94, 0.90)",
+    backgroundColor: "rgba(239, 68, 68, 0.90)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1354,27 +1341,27 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   continueEpTag: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
-    color: "#FDA4AF",
+    color: "#D1D5DB",
     letterSpacing: 0.7,
   },
   continueAnimeTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   continueBarTrack: {
     height: 4,
     borderRadius: 99,
-    backgroundColor: "rgba(255, 245, 247, 0.18)",
+    backgroundColor: "rgba(243,244,246, 0.18)",
     overflow: "hidden",
     marginTop: 2,
   },
   continueBarFill: {
     height: "100%",
     borderRadius: 99,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
   },
 
   // ─── 6. TOP 10 GIANT RANK CARDS ───
@@ -1390,9 +1377,9 @@ const styles = StyleSheet.create({
     height: 206,
     borderRadius: 16,
     overflow: "hidden",
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
   },
   rankScorePill: {
     position: "absolute",
@@ -1404,18 +1391,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6.5,
     paddingVertical: 2.5,
     borderRadius: 99,
-    backgroundColor: "rgba(13, 8, 11, 0.80)",
+    backgroundColor: "rgba(18,19,22, 0.80)",
     borderWidth: 1,
     borderColor: "rgba(251, 191, 36, 0.36)",
   },
   rankStar: {
-    color: "#FBBF24",
+    color: "#F5C518",
     fontSize: 9.5,
   },
   rankScoreText: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   rankBottomOverlay: {
     position: "absolute",
@@ -1427,27 +1414,27 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   giantRankNum: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 34,
     lineHeight: 36,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontWeight: "900",
-    textShadowColor: "rgba(225, 29, 72, 0.85)",
+    textShadowColor: "rgba(239, 68, 68, 0.85)",
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 8,
   },
   giantRankTop3: {
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   rankEpPill: {
     paddingHorizontal: 7,
     paddingVertical: 2.5,
     borderRadius: 7,
-    backgroundColor: "rgba(225, 29, 72, 0.90)",
+    backgroundColor: "rgba(239, 68, 68, 0.90)",
     marginBottom: 4,
   },
   rankEpText: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
     color: "#FFFFFF",
     fontWeight: "800",
@@ -1456,7 +1443,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 13,
     lineHeight: 17,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     paddingHorizontal: 2,
   },
 
@@ -1465,7 +1452,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     backgroundColor: "#150D12",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.16)",
+    borderColor: "rgba(255, 255, 255, 0.16)",
     padding: 15,
     gap: 14,
   },
@@ -1484,19 +1471,35 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     backgroundColor: "#21141C",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.16)",
+    borderColor: "rgba(255, 255, 255, 0.16)",
   },
   genreChipActive: {
-    backgroundColor: "#F43F5E",
-    borderColor: "#FDA4AF",
+    backgroundColor: "#EF4444",
+    borderColor: "#D1D5DB",
   },
   genreChipText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   genreChipTextActive: {
     color: "#FFFFFF",
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
   },
+});
+
+const wbHome = StyleSheet.create({
+  headerBlock: { gap: 14, paddingTop: 6 },
+  userBar: { flexDirection: "row", alignItems: "center", gap: 10 },
+  avatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: "#1B1D22" },
+  userText: { flex: 1, gap: 2 },
+  userName: { color: "#F3F4F6", fontFamily: "Nunito-Bold", fontSize: 15 },
+  userSub: { color: "#9CA3AF", fontFamily: "Nunito-Regular", fontSize: 12 },
+  crystalChip: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#1B1D22", borderRadius: 999, paddingHorizontal: 10, height: 36 },
+  crystalText: { color: "#F5C518", fontFamily: "Nunito-Bold", fontSize: 12.5 },
+  bellBtn: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center", backgroundColor: "#1B1D22" },
+  searchRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  searchCapsule: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10, height: 44, borderRadius: 999, paddingHorizontal: 16, backgroundColor: "#1B1D22" },
+  searchText: { color: "#9CA3AF", fontFamily: "Nunito-Regular", fontSize: 14, flex: 1 },
+  diceBtn: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "#22252D" },
 });

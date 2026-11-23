@@ -335,7 +335,7 @@ export default function DuniaLuckynimeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F1115",
+    backgroundColor: "#121316",
   },
   btnPressed: {
     opacity: 0.75,
@@ -363,19 +363,19 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   headerTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
     letterSpacing: -0.2,
   },
   duniaContainer: {
     flex: 1,
-    backgroundColor: "#0F1115",
+    backgroundColor: "#121316",
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     top: 52,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   loadingTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 22,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
   loadingSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     marginBottom: 32,
   },
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
   progressBarFill: {
     height: "100%",
     borderRadius: 4,
-    backgroundColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
   },
   progressTextRow: {
     width: "100%",
@@ -426,16 +426,16 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   progressStatusText: {
-    fontFamily: "Nunito-Medium",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     flex: 1,
     marginRight: 8,
   },
   progressPercentText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   syncCard: {
     flexDirection: "row",
@@ -452,12 +452,12 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: "#A855F7",
+    backgroundColor: "#9CA3AF",
   },
   syncText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   errorContainer: {
     flex: 1,
@@ -474,13 +474,13 @@ const styles = StyleSheet.create({
   errorDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 19,
     maxWidth: 280,
   },
   retryBtn: {
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 12,

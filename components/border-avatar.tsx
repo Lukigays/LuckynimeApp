@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   avatarCircle: {
     position: "absolute",
     overflow: "hidden",
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1,

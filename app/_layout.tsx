@@ -24,7 +24,7 @@ import { MaintenanceGate } from "@/components/maintenance-gate";
 import { BroadcastNotificationListener } from "@/components/broadcast-notification-listener";
 import { AppIcon } from "@/components/app-icon";
 
-const APP_BG_COLOR = "#0D080B";
+const APP_BG_COLOR = "#121316";
 
 // Pastikan splash screen native tetap bertahan hingga view loading.gif siap
 void SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -55,14 +55,6 @@ export const unstable_settings = { anchor: "(tabs)" };
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    "SpaceGrotesk-Regular": require("../assets/fonts/SpaceGrotesk-Regular.ttf"),
-    "SpaceGrotesk-Medium": require("../assets/fonts/SpaceGrotesk-Medium.ttf"),
-    "SpaceGrotesk-SemiBold": require("../assets/fonts/SpaceGrotesk-SemiBold.ttf"),
-    "Caveat-Bold": require("../assets/fonts/Caveat-Bold.ttf"),
-    "Caveat-Medium": require("../assets/fonts/Caveat-Medium.ttf"),
-    "Caveat-Regular": require("../assets/fonts/Caveat-Regular.ttf"),
-    "Caveat-SemiBold": require("../assets/fonts/Caveat-SemiBold.ttf"),
-    "HennyPenny-Regular": require("../assets/fonts/HennyPenny-Regular.ttf"),
     "Nunito-Regular": require("../assets/fonts/Nunito-Regular.ttf"),
     "Nunito-SemiBold": require("../assets/fonts/Nunito-SemiBold.ttf"),
     "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),
@@ -182,7 +174,7 @@ export default function RootLayout() {
                   fontSize: 34,
                   fontWeight: "800",
                   letterSpacing: -0.5,
-                  color: "#FFF5F7",
+                  color: "#F3F4F6",
                 }}
               >
                 Lucky
@@ -192,7 +184,7 @@ export default function RootLayout() {
                   fontSize: 34,
                   fontWeight: "800",
                   letterSpacing: -0.5,
-                  color: "#F43F5E",
+                  color: "#EF4444",
                 }}
               >
                 nime
@@ -208,7 +200,7 @@ export default function RootLayout() {
               width: 172,
               height: 2,
               borderRadius: 99,
-              backgroundColor: "rgba(251, 113, 133, 0.16)",
+              backgroundColor: "rgba(255, 255, 255, 0.16)",
               overflow: "hidden",
             }}
           >
@@ -217,7 +209,7 @@ export default function RootLayout() {
                 width: 68,
                 height: 2,
                 borderRadius: 99,
-                backgroundColor: "#F43F5E",
+                backgroundColor: "#EF4444",
                 transform: [{ translateX: barTranslate }],
               }}
             />
@@ -230,7 +222,7 @@ export default function RootLayout() {
               fontSize: 9.5,
               fontWeight: "700",
               letterSpacing: 3.6,
-              color: "#FB7185",
+              color: "#FFFFFF",
               textAlign: "center",
             }}
           >
@@ -299,7 +291,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
         padding: 24,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#0D080B",
+        backgroundColor: "#121316",
       }}
     >
       <StatusBar style="light" />
@@ -311,7 +303,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
           width: 320,
           height: 320,
           borderRadius: 160,
-          backgroundColor: "rgba(251, 113, 133, 0.04)",
+          backgroundColor: "rgba(255, 255, 255, 0.04)",
           top: "28%",
         }}
         pointerEvents="none"
@@ -356,7 +348,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
           <Text
             style={{
               color: "#F87171",
-              fontFamily: "SpaceGrotesk-Bold",
+              fontFamily: "Nunito-Bold",
               fontSize: 10.5,
               letterSpacing: 1.2,
             }}
@@ -371,7 +363,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
             color: "#FFFFFF",
             fontSize: 22,
             fontWeight: "900",
-            fontFamily: "Nunito-Black",
+            fontFamily: "Nunito-Bold",
             textAlign: "center",
             letterSpacing: 0.3,
           }}
@@ -392,7 +384,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
         >
           <Text
             style={{
-              color: "#C4A6B3",
+              color: "#9CA3AF",
               fontSize: 12.5,
               lineHeight: 18,
               textAlign: "center",
@@ -433,7 +425,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
               color: "#FFFFFF",
               fontSize: 14,
               fontWeight: "900",
-              fontFamily: "Nunito-Black",
+              fontFamily: "Nunito-Bold",
               letterSpacing: 0.2,
             }}
           >

@@ -187,7 +187,7 @@ export function NotificationSheet({
                   style={[
                     styles.filterText,
                     filter === "gifts" && styles.filterGiftTextActive,
-                    unclaimedGiftsCount > 0 && { color: "#F59E0B", fontWeight: "900" },
+                    unclaimedGiftsCount > 0 && { color: "#F5C518", fontWeight: "900" },
                   ]}
                 >
                   HADIAH {unclaimedGiftsCount > 0 ? `(${unclaimedGiftsCount})` : ""}
@@ -279,7 +279,7 @@ export function NotificationSheet({
             {filter === "gifts" ? (
               loadingGifts && gifts.length === 0 ? (
                 <View style={styles.empty}>
-                  <ActivityIndicator size="small" color="#FB7185" />
+                  <ActivityIndicator size="small" color="#FFFFFF" />
                   <Text style={styles.emptyText}>Memuat kotak hadiah...</Text>
                 </View>
               ) : gifts.length === 0 ? (
@@ -407,7 +407,7 @@ export function NotificationSheet({
               style={styles.viewAllFooterBtn}
             >
               <Text style={styles.viewAllFooterText}>Lihat Semua Notifikasi di Library</Text>
-              <AppIcon name="chevron-right" size={15} color="#FB7185" />
+              <AppIcon name="chevron-right" size={15} color="#FFFFFF" />
             </Pressable>
           </View>
         </View>
@@ -486,24 +486,24 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   filterActive: {
-    borderColor: "#FB7185",
-    backgroundColor: "rgba(251, 113, 133,0.12)",
+    borderColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
   },
   filterGiftActive: {
-    borderColor: "#F59E0B",
-    backgroundColor: "rgba(245,158,11,0.15)",
+    borderColor: "#F5C518",
+    backgroundColor: "rgba(245, 197, 24, 0.15)",
   },
   filterText: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.6,
   },
   filterTextActive: { color: "#FFFFFF" },
-  filterGiftTextActive: { color: "#FDE68A" },
+  filterGiftTextActive: { color: "#F5C518" },
   markAllBtn: { marginLeft: "auto", paddingHorizontal: 8, paddingVertical: 4 },
   markAllText: {
-    color: "#FB7185",
+    color: "#FFFFFF",
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.5,
@@ -535,14 +535,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 10,
-    backgroundColor: "rgba(251, 113, 133, 0.08)",
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
   },
   viewAllFooterText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   unclaimedGiftBanner: {
@@ -554,21 +554,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
-    backgroundColor: "rgba(245,158,11,0.14)",
+    backgroundColor: "rgba(245, 197, 24, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(245,158,11,0.35)",
+    borderColor: "rgba(245, 197, 24, 0.35)",
   },
   unclaimedGiftTitle: {
-    color: "#FDE68A",
+    color: "#F5C518",
     fontSize: 12,
     fontWeight: "800",
   },
   unclaimedGiftSub: {
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     fontSize: 10,
   },
   claimNowBtn: {
-    backgroundColor: "#F59E0B",
+    backgroundColor: "#F5C518",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
 
   empty: { alignItems: "center", gap: 10, paddingVertical: 38 },
   emptyTitle: { color: "#FFFFFF", fontSize: 15, fontWeight: "700" },
-  emptyText: { color: "#8F727F", fontSize: 13, textAlign: "center", paddingHorizontal: 32 },
+  emptyText: { color: "#8E93A2", fontSize: 13, textAlign: "center", paddingHorizontal: 32 },
   list: { paddingHorizontal: 18 },
 
   row: {
@@ -592,17 +592,17 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   rowUnread: {
-    backgroundColor: "rgba(251, 113, 133,0.06)",
+    backgroundColor: "rgba(255, 255, 255, 0.06)",
     marginHorizontal: -18,
     paddingHorizontal: 18,
     borderRadius: 8,
   },
   rowDot: { width: 14, paddingTop: 6, alignItems: "center" },
-  unreadDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: "#FB7185" },
+  unreadDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: "#FFFFFF" },
   rowBody: { flex: 1, gap: 3 },
   notifTitle: { color: "#FFFFFF", fontSize: 13, fontWeight: "700" },
-  rowMessage: { color: "#EDE0E5", fontSize: 13, lineHeight: 17 },
-  rowTime: { color: "#8F727F", fontSize: 11 },
+  rowMessage: { color: "#F3F4F6", fontSize: 13, lineHeight: 17 },
+  rowTime: { color: "#8E93A2", fontSize: 11 },
 
   // Gift row styles
   giftRow: {
@@ -613,7 +613,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   giftRowUnclaimed: {
-    backgroundColor: "rgba(245,158,11,0.06)",
+    backgroundColor: "rgba(245, 197, 24, 0.06)",
     marginHorizontal: -18,
     paddingHorizontal: 18,
   },
@@ -651,14 +651,14 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   rewardTagCrystal: {
-    backgroundColor: "rgba(251, 113, 133,0.15)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133,0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
   },
   rewardTagBorder: {
-    backgroundColor: "rgba(168,85,247,0.15)",
+    backgroundColor: "rgba(156,163,175,0.15)",
     borderWidth: 1,
-    borderColor: "rgba(168,85,247,0.3)",
+    borderColor: "rgba(156,163,175,0.3)",
   },
   rewardTagText: {
     color: "#FFFFFF",
@@ -672,7 +672,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
   },
   statusClaimedText: {
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 10,
     fontWeight: "700",
   },
@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
-    backgroundColor: "#F59E0B",
+    backgroundColor: "#F5C518",
   },
   statusUnclaimedText: {
     color: "#000000",

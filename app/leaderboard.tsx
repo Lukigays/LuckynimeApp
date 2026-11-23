@@ -45,15 +45,15 @@ import {
 } from "@/lib/leaderboard-service";
 
 // ── Medal colors & glow ─────────────────────────────────────────────────────
-const GOLD = "#F59E0B";
-const SILVER = "#EDE0E5";
-const BRONZE = "#F97316";
+const GOLD = "#F5C518";
+const SILVER = "#F3F4F6";
+const BRONZE = "#F5C518";
 
 function rankColor(rank: number): string {
   if (rank === 1) return GOLD;
   if (rank === 2) return SILVER;
   if (rank === 3) return BRONZE;
-  return "#8F727F";
+  return "#8E93A2";
 }
 
 function crownIcon(rank: number): string | null {
@@ -65,14 +65,14 @@ function crownIcon(rank: number): string | null {
 
 // ── Generate nama warna yang harmonis persis seperti di Chat Global ──────────
 const NAME_COLORS = [
-  "#FB7185", // Cyan Sky
+  "#FFFFFF", // Cyan Sky
   "#4ADE80", // Emerald Green
-  "#F43F5E", // Rose Red
-  "#A855F7", // Purple
-  "#F59E0B", // Amber Gold
+  "#EF4444", // Rose Red
+  "#9CA3AF", // Purple
+  "#F5C518", // Amber Gold
   "#2DD4BF", // Teal
-  "#EC4899", // Pink
-  "#FB7185", // Blue
+  "#9CA3AF", // Pink
+  "#FFFFFF", // Blue
 ];
 
 function getUsernameColor(name: string): string {
@@ -97,33 +97,33 @@ function getTierPillColors(tierName: string) {
       };
     case "eternal":
       return {
-        bg: "rgba(168, 85, 247, 0.16)",
-        border: "rgba(168, 85, 247, 0.45)",
+        bg: "rgba(156,163,175, 0.16)",
+        border: "rgba(156,163,175, 0.45)",
         text: "#D8B4FE",
       };
     case "celestial":
       return {
-        bg: "rgba(251, 146, 60, 0.16)",
-        border: "rgba(251, 146, 60, 0.45)",
+        bg: "rgba(245,197,24, 0.16)",
+        border: "rgba(245,197,24, 0.45)",
         text: "#FDBA74",
       };
     case "ruby star":
       return {
-        bg: "rgba(251, 113, 133, 0.16)",
-        border: "rgba(251, 113, 133, 0.45)",
-        text: "#FDA4AF",
+        bg: "rgba(255, 255, 255, 0.16)",
+        border: "rgba(255, 255, 255, 0.45)",
+        text: "#D1D5DB",
       };
     case "amethyst":
       return {
-        bg: "rgba(192, 132, 252, 0.16)",
-        border: "rgba(192, 132, 252, 0.45)",
+        bg: "rgba(156,163,175, 0.16)",
+        border: "rgba(156,163,175, 0.45)",
         text: "#E9D5FF",
       };
     case "sapphire":
       return {
-        bg: "rgba(251, 113, 133, 0.16)",
-        border: "rgba(251, 113, 133, 0.45)",
-        text: "#FDA4AF",
+        bg: "rgba(255, 255, 255, 0.16)",
+        border: "rgba(255, 255, 255, 0.45)",
+        text: "#D1D5DB",
       };
     case "emerald":
       return {
@@ -139,21 +139,21 @@ function getTierPillColors(tierName: string) {
       };
     case "silver":
       return {
-        bg: "rgba(237, 224, 229, 0.16)",
-        border: "rgba(237, 224, 229, 0.45)",
-        text: "#F5E9EE",
+        bg: "rgba(243,244,246, 0.16)",
+        border: "rgba(243,244,246, 0.45)",
+        text: "#F3F4F6",
       };
     case "bronze":
       return {
-        bg: "rgba(217, 119, 6, 0.16)",
-        border: "rgba(217, 119, 6, 0.45)",
+        bg: "rgba(245,197,24, 0.16)",
+        border: "rgba(245,197,24, 0.45)",
         text: "#FDBA74",
       };
     default:
       return {
-        bg: "rgba(196, 166, 179, 0.16)",
-        border: "rgba(196, 166, 179, 0.45)",
-        text: "#EDE0E5",
+        bg: "rgba(156,163,175, 0.16)",
+        border: "rgba(156,163,175, 0.45)",
+        text: "#F3F4F6",
       };
   }
 }
@@ -301,7 +301,7 @@ const PodiumCard = React.memo(function PodiumCard({
               styles.podiumLevelPillText,
               isInfinity && {
                 color: "#EF4444",
-                fontFamily: "Nunito-Black",
+                fontFamily: "Nunito-Bold",
               },
             ]}
             numberOfLines={1}
@@ -447,7 +447,7 @@ const LeaderRow = React.memo(function LeaderRow({
                 isInfinity && {
                   color: "#EF4444",
                   fontSize: 13,
-                  fontFamily: "Nunito-Black",
+                  fontFamily: "Nunito-Bold",
                 },
               ]}
             >
@@ -654,7 +654,7 @@ export default function LeaderboardScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      <StatusBar barStyle="light-content" backgroundColor="#0D080B" />
+      <StatusBar barStyle="light-content" backgroundColor="#121316" />
 
       {/* Header */}
       <View style={styles.header}>
@@ -734,7 +734,7 @@ export default function LeaderboardScreen() {
             <RefreshControl
               refreshing={isRefetching}
               onRefresh={handleRefresh}
-              tintColor="#FB7185"
+              tintColor="#FFFFFF"
             />
           }
           ListHeaderComponent={
@@ -761,7 +761,7 @@ export default function LeaderboardScreen() {
 
               {rest.length > 0 && (
                 <View style={styles.restHeader}>
-                  <AppIcon name="format-list-numbered" size={14} color="#8F727F" />
+                  <AppIcon name="format-list-numbered" size={14} color="#8E93A2" />
                   <Text style={styles.restHeaderText}>Peringkat Selanjutnya</Text>
                 </View>
               )}
@@ -886,7 +886,7 @@ export default function LeaderboardScreen() {
               }}
               style={({ pressed }) => [styles.sheetActionRow, pressed && { opacity: 0.7 }]}
             >
-              <AppIcon name="account" size={20} color="#EDE0E5" />
+              <AppIcon name="account" size={20} color="#F3F4F6" />
               <Text style={styles.sheetActionText}>Lihat Profil</Text>
             </Pressable>
 
@@ -901,7 +901,7 @@ export default function LeaderboardScreen() {
                   style={({ pressed }) => [styles.sheetActionRow, pressed && { opacity: 0.7 }]}
                 >
                   {actionLoading ? (
-                    <ActivityIndicator size="small" color="#FB7185" />
+                    <ActivityIndicator size="small" color="#FFFFFF" />
                   ) : friendStatus === "accepted" ? (
                     <>
                       <AppIcon name="trash-can-outline" size={20} color="#F87171" />
@@ -911,22 +911,22 @@ export default function LeaderboardScreen() {
                     </>
                   ) : friendStatus === "pending_sent" ? (
                     <>
-                      <AppIcon name="clock-outline" size={20} color="#C4A6B3" />
-                      <Text style={[styles.sheetActionText, { color: "#C4A6B3" }]}>
+                      <AppIcon name="clock-outline" size={20} color="#9CA3AF" />
+                      <Text style={[styles.sheetActionText, { color: "#9CA3AF" }]}>
                         Permintaan Terkirim (Batalkan)
                       </Text>
                     </>
                   ) : friendStatus === "pending_received" ? (
                     <>
-                      <AppIcon name="account-check" size={20} color="#34D399" />
-                      <Text style={[styles.sheetActionText, { color: "#34D399" }]}>
+                      <AppIcon name="account-check" size={20} color="#10B981" />
+                      <Text style={[styles.sheetActionText, { color: "#10B981" }]}>
                         Terima Permintaan
                       </Text>
                     </>
                   ) : (
                     <>
-                      <AppIcon name="account-plus" size={20} color="#FB7185" />
-                      <Text style={[styles.sheetActionText, { color: "#FB7185" }]}>
+                      <AppIcon name="account-plus" size={20} color="#FFFFFF" />
+                      <Text style={[styles.sheetActionText, { color: "#FFFFFF" }]}>
                         Tambah Teman
                       </Text>
                     </>
@@ -945,7 +945,7 @@ export default function LeaderboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
 
   // Header
@@ -996,23 +996,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tabBtnActive: {
-    backgroundColor: "rgba(251, 113, 133,0.18)",
-    borderColor: "#FB7185",
+    backgroundColor: "rgba(255, 255, 255, 0.18)",
+    borderColor: "#FFFFFF",
   },
   tabText: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#8F727F",
+    color: "#8E93A2",
     letterSpacing: 0.2,
   },
   tabTextActive: {
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // Period date
   periodDateLabel: {
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
     paddingHorizontal: 18,
     marginTop: 6,
     marginBottom: 12,
@@ -1029,7 +1029,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     paddingBottom: 14,
     paddingTop: 10,
-    backgroundColor: "rgba(25, 16, 22, 0.7)",
+    backgroundColor: "rgba(18, 19, 22, 0.7)",
     marginHorizontal: 8,
     borderRadius: 24,
     borderWidth: 1,
@@ -1089,7 +1089,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#0D080B",
+    borderColor: "#121316",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -1100,7 +1100,7 @@ const styles = StyleSheet.create({
   nearAvatarRankText: {
     fontSize: 11,
     fontWeight: "900",
-    color: "#0D080B",
+    color: "#121316",
   },
 
   // Podium Names & Member
@@ -1116,13 +1116,13 @@ const styles = StyleSheet.create({
   podiumName: {
     fontSize: 11,
     fontWeight: "800",
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     textAlign: "center",
     maxWidth: "80%",
   },
   podiumMember: {
     fontSize: 9,
-    color: "#8F727F",
+    color: "#8E93A2",
     fontWeight: "700",
     marginTop: 1,
   },
@@ -1153,7 +1153,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   podiumRankTierText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 8,
     letterSpacing: 0.4,
     textTransform: "uppercase",
@@ -1176,7 +1176,7 @@ const styles = StyleSheet.create({
   podiumLevelPillText: {
     fontSize: 8.5,
     fontWeight: "700",
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // Level Tier Badge on Podium (legacy fallback)
@@ -1223,7 +1223,7 @@ const styles = StyleSheet.create({
   },
   restHeaderText: {
     fontSize: 11,
-    color: "#785D6A",
+    color: "#6B7280",
     fontWeight: "700",
     letterSpacing: 0.5,
     textTransform: "uppercase",
@@ -1266,12 +1266,12 @@ const styles = StyleSheet.create({
   rowName: {
     fontSize: 13.5,
     fontWeight: "800",
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     maxWidth: "60%",
   },
   rowMember: {
     fontSize: 11,
-    color: "#785D6A",
+    color: "#6B7280",
     fontWeight: "700",
   },
   rowCityClanRow: {
@@ -1299,7 +1299,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   rankTierText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     letterSpacing: 0.6,
     textTransform: "uppercase",
@@ -1322,7 +1322,7 @@ const styles = StyleSheet.create({
   levelPillText: {
     fontSize: 9.5,
     fontWeight: "700",
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   rowTierBadge: {
@@ -1350,7 +1350,7 @@ const styles = StyleSheet.create({
   rowXpText: {
     fontSize: 13.5,
     fontWeight: "900",
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     letterSpacing: 0.2,
   },
   separator: {
@@ -1386,7 +1386,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   bottomSheetCard: {
-    backgroundColor: "#170E14",
+    backgroundColor: "#1B1D22",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 12,
@@ -1419,7 +1419,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   sheetDisplayNameText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
     letterSpacing: -0.2,
@@ -1448,26 +1448,26 @@ const styles = StyleSheet.create({
   sheetLevelPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#34D399",
+    color: "#10B981",
   },
   sheetTierPill: {
-    backgroundColor: "rgba(168, 85, 247, 0.16)",
+    backgroundColor: "rgba(156,163,175, 0.16)",
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: "rgba(168, 85, 247, 0.3)",
+    borderColor: "rgba(156,163,175, 0.3)",
   },
   sheetTierPillText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#C084FC",
+    color: "#9CA3AF",
     letterSpacing: 0.5,
   },
   sheetMemberNumberText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   sheetDivider: {
     height: 1,

@@ -20,13 +20,7 @@ export function AnimeRail({
     <View style={styles.section}>
       <View style={styles.heading}>
         <View style={styles.headingLeft}>
-          <View style={styles.sakuraGem}>
-            <View style={styles.sakuraGemCore} />
-          </View>
-          <View>
-            {label ? <Text style={styles.eyebrow}>{label}</Text> : null}
-            <Text style={styles.title}>{title}</Text>
-          </View>
+          <Text style={styles.title}>{title}</Text>
         </View>
         <Pressable
           accessibilityRole="button"
@@ -39,7 +33,7 @@ export function AnimeRail({
           hitSlop={8}
         >
           <Text style={styles.browseText}>Semua</Text>
-          <AppIcon name="arrow-right" size={12} color={nothing.sakura} />
+          <AppIcon name="chevron-right" size={14} color={nothing.muted} />
         </Pressable>
       </View>
       <FlatList
@@ -59,7 +53,7 @@ export function AnimeRail({
 }
 
 const styles = StyleSheet.create({
-  section: { gap: 13 },
+  section: { gap: 12 },
   heading: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -70,51 +64,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 9,
   },
-  sakuraGem: {
-    width: 18,
-    height: 18,
-    borderRadius: 6,
-    backgroundColor: "rgba(244, 63, 94, 0.18)",
-    borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.42)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  sakuraGemCore: {
-    width: 6,
-    height: 6,
-    borderRadius: 2,
-    backgroundColor: nothing.red,
-    transform: [{ rotate: "45deg" }],
-  },
-  eyebrow: {
-    color: nothing.sakura,
-    fontFamily: "SpaceGrotesk-Bold",
-    fontSize: 9.5,
-    letterSpacing: 1,
-    textTransform: "uppercase",
-  },
   title: {
     color: nothing.white,
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 17,
-    letterSpacing: -0.3,
+    fontWeight: "700",
   },
   browsePill: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 11,
-    paddingVertical: 5,
-    borderRadius: 99,
-    backgroundColor: "rgba(244, 63, 94, 0.11)",
-    borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    gap: 2,
   },
   browseText: {
-    color: nothing.sakura,
-    fontFamily: "Nunito-Bold",
-    fontSize: 11.5,
+    color: nothing.muted,
+    fontFamily: "Nunito-SemiBold",
+    fontSize: 13,
   },
   rail: {
     gap: 13,

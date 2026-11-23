@@ -63,7 +63,7 @@ export function LegalModal({
       onRequestClose={handleClose}
     >
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="#0D080B" />
+        <StatusBar barStyle="light-content" backgroundColor="#121316" />
 
         {/* ─── STICKY HEADER ─── */}
         <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
@@ -78,7 +78,7 @@ export function LegalModal({
               accessibilityRole="button"
               accessibilityLabel="Kembali ke halaman sebelumnya"
             >
-              <AppIcon name="arrow-left" size={20} color="#FFF5F7" />
+              <AppIcon name="arrow-left" size={20} color="#F3F4F6" />
               <Text style={styles.backButtonText}>Kembali</Text>
             </Pressable>
 
@@ -99,7 +99,7 @@ export function LegalModal({
               accessibilityRole="button"
               accessibilityLabel="Tutup"
             >
-              <AppIcon name="close" size={20} color="#C4A6B3" />
+              <AppIcon name="close" size={20} color="#9CA3AF" />
             </Pressable>
           </View>
 
@@ -115,7 +115,7 @@ export function LegalModal({
               <AppIcon
                 name="file-document-outline"
                 size={16}
-                color={activeTab === "terms" ? "#FB7185" : "#8F727F"}
+                color={activeTab === "terms" ? "#FFFFFF" : "#8E93A2"}
               />
               <Text
                 style={[
@@ -137,7 +137,7 @@ export function LegalModal({
               <AppIcon
                 name="shield-check-outline"
                 size={16}
-                color={activeTab === "privacy" ? "#FB7185" : "#8F727F"}
+                color={activeTab === "privacy" ? "#FFFFFF" : "#8E93A2"}
               />
               <Text
                 style={[
@@ -164,7 +164,7 @@ export function LegalModal({
           <View style={styles.badgeCard}>
             <View style={styles.badgeLeft}>
               <View style={styles.badgeIconWrap}>
-                <AppIcon name="shield-check-outline" size={18} color="#FB7185" />
+                <AppIcon name="shield-check-outline" size={18} color="#FFFFFF" />
               </View>
               <View>
                 <Text style={styles.badgeTitle}>Dokumen Resmi Luckynime</Text>
@@ -241,10 +241,10 @@ export function LegalModal({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   header: {
-    backgroundColor: "rgba(13, 8, 11, 0.95)",
+    backgroundColor: "rgba(18,19,22, 0.95)",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 255, 255, 0.08)",
     paddingHorizontal: 16,
@@ -277,21 +277,21 @@ const styles = StyleSheet.create({
   backButtonText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   headerCenter: {
     alignItems: "center",
   },
   headerEyebrow: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 1.2,
   },
   headerTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 15,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   closeIconBtn: {
     width: 34,
@@ -324,18 +324,18 @@ const styles = StyleSheet.create({
     borderRadius: 9,
   },
   tabItemActive: {
-    backgroundColor: "rgba(251, 113, 133, 0.15)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    borderColor: "rgba(255, 255, 255, 0.35)",
   },
   tabText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   tabTextActive: {
     fontFamily: "Nunito-Bold",
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
 
   // Scroll Content
@@ -352,10 +352,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "rgba(21, 13, 18, 0.7)",
+    backgroundColor: "rgba(27,29,34, 0.7)",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
     padding: 12,
     marginBottom: 14,
   },
@@ -368,19 +368,19 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     alignItems: "center",
     justifyContent: "center",
   },
   badgeTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   badgeSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   statusPill: {
     flexDirection: "row",
@@ -409,16 +409,16 @@ const styles = StyleSheet.create({
   summaryBox: {
     backgroundColor: "rgba(255, 255, 255, 0.03)",
     borderLeftWidth: 3,
-    borderLeftColor: "#FB7185",
+    borderLeftColor: "#FFFFFF",
     borderRadius: 8,
     padding: 12,
     marginBottom: 18,
   },
   summaryText: {
-    fontFamily: "Nunito-Medium",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 12.5,
     lineHeight: 19,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
 
   // Sections
@@ -442,32 +442,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 6,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
   },
   numberBadgeText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   sectionTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 14.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     flex: 1,
   },
   sectionBody: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
     lineHeight: 21,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   // Contact
   contactCard: {
     marginTop: 18,
-    backgroundColor: "rgba(35, 22, 31, 0.4)",
+    backgroundColor: "rgba(35,38,47, 0.4)",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -477,14 +477,14 @@ const styles = StyleSheet.create({
   contactTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     marginBottom: 4,
   },
   contactDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
     lineHeight: 18,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     marginBottom: 10,
   },
@@ -492,14 +492,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: "rgba(251, 113, 133, 0.10)",
+    backgroundColor: "rgba(255, 255, 255, 0.10)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
   },
   emailText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // Bottom Sticky Bar
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "rgba(13, 8, 11, 0.92)",
+    backgroundColor: "rgba(18,19,22, 0.92)",
     borderTopWidth: 1,
     borderTopColor: "rgba(255, 255, 255, 0.08)",
     paddingHorizontal: 16,
@@ -524,14 +524,14 @@ const styles = StyleSheet.create({
   understandButton: {
     height: 46,
     borderRadius: 23,
-    backgroundColor: "#FFF5F7",
+    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
   },
   understandButtonText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
-    color: "#0D080B",
+    color: "#121316",
   },
 });
 

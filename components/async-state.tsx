@@ -41,7 +41,7 @@ export function ErrorState({
   return (
     <View accessibilityRole="alert" style={[styles.stateContainer, style]}>
       <View style={[styles.iconCard, styles.errorIconCard]}>
-        <AppIcon name="alert-circle-outline" size={28} color="#FB7185" />
+        <AppIcon name="alert-circle-outline" size={28} color="#FFFFFF" />
       </View>
       <Text style={styles.stateTitle}>
         {anilistOutage ? "Layanan AniList Sedang Sibuk" : "Gagal Memuat Data"}
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   loadingText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     maxWidth: 280,
     lineHeight: 18,
@@ -138,23 +138,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   errorIconCard: {
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
-    borderColor: "rgba(251, 113, 133, 0.34)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
+    borderColor: "rgba(255, 255, 255, 0.34)",
   },
   emptyIllustration: {
     marginBottom: 4,
     opacity: 0.92,
   },
   stateTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 17,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     textAlign: "center",
   },
   stateDesc: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 20,
     maxWidth: 300,
@@ -164,14 +164,14 @@ const styles = StyleSheet.create({
     minHeight: 42,
     paddingHorizontal: 22,
     borderRadius: 99,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     borderWidth: 1,
-    borderColor: "#FDA4AF",
+    borderColor: "#D1D5DB",
     alignItems: "center",
     justifyContent: "center",
   },
   actionBtnText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
     color: "#FFFFFF",
     letterSpacing: 0.8,

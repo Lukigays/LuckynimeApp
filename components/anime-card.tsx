@@ -128,7 +128,7 @@ function AnimeCardBase({ anime, compact = false }: { anime: Anime; compact?: boo
           ) : null}
 
           <LinearGradient
-            colors={["transparent", "rgba(13, 8, 11, 0.22)", "rgba(13, 8, 11, 0.88)"]}
+            colors={["transparent", "rgba(18,19,22, 0.22)", "rgba(18,19,22, 0.88)"]}
             locations={[0.46, 0.74, 1]}
             style={StyleSheet.absoluteFill}
           />
@@ -315,11 +315,9 @@ const styles = StyleSheet.create({
   pressed: nothing.pressed,
   media: {
     height: 206,
-    borderRadius: 16,
+    borderRadius: 10,
     overflow: "hidden",
     backgroundColor: nothing.surface,
-    borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.16)",
   },
   compactMedia: {
     height: 178,
@@ -328,11 +326,11 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#21131B",
+    backgroundColor: "#1B1D22",
   },
   fallbackInitial: {
-    color: "rgba(251, 113, 133, 0.35)",
-    fontFamily: "Nunito-Black",
+    color: "rgba(255, 255, 255, 0.35)",
+    fontFamily: "Nunito-Bold",
     fontSize: 52,
   },
   poster: { ...StyleSheet.absoluteFillObject },
@@ -343,46 +341,41 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(13, 8, 11, 0.82)",
-    borderWidth: 1,
-    borderColor: "rgba(251, 191, 36, 0.36)",
+    backgroundColor: "rgba(18, 19, 22, 0.86)",
     paddingHorizontal: 6.5,
     paddingVertical: 2.5,
     borderRadius: 99,
   },
   cardScoreStar: {
-    color: "#FBBF24",
+    color: "#F5C518",
     fontSize: 9.5,
   },
   cardScoreValue: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontWeight: "700",
   },
   statusBadge: {
     position: "absolute",
     left: 7,
     bottom: 7,
-    backgroundColor: "rgba(225, 29, 72, 0.92)",
-    borderWidth: 1,
-    borderColor: "rgba(253, 164, 175, 0.45)",
+    backgroundColor: "#EF4444",
     paddingHorizontal: 7.5,
     paddingVertical: 2.5,
     borderRadius: 8,
   },
   statusBadgeFinished: {
-    backgroundColor: "rgba(16, 185, 129, 0.88)",
-    borderColor: "rgba(110, 231, 183, 0.45)",
+    backgroundColor: "#2C303E",
   },
   statusBadgeText: {
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
     color: "#FFFFFF",
     fontWeight: "800",
     letterSpacing: 0.45,
   },
-  meta: { gap: 2, paddingHorizontal: 2 },
+  meta: { gap: 3, paddingHorizontal: 1 },
   title: {
     color: nothing.white,
     fontFamily: "Nunito-Bold",
@@ -399,7 +392,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 18,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(8, 4, 7, 0.82)",
+    backgroundColor: "rgba(18,19,22, 0.82)",
   },
   sheet: {
     gap: 2,
@@ -407,25 +400,25 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderWidth: 1,
     borderColor: nothing.lineStrong,
-    backgroundColor: "#170E14",
+    backgroundColor: "#1B1D22",
   },
   sheetHandle: {
     alignSelf: "center",
     width: 38,
     height: 4,
     borderRadius: 99,
-    backgroundColor: "rgba(251, 113, 133, 0.35)",
+    backgroundColor: "rgba(255, 255, 255, 0.35)",
     marginTop: 4,
     marginBottom: 4,
   },
   sheetHeader: { paddingHorizontal: 14, paddingTop: 6, paddingBottom: 10, gap: 2 },
   sheetEyebrow: {
     color: nothing.sakura,
-    fontFamily: "SpaceGrotesk-SemiBold",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 9.5,
     letterSpacing: 1.2,
   },
-  sheetTitle: { color: nothing.white, fontFamily: "Nunito-ExtraBold", fontSize: 16 },
+  sheetTitle: { color: nothing.white, fontFamily: "Nunito-Bold", fontSize: 16 },
   divider: { height: 1, backgroundColor: nothing.line, marginHorizontal: 10, marginBottom: 4 },
   actionRow: {
     flexDirection: "row",
@@ -440,9 +433,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 10,
-    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
     alignItems: "center",
     justifyContent: "center",
   },

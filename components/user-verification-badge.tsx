@@ -41,7 +41,7 @@ export function UserVerificationBadge({
   }
 
   if (status === "verified_member") {
-    return <AppIcon name="check-decagram" size={size} color="#38BDF8" />;
+    return <AppIcon name="check-decagram" size={size} color="#9CA3AF" />;
   }
 
   return null;
@@ -86,7 +86,7 @@ const roleStyles = StyleSheet.create({
     gap: 2.5,
   },
   text: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#FCA5A5",
     letterSpacing: 0.4,

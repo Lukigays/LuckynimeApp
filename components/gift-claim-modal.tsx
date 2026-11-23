@@ -129,8 +129,8 @@ export function GiftClaimModal({
             style={[
               styles.rewardBox,
               gift.giftType === "border" && {
-                backgroundColor: "rgba(168, 85, 247, 0.12)",
-                borderColor: "rgba(168, 85, 247, 0.35)",
+                backgroundColor: "rgba(156,163,175, 0.12)",
+                borderColor: "rgba(156,163,175, 0.35)",
               },
             ]}
           >
@@ -152,7 +152,7 @@ export function GiftClaimModal({
                   />
                 </View>
                 <View style={{ flex: 1, gap: 2 }}>
-                  <Text style={[styles.rewardLabel, { color: "#C084FC" }]}>HADIAH BORDER AVATAR</Text>
+                  <Text style={[styles.rewardLabel, { color: "#9CA3AF" }]}>HADIAH BORDER AVATAR</Text>
                   <Text style={styles.rewardAmount}>
                     {borderInfo?.name || gift.giftValue}
                   </Text>
@@ -202,7 +202,7 @@ export function GiftClaimModal({
               </>
             ) : isClaimed ? (
               <>
-                <AppIcon name="check" size={18} color="#C4A6B3" />
+                <AppIcon name="check" size={18} color="#9CA3AF" />
                 <Text style={styles.claimBtnTextDisabled}>Sudah Diklaim</Text>
               </>
             ) : (
@@ -251,14 +251,14 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   title: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
     color: "#FFFFFF",
     textAlign: "center",
     marginTop: 4,
   },
   tagline: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#A78BFA",
     letterSpacing: 0.8,
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   messageText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     lineHeight: 18,
     textAlign: "center",
   },
@@ -294,13 +294,13 @@ const styles = StyleSheet.create({
     height: 38,
   },
   rewardLabel: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#10B981",
     letterSpacing: 0.6,
   },
   rewardAmount: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
     marginTop: 2,
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
   claimBtnTextDisabled: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   borderRewardRow: {
     flexDirection: "row",
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   borderRarityTag: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     marginTop: 1,
   },
   successBanner: {
@@ -364,21 +364,21 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   successTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#34D399",
+    color: "#10B981",
   },
   successMessage: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     textAlign: "center",
     lineHeight: 17,
   },
   errorBanner: {
     width: "100%",
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
-    borderColor: "rgba(244, 63, 94, 0.4)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
+    borderColor: "rgba(239, 68, 68, 0.4)",
     borderWidth: 1,
     borderRadius: 12,
     padding: 10,
@@ -386,12 +386,12 @@ const styles = StyleSheet.create({
   errorMessage: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FDA4AF",
+    color: "#D1D5DB",
     textAlign: "center",
   },
   claimBtnSuccess: {
     backgroundColor: "#059669",
     borderWidth: 1,
-    borderColor: "#34D399",
+    borderColor: "#10B981",
   },
 });

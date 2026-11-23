@@ -720,13 +720,13 @@ export default function AffinityScreen() {
                       <AppIcon
                         name={pending.isSender ? "clock-outline" : "email-outline"}
                         size={10}
-                        color={pending.isSender ? "#FCD34D" : "#FB7185"}
+                        color={pending.isSender ? "#FCD34D" : "#FFFFFF"}
                       />
                     </View>
                   </View>
                 ) : (
                   <View style={styles.satelliteEmptyWrap}>
-                    <AppIcon name="plus" size={16} color="#EDE0E5" />
+                    <AppIcon name="plus" size={16} color="#F3F4F6" />
                   </View>
                 )}
               </Pressable>
@@ -832,7 +832,7 @@ export default function AffinityScreen() {
                       </View>
                     </View>
 
-                    <AppIcon name="chevron-right" size={18} color="#8F727F" />
+                    <AppIcon name="chevron-right" size={18} color="#8E93A2" />
                   </Pressable>
                 );
               })}
@@ -854,7 +854,7 @@ export default function AffinityScreen() {
                       <AppIcon
                         name={inv.isSender ? "clock-outline" : "email-outline"}
                         size={12}
-                        color={inv.isSender ? "#FCD34D" : "#FB7185"}
+                        color={inv.isSender ? "#FCD34D" : "#FFFFFF"}
                       />
                       <Text style={styles.pendingTimeText}>
                         {inv.isSender ? `Menunggu respon · ${inv.sentAt}` : `Mengajak kamu · ${inv.sentAt}`}
@@ -868,7 +868,7 @@ export default function AffinityScreen() {
                         style={styles.cancelPillBtn}
                         onPress={() => handleCancelPending(inv)}
                       >
-                        <AppIcon name="close" size={13} color="#EDE0E5" />
+                        <AppIcon name="close" size={13} color="#F3F4F6" />
                         <Text style={styles.cancelPillText}>Batalkan</Text>
                       </Pressable>
                     ) : (
@@ -877,14 +877,14 @@ export default function AffinityScreen() {
                           style={styles.acceptPillBtn}
                           onPress={() => handleAcceptPending(inv)}
                         >
-                          <AppIcon name="check" size={13} color="#0D080B" />
+                          <AppIcon name="check" size={13} color="#121316" />
                           <Text style={styles.acceptPillText}>Terima</Text>
                         </Pressable>
                         <Pressable
                           style={styles.cancelPillBtn}
                           onPress={() => handleRejectPending(inv)}
                         >
-                          <AppIcon name="close" size={13} color="#EDE0E5" />
+                          <AppIcon name="close" size={13} color="#F3F4F6" />
                           <Text style={styles.cancelPillText}>Tolak</Text>
                         </Pressable>
                       </>
@@ -912,7 +912,7 @@ export default function AffinityScreen() {
                   setInviteModalSlot(activeBonds.length + activePending.length);
                 }}
               >
-                <AppIcon name="account-plus" size={18} color="#0D080B" />
+                <AppIcon name="account-plus" size={18} color="#121316" />
                 <Text style={styles.primaryWhiteBtnText}>
                   Undang Teman ({remainingSlots} slot tersisa)
                 </Text>
@@ -1084,7 +1084,7 @@ export default function AffinityScreen() {
             style={({ pressed }) => [styles.iconBtn, pressed && styles.btnPressed]}
             hitSlop={10}
           >
-            <AppIcon name="arrow-left" size={20} color="#EDE0E5" />
+            <AppIcon name="arrow-left" size={20} color="#F3F4F6" />
           </Pressable>
           <Text style={styles.topBarTitle}>
             {activeScreen === "leaderboard" ? "TOP AFINITAS" : "AFFINITY"}
@@ -1102,7 +1102,7 @@ export default function AffinityScreen() {
                 }}
                 style={({ pressed }) => [styles.iconBtn, pressed && styles.btnPressed]}
               >
-                <AppIcon name="trophy-outline" size={18} color="#EDE0E5" />
+                <AppIcon name="trophy-outline" size={18} color="#F3F4F6" />
               </Pressable>
 
               <Pressable
@@ -1113,7 +1113,7 @@ export default function AffinityScreen() {
                 }}
                 style={({ pressed }) => [styles.iconBtn, pressed && styles.btnPressed]}
               >
-                <AppIcon name="history" size={18} color="#EDE0E5" />
+                <AppIcon name="history" size={18} color="#F3F4F6" />
               </Pressable>
             </>
           )}
@@ -1129,7 +1129,7 @@ export default function AffinityScreen() {
             <AppIcon
               name={privacy === "publik" ? "earth" : privacy === "teman" ? "account-multiple" : "lock"}
               size={14}
-              color="#EDE0E5"
+              color="#F3F4F6"
             />
             <Text style={styles.privacyBtnText}>
               {privacy === "publik" ? "Publik" : privacy === "teman" ? "Teman saja" : "Privat"}
@@ -1178,7 +1178,7 @@ export default function AffinityScreen() {
                     </View>
                   </View>
                   <Pressable onPress={() => setSelectedBond(null)} style={styles.sheetCloseBtn}>
-                    <AppIcon name="close" size={18} color="#C4A6B3" />
+                    <AppIcon name="close" size={18} color="#9CA3AF" />
                   </Pressable>
                 </View>
 
@@ -1196,7 +1196,7 @@ export default function AffinityScreen() {
                       </View>
                       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-                          <AppIcon name="fire" size={14} color="#EDE0E5" />
+                          <AppIcon name="fire" size={14} color="#F3F4F6" />
                           <Text style={styles.summaryInteraksiText}>{selectedBond.streakDays} interaksi</Text>
                         </View>
                         <Text style={styles.summaryIntoLvText}>
@@ -1211,7 +1211,7 @@ export default function AffinityScreen() {
                 <View style={{ gap: 10, marginTop: 16 }}>
                   {isGreetedToday(selectedBond.lastInteractionAt) ? (
                     <View style={styles.greetedDisabledBtn}>
-                      <AppIcon name="check-circle-outline" size={16} color="#C4A6B3" />
+                      <AppIcon name="check-circle-outline" size={16} color="#9CA3AF" />
                       <Text style={styles.greetedDisabledText}>Sudah Disapa Hari Ini (1x/hari)</Text>
                     </View>
                   ) : (
@@ -1219,7 +1219,7 @@ export default function AffinityScreen() {
                       style={({ pressed }) => [styles.primaryWhiteBtn, pressed && styles.btnPressed]}
                       onPress={() => handleBoostXp(selectedBond.id)}
                     >
-                      <AppIcon name="star-four-points" size={16} color="#0D080B" />
+                      <AppIcon name="star-four-points" size={16} color="#121316" />
                       <Text style={styles.primaryWhiteBtnText}>Kirim Sapaan (+200 XP)</Text>
                     </Pressable>
                   )}
@@ -1229,7 +1229,7 @@ export default function AffinityScreen() {
                       style={styles.unlinkBtn}
                       onPress={() => setConfirmEndBond(true)}
                     >
-                      <AppIcon name="link-off" size={16} color="#FB7185" />
+                      <AppIcon name="link-off" size={16} color="#FFFFFF" />
                       <Text style={styles.unlinkBtnText}>Putuskan Bond</Text>
                     </Pressable>
                   ) : (
@@ -1269,16 +1269,16 @@ export default function AffinityScreen() {
                 </Text>
               </View>
               <Pressable onPress={() => setInviteModalSlot(null)} style={styles.sheetCloseBtn}>
-                <AppIcon name="close" size={18} color="#C4A6B3" />
+                <AppIcon name="close" size={18} color="#9CA3AF" />
               </Pressable>
             </View>
 
             {/* Search Input */}
             <View style={styles.searchBarWrap}>
-              <AppIcon name="magnify" size={16} color="#8F727F" />
+              <AppIcon name="magnify" size={16} color="#8E93A2" />
               <TextInput
                 placeholder="Cari teman..."
-                placeholderTextColor="#8F727F"
+                placeholderTextColor="#8E93A2"
                 value={friendSearchQuery}
                 onChangeText={setFriendSearchQuery}
                 style={styles.searchInput}
@@ -1288,7 +1288,7 @@ export default function AffinityScreen() {
             <ScrollView style={{ maxHeight: 300 }}>
               {friendsList.length === 0 ? (
                 <View style={styles.emptyFriendsBox}>
-                  <AppIcon name="account-search-outline" size={32} color="#8F727F" />
+                  <AppIcon name="account-search-outline" size={32} color="#8E93A2" />
                   <Text style={styles.emptyFriendsTitle}>Belum Ada Teman</Text>
                   <Text style={styles.emptyFriendsSub}>
                     Kunjungi profil pengguna lain dan tambahkan sebagai teman untuk mengajak mereka ke lingkaran afinitas!
@@ -1322,7 +1322,7 @@ export default function AffinityScreen() {
                         icon: "check-circle-outline",
                         badgeStyle: styles.inviteBadgeDefault,
                         textStyle: styles.inviteBadgeTextDefault,
-                        iconColor: "#C4A6B3",
+                        iconColor: "#9CA3AF",
                       };
                     } else if (pending) {
                       statusBadge = {
@@ -1346,7 +1346,7 @@ export default function AffinityScreen() {
                         icon: "alert-circle-outline",
                         badgeStyle: styles.inviteBadgeDefault,
                         textStyle: styles.inviteBadgeTextDefault,
-                        iconColor: "#C4A6B3",
+                        iconColor: "#9CA3AF",
                       };
                     }
 
@@ -1380,7 +1380,7 @@ export default function AffinityScreen() {
                             style={styles.invitePillBtn}
                             onPress={() => handleSendInvite(friend)}
                           >
-                            <AppIcon name="send" size={13} color="#0D080B" />
+                            <AppIcon name="send" size={13} color="#121316" />
                             <Text style={styles.invitePillText}>Ajak</Text>
                           </Pressable>
                         )}
@@ -1405,7 +1405,7 @@ export default function AffinityScreen() {
                 <Text style={styles.sheetSubText}>Atur siapa yang bisa melihat daftar bond di profilmu.</Text>
               </View>
               <Pressable onPress={() => setIsPrivacyOpen(false)} style={styles.sheetCloseBtn}>
-                <AppIcon name="close" size={18} color="#C4A6B3" />
+                <AppIcon name="close" size={18} color="#9CA3AF" />
               </Pressable>
             </View>
 
@@ -1421,7 +1421,7 @@ export default function AffinityScreen() {
                     <AppIcon
                       name={opt === "publik" ? "earth" : opt === "teman" ? "account-multiple" : "lock"}
                       size={18}
-                      color={isSelected ? "#FFFFFF" : "#C4A6B3"}
+                      color={isSelected ? "#FFFFFF" : "#9CA3AF"}
                     />
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={styles.privacyOptionTitle}>
@@ -1458,7 +1458,7 @@ export default function AffinityScreen() {
                 </Text>
               </View>
               <Pressable onPress={() => setIsHistoryOpen(false)} style={styles.sheetCloseBtn}>
-                <AppIcon name="close" size={18} color="#C4A6B3" />
+                <AppIcon name="close" size={18} color="#9CA3AF" />
               </Pressable>
             </View>
 
@@ -1483,7 +1483,7 @@ export default function AffinityScreen() {
             <ScrollView style={{ maxHeight: 300 }}>
               {history.filter((h) => h.category === historyFilterCategory).length === 0 ? (
                 <View style={{ paddingVertical: 24, alignItems: "center" }}>
-                  <Text style={{ fontSize: 12, color: "#8F727F" }}>
+                  <Text style={{ fontSize: 12, color: "#8E93A2" }}>
                     Tidak ada riwayat untuk kategori ini.
                   </Text>
                 </View>
@@ -1512,7 +1512,7 @@ export default function AffinityScreen() {
 const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   // TopBar
   topBar: {
@@ -1557,12 +1557,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.09)",
-    backgroundColor: "#11151E",
+    backgroundColor: "#16181E",
   },
   privacyBtnText: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   btnPressed: {
     opacity: 0.7,
@@ -1583,7 +1583,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.07)",
-    backgroundColor: "#11151E",
+    backgroundColor: "#16181E",
     padding: 16,
   },
   constellationHeader: {
@@ -1601,12 +1601,12 @@ const styles = StyleSheet.create({
   },
   constellationHandle: {
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 2,
   },
   totalBondLabel: {
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   totalBondCount: {
     fontSize: 14,
@@ -1675,7 +1675,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: -6,
     alignSelf: "center",
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.2)",
     paddingHorizontal: 4,
@@ -1685,7 +1685,7 @@ const styles = StyleSheet.create({
   satLevelText: {
     fontSize: 9,
     fontWeight: "700",
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   satellitePendingWrap: {
     width: "100%",
@@ -1701,7 +1701,7 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.2)",
     alignItems: "center",
@@ -1745,7 +1745,7 @@ const styles = StyleSheet.create({
   },
   segmentedDock: {
     flexDirection: "row",
-    backgroundColor: "#11151E",
+    backgroundColor: "#16181E",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.07)",
     borderRadius: 16,
@@ -1778,24 +1778,24 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   segmentedLabelMuted: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   segmentedCount: {
     fontSize: 10,
     fontWeight: "500",
   },
   segmentedCountSelected: {
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   segmentedCountMuted: {
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   // Active Tier Card
   activeTierCard: {
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.07)",
-    backgroundColor: "#11151E",
+    backgroundColor: "#16181E",
     overflow: "hidden",
   },
   activeTierHeader: {
@@ -1815,18 +1815,18 @@ const styles = StyleSheet.create({
   },
   activeTierSub: {
     fontSize: 12,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   activeTierDesc: {
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 2,
     lineHeight: 16,
   },
   activeTierRatio: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   hairlineList: {
     // Divider via borderBottom on items
@@ -1883,7 +1883,7 @@ const styles = StyleSheet.create({
   },
   listBondStats: {
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   listProgressBarBg: {
     height: 4,
@@ -1894,7 +1894,7 @@ const styles = StyleSheet.create({
   },
   listProgressBarFill: {
     height: "100%",
-    backgroundColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
     borderRadius: 2,
   },
   pendingTimeText: {
@@ -1913,7 +1913,7 @@ const styles = StyleSheet.create({
   acceptPillText: {
     fontSize: 11.5,
     fontWeight: "600",
-    color: "#0D080B",
+    color: "#121316",
   },
   cancelPillBtn: {
     flexDirection: "row",
@@ -1929,7 +1929,7 @@ const styles = StyleSheet.create({
   cancelPillText: {
     fontSize: 11.5,
     fontWeight: "500",
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   emptyStateBox: {
     paddingHorizontal: 16,
@@ -1938,7 +1938,7 @@ const styles = StyleSheet.create({
   },
   emptyStateText: {
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   tierFooterAction: {
     borderTopWidth: 1,
@@ -1958,7 +1958,7 @@ const styles = StyleSheet.create({
   primaryWhiteBtnText: {
     fontSize: 13.5,
     fontWeight: "600",
-    color: "#0D080B",
+    color: "#121316",
   },
   greetedDisabledBtn: {
     height: 44,
@@ -1974,19 +1974,19 @@ const styles = StyleSheet.create({
   greetedDisabledText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   tierFullText: {
     textAlign: "center",
     fontSize: 12,
     fontWeight: "500",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     paddingVertical: 6,
   },
   // Top Afinitas (Leaderboard - Identik Screenshot)
   leaderboardSub: {
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 4,
     marginBottom: 4,
   },
@@ -2007,7 +2007,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
-    backgroundColor: "#11151E",
+    backgroundColor: "#16181E",
   },
   gridFilterTabActive: {
     borderColor: "rgba(255, 255, 255, 0.28)",
@@ -2020,7 +2020,7 @@ const styles = StyleSheet.create({
   gridFilterText: {
     fontSize: 12.5,
     fontWeight: "600",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   gridFilterTextActive: {
     color: "#FFFFFF",
@@ -2030,7 +2030,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
-    backgroundColor: "#11151E",
+    backgroundColor: "#16181E",
     padding: 24,
     alignItems: "center",
     justifyContent: "center",
@@ -2045,7 +2045,7 @@ const styles = StyleSheet.create({
   },
   emptyLeaderboardDesc: {
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 18,
   },
@@ -2053,7 +2053,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
-    backgroundColor: "#11151E",
+    backgroundColor: "#16181E",
     padding: 18,
     marginBottom: 14,
   },
@@ -2072,7 +2072,7 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: 27,
     borderWidth: 2,
-    borderColor: "#11151E",
+    borderColor: "#16181E",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2095,7 +2095,7 @@ const styles = StyleSheet.create({
     fontSize: 10.5,
     fontWeight: "700",
     letterSpacing: 0.8,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   spotlightDuoNames: {
     fontSize: 16,
@@ -2114,7 +2114,7 @@ const styles = StyleSheet.create({
   },
   spotlightLevelText: {
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     fontWeight: "500",
   },
   spotlightBottomRow: {
@@ -2127,7 +2127,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.8,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   totalAfinitasValRow: {
     flexDirection: "row",
@@ -2155,7 +2155,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
-    backgroundColor: "#11151E",
+    backgroundColor: "#16181E",
     overflow: "hidden",
     marginBottom: 20,
   },
@@ -2171,7 +2171,7 @@ const styles = StyleSheet.create({
   restRankNumber: {
     fontSize: 13.5,
     fontWeight: "700",
-    color: "#FB7185",
+    color: "#FFFFFF",
     width: 26,
   },
   duoMiniOverlap: {
@@ -2184,7 +2184,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: "#11151E",
+    borderColor: "#16181E",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2205,7 +2205,7 @@ const styles = StyleSheet.create({
   },
   restLevelText: {
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   restXpCol: {
     alignItems: "flex-end",
@@ -2217,7 +2217,7 @@ const styles = StyleSheet.create({
   },
   restXpSub: {
     fontSize: 10,
-    color: "#8F727F",
+    color: "#8E93A2",
     fontWeight: "700",
     marginTop: 1,
   },
@@ -2228,7 +2228,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   sheetContent: {
-    backgroundColor: "#11151E",
+    backgroundColor: "#16181E",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderWidth: 1,
@@ -2258,7 +2258,7 @@ const styles = StyleSheet.create({
   },
   sheetSubText: {
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   sheetCloseBtn: {
     width: 36,
@@ -2301,7 +2301,7 @@ const styles = StyleSheet.create({
   },
   summaryXpText: {
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   summaryBarBg: {
     height: 6,
@@ -2316,11 +2316,11 @@ const styles = StyleSheet.create({
   },
   summaryInteraksiText: {
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   summaryIntoLvText: {
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   unlinkBtn: {
     height: 44,
@@ -2335,18 +2335,18 @@ const styles = StyleSheet.create({
   unlinkBtnText: {
     fontSize: 13.5,
     fontWeight: "500",
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   confirmEndCard: {
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.3)",
+    borderColor: "rgba(239, 68, 68, 0.3)",
     backgroundColor: "#171118",
     padding: 14,
   },
   confirmEndDesc: {
     fontSize: 12,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     lineHeight: 18,
   },
   cancelEndBtn: {
@@ -2362,13 +2362,13 @@ const styles = StyleSheet.create({
   cancelEndBtnText: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   doEndBtn: {
     flex: 1,
     height: 40,
     borderRadius: 10,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2405,7 +2405,7 @@ const styles = StyleSheet.create({
   },
   friendBioText: {
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginTop: 2,
   },
   invitePillBtn: {
@@ -2420,7 +2420,7 @@ const styles = StyleSheet.create({
   invitePillText: {
     fontSize: 11.5,
     fontWeight: "600",
-    color: "#0D080B",
+    color: "#121316",
   },
   inviteStatusBadge: {
     flexDirection: "row",
@@ -2436,9 +2436,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.1)",
   },
   inviteBadgeWarning: {
-    backgroundColor: "rgba(245, 158, 11, 0.12)",
+    backgroundColor: "rgba(245, 197, 24, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.28)",
+    borderColor: "rgba(245, 197, 24, 0.28)",
   },
   inviteBadgeDanger: {
     backgroundColor: "rgba(239, 68, 68, 0.12)",
@@ -2448,7 +2448,7 @@ const styles = StyleSheet.create({
   inviteBadgeTextDefault: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   inviteBadgeTextWarning: {
     fontSize: 11,
@@ -2473,7 +2473,7 @@ const styles = StyleSheet.create({
   },
   emptyFriendsSub: {
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 18,
   },
@@ -2504,7 +2504,7 @@ const styles = StyleSheet.create({
   },
   privacyOptionDesc: {
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 2,
   },
   // History Sheet
@@ -2529,10 +2529,10 @@ const styles = StyleSheet.create({
   historyCatText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   historyCatTextActive: {
-    color: "#0D080B",
+    color: "#121316",
   },
   historyRowItem: {
     paddingVertical: 10,
@@ -2546,12 +2546,12 @@ const styles = StyleSheet.create({
   },
   historyReasonText: {
     fontSize: 11.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     marginTop: 2,
   },
   historyTimeText: {
     fontSize: 10.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginTop: 3,
   },
 });

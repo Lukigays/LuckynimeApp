@@ -83,14 +83,14 @@ export function HomePublicDiscussionBar() {
       ]}
     >
       <LinearGradient
-        colors={["rgba(244, 63, 94, 0.16)", "rgba(25, 16, 22, 0.94)"]}
+        colors={["rgba(239, 68, 68, 0.16)", "rgba(18, 19, 22, 0.94)"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
 
       <View style={styles.iconBadge}>
-        <AppIcon name="chat" size={18} color="#FB7185" />
+        <AppIcon name="chat" size={18} color="#FFFFFF" />
         <View style={styles.liveDot} />
       </View>
 
@@ -111,7 +111,7 @@ export function HomePublicDiscussionBar() {
 
       <View style={styles.joinPill}>
         <Text style={styles.joinText}>Gabung</Text>
-        <AppIcon name="arrow-right" size={12} color="#FFF5F7" />
+        <AppIcon name="arrow-right" size={12} color="#F3F4F6" />
       </View>
     </Pressable>
   );
@@ -121,9 +121,9 @@ const styles = StyleSheet.create({
   card: {
     minHeight: 58,
     borderRadius: 18,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.24)",
+    borderColor: "rgba(255, 255, 255, 0.24)",
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 13,
@@ -139,9 +139,9 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: "rgba(244, 63, 94, 0.16)",
+    backgroundColor: "rgba(239, 68, 68, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.32)",
+    borderColor: "rgba(255, 255, 255, 0.32)",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -153,9 +153,9 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#34D399",
+    backgroundColor: "#10B981",
     borderWidth: 1.5,
-    borderColor: "#191016",
+    borderColor: "#1B1D22",
   },
   bodyCol: {
     flex: 1,
@@ -168,10 +168,10 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   loungeTag: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     letterSpacing: 0.9,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   snippetRow: {
     flexDirection: "row",
@@ -179,21 +179,21 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   senderText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#FBBF24",
+    color: "#F5C518",
     maxWidth: 96,
     flexShrink: 0,
   },
   separator: {
-    color: "#7F6270",
+    color: "#6B7280",
     marginHorizontal: 5,
     fontSize: 11,
   },
   snippetText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 12.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     flex: 1,
   },
   joinPill: {
@@ -203,11 +203,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 99,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
   },
   joinText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
 });

@@ -74,9 +74,9 @@ const statusLabelsId: Record<ListStatus, string> = {
 
 const statusColors: Record<ListStatus, { bg: string; text: string; border: string }> = {
   CURRENT: { bg: "rgba(16, 185, 129, 0.12)", text: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
-  PLANNING: { bg: "rgba(244, 63, 94, 0.12)", text: "#FB7185", border: "rgba(244, 63, 94, 0.3)" },
-  COMPLETED: { bg: "rgba(168, 85, 247, 0.12)", text: "#C084FC", border: "rgba(168, 85, 247, 0.3)" },
-  PAUSED: { bg: "rgba(100, 116, 139, 0.12)", text: "#C4A6B3", border: "rgba(100, 116, 139, 0.3)" },
+  PLANNING: { bg: "rgba(239, 68, 68, 0.12)", text: "#FFFFFF", border: "rgba(239, 68, 68, 0.3)" },
+  COMPLETED: { bg: "rgba(156,163,175, 0.12)", text: "#9CA3AF", border: "rgba(156,163,175, 0.3)" },
+  PAUSED: { bg: "rgba(100, 116, 139, 0.12)", text: "#9CA3AF", border: "rgba(100, 116, 139, 0.3)" },
   DROPPED: { bg: "rgba(239, 68, 68, 0.12)", text: "#EF4444", border: "rgba(239, 68, 68, 0.3)" },
   REPEATING: { bg: "rgba(16, 185, 129, 0.12)", text: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
 };
@@ -407,7 +407,7 @@ export function LibraryView({
             <AppIcon
               name="trash-can-outline"
               size={16}
-              color={removing ? "#EF4444" : "#C4A6B3"}
+              color={removing ? "#EF4444" : "#9CA3AF"}
             />
           </Pressable>
         ) : null}
@@ -515,7 +515,7 @@ export function LibraryView({
               .join(" · ")}
           </Text>
         </View>
-        <AppIcon name="chevron-right" size={18} color="#8F727F" />
+        <AppIcon name="chevron-right" size={18} color="#8E93A2" />
       </Pressable>
     );
   };
@@ -754,14 +754,14 @@ export function LibraryView({
           <View style={styles.flex} />
         ) : (
           <View style={styles.searchGlassBar}>
-            <AppIcon name="magnify" size={16} color="#8F727F" />
+            <AppIcon name="magnify" size={16} color="#8E93A2" />
             <TextInput
               accessibilityRole="search"
               accessibilityLabel="Cari anime"
               value={search}
               onChangeText={setSearch}
               placeholder={tab === "history" ? "Cari riwayat anime..." : "Cari anime tersimpan..."}
-              placeholderTextColor="#8F727F"
+              placeholderTextColor="#8E93A2"
               style={styles.searchInput}
               returnKeyType="search"
               autoCapitalize="none"
@@ -774,7 +774,7 @@ export function LibraryView({
                 hitSlop={8}
                 onPress={() => setSearch("")}
               >
-                <AppIcon name="close" size={14} color="#C4A6B3" />
+                <AppIcon name="close" size={14} color="#9CA3AF" />
               </Pressable>
             ) : null}
           </View>
@@ -866,7 +866,7 @@ export function LibraryView({
                     <AppIcon
                       name={option === "grid" ? "view-grid-outline" : "view-list-outline"}
                       size={15}
-                      color={isActive ? "#F5E9EE" : "#C4A6B3"}
+                      color={isActive ? "#F3F4F6" : "#9CA3AF"}
                     />
                   </Pressable>
                 );
@@ -968,7 +968,7 @@ export function LibraryView({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   btnPressed: {
     opacity: 0.84,
@@ -991,13 +991,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     borderLeftWidth: 3.5,
-    borderLeftColor: "#F43F5E",
+    borderLeftColor: "#EF4444",
     paddingLeft: 10,
   },
   topHeaderTitleText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 23,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     letterSpacing: -0.4,
   },
   topHeaderActions: {
@@ -1009,9 +1009,9 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1019,9 +1019,9 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.28)",
+    borderColor: "rgba(255, 255, 255, 0.28)",
     alignItems: "center",
     justifyContent: "center",
     ...(Platform.OS === "web" ? ({ cursor: "pointer" } as any) : {}),
@@ -1042,24 +1042,24 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 9,
     borderRadius: 13,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.16)",
+    borderColor: "rgba(255, 255, 255, 0.16)",
     alignItems: "center",
     justifyContent: "center",
   },
   tabPillActive: {
-    backgroundColor: "#E11D48",
-    borderColor: "#FDA4AF",
+    backgroundColor: "#EF4444",
+    borderColor: "#D1D5DB",
   },
   tabPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#9A7D8A",
+    color: "#8E93A2",
   },
   tabPillTextActive: {
     color: "#FFFFFF",
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
   },
 
   // ─── 2. SECTION HEADER ───
@@ -1072,24 +1072,24 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   sectionTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 15,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     letterSpacing: -0.2,
     flex: 1,
   },
   countBadge: {
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.28)",
+    borderColor: "rgba(255, 255, 255, 0.28)",
     borderRadius: 99,
     paddingHorizontal: 11,
     paddingVertical: 4,
   },
   countBadgeText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── 3. CONTROLS ROW: SEARCH & OFFLINE ───
@@ -1109,13 +1109,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.20)",
-    backgroundColor: "#180F15",
+    borderColor: "rgba(255, 255, 255, 0.20)",
+    backgroundColor: "#1B1D22",
   },
   searchInput: {
     flex: 1,
     fontFamily: "Nunito-SemiBold",
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 13,
   },
   offlineBtn: {
@@ -1126,12 +1126,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.26)",
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    borderColor: "rgba(255, 255, 255, 0.26)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
   },
   offlineBtnText: {
-    fontFamily: "Nunito-ExtraBold",
-    color: "#FDA4AF",
+    fontFamily: "Nunito-Bold",
+    color: "#D1D5DB",
     fontSize: 11,
     letterSpacing: 0.5,
   },
@@ -1153,8 +1153,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 99,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.16)",
-    backgroundColor: "#180F15",
+    borderColor: "rgba(255, 255, 255, 0.16)",
+    backgroundColor: "#1B1D22",
   },
   iconChip: {
     paddingHorizontal: 9,
@@ -1163,18 +1163,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chipActive: {
-    borderColor: "#FDA4AF",
-    backgroundColor: "#F43F5E",
+    borderColor: "#D1D5DB",
+    backgroundColor: "#EF4444",
   },
   chipText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#9A7D8A",
+    color: "#8E93A2",
     letterSpacing: 0.4,
   },
   chipTextActive: {
     color: "#FFFFFF",
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
   },
 
   // ─── 4.5 SAVED STATUS CHIPS ───
@@ -1190,22 +1190,22 @@ const styles = StyleSheet.create({
     paddingVertical: 5.5,
     borderRadius: 99,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.16)",
-    backgroundColor: "#180F15",
+    borderColor: "rgba(255, 255, 255, 0.16)",
+    backgroundColor: "#1B1D22",
   },
   statusChipActive: {
-    borderColor: "#FDA4AF",
-    backgroundColor: "rgba(244, 63, 94, 0.22)",
+    borderColor: "#D1D5DB",
+    backgroundColor: "rgba(239, 68, 68, 0.22)",
   },
   statusChipText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#9A7D8A",
+    color: "#8E93A2",
     letterSpacing: 0.3,
   },
   statusChipTextActive: {
-    color: "#FFF5F7",
-    fontFamily: "Nunito-ExtraBold",
+    color: "#F3F4F6",
+    fontFamily: "Nunito-Bold",
   },
   statusBadgeSmall: {
     paddingHorizontal: 6.5,
@@ -1214,7 +1214,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   statusBadgeSmallText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     letterSpacing: 0.2,
   },
@@ -1243,12 +1243,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
-    backgroundColor: "#180F15",
+    borderColor: "rgba(255, 255, 255, 0.18)",
+    backgroundColor: "#1B1D22",
   },
   alertActionPillActive: {
-    borderColor: "#FDA4AF",
-    backgroundColor: "#F43F5E",
+    borderColor: "#D1D5DB",
+    backgroundColor: "#EF4444",
   },
   alertActionPillDisabled: {
     opacity: 0.35,
@@ -1256,12 +1256,12 @@ const styles = StyleSheet.create({
   alertActionPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     letterSpacing: 0.4,
   },
   alertActionPillTextActive: {
     color: "#FFFFFF",
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
   },
 
   deleteBtnTop: {
@@ -1282,9 +1282,9 @@ const styles = StyleSheet.create({
     ...(Platform.OS === "web" ? ({ cursor: "not-allowed" } as any) : {}),
   },
   deleteBtnTopText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 0.4,
   },
 
@@ -1310,10 +1310,10 @@ const styles = StyleSheet.create({
   },
 
   glassCard: {
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.17)",
+    borderColor: "rgba(255, 255, 255, 0.17)",
     padding: 11,
     flexDirection: "row",
     alignItems: "center",
@@ -1324,9 +1324,9 @@ const styles = StyleSheet.create({
     width: 68,
     height: 96,
     borderRadius: 12,
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.20)",
+    borderColor: "rgba(255, 255, 255, 0.20)",
   },
   cardBody: {
     flex: 1,
@@ -1339,35 +1339,35 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   epBadge: {
-    backgroundColor: "rgba(244, 63, 94, 0.20)",
+    backgroundColor: "rgba(239, 68, 68, 0.20)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.34)",
+    borderColor: "rgba(255, 255, 255, 0.34)",
     borderRadius: 6,
     paddingHorizontal: 7,
     paddingVertical: 2,
   },
   epBadgeText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#FDA4AF",
+    color: "#D1D5DB",
   },
   resumeStatusText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   typeBadge: {
-    backgroundColor: "rgba(255, 245, 247, 0.08)",
+    backgroundColor: "rgba(243,244,246, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
     borderRadius: 6,
     paddingHorizontal: 7,
     paddingVertical: 2,
   },
   typeBadgeText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   scoreBadge: {
     flexDirection: "row",
@@ -1375,35 +1375,35 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   scoreStarIcon: {
-    color: "#FBBF24",
+    color: "#F5C518",
     fontSize: 11,
   },
   scoreBadgeText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#FDE68A",
+    color: "#F5C518",
   },
   cardTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     letterSpacing: -0.2,
   },
   cardSubText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   progressTrack: {
     height: 4,
     borderRadius: 99,
-    backgroundColor: "rgba(255, 245, 247, 0.14)",
+    backgroundColor: "rgba(243,244,246, 0.14)",
     overflow: "hidden",
     marginVertical: 2,
   },
   progressFill: {
     height: "100%",
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     borderRadius: 99,
   },
   historyContentWrap: {
@@ -1419,18 +1419,18 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.24)",
+    borderColor: "rgba(255, 255, 255, 0.24)",
     ...(Platform.OS === "web" ? ({ cursor: "pointer" } as any) : {}),
   },
 
   // Grid Card
   gridCard: {
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.17)",
+    borderColor: "rgba(255, 255, 255, 0.17)",
     padding: 8,
     gap: 6,
     flexGrow: 0,
@@ -1441,43 +1441,43 @@ const styles = StyleSheet.create({
     aspectRatio: 2 / 3,
     borderRadius: 12,
     overflow: "hidden",
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
   gridFallbackLetter: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 32,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   gridBadge: {
     position: "absolute",
     top: 7,
     right: 7,
-    backgroundColor: "rgba(225, 29, 72, 0.88)",
+    backgroundColor: "rgba(239, 68, 68, 0.88)",
     borderWidth: 1,
-    borderColor: "rgba(253, 164, 175, 0.45)",
+    borderColor: "rgba(255,255,255, 0.45)",
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 6,
   },
   gridBadgeText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     color: "#FFFFFF",
     fontSize: 9.5,
   },
   gridTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     lineHeight: 16,
   },
   gridMeta: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   // Alert Card
@@ -1492,20 +1492,20 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "rgba(251, 113, 133, 0.25)",
+    backgroundColor: "rgba(255, 255, 255, 0.25)",
   },
   alertDotUnread: {
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
   },
   alertText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     lineHeight: 18,
   },
   alertTimeText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#9A7D8A",
+    color: "#8E93A2",
   },
 });

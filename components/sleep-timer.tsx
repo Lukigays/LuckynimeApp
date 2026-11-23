@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   presetBtn: { minWidth: 50, minHeight: 32, alignItems: "center", justifyContent: "center", paddingHorizontal: 10, borderWidth: 1, borderColor: nothing.line, borderRadius: 8 },
   presetText: { color: nothing.white, fontWeight: "700", fontSize: 12, letterSpacing: 0.2 },
   pressed: nothing.pressed,
-  activeTimer: { flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, backgroundColor: "rgba(255,77,77,0.12)", borderWidth: 1, borderColor: "rgba(255,77,77,0.3)" },
+  activeTimer: { flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, backgroundColor: "rgba(239,68,68,0.12)", borderWidth: 1, borderColor: "rgba(239,68,68,0.3)" },
   timerText: { color: nothing.red, fontWeight: "800", fontSize: 14, letterSpacing: 0.3, flex: 1, fontVariant: ["tabular-nums"] },
   cancelBtn: { padding: 4 },
   pill: { position: "absolute", zIndex: 4, top: 52, left: 12, flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 14, backgroundColor: nothing.white },

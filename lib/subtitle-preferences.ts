@@ -103,7 +103,7 @@ export const SUBTITLE_FONTS: { id: SubtitleFont; label: string; family: string }
   { id: "default", label: "System", family: "System" },
   { id: "monospace", label: "Mono", family: "monospace" },
   { id: "serif", label: "Serif", family: "serif" },
-  { id: "rounded", label: "Rounded", family: "Caveat-Bold" },
+  { id: "rounded", label: "Rounded", family: "Nunito-Bold" },
 ];
 
 export const FONT_SIZE_PRESETS = [12, 14, 15, 17, 19, 22];

@@ -142,7 +142,7 @@ export default function SupportScreen() {
 
           {/* URL display */}
           <View style={styles.urlBox}>
-            <AppIcon name="earth" size={14} color="#EDE0E5" />
+            <AppIcon name="earth" size={14} color="#F3F4F6" />
             <Text style={styles.urlText} numberOfLines={1}>{displayUrl}</Text>
           </View>
 
@@ -161,7 +161,7 @@ export default function SupportScreen() {
               onPress={() => void copySaweriaLink()}
               style={({ pressed }) => [styles.secondaryBtn, pressed && { opacity: 0.7 }]}
             >
-              <AppIcon name="content-copy" size={15} color={copied ? "#10B981" : "#EDE0E5"} />
+              <AppIcon name="content-copy" size={15} color={copied ? "#10B981" : "#F3F4F6"} />
             </Pressable>
           </View>
 
@@ -179,7 +179,7 @@ export default function SupportScreen() {
           {(config.perks && config.perks.length > 0 ? config.perks : DEFAULT_SUPPORT_CONFIG.perks).map((p) => (
             <View key={p.text} style={styles.perkRow}>
               <View style={styles.perkIconWrap}>
-                <AppIcon name={p.icon || "heart"} size={15} color="#F5E9EE" />
+                <AppIcon name={p.icon || "heart"} size={15} color="#F3F4F6" />
               </View>
               <Text style={styles.perkText}>{p.text}</Text>
             </View>
@@ -208,7 +208,7 @@ export default function SupportScreen() {
   );
 }
 
-const SILVER_ACCENT = "#F5E9EE";
+const SILVER_ACCENT = "#F3F4F6";
 
 const styles = StyleSheet.create({
   header: {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 6,
     paddingBottom: 14,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.05)",
   },
@@ -242,11 +242,11 @@ const styles = StyleSheet.create({
   headerEyebrow: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     letterSpacing: 1,
   },
   headerText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 20,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   },
   gifOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(13, 8, 11,0.55)",
+    backgroundColor: "rgba(18,19,22,0.55)",
   },
   gifTextOverlay: {
     position: "absolute",
@@ -285,13 +285,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   gifBadge: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     letterSpacing: 1.2,
   },
   gifTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 22,
     color: "#FFFFFF",
     letterSpacing: -0.4,
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   },
   saweriaEmoji: { fontSize: 28 },
   saweriaTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 22,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
   cardDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 13.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 20,
   },
   urlBox: {
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
   urlText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     flex: 1,
   },
   actionRow: {
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
       : {}),
   },
   primaryBtnText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     color: "#FFFFFF",
     letterSpacing: 0.2,
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
   perksTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   perkText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     flex: 1,
   },
 
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
   thankyouText: {
     fontFamily: "Nunito-Regular",
     fontSize: 14,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 22,
     paddingHorizontal: 16,
@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
   footnote: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     textAlign: "center",
     paddingHorizontal: 16,
     lineHeight: 17,

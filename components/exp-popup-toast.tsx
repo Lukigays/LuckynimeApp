@@ -208,7 +208,7 @@ export const ExpPopupToast = memo(function ExpPopupToast({
         {/* Banner Khusus Ketika LEVEL UP */}
         {isLevelUp ? (
           <View style={styles.levelUpBanner}>
-            <AppIcon name="party-popper" size={12} color="#FBBF24" />
+            <AppIcon name="party-popper" size={12} color="#F5C518" />
             <Text style={styles.levelUpBannerText}>
               LEVEL UP! Lv.{data.oldLevel ?? data.level - 1} → Lv.{data.level}
             </Text>
@@ -219,7 +219,7 @@ export const ExpPopupToast = memo(function ExpPopupToast({
         <View style={styles.topRow}>
           <View style={styles.topLeftGroup}>
             <View style={styles.arrowCircle}>
-              <AppIcon name="arrow-up" size={15} color="#FB7185" />
+              <AppIcon name="arrow-up" size={15} color="#FFFFFF" />
             </View>
             <View style={styles.expTitleRow}>
               <Text style={styles.expValue}>+{data.totalXp}</Text>
@@ -308,15 +308,15 @@ const styles = StyleSheet.create({
     width: 28,
     height: 3,
     borderRadius: 2,
-    backgroundColor: "rgba(196, 166, 179, 0.35)",
+    backgroundColor: "rgba(156,163,175, 0.35)",
   },
   levelUpBanner: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(245, 158, 11, 0.15)",
+    backgroundColor: "rgba(245, 197, 24, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.35)",
+    borderColor: "rgba(245, 197, 24, 0.35)",
     borderRadius: 8,
     paddingVertical: 3.5,
     paddingHorizontal: 8,
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   levelUpBannerText: {
-    color: "#FBBF24",
+    color: "#F5C518",
     fontSize: 10.5,
     fontWeight: "700",
     letterSpacing: 0.3,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: "#1B2538",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   expValue: {
     fontSize: 16,
     fontWeight: "800",
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 0.1,
   },
   expUnit: {
@@ -367,9 +367,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   levelPill: {
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.28)",
+    borderColor: "rgba(255, 255, 255, 0.28)",
     borderRadius: 999,
     paddingHorizontal: 8,
     paddingVertical: 2.5,
@@ -401,23 +401,23 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   detailLabel: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 11,
     fontWeight: "500",
     flexShrink: 1,
   },
   premiumPercent: {
-    color: "#FB7185",
+    color: "#FFFFFF",
     fontSize: 10.5,
     fontWeight: "600",
   },
   detailValue: {
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 11.5,
     fontWeight: "700",
   },
   detailValueAccent: {
-    color: "#FB7185",
+    color: "#FFFFFF",
     fontSize: 11.5,
     fontWeight: "700",
   },
@@ -427,25 +427,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   swipeHintText: {
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 9.5,
     fontWeight: "500",
   },
   remainingXpText: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 10,
     fontWeight: "600",
   },
   progressBarTrack: {
     height: 3.5,
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     borderRadius: 2,
     marginTop: 5,
     overflow: "hidden",
   },
   progressBarFill: {
     height: "100%",
-    backgroundColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
     borderRadius: 2,
   },
 });

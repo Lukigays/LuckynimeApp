@@ -20,6 +20,6 @@ export default function LibraryTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
 });

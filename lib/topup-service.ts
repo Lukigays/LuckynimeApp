@@ -73,7 +73,7 @@ export const CRYSTAL_PACKAGES: CrystalPackage[] = [
     price: 4000,
     priceFormatted: "Rp4.000",
     tag: "POPULER",
-    tagColor: "#38BDF8",
+    tagColor: "#9CA3AF",
   },
   {
     id: "advanced",
@@ -91,7 +91,7 @@ export const CRYSTAL_PACKAGES: CrystalPackage[] = [
     price: 25000,
     priceFormatted: "Rp25.000",
     tag: "HEMAT",
-    tagColor: "#F59E0B",
+    tagColor: "#F5C518",
   },
   {
     id: "ultimate",
@@ -101,7 +101,7 @@ export const CRYSTAL_PACKAGES: CrystalPackage[] = [
     price: 50000,
     priceFormatted: "Rp50.000",
     tag: "TERBAIK",
-    tagColor: "#A855F7",
+    tagColor: "#9CA3AF",
   },
 ];
 

@@ -714,7 +714,7 @@ export function useLuckynimeAuth() {
 const banStyles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(3, 7, 18, 0.88)",
+    backgroundColor: "rgba(18,19,22, 0.88)",
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
@@ -728,7 +728,7 @@ const banStyles = StyleSheet.create({
   card: {
     width: "100%",
     maxWidth: 420,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#121316",
     borderRadius: 24,
     padding: 24,
     borderWidth: 1,
@@ -747,7 +747,7 @@ const banStyles = StyleSheet.create({
     marginBottom: 16,
   },
   title: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 20,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -755,7 +755,7 @@ const banStyles = StyleSheet.create({
     textAlign: "center",
   },
   desc: {
-    fontFamily: "Nunito-Medium",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 13,
     color: "#94A3B8",
     lineHeight: 20,

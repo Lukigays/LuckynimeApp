@@ -31,7 +31,7 @@ export function DuniaView({
           width: "100%",
           height: "100%",
           border: "none",
-          backgroundColor: "#0F1115",
+          backgroundColor: "#121316",
         } as any}
         title="Dunia Luckynime RPG"
         onLoad={() => {
@@ -51,6 +51,6 @@ export function DuniaView({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F1115",
+    backgroundColor: "#121316",
   },
 });

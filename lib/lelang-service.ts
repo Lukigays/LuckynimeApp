@@ -818,8 +818,8 @@ export async function bayarDanKlaimHadiah(
         endsAt: Date.now(),
         status: "ended",
         description: "Hadiah eksklusif yang berhasil dimenangkan dari Lelang Luckynime.",
-        accentColor: "#F59E0B",
-        glowColor: "rgba(245, 158, 11, 0.4)",
+        accentColor: "#F5C518",
+        glowColor: "rgba(245, 197, 24, 0.4)",
       };
       if (!existingWon.some((e) => e.id === cleanId || e.id === itemToSave.id)) {
         existingWon.push({ ...itemToSave, status: "ended" });

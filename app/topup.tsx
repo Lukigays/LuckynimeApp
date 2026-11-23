@@ -477,15 +477,15 @@ export default function TopUpScreen() {
       case "menunggu_konfirmasi":
         return (
           <View style={[styles.badgeBase, styles.badgeWarning]}>
-            <AppIcon name="clock-outline" size={13} color="#F59E0B" />
-            <Text style={[styles.badgeText, { color: "#F59E0B" }]}>Menunggu Konfirmasi</Text>
+            <AppIcon name="clock-outline" size={13} color="#F5C518" />
+            <Text style={[styles.badgeText, { color: "#F5C518" }]}>Menunggu Konfirmasi</Text>
           </View>
         );
       case "menunggu_verifikasi":
         return (
           <View style={[styles.badgeBase, styles.badgeProcessing]}>
-            <AppIcon name="progress-clock" size={13} color="#FB7185" />
-            <Text style={[styles.badgeText, { color: "#FB7185" }]}>
+            <AppIcon name="progress-clock" size={13} color="#FFFFFF" />
+            <Text style={[styles.badgeText, { color: "#FFFFFF" }]}>
               Sedang Diproses / Menunggu Verifikasi Admin
             </Text>
           </View>
@@ -507,15 +507,15 @@ export default function TopUpScreen() {
       case "reversed":
         return (
           <View style={[styles.badgeBase, styles.badgeReversed]}>
-            <AppIcon name="history" size={13} color="#F97316" />
-            <Text style={[styles.badgeText, { color: "#F97316" }]}>Ditarik Kembali (Reversed)</Text>
+            <AppIcon name="history" size={13} color="#F5C518" />
+            <Text style={[styles.badgeText, { color: "#F5C518" }]}>Ditarik Kembali (Reversed)</Text>
           </View>
         );
       case "kedaluwarsa":
         return (
           <View style={[styles.badgeBase, styles.badgeMuted]}>
-            <AppIcon name="clock-alert-outline" size={13} color="#C4A6B3" />
-            <Text style={[styles.badgeText, { color: "#C4A6B3" }]}>Kedaluwarsa</Text>
+            <AppIcon name="clock-alert-outline" size={13} color="#9CA3AF" />
+            <Text style={[styles.badgeText, { color: "#9CA3AF" }]}>Kedaluwarsa</Text>
           </View>
         );
     }
@@ -534,9 +534,9 @@ export default function TopUpScreen() {
       {/* Dark overlay gradasi halus */}
       <LinearGradient
         colors={[
-          "rgba(13, 8, 11, 0.72)",
-          "rgba(13, 8, 11, 0.86)",
-          "rgba(13, 8, 11, 0.96)",
+          "rgba(18,19,22, 0.72)",
+          "rgba(18,19,22, 0.86)",
+          "rgba(18,19,22, 0.96)",
         ]}
         style={StyleSheet.absoluteFillObject}
       />
@@ -581,7 +581,7 @@ export default function TopUpScreen() {
           <View style={styles.balancePill}>
             <Image source={TOPUP_CRYSTAL} style={styles.balancePillIcon} contentFit="contain" />
             {isLoadingInitial ? (
-              <ActivityIndicator size="small" color="#FB7185" style={{ transform: [{ scale: 0.75 }] }} />
+              <ActivityIndicator size="small" color="#FFFFFF" style={{ transform: [{ scale: 0.75 }] }} />
             ) : (
               <Text style={styles.balancePillText}>
                 {crystalBalance.toLocaleString("id-ID")}
@@ -622,7 +622,7 @@ export default function TopUpScreen() {
               ]}
             >
               {activeStep > 1 ? (
-                <AppIcon name="check" size={12} color="#0D080B" />
+                <AppIcon name="check" size={12} color="#121316" />
               ) : (
                 <Text
                   style={[
@@ -681,7 +681,7 @@ export default function TopUpScreen() {
               ]}
             >
               {activeStep > 2 ? (
-                <AppIcon name="check" size={12} color="#0D080B" />
+                <AppIcon name="check" size={12} color="#121316" />
               ) : (
                 <Text
                   style={[
@@ -768,7 +768,7 @@ export default function TopUpScreen() {
                       }}
                       style={styles.historyShortcutBtn}
                     >
-                      <AppIcon name="history" size={13} color="#FB7185" />
+                      <AppIcon name="history" size={13} color="#FFFFFF" />
                       <Text style={styles.historyShortcutText}>
                         Riwayat ({userTransactions.length})
                       </Text>
@@ -786,7 +786,7 @@ export default function TopUpScreen() {
               {isLoadingInitial ? (
                 <View style={styles.loadingContainerInitial}>
                   <View style={styles.loadingHeaderRow}>
-                    <ActivityIndicator size="small" color="#FB7185" />
+                    <ActivityIndicator size="small" color="#FFFFFF" />
                     <Text style={styles.loadingTextInitial}>
                       Menghubungkan ke database Dylan Crystal...
                     </Text>
@@ -813,7 +813,7 @@ export default function TopUpScreen() {
                 </View>
               ) : availablePackages.filter((pkg) => pkg.active !== false).length === 0 ? (
                 <View style={styles.emptyContainerInitial}>
-                  <AppIcon name="alert-circle-outline" size={32} color="#C4A6B3" />
+                  <AppIcon name="alert-circle-outline" size={32} color="#9CA3AF" />
                   <Text style={styles.emptyTextInitial}>Belum ada paket top up tersedia di database.</Text>
                   <Pressable
                     onPress={reloadData}
@@ -887,7 +887,7 @@ export default function TopUpScreen() {
 
               {/* Catatan / Keterangan Pembayaran */}
               <View style={styles.footerInfoBox}>
-                <AppIcon name="information-outline" size={16} color="#8F727F" />
+                <AppIcon name="information-outline" size={16} color="#8E93A2" />
                 <Text style={styles.footerInfoText}>
                   Crystal akan langsung ditambahkan ke saldo akun Luckynime setelah proses verifikasi
                   selesai dan dinyatakan valid.
@@ -905,7 +905,7 @@ export default function TopUpScreen() {
               <View style={styles.summaryCard}>
                 <View style={styles.summaryHeaderRow}>
                   <View style={styles.summaryTitleGroup}>
-                    <AppIcon name="receipt" size={18} color="#FB7185" />
+                    <AppIcon name="receipt" size={18} color="#FFFFFF" />
                     <Text style={styles.summaryCardTitle}>Ringkasan Transaksi</Text>
                   </View>
                   <Pressable
@@ -947,7 +947,7 @@ export default function TopUpScreen() {
                     <AppIcon
                       name={copiedKey === "tempTxId" ? "check" : "content-copy"}
                       size={13}
-                      color="#FB7185"
+                      color="#FFFFFF"
                     />
                   </Pressable>
                 </View>
@@ -1004,7 +1004,7 @@ export default function TopUpScreen() {
                           <AppIcon
                             name={m.icon}
                             size={20}
-                            color={isSelected ? "#FB7185" : "#C4A6B3"}
+                            color={isSelected ? "#FFFFFF" : "#9CA3AF"}
                           />
                         </View>
                         {isSelected && (
@@ -1076,7 +1076,7 @@ export default function TopUpScreen() {
                     </View>
                   ) : (
                     <View style={styles.unconfiguredBox}>
-                      <AppIcon name="alert-circle-outline" size={32} color="#F59E0B" />
+                      <AppIcon name="alert-circle-outline" size={32} color="#F5C518" />
                       <Text style={styles.unconfiguredTitle}>QRIS Belum Dikonfigurasi</Text>
                       <Text style={styles.unconfiguredDesc}>
                         Data gambar QRIS resmi belum diatur oleh pengelola aplikasi di konfigurasi
@@ -1133,7 +1133,7 @@ export default function TopUpScreen() {
                     </View>
                   ) : (
                     <View style={styles.unconfiguredBox}>
-                      <AppIcon name="alert-circle-outline" size={32} color="#F59E0B" />
+                      <AppIcon name="alert-circle-outline" size={32} color="#F5C518" />
                       <Text style={styles.unconfiguredTitle}>
                         {activeMethodConfig.name} Belum Dikonfigurasi
                       </Text>
@@ -1275,7 +1275,7 @@ export default function TopUpScreen() {
                           <AppIcon
                             name={copiedKey === "activeTxId" ? "check" : "content-copy"}
                             size={12}
-                            color="#FB7185"
+                            color="#FFFFFF"
                           />
                         </Pressable>
                       </View>
@@ -1334,12 +1334,12 @@ export default function TopUpScreen() {
                     >
                       {isCheckingStatus ? (
                         <>
-                          <ActivityIndicator size="small" color="#FB7185" />
+                          <ActivityIndicator size="small" color="#FFFFFF" />
                           <Text style={styles.checkStatusBtnText}>Memeriksa Status ke Server...</Text>
                         </>
                       ) : (
                         <>
-                          <AppIcon name="refresh" size={18} color="#FB7185" />
+                          <AppIcon name="refresh" size={18} color="#FFFFFF" />
                           <Text style={styles.checkStatusBtnText}>Periksa Status Pembayaran</Text>
                         </>
                       )}
@@ -1365,7 +1365,7 @@ export default function TopUpScreen() {
                       // Transaksi masih PENDING: KUNCI pembuatan transaksi baru!
                       <View style={styles.lockedNoticeBox}>
                         <View style={styles.lockedNoticeHeader}>
-                          <AppIcon name="lock-outline" size={15} color="#F59E0B" />
+                          <AppIcon name="lock-outline" size={15} color="#F5C518" />
                           <Text style={styles.lockedNoticeTitle}>
                             Tahap 3 Terkunci — Menunggu Verifikasi Admin
                           </Text>
@@ -1407,7 +1407,7 @@ export default function TopUpScreen() {
                 </>
               ) : (
                 <View style={styles.emptyStatusCard}>
-                  <AppIcon name="receipt" size={32} color="#8F727F" />
+                  <AppIcon name="receipt" size={32} color="#8E93A2" />
                   <Text style={styles.emptyStatusTitle}>Belum Ada Transaksi Aktif</Text>
                   <Text style={styles.emptyStatusDesc}>
                     Silakan pilih paket Crystal di Tahap 1 untuk memulai transaksi.
@@ -1438,7 +1438,7 @@ export default function TopUpScreen() {
             <View style={styles.modalCard}>
               <View style={styles.modalHeader}>
                 <View style={styles.modalTitleWrap}>
-                  <AppIcon name="history" size={20} color="#FB7185" />
+                  <AppIcon name="history" size={20} color="#FFFFFF" />
                   <Text style={styles.modalTitleText}>Riwayat Transaksi Top Up</Text>
                 </View>
                 <Pressable
@@ -1446,7 +1446,7 @@ export default function TopUpScreen() {
                   style={styles.modalCloseBtn}
                   hitSlop={10}
                 >
-                  <AppIcon name="close" size={20} color="#C4A6B3" />
+                  <AppIcon name="close" size={20} color="#9CA3AF" />
                 </Pressable>
               </View>
 
@@ -1503,7 +1503,7 @@ export default function TopUpScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   safeContainer: {
     flex: 1,
@@ -1537,7 +1537,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   titleText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 20,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -1549,18 +1549,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 8,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
   },
   balancePillIcon: {
     width: 16,
     height: 16,
   },
   balancePillText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── INDIKATOR TAHAPAN PROGRESS BAR ───
@@ -1570,7 +1570,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: "rgba(13, 8, 11, 0.75)",
+    backgroundColor: "rgba(18,19,22, 0.75)",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 255, 255, 0.08)",
   },
@@ -1588,7 +1588,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   stepCircleActive: {
-    backgroundColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
   },
   stepCircleDone: {
     backgroundColor: "#10B981",
@@ -1597,24 +1597,24 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.12)",
   },
   stepNumber: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
   },
   stepNumberActive: {
-    color: "#0D080B",
+    color: "#121316",
   },
   stepNumberInactive: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   stepLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
   },
   stepLabelActive: {
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   stepLabelInactive: {
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   stepLine: {
     flex: 1,
@@ -1623,7 +1623,7 @@ const styles = StyleSheet.create({
     borderRadius: 1,
   },
   stepLineActive: {
-    backgroundColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
   },
   stepLineInactive: {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -1642,7 +1642,7 @@ const styles = StyleSheet.create({
   heroNoticeCard: {
     padding: 16,
     borderRadius: 14,
-    backgroundColor: "rgba(18, 23, 34, 0.85)",
+    backgroundColor: "rgba(27,29,34, 0.85)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     gap: 6,
@@ -1662,14 +1662,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2.5,
     borderRadius: 4,
-    backgroundColor: "rgba(251, 113, 133, 0.16)",
+    backgroundColor: "rgba(255, 255, 255, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    borderColor: "rgba(255, 255, 255, 0.35)",
   },
   heroBadgeText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 0.6,
   },
   historyShortcutBtn: {
@@ -1679,15 +1679,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
-    backgroundColor: "rgba(251, 113, 133, 0.1)",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
   historyShortcutText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   heroTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -1695,7 +1695,7 @@ const styles = StyleSheet.create({
   heroDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     lineHeight: 18,
   },
 
@@ -1712,7 +1712,7 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     paddingHorizontal: 12,
     borderRadius: 14,
-    backgroundColor: "rgba(18, 23, 34, 0.85)",
+    backgroundColor: "rgba(27,29,34, 0.85)",
     borderWidth: 1.5,
     borderColor: "rgba(255, 255, 255, 0.12)",
     gap: 6,
@@ -1725,8 +1725,8 @@ const styles = StyleSheet.create({
       : {}),
   },
   packageCardSelected: {
-    borderColor: "#FB7185",
-    backgroundColor: "rgba(251, 113, 133, 0.1)",
+    borderColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
   tagBadge: {
     position: "absolute",
@@ -1738,7 +1738,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   tagBadgeText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9,
     letterSpacing: 0.5,
   },
@@ -1756,7 +1756,7 @@ const styles = StyleSheet.create({
   packageNameText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
   },
   amountRow: {
@@ -1765,15 +1765,15 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   amountNumber: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 20,
     color: "#FFFFFF",
     letterSpacing: -0.5,
   },
   amountUnit: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   pricePill: {
     marginTop: 6,
@@ -1785,9 +1785,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.14)",
   },
   priceText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
 
   footerInfoBox: {
@@ -1796,7 +1796,7 @@ const styles = StyleSheet.create({
     gap: 8,
     padding: 12,
     borderRadius: 10,
-    backgroundColor: "rgba(18, 23, 34, 0.6)",
+    backgroundColor: "rgba(27,29,34, 0.6)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.06)",
   },
@@ -1804,7 +1804,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 16,
   },
 
@@ -1820,19 +1820,19 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 10,
     borderRadius: 10,
-    backgroundColor: "rgba(251, 113, 133, 0.08)",
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.2)",
+    borderColor: "rgba(255, 255, 255, 0.2)",
     marginBottom: 4,
   },
   loadingTextInitial: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   packageCardSkeleton: {
     borderColor: "rgba(255, 255, 255, 0.06)",
-    backgroundColor: "rgba(18, 23, 34, 0.5)",
+    backgroundColor: "rgba(27,29,34, 0.5)",
   },
   skeletonIconWrap: {
     width: 48,
@@ -1868,32 +1868,32 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   emptyTextInitial: {
-    fontFamily: "Nunito-Medium",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
   },
   retryBtn: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: "rgba(251, 113, 133, 0.15)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
     borderWidth: 1,
-    borderColor: "#FB7185",
+    borderColor: "#FFFFFF",
   },
   retryBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── TAHAP 2: RINGKASAN PESANAN ───
   summaryCard: {
     padding: 16,
     borderRadius: 14,
-    backgroundColor: "rgba(18, 23, 34, 0.9)",
+    backgroundColor: "rgba(27,29,34, 0.9)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
     gap: 10,
   },
   summaryHeaderRow: {
@@ -1908,7 +1908,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   summaryCardTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15,
     color: "#FFFFFF",
   },
@@ -1921,7 +1921,7 @@ const styles = StyleSheet.create({
   changePkgBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   summaryRow: {
     flexDirection: "row",
@@ -1931,17 +1931,17 @@ const styles = StyleSheet.create({
   summaryLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   summaryValue: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   summaryIdText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   copyInlineBtn: {
     flexDirection: "row",
@@ -1950,7 +1950,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
-    backgroundColor: "rgba(251, 113, 133, 0.1)",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
   summaryDivider: {
     height: 1,
@@ -1963,14 +1963,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   summaryTotalLabel: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     color: "#FFFFFF",
   },
   summaryTotalValue: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── TAHAP 2: PILIHAN METODE PEMBAYARAN ───
@@ -1979,14 +1979,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   sectionTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
   },
   sectionSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   methodSelectorGrid: {
     flexDirection: "row",
@@ -1998,14 +1998,14 @@ const styles = StyleSheet.create({
     width: "48%",
     padding: 12,
     borderRadius: 12,
-    backgroundColor: "rgba(18, 23, 34, 0.85)",
+    backgroundColor: "rgba(27,29,34, 0.85)",
     borderWidth: 1.5,
     borderColor: "rgba(255, 255, 255, 0.1)",
     gap: 6,
   },
   methodCardSelected: {
-    borderColor: "#FB7185",
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    borderColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
   },
   methodCardDisabled: {
     opacity: 0.65,
@@ -2024,20 +2024,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   methodIconBoxSelected: {
-    backgroundColor: "rgba(251, 113, 133, 0.2)",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
   },
   selectedDot: {
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
   },
   methodNameText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   methodNameTextSelected: {
     color: "#FFFFFF",
@@ -2046,21 +2046,21 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   methodStatusText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
   },
   methodStatusAvailable: {
     color: "#10B981",
   },
   methodStatusUnavailable: {
-    color: "#F59E0B",
+    color: "#F5C518",
   },
 
   // ─── TAHAP 2: DETAIL METODE PEMBAYARAN ───
   paymentDetailCard: {
     padding: 16,
     borderRadius: 14,
-    backgroundColor: "rgba(18, 23, 34, 0.9)",
+    backgroundColor: "rgba(27,29,34, 0.9)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     gap: 14,
@@ -2074,7 +2074,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   detailCardTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
     color: "#FFFFFF",
   },
@@ -2098,14 +2098,14 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   qrisMerchantName: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15,
     color: "#FFFFFF",
   },
   qrisTotalPay: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   downloadQrisBtn: {
     flexDirection: "row",
@@ -2114,7 +2114,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
   },
   downloadQrisBtnText: {
     fontFamily: "Nunito-Bold",
@@ -2132,7 +2132,7 @@ const styles = StyleSheet.create({
   ewalletInfoLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   ewalletInfoValue: {
     fontFamily: "Nunito-Bold",
@@ -2149,16 +2149,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   ewalletNumberValue: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 0.5,
   },
   copySmallBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(251, 113, 133, 0.2)",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -2169,9 +2169,9 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   ewalletTotalPay: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 17,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // Peringatan Belum Dikonfigurasi
@@ -2180,21 +2180,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 16,
     borderRadius: 10,
-    backgroundColor: "rgba(245, 158, 11, 0.1)",
+    backgroundColor: "rgba(245, 197, 24, 0.1)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.3)",
+    borderColor: "rgba(245, 197, 24, 0.3)",
     gap: 8,
   },
   unconfiguredTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#F59E0B",
+    color: "#F5C518",
     textAlign: "center",
   },
   unconfiguredDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     textAlign: "center",
     lineHeight: 17,
   },
@@ -2209,7 +2209,7 @@ const styles = StyleSheet.create({
   instructionsTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   stepList: {
     gap: 4,
@@ -2217,7 +2217,7 @@ const styles = StyleSheet.create({
   stepText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 16,
   },
 
@@ -2239,7 +2239,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.12)",
   },
   confirmActionBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     color: "#FFFFFF",
   },
@@ -2250,14 +2250,14 @@ const styles = StyleSheet.create({
   cancelStepBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   // ─── TAHAP 3: STATUS TRANSAKSI ───
   statusMainCard: {
     padding: 18,
     borderRadius: 14,
-    backgroundColor: "rgba(18, 23, 34, 0.9)",
+    backgroundColor: "rgba(27,29,34, 0.9)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     gap: 10,
@@ -2274,14 +2274,14 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   badgeWarning: {
-    backgroundColor: "rgba(245, 158, 11, 0.15)",
+    backgroundColor: "rgba(245, 197, 24, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.4)",
+    borderColor: "rgba(245, 197, 24, 0.4)",
   },
   badgeProcessing: {
-    backgroundColor: "rgba(251, 113, 133, 0.15)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.4)",
+    borderColor: "rgba(255, 255, 255, 0.4)",
   },
   badgeSuccess: {
     backgroundColor: "rgba(16, 185, 129, 0.15)",
@@ -2294,28 +2294,28 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239, 68, 68, 0.4)",
   },
   badgeReversed: {
-    backgroundColor: "rgba(249, 115, 22, 0.15)",
+    backgroundColor: "rgba(245,197,24, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(249, 115, 22, 0.4)",
+    borderColor: "rgba(245,197,24, 0.4)",
   },
   badgeMuted: {
-    backgroundColor: "rgba(196, 166, 179, 0.15)",
+    backgroundColor: "rgba(156,163,175, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(196, 166, 179, 0.4)",
+    borderColor: "rgba(156,163,175, 0.4)",
   },
   badgeText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 10.5,
   },
   statusHeroTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 17,
     color: "#FFFFFF",
   },
   statusHeroSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     lineHeight: 18,
   },
   statusDetailGrid: {
@@ -2329,22 +2329,22 @@ const styles = StyleSheet.create({
   statusDetailLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   statusDetailValue: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   statusDetailValueBold: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   statusDetailValueHighlight: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // Tombol Status Tahap 3
@@ -2358,9 +2358,9 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: "rgba(251, 113, 133, 0.14)",
+    backgroundColor: "rgba(255, 255, 255, 0.14)",
     borderWidth: 1.5,
-    borderColor: "#FB7185",
+    borderColor: "#FFFFFF",
   },
   checkStatusBtnLoading: {
     opacity: 0.8,
@@ -2368,7 +2368,7 @@ const styles = StyleSheet.create({
   checkStatusBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   reopenWaBtn: {
     flexDirection: "row",
@@ -2387,9 +2387,9 @@ const styles = StyleSheet.create({
   lockedNoticeBox: {
     padding: 12,
     borderRadius: 10,
-    backgroundColor: "rgba(245, 158, 11, 0.12)",
+    backgroundColor: "rgba(245, 197, 24, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.35)",
+    borderColor: "rgba(245, 197, 24, 0.35)",
     gap: 6,
   },
   lockedNoticeHeader: {
@@ -2400,12 +2400,12 @@ const styles = StyleSheet.create({
   lockedNoticeTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   lockedNoticeDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     lineHeight: 16,
   },
   startNewSuccessBtn: {
@@ -2415,9 +2415,9 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
     borderWidth: 1,
-    borderColor: "#FB7185",
+    borderColor: "#FFFFFF",
   },
   startNewBtnText: {
     fontFamily: "Nunito-Bold",
@@ -2431,14 +2431,14 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 10,
     borderRadius: 10,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
   },
   newTopupBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   stepItemDisabled: {
     opacity: 0.45,
@@ -2449,18 +2449,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 32,
     borderRadius: 14,
-    backgroundColor: "rgba(18, 23, 34, 0.8)",
+    backgroundColor: "rgba(27,29,34, 0.8)",
     gap: 8,
   },
   emptyStatusTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15,
     color: "#FFFFFF",
   },
   emptyStatusDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
   },
   emptyBackBtn: {
@@ -2468,12 +2468,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
   },
   emptyBackBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#0D080B",
+    color: "#121316",
   },
 
   // ─── MODAL RIWAYAT TRANSAKSI ───
@@ -2509,7 +2509,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   modalTitleText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
   },
@@ -2526,7 +2526,7 @@ const styles = StyleSheet.create({
   modalEmptyText: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   historyItemCard: {
     padding: 12,
@@ -2545,7 +2545,7 @@ const styles = StyleSheet.create({
   historyItemId: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   historyItemBottom: {
     flexDirection: "row",
@@ -2558,13 +2558,13 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   historyItemPrice: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   historyItemDate: {
     fontFamily: "Nunito-Regular",
     fontSize: 10,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
 });

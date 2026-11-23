@@ -49,7 +49,7 @@ function GoogleLogo({ size = 20 }: { size?: number }) {
       <Svg width={size} height={size} viewBox="0 0 24 24">
         <Path
           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-          fill="#4285F4"
+          fill="#9CA3AF"
         />
         <Path
           d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
@@ -69,7 +69,7 @@ function GoogleLogo({ size = 20 }: { size?: number }) {
 }
 
 // Rotating circular spinner ("bundaran berputar") for loading state
-function RotatingSpinner({ size = 22, color = "#0D080B" }: { size?: number; color?: string }) {
+function RotatingSpinner({ size = 22, color = "#121316" }: { size?: number; color?: string }) {
   const spinAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -107,7 +107,7 @@ function RotatingSpinner({ size = 22, color = "#0D080B" }: { size?: number; colo
             cx="12"
             cy="12"
             r="9.5"
-            stroke="rgba(13, 8, 11, 0.15)"
+            stroke="rgba(18,19,22, 0.15)"
             strokeWidth="2.8"
             fill="none"
           />
@@ -557,7 +557,7 @@ export function FirstRunOnboarding({ onComplete }: { onComplete: () => void }) {
                 accessibilityLabel="Lanjut dengan Google"
               >
                 {signingIn ? (
-                  <RotatingSpinner size={22} color="#0D080B" />
+                  <RotatingSpinner size={22} color="#121316" />
                 ) : (
                   <GoogleLogo size={22} />
                 )}
@@ -707,7 +707,7 @@ const styles = StyleSheet.create({
   },
   topVersionText: {
     fontFamily: "Nunito-Bold",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 11.5,
     letterSpacing: 0.6,
   },
@@ -747,7 +747,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   heroBrandTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     color: "#FFFFFF",
     fontSize: 34,
     letterSpacing: -0.5,
@@ -762,7 +762,7 @@ const styles = StyleSheet.create({
   },
   heroSubtitle: {
     fontFamily: "Nunito-SemiBold",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 15,
     lineHeight: 22,
   },
@@ -787,7 +787,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   cleanButtonText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     color: "#150D12",
     fontSize: 16,
     letterSpacing: 0.2,
@@ -796,13 +796,13 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "rgba(21, 13, 18, 0.08)",
+    backgroundColor: "rgba(27,29,34, 0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
   heroVersionFooter: {
     fontFamily: "Nunito-SemiBold",
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 12,
     textAlign: "center",
     marginTop: 14,
@@ -840,7 +840,7 @@ const styles = StyleSheet.create({
     opacity: 0.55,
   },
   welcomeTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     color: "#FFFFFF",
     fontSize: 44,
     letterSpacing: -0.5,
@@ -848,7 +848,7 @@ const styles = StyleSheet.create({
   },
   welcomeSubtitle: {
     fontFamily: "Nunito-SemiBold",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 14.5,
     lineHeight: 22,
     textAlign: "center",
@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
   },
   featurePillText: {
     fontFamily: "Nunito-Bold",
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     fontSize: 11.5,
     letterSpacing: 0.2,
   },
@@ -919,7 +919,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     fontSize: 13,
     lineHeight: 20,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     marginBottom: 14,
   },
   disclaimerBulletList: {
@@ -934,7 +934,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 14,
     lineHeight: 20,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginRight: 8,
     width: 10,
   },
@@ -943,13 +943,13 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     fontSize: 13,
     lineHeight: 20,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   disclaimerFooterNote: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
     lineHeight: 20,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     marginTop: 10,
   },
   disclaimerActions: {
@@ -999,9 +999,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   disclaimerBrandFooter: {
-    fontFamily: "Nunito-Medium",
+    fontFamily: "Nunito-SemiBold",
     fontSize: 12,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginTop: 4,
     marginBottom: 2,
     textAlign: "center",
@@ -1014,18 +1014,18 @@ const styles = StyleSheet.create({
     aspectRatio: 1024 / 380,
   },
   readyTitle: {
-    fontFamily: "Nunito-Black",
-    color: "#F5E9EE",
+    fontFamily: "Nunito-Bold",
+    color: "#F3F4F6",
     fontSize: 35,
     letterSpacing: 0.5,
     textAlign: "center",
-    textShadowColor: "rgba(251, 113, 133, 0.25)",
+    textShadowColor: "rgba(255, 255, 255, 0.25)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 6,
   },
   readySubtitle: {
     fontFamily: "Nunito-SemiBold",
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 14.5,
     lineHeight: 22,
     textAlign: "center",
@@ -1073,8 +1073,8 @@ const styles = StyleSheet.create({
     opacity: 0.88,
   },
   googleButtonText: {
-    fontFamily: "Nunito-ExtraBold",
-    color: "#0D080B",
+    fontFamily: "Nunito-Bold",
+    color: "#121316",
     fontSize: 15.5,
     letterSpacing: 0.2,
   },
@@ -1097,7 +1097,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     fontFamily: "Nunito-Bold",
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 12,
     paddingHorizontal: 12,
   },
@@ -1128,13 +1128,13 @@ const styles = StyleSheet.create({
   },
   testerButtonText: {
     fontFamily: "Nunito-Bold",
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     fontSize: 14,
   },
 
   legalNote: {
     fontFamily: "Nunito-Regular",
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 11,
     lineHeight: 16,
     textAlign: "center",
@@ -1155,21 +1155,21 @@ const styles = StyleSheet.create({
   legalLinkText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
     textDecorationLine: "underline",
-    textDecorationColor: "rgba(251, 113, 133, 0.45)",
+    textDecorationColor: "rgba(255, 255, 255, 0.45)",
   },
   legalLinkDot: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#785D6A",
+    color: "#6B7280",
   },
   legalLinkPressed: {
     opacity: 0.6,
   },
   bottomVersionText: {
     fontFamily: "Nunito-SemiBold",
-    color: "#785D6A",
+    color: "#6B7280",
     fontSize: 11,
     marginTop: 8,
   },
@@ -1210,8 +1210,8 @@ const styles = StyleSheet.create({
   },
   indicatorActive: {
     height: 26,
-    backgroundColor: "#F5E9EE",
-    shadowColor: "#F5E9EE",
+    backgroundColor: "#F3F4F6",
+    shadowColor: "#F3F4F6",
     shadowOpacity: 0.9,
     shadowRadius: 6,
   },

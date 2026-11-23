@@ -13,7 +13,7 @@ const env = {
 const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
-  version: "2.0.0",
+  version: "2.1.0",
   orientation: "default",
   icon: "./assets/images/logo-app.png",
   scheme: env.scheme,
@@ -28,8 +28,8 @@ const config: ExpoConfig = {
     infoPlist: { ITSAppUsesNonExemptEncryption: false },
   },
   android: {
-    versionCode: 31,
-    adaptiveIcon: { backgroundColor: "#0D080B", foregroundImage: "./assets/images/android-icon-foreground.png" },
+    versionCode: 32,
+    adaptiveIcon: { backgroundColor: "#121316", foregroundImage: "./assets/images/android-icon-foreground.png" },
     edgeToEdgeEnabled: true,
     softwareKeyboardLayoutMode: "resize",
     predictiveBackGestureEnabled: false,
@@ -63,8 +63,8 @@ const config: ExpoConfig = {
     ["react-native-video", { enableAndroidPictureInPicture: true }],
     ["expo-screen-orientation", { initialOrientation: "DEFAULT" }],
     ["expo-secure-store", { configureAndroidBackup: false }],
-    ["expo-notifications", { icon: "./assets/images/logo-app.png", color: "#F43F5E" }],
-    ["expo-splash-screen", { image: "./assets/images/splash-icon.png", imageWidth: 160, resizeMode: "contain", backgroundColor: "#0D080B", dark: { backgroundColor: "#0D080B" } }],
+    ["expo-notifications", { icon: "./assets/images/logo-app.png", color: "#EF4444" }],
+    ["expo-splash-screen", { image: "./assets/images/splash-icon.png", imageWidth: 160, resizeMode: "contain", backgroundColor: "#121316", dark: { backgroundColor: "#121316" } }],
     ["expo-build-properties", {
       android: {
         buildArchs: ["armeabi-v7a", "arm64-v8a", "x86_64"],

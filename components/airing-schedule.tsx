@@ -120,13 +120,13 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 0.2,
   },
   infoText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   metaCol: {
     gap: 2,
@@ -144,9 +144,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#10B981",
   },
   labelTitle: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     letterSpacing: 0.6,
   },
   finaleBadge: {

@@ -30,16 +30,12 @@ export function NativeScreen({
   );
 }
 
-export function NativeHeader({ eyebrow, title, action }: { eyebrow?: string; title: string; action?: ReactNode }) {
+export function NativeHeader({ title, action }: { eyebrow?: string; title: string; action?: ReactNode }) {
   return (
     <View style={styles.header}>
-      <View style={styles.headerLeft}>
-        <View style={styles.accentBlade} />
-        <View style={styles.headerText}>
-          {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
-          <Text style={styles.headerTitle}>{title}</Text>
-        </View>
-      </View>
+      <Text style={styles.headerTitle} numberOfLines={1}>
+        {title}
+      </Text>
       {action}
     </View>
   );
@@ -51,9 +47,9 @@ export function SearchAction() {
       accessibilityRole="button"
       accessibilityLabel="Cari anime"
       onPress={() => router.push("/search" as never)}
-      style={({ pressed }) => [styles.searchButton, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
     >
-      <AppIcon name="magnify" color={nothing.sakura} size={20} />
+      <AppIcon name="magnify" color={nothing.white} size={20} />
     </Pressable>
   );
 }
@@ -64,61 +60,39 @@ export function NotificationAction({ onPress }: { onPress?: () => void }) {
       accessibilityRole="button"
       accessibilityLabel="Notifikasi"
       onPress={onPress}
-      style={({ pressed }) => [styles.searchButton, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
     >
-      <AppIcon name="bell" color={nothing.sakura} size={20} />
+      <AppIcon name="bell" color={nothing.white} size={20} />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: nothing.black },
-  scroll: { paddingHorizontal: 18, paddingBottom: 118, gap: 24, flexGrow: 1 },
+  scroll: { paddingHorizontal: 16, paddingBottom: 88, gap: 18, flexGrow: 1 },
   fill: { flex: 1 },
   header: {
-    minHeight: 64,
-    paddingTop: 6,
+    minHeight: 52,
+    paddingTop: 4,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
-  headerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    flex: 1,
-  },
-  accentBlade: {
-    width: 4,
-    height: 28,
-    borderRadius: 99,
-    backgroundColor: nothing.red,
-  },
-  headerText: { gap: 2, flex: 1 },
-  eyebrow: {
-    color: nothing.sakura,
-    fontFamily: "SpaceGrotesk-Bold",
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
+    gap: 12,
   },
   headerTitle: {
+    flex: 1,
     color: nothing.white,
-    fontFamily: "Nunito-Black",
-    fontSize: 25,
-    fontWeight: "900",
-    letterSpacing: -0.6,
+    fontFamily: "Nunito-Bold",
+    fontSize: 21,
+    fontWeight: "700",
   },
-  searchButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
+  iconButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: nothing.lineStrong,
-    backgroundColor: "rgba(244, 63, 94, 0.10)",
+    backgroundColor: nothing.surface,
   },
   pressed: nothing.pressed,
 });

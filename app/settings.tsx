@@ -489,13 +489,13 @@ export default function SettingsScreen() {
                 hitSlop={8}
                 style={[
                   styles.editNameIconBtn,
-                  !nameCooldown.canChange && { backgroundColor: "rgba(245, 158, 11, 0.12)" },
+                  !nameCooldown.canChange && { backgroundColor: "rgba(245, 197, 24, 0.12)" },
                 ]}
               >
                 <AppIcon
                   name={!nameCooldown.canChange ? "clock-outline" : "pencil"}
                   size={14}
-                  color={!nameCooldown.canChange ? "#F59E0B" : "#FB7185"}
+                  color={!nameCooldown.canChange ? "#F5C518" : "#FFFFFF"}
                 />
               </Pressable>
             </View>
@@ -536,7 +536,7 @@ export default function SettingsScreen() {
                       <Text
                         style={[
                           styles.levelBadgeText,
-                          tierInfo.isInfinity && { color: "#EF4444", fontFamily: "Nunito-Black" },
+                          tierInfo.isInfinity && { color: "#EF4444", fontFamily: "Nunito-Bold" },
                         ]}
                       >
                         {tierInfo.isInfinity ? "∞" : `Lvl. ${userLevel}`}
@@ -600,7 +600,7 @@ export default function SettingsScreen() {
                 <Text
                   style={[
                     styles.actionEditText,
-                    !nameCooldown.canChange && { color: "#F59E0B" },
+                    !nameCooldown.canChange && { color: "#F5C518" },
                   ]}
                 >
                   {!nameCooldown.canChange ? "Cooldown" : "Ubah"}
@@ -608,7 +608,7 @@ export default function SettingsScreen() {
                 <AppIcon
                   name={!nameCooldown.canChange ? "clock-outline" : "pencil"}
                   size={13}
-                  color={!nameCooldown.canChange ? "#F59E0B" : "#FB7185"}
+                  color={!nameCooldown.canChange ? "#F5C518" : "#FFFFFF"}
                 />
               </View>
             </Pressable>
@@ -632,7 +632,7 @@ export default function SettingsScreen() {
                 <AppIcon
                   name="chevron-right"
                   size={14}
-                  color="#FB7185"
+                  color="#FFFFFF"
                 />
               </View>
             </Pressable>
@@ -646,7 +646,7 @@ export default function SettingsScreen() {
               <Switch
                 value={privateProfile}
                 onValueChange={togglePrivateProfile}
-                trackColor={{ false: "#27272A", true: "#F43F5E" }}
+                trackColor={{ false: "#27272A", true: "#EF4444" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -683,7 +683,7 @@ export default function SettingsScreen() {
               <Switch
                 value={autoPlay}
                 onValueChange={toggleAutoPlay}
-                trackColor={{ false: "#27272A", true: "#F43F5E" }}
+                trackColor={{ false: "#27272A", true: "#EF4444" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -697,7 +697,7 @@ export default function SettingsScreen() {
               <Switch
                 value={gestures}
                 onValueChange={toggleGestures}
-                trackColor={{ false: "#27272A", true: "#F43F5E" }}
+                trackColor={{ false: "#27272A", true: "#EF4444" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -711,7 +711,7 @@ export default function SettingsScreen() {
               <Switch
                 value={skipIntro}
                 onValueChange={toggleSkipIntro}
-                trackColor={{ false: "#27272A", true: "#F43F5E" }}
+                trackColor={{ false: "#27272A", true: "#EF4444" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -798,7 +798,7 @@ export default function SettingsScreen() {
               <Switch
                 value={wifiOnly}
                 onValueChange={toggleWifiOnly}
-                trackColor={{ false: "#27272A", true: "#F43F5E" }}
+                trackColor={{ false: "#27272A", true: "#EF4444" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -836,7 +836,7 @@ export default function SettingsScreen() {
               <Switch
                 value={notifTopic}
                 onValueChange={toggleNotifTopic}
-                trackColor={{ false: "#27272A", true: "#F43F5E" }}
+                trackColor={{ false: "#27272A", true: "#EF4444" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -850,7 +850,7 @@ export default function SettingsScreen() {
               <Switch
                 value={hapticsOn}
                 onValueChange={toggleHaptics}
-                trackColor={{ false: "#27272A", true: "#F43F5E" }}
+                trackColor={{ false: "#27272A", true: "#EF4444" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -951,11 +951,11 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.rowRightWrap}>
                 {checkingUpdate ? (
-                  <ActivityIndicator size="small" color="#FB7185" />
+                  <ActivityIndicator size="small" color="#FFFFFF" />
                 ) : (
                   <Text style={styles.actionCheckUpdateText}>Cek Update</Text>
                 )}
-                <AppIcon name="refresh" size={15} color="#FB7185" />
+                <AppIcon name="refresh" size={15} color="#FFFFFF" />
               </View>
             </Pressable>
 
@@ -971,7 +971,7 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.rowRightWrap}>
                 <Text style={styles.rowRightText}>Team Luckynime</Text>
-                <AppIcon name="chevron-right" size={16} color="#8F727F" />
+                <AppIcon name="chevron-right" size={16} color="#8E93A2" />
               </View>
             </Pressable>
           </View>
@@ -1004,7 +1004,7 @@ export default function SettingsScreen() {
         <Pressable style={styles.modalOverlay} onPress={() => setShowEditNameModal(false)}>
           <Pressable style={styles.modalCard} onPress={(e) => e.stopPropagation()}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <AppIcon name="pencil" size={20} color="#FB7185" />
+              <AppIcon name="pencil" size={20} color="#FFFFFF" />
               <Text style={styles.modalTitle}>Ubah Nama Tampilan</Text>
             </View>
             <Text style={styles.modalSubtitle}>
@@ -1013,7 +1013,7 @@ export default function SettingsScreen() {
 
             {!nameCooldown.canChange && (
               <View style={styles.cooldownAlertBox}>
-                <AppIcon name="clock-outline" size={16} color="#F59E0B" />
+                <AppIcon name="clock-outline" size={16} color="#F5C518" />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.cooldownAlertTitle}>Batas Perubahan 24 Jam Aktif</Text>
                   <Text style={styles.cooldownAlertDesc}>
@@ -1109,7 +1109,7 @@ export default function SettingsScreen() {
                 ]}
               >
                 <Text style={[styles.choiceText, quality === res && styles.choiceTextActive]}>{res}</Text>
-                {quality === res && <AppIcon name="check" size={18} color="#F43F5E" />}
+                {quality === res && <AppIcon name="check" size={18} color="#EF4444" />}
               </Pressable>
             ))}
           </View>
@@ -1139,7 +1139,7 @@ export default function SettingsScreen() {
                 <Text style={[styles.choiceText, introDuration === dur && styles.choiceTextActive]}>
                   {dur} {dur === "85s" ? "(Standar Anime)" : ""}
                 </Text>
-                {introDuration === dur && <AppIcon name="check" size={18} color="#F43F5E" />}
+                {introDuration === dur && <AppIcon name="check" size={18} color="#EF4444" />}
               </Pressable>
             ))}
           </View>
@@ -1178,7 +1178,7 @@ export default function SettingsScreen() {
                 >
                   {item.label}
                 </Text>
-                {subPrefs?.preferredLanguage === item.id && <AppIcon name="check" size={18} color="#F43F5E" />}
+                {subPrefs?.preferredLanguage === item.id && <AppIcon name="check" size={18} color="#EF4444" />}
               </Pressable>
             ))}
           </View>
@@ -1218,7 +1218,7 @@ export default function SettingsScreen() {
                 >
                   {item.label}
                 </Text>
-                {subPrefs?.fontSize === item.size && <AppIcon name="check" size={18} color="#F43F5E" />}
+                {subPrefs?.fontSize === item.size && <AppIcon name="check" size={18} color="#EF4444" />}
               </Pressable>
             ))}
           </View>
@@ -1386,7 +1386,7 @@ const styles = StyleSheet.create({
   editNameIconBtn: {
     padding: 4,
     borderRadius: 6,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
   },
   profileEmail: {
     fontFamily: "Nunito-Regular",
@@ -1422,7 +1422,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(16, 185, 129, 0.25)",
   },
   xpBadgeText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
     color: "#10B981",
   },
@@ -1455,7 +1455,7 @@ const styles = StyleSheet.create({
   leaderboardText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   xpProgressMeta: {
     flexDirection: "row",
@@ -1470,7 +1470,7 @@ const styles = StyleSheet.create({
   xpPercentText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   progressBarTrack: {
     height: 6,
@@ -1482,14 +1482,14 @@ const styles = StyleSheet.create({
   progressBarFill: {
     height: "100%",
     borderRadius: 3,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
   },
   progressDot: {
     position: "absolute",
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
     top: -1,
     marginLeft: -4,
   },
@@ -1561,17 +1561,17 @@ const styles = StyleSheet.create({
   rowRightTextActive: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   actionEditText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   actionCheckUpdateText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   nsfwTagPill: {
     backgroundColor: "#EF4444",
@@ -1580,7 +1580,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   nsfwTagText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#FFFFFF",
   },
@@ -1635,7 +1635,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 18,
   },
   modalTextInput: {
@@ -1667,13 +1667,13 @@ const styles = StyleSheet.create({
   modalBtnSecondaryText: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   modalBtnPrimary: {
     flex: 1,
     paddingVertical: 12,
     borderRadius: 12,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1686,7 +1686,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 12,
     borderRadius: 12,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 6,
@@ -1701,14 +1701,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.03)",
   },
   choiceRowActive: {
-    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.3)",
+    borderColor: "rgba(239, 68, 68, 0.3)",
   },
   choiceText: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   choiceTextActive: {
     color: "#FFFFFF",
@@ -1723,7 +1723,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   ageIconText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
     color: "#EF4444",
   },
@@ -1745,7 +1745,7 @@ const styles = StyleSheet.create({
   xpInfoLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   xpInfoVal: {
     fontFamily: "Nunito-Bold",
@@ -1760,19 +1760,19 @@ const styles = StyleSheet.create({
     gap: 8,
     padding: 10,
     borderRadius: 10,
-    backgroundColor: "rgba(245, 158, 11, 0.1)",
+    backgroundColor: "rgba(245, 197, 24, 0.1)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.25)",
+    borderColor: "rgba(245, 197, 24, 0.25)",
   },
   cooldownAlertTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   cooldownAlertDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#FDE68A",
+    color: "#F5C518",
     marginTop: 2,
     lineHeight: 16,
   },
@@ -1797,12 +1797,12 @@ const styles = StyleSheet.create({
   inputCharCountText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   inputHintText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   inputErrorText: {
     fontFamily: "Nunito-Bold",

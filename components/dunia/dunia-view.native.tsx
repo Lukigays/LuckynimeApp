@@ -99,10 +99,10 @@ export function DuniaView({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0F1115",
+    backgroundColor: "#121316",
   },
   webView: {
     flex: 1,
-    backgroundColor: "#0F1115",
+    backgroundColor: "#121316",
   },
 });

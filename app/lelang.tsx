@@ -872,17 +872,17 @@ export default function LelangScreen() {
                   style={[
                     styles.trophyGlowWrap,
                     {
-                      backgroundColor: "rgba(196, 166, 179, 0.12)",
-                      borderColor: "rgba(196, 166, 179, 0.3)",
-                      shadowColor: "#8F727F",
+                      backgroundColor: "rgba(156,163,175, 0.12)",
+                      borderColor: "rgba(156,163,175, 0.3)",
+                      shadowColor: "#8E93A2",
                     },
                   ]}
                 >
-                  <AppIcon name="gavel" size={44} color="#C4A6B3" />
+                  <AppIcon name="gavel" size={44} color="#9CA3AF" />
                 </View>
               ) : (
                 <View style={styles.trophyGlowWrap}>
-                  <AppIcon name="trophy" size={54} color="#F59E0B" />
+                  <AppIcon name="trophy" size={54} color="#F5C518" />
                 </View>
               )}
               <Text style={styles.hasilCelebrationTitle}>
@@ -906,7 +906,7 @@ export default function LelangScreen() {
                   <AppIcon
                     name={selectedHasilServerItem.type === "banner" ? "image-outline" : "crop-free"}
                     size={10}
-                    color="#FB7185"
+                    color="#FFFFFF"
                   />
                   <Text style={styles.modalItemTagText}>
                     {selectedHasilServerItem.type === "banner" ? "Banner" : "Border"}
@@ -920,8 +920,8 @@ export default function LelangScreen() {
               {(selectedHasilServerItem.totalBidders ?? 0) === 0 ? (
                 <View style={styles.hasilWinnerTopRow}>
                   <View style={styles.hasilWinnerBadgeTitle}>
-                    <AppIcon name="alert-circle-outline" size={15} color="#C4A6B3" />
-                    <Text style={[styles.hasilWinnerTitleText, { color: "#C4A6B3" }]}>Status Lelang</Text>
+                    <AppIcon name="alert-circle-outline" size={15} color="#9CA3AF" />
+                    <Text style={[styles.hasilWinnerTitleText, { color: "#9CA3AF" }]}>Status Lelang</Text>
                   </View>
                   <View style={styles.hasilTutupPill}>
                     <Text style={styles.hasilTutupText}>Ditutup</Text>
@@ -930,7 +930,7 @@ export default function LelangScreen() {
               ) : (
                 <View style={styles.hasilWinnerTopRow}>
                   <View style={styles.hasilWinnerBadgeTitle}>
-                    <AppIcon name="crown" size={15} color="#F59E0B" />
+                    <AppIcon name="crown" size={15} color="#F5C518" />
                     <Text style={styles.hasilWinnerTitleText}>Pemenang</Text>
                   </View>
                   {selectedHasilServerItem.status === "menang" ? (
@@ -949,7 +949,7 @@ export default function LelangScreen() {
               {(selectedHasilServerItem.totalBidders ?? 0) === 0 ? (
                 <View style={styles.hasilUserRow}>
                   <View style={[styles.hasilUserAvatarCircle, { borderColor: "#334155", backgroundColor: "#150D12" }]}>
-                    <AppIcon name="gavel" size={20} color="#8F727F" />
+                    <AppIcon name="gavel" size={20} color="#8E93A2" />
                   </View>
                   <View style={styles.hasilUserMetaCol}>
                     <Text style={styles.hasilUserNameText}>Tidak Ada Pemenang</Text>
@@ -959,7 +959,7 @@ export default function LelangScreen() {
               ) : (
                 <View style={styles.hasilUserRow}>
                   <View style={styles.hasilUserAvatarCircle}>
-                    <AppIcon name="account" size={24} color="#EDE0E5" />
+                    <AppIcon name="account" size={24} color="#F3F4F6" />
                   </View>
                   <View style={styles.hasilUserMetaCol}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
@@ -968,7 +968,7 @@ export default function LelangScreen() {
                           selectedHasilServerItem.item?.highestBidderName ||
                           userName}
                       </Text>
-                      <AppIcon name="crown" size={13} color="#F59E0B" />
+                      <AppIcon name="crown" size={13} color="#F5C518" />
                     </View>
                     <View style={styles.hasilMemberTag}>
                       <Text style={styles.hasilMemberTagText}>Pemenang Lelang</Text>
@@ -1021,7 +1021,7 @@ export default function LelangScreen() {
                 selectedHasilServerItem.item.bidHistory.slice(0, 5).map((bid, index) => {
                   const rank = index + 1;
                   const badgeColor =
-                    rank === 1 ? "#F59E0B" : rank === 2 ? "#C4A6B3" : rank === 3 ? "#CD7F32" : "#785D6A";
+                    rank === 1 ? "#F5C518" : rank === 2 ? "#9CA3AF" : rank === 3 ? "#CD7F32" : "#6B7280";
 
                   return (
                     <View key={bid.id || `rank_${rank}`} style={styles.hasilLeaderboardRow}>
@@ -1040,11 +1040,11 @@ export default function LelangScreen() {
                 })
               ) : (
                 <View style={{ paddingVertical: 18, alignItems: "center", gap: 4 }}>
-                  <AppIcon name="gavel" size={24} color="#785D6A" />
-                  <Text style={{ color: "#C4A6B3", fontSize: 13, fontFamily: "Nunito-Bold", marginTop: 4 }}>
+                  <AppIcon name="gavel" size={24} color="#6B7280" />
+                  <Text style={{ color: "#9CA3AF", fontSize: 13, fontFamily: "Nunito-Bold", marginTop: 4 }}>
                     {(selectedHasilServerItem.totalBidders ?? 0) === 0 ? "Tidak Ada Penawaran" : "Belum Ada Riwayat Penawaran"}
                   </Text>
-                  <Text style={{ color: "#8F727F", fontSize: 11.5, fontFamily: "Nunito-Regular", textAlign: "center" }}>
+                  <Text style={{ color: "#8E93A2", fontSize: 11.5, fontFamily: "Nunito-Regular", textAlign: "center" }}>
                     {(selectedHasilServerItem.totalBidders ?? 0) === 0
                       ? "Sesi lelang ini telah berakhir dan ditutup tanpa penawar."
                       : "Riwayat penawaran tidak tersedia."}
@@ -1144,7 +1144,7 @@ export default function LelangScreen() {
                     <AppIcon
                       name={selectedKlaimItem.type === "banner" ? "image-outline" : "crop-free"}
                       size={10}
-                      color="#FB7185"
+                      color="#FFFFFF"
                     />
                     <Text style={styles.modalItemTagText}>
                       {selectedKlaimItem.type === "banner" ? "Banner" : "Border"}
@@ -1231,7 +1231,7 @@ export default function LelangScreen() {
                 }}
                 style={({ pressed }) => [
                   styles.klaimPayBtn,
-                  { backgroundColor: "rgba(245, 158, 11, 0.95)" },
+                  { backgroundColor: "rgba(245, 197, 24, 0.95)" },
                   pressed && styles.btnPressed,
                 ]}
               >
@@ -1323,8 +1323,8 @@ export default function LelangScreen() {
             {/* 2. 4 Langkah Mudah Ikut Lelang */}
             <View style={styles.infoSectionCard}>
               <View style={styles.infoSectionHeader}>
-                <View style={[styles.infoIconWrap, { backgroundColor: "rgba(251, 113, 133, 0.15)" }]}>
-                  <AppIcon name="gavel" size={18} color="#FB7185" />
+                <View style={[styles.infoIconWrap, { backgroundColor: "rgba(255, 255, 255, 0.15)" }]}>
+                  <AppIcon name="gavel" size={18} color="#FFFFFF" />
                 </View>
                 <Text style={styles.infoSectionTitle}>4 Langkah Mudah Ikut Lelang</Text>
               </View>
@@ -1383,8 +1383,8 @@ export default function LelangScreen() {
             {/* 3. Ketentuan & Kebijakan */}
             <View style={styles.infoSectionCard}>
               <View style={styles.infoSectionHeader}>
-                <View style={[styles.infoIconWrap, { backgroundColor: "rgba(245, 158, 11, 0.15)" }]}>
-                  <AppIcon name="shield-check" size={18} color="#F59E0B" />
+                <View style={[styles.infoIconWrap, { backgroundColor: "rgba(245, 197, 24, 0.15)" }]}>
+                  <AppIcon name="shield-check" size={18} color="#F5C518" />
                 </View>
                 <Text style={styles.infoSectionTitle}>Ketentuan & Kebijakan</Text>
               </View>
@@ -1495,7 +1495,7 @@ export default function LelangScreen() {
                       styles.borderOuterAura,
                       {
                         backgroundColor:
-                          selectedDetailItem.glowColor || "rgba(251, 113, 133, 0.18)",
+                          selectedDetailItem.glowColor || "rgba(255, 255, 255, 0.18)",
                         shadowColor: selectedDetailItem.accentColor,
                       },
                     ]}
@@ -1521,7 +1521,7 @@ export default function LelangScreen() {
                   <AppIcon
                     name={selectedDetailItem.type === "banner" ? "image-outline" : "crop-free"}
                     size={11}
-                    color="#FB7185"
+                    color="#FFFFFF"
                   />
                   <Text style={styles.detailTypeBadgeText}>
                     {selectedDetailItem.type === "banner" ? "Banner" : "Border"}
@@ -1585,7 +1585,7 @@ export default function LelangScreen() {
                 return (
                   <View style={styles.timerCardEnded}>
                     <View style={styles.timerClockRow}>
-                      <AppIcon name="flag-checkered" size={17} color="#C4A6B3" />
+                      <AppIcon name="flag-checkered" size={17} color="#9CA3AF" />
                       <Text style={styles.timerEndedTitle}>Sesi Lelang Telah Berakhir</Text>
                     </View>
                     <Text style={styles.timerEndedSub}>
@@ -1611,7 +1611,7 @@ export default function LelangScreen() {
               <View style={styles.highestBidHeaderRow}>
                 <Text style={styles.highestBidLabel}>Penawaran Tertinggi</Text>
                 <Text style={styles.userBalanceHeader}>
-                  Saldo kamu: <Text style={{ color: "#FB7185", fontFamily: "Nunito-Bold" }}>{crystalBalance.toLocaleString("id-ID")} Crystal</Text>
+                  Saldo kamu: <Text style={{ color: "#FFFFFF", fontFamily: "Nunito-Bold" }}>{crystalBalance.toLocaleString("id-ID")} Crystal</Text>
                 </Text>
               </View>
 
@@ -1768,7 +1768,7 @@ export default function LelangScreen() {
                       </Text>
                     </View>
                     <View style={styles.ctaBtnDisabledBox}>
-                      <AppIcon name="lock-outline" size={16} color="#8F727F" />
+                      <AppIcon name="lock-outline" size={16} color="#8E93A2" />
                       <Text style={styles.ctaBtnDisabledText}>
                         Sudah Dimiliki (Tidak Dapat Mengikuti Lelang)
                       </Text>
@@ -1782,7 +1782,7 @@ export default function LelangScreen() {
                 return (
                   <View style={styles.alreadyOwnedContainer}>
                     <View style={styles.leadingBidNoticeCard}>
-                      <AppIcon name="crown" size={18} color="#F59E0B" />
+                      <AppIcon name="crown" size={18} color="#F5C518" />
                       <View style={{ flex: 1 }}>
                         <Text style={styles.leadingBidNoticeTitle}>
                           Tawaranmu Sedang Memimpin!
@@ -1799,7 +1799,7 @@ export default function LelangScreen() {
                       }}
                       style={({ pressed }) => [styles.ctaBtnLeadingBox, pressed && styles.btnPressed]}
                     >
-                      <AppIcon name="check-decagram" size={17} color="#F59E0B" />
+                      <AppIcon name="check-decagram" size={17} color="#F5C518" />
                       <Text style={styles.ctaBtnLeadingText}>
                         Tawaran Tertinggi Milikmu
                       </Text>
@@ -1843,7 +1843,7 @@ export default function LelangScreen() {
 
                     <View style={styles.bidderBadgeBox}>
                       <View style={styles.bidderAvatarTiny}>
-                        <AppIcon name="account" size={10} color="#C4A6B3" />
+                        <AppIcon name="account" size={10} color="#9CA3AF" />
                       </View>
                       <Text style={styles.bidderNameText}>{bid.bidderName}</Text>
                     </View>
@@ -1881,32 +1881,19 @@ export default function LelangScreen() {
               </Pressable>
 
               <View style={styles.headerTitleWrap}>
-                <Text style={styles.headerTitle}>
+                <Text style={styles.headerTitle} numberOfLines={1}>
                   {isRiwayatOpen
                     ? "Riwayat Lelang"
                     : activeTab === "home"
-                    ? "Lelang Luckynime"
+                    ? "Lelang"
                     : activeTab === "lelang"
                     ? "Ruang Lelang"
                     : activeTab === "koleksi"
-                    ? "Koleksi Banner & Border"
+                    ? "Koleksi"
                     : activeTab === "event"
-                    ? "Event Spesial Luckynime"
-                    : "Profil Akun"}
+                    ? "Event"
+                    : "Profil"}
                 </Text>
-                {!isRiwayatOpen && (
-                  <Text style={styles.headerSubtitle} numberOfLines={1}>
-                    {activeTab === "home"
-                      ? "Dapatkan Banner & Border Eksklusif"
-                      : activeTab === "lelang"
-                      ? "Temukan item eksklusif dan pasang penawaran terbaik"
-                      : activeTab === "koleksi"
-                      ? "Item eksklusif yang berhasil kamu menangkan"
-                      : activeTab === "event"
-                      ? "Klaim Dylan Crystal gratis setiap hari"
-                      : "Status akun, border aktif, dan koleksi lelangmu"}
-                  </Text>
-                )}
               </View>
             </View>
 
@@ -1942,7 +1929,7 @@ export default function LelangScreen() {
                 refreshing={isRefreshing}
                 onRefresh={handlePullRefresh}
                 tintColor="#EF4444"
-                colors={["#EF4444", "#FB7185"]}
+                colors={["#EF4444", "#FFFFFF"]}
               />
             }
           >
@@ -2164,7 +2151,7 @@ export default function LelangScreen() {
                         }}
                         style={({ pressed }) => [styles.heroPrimaryBtn, pressed && styles.btnPressed]}
                       >
-                        <AppIcon name="gavel" size={15} color="#0D080B" />
+                        <AppIcon name="gavel" size={15} color="#121316" />
                         <Text style={styles.heroPrimaryBtnText}>Masuk Ruang Lelang</Text>
                       </Pressable>
 
@@ -2177,7 +2164,7 @@ export default function LelangScreen() {
                         }}
                         style={({ pressed }) => [styles.heroSecondaryBtn, pressed && styles.btnPressed]}
                       >
-                        <AppIcon name="information-outline" size={14} color="#EDE0E5" />
+                        <AppIcon name="information-outline" size={14} color="#F3F4F6" />
                         <Text style={styles.heroSecondaryBtnText}>Info Lelang</Text>
                       </Pressable>
                     </View>
@@ -2209,8 +2196,8 @@ export default function LelangScreen() {
                     }}
                     style={({ pressed }) => [styles.quickNavCard, pressed && styles.btnPressed]}
                   >
-                    <View style={[styles.quickNavIconBox, { backgroundColor: "rgba(245, 158, 11, 0.12)" }]}>
-                      <AppIcon name="trophy" size={18} color="#F59E0B" />
+                    <View style={[styles.quickNavIconBox, { backgroundColor: "rgba(245, 197, 24, 0.12)" }]}>
+                      <AppIcon name="trophy" size={18} color="#F5C518" />
                     </View>
                     <Text style={styles.quickNavText}>Misi Crystal</Text>
                   </Pressable>
@@ -2222,8 +2209,8 @@ export default function LelangScreen() {
                     }}
                     style={({ pressed }) => [styles.quickNavCard, pressed && styles.btnPressed]}
                   >
-                    <View style={[styles.quickNavIconBox, { backgroundColor: "rgba(251, 113, 133, 0.12)" }]}>
-                      <AppIcon name="layers" size={18} color="#FB7185" />
+                    <View style={[styles.quickNavIconBox, { backgroundColor: "rgba(255, 255, 255, 0.12)" }]}>
+                      <AppIcon name="layers" size={18} color="#FFFFFF" />
                     </View>
                     <Text style={styles.quickNavText}>Koleksi</Text>
                   </Pressable>
@@ -2232,7 +2219,7 @@ export default function LelangScreen() {
                 {/* SECTION: LELANG SEDANG BERLANGSUNG */}
                 <View style={styles.sectionHeaderRow}>
                   <View style={styles.sectionTitleWithIcon}>
-                    <AppIcon name="fire" size={16} color="#EDE0E5" />
+                    <AppIcon name="fire" size={16} color="#F3F4F6" />
                     <Text style={styles.sectionTitle}>Lelang Sedang Berlangsung</Text>
                   </View>
                   <Pressable
@@ -2248,7 +2235,7 @@ export default function LelangScreen() {
                 <View style={styles.compactListWrap}>
                   {lelangItems.length === 0 ? (
                     <View style={styles.emptyStateCard}>
-                      <AppIcon name="gavel" size={28} color="#8F727F" />
+                      <AppIcon name="gavel" size={28} color="#8E93A2" />
                       <Text style={styles.emptyStateTitle}>Belum Ada Lelang Aktif</Text>
                       <Text style={styles.emptyStateDesc}>
                         Item lelang baru dari server database akan segera dimulai.
@@ -2287,7 +2274,7 @@ export default function LelangScreen() {
                           {isEnded ? (
                             isUserWinner(item) && !isOwned ? (
                               <View style={styles.compactLeadingBadge}>
-                                <AppIcon name="crown" size={11} color="#F59E0B" />
+                                <AppIcon name="crown" size={11} color="#F5C518" />
                                 <Text style={styles.compactLeadingBadgeText}>Pemenang</Text>
                               </View>
                             ) : isOwned ? (
@@ -2307,7 +2294,7 @@ export default function LelangScreen() {
                             </View>
                           ) : isUserHighestBidder(item) ? (
                             <View style={styles.compactLeadingBadge}>
-                              <AppIcon name="crown" size={11} color="#F59E0B" />
+                              <AppIcon name="crown" size={11} color="#F5C518" />
                               <Text style={styles.compactLeadingBadgeText}>Memimpin</Text>
                             </View>
                           ) : (
@@ -2370,7 +2357,7 @@ export default function LelangScreen() {
                 {/* List Item Lelang (Klik langsung membuka Halaman Detail Gambar 1 & 2) */}
                 {filteredLelangItems.length === 0 ? (
                   <View style={styles.emptyStateCard}>
-                    <AppIcon name="gavel" size={32} color="#8F727F" />
+                    <AppIcon name="gavel" size={32} color="#8E93A2" />
                     <Text style={styles.emptyStateTitle}>Tidak Ada Item Lelang</Text>
                     <Text style={styles.emptyStateDesc}>
                       Saat ini belum ada item lelang aktif dari server database.
@@ -2400,13 +2387,13 @@ export default function LelangScreen() {
                               <AppIcon
                                 name={item.type === "banner" ? "image-outline" : "crop-free"}
                                 size={10}
-                                color="#C4A6B3"
+                                color="#9CA3AF"
                               />
                               <Text style={styles.typeBadgeText}>
                                 {item.type === "banner" ? "Banner" : "Border"}
                               </Text>
                             </View>
-                            <AppIcon name="chevron-right" size={14} color="#8F727F" />
+                            <AppIcon name="chevron-right" size={14} color="#8E93A2" />
                           </View>
 
                           <Text style={styles.cardTitle}>{item.title}</Text>
@@ -2427,7 +2414,7 @@ export default function LelangScreen() {
                               <Text style={styles.priceTableLabel}>Tertinggi</Text>
                               <View style={styles.priceCrystalRow}>
                                 <Image source={CRYSTAL_IMG} style={styles.microCrystal} contentFit="contain" />
-                                <Text style={[styles.priceTableVal, { color: "#FB7185", fontFamily: "Nunito-Bold" }]}>
+                                <Text style={[styles.priceTableVal, { color: "#FFFFFF", fontFamily: "Nunito-Bold" }]}>
                                   {item.currentBid.toLocaleString("id-ID")}
                                 </Text>
                               </View>
@@ -2447,9 +2434,9 @@ export default function LelangScreen() {
                           <AppIcon
                             name={isEnded ? "flag-checkered" : "clock-outline"}
                             size={13}
-                            color={isEnded ? "#8F727F" : "#C4A6B3"}
+                            color={isEnded ? "#8E93A2" : "#9CA3AF"}
                           />
-                          <Text style={[styles.clockText, isEnded && { color: "#8F727F" }]}>
+                          <Text style={[styles.clockText, isEnded && { color: "#8E93A2" }]}>
                             {isEnded ? "Berakhir" : clockStr}
                           </Text>
                         </View>
@@ -2483,7 +2470,7 @@ export default function LelangScreen() {
                                 }
                                 return (
                                   <View style={styles.statusPillWinner}>
-                                    <AppIcon name="crown" size={11} color="#F59E0B" />
+                                    <AppIcon name="crown" size={11} color="#F5C518" />
                                     <Text style={styles.statusPillTextWinner}>Pemenang Lelang</Text>
                                   </View>
                                 );
@@ -2516,7 +2503,7 @@ export default function LelangScreen() {
                             </View>
                           ) : isUserHighestBidder(item) ? (
                             <View style={styles.statusPillLeading}>
-                              <AppIcon name="crown" size={11} color="#F59E0B" />
+                              <AppIcon name="crown" size={11} color="#F5C518" />
                               <Text style={styles.statusPillTextLeading}>Memimpin</Text>
                             </View>
                           ) : (
@@ -2557,7 +2544,7 @@ export default function LelangScreen() {
 
                 {ownedItems.length === 0 ? (
                   <View style={styles.emptyStateCard}>
-                    <AppIcon name="gavel" size={32} color="#8F727F" />
+                    <AppIcon name="gavel" size={32} color="#8E93A2" />
                     <Text style={styles.emptyStateTitle}>Belum Ada Koleksi Lelang</Text>
                     <Text style={styles.emptyStateDesc}>
                       Ikuti lelang aktif dan menangkan Banner atau Border eksklusif pertama kamu!
@@ -2668,7 +2655,7 @@ export default function LelangScreen() {
                 <View style={styles.missionHeaderContainer}>
                   <View style={styles.missionHeaderTopRow}>
                     <View style={styles.missionHeaderTitleWrap}>
-                      <AppIcon name="trophy" size={17} color="#F59E0B" />
+                      <AppIcon name="trophy" size={17} color="#F5C518" />
                       <Text style={styles.missionHeaderTitle} numberOfLines={1}>
                         Event Misi Harian Berhadiah
                       </Text>
@@ -2695,7 +2682,7 @@ export default function LelangScreen() {
                   return (
                     <View key={m.id} style={styles.missionCard}>
                       <View style={styles.missionIconWrap}>
-                        <AppIcon name={m.icon} size={20} color="#F5E9EE" />
+                        <AppIcon name={m.icon} size={20} color="#F3F4F6" />
                       </View>
 
                       <View style={styles.missionInfoCol}>
@@ -2752,7 +2739,7 @@ export default function LelangScreen() {
                           ]}
                         >
                           {claimingMissionId === m.id ? (
-                            <ActivityIndicator size="small" color="#0D080B" />
+                            <ActivityIndicator size="small" color="#121316" />
                           ) : (
                             <Text style={styles.claimBtnTextReady}>Klaim</Text>
                           )}
@@ -2838,12 +2825,12 @@ export default function LelangScreen() {
                               contentFit="contain"
                             />
                           ) : (
-                            <AppIcon name="shield-star" size={12} color="#FB7185" />
+                            <AppIcon name="shield-star" size={12} color="#FFFFFF" />
                           )}
                           <Text
                             style={[
                               styles.profileLevelPillText,
-                              tierInfo.isInfinity && { color: "#EF4444", fontFamily: "Nunito-Black" },
+                              tierInfo.isInfinity && { color: "#EF4444", fontFamily: "Nunito-Bold" },
                             ]}
                           >
                             {tierInfo.isInfinity ? "∞" : `Lv. ${userLevel}`}
@@ -2889,11 +2876,11 @@ export default function LelangScreen() {
                     >
                       <View style={styles.profileMenuLeft}>
                         <View style={styles.profileMenuIconBox}>
-                          <AppIcon name="trophy-award" size={17} color="#C4A6B3" />
+                          <AppIcon name="trophy-award" size={17} color="#9CA3AF" />
                         </View>
                         <Text style={styles.profileMenuLabel}>Misi Harian</Text>
                       </View>
-                      <AppIcon name="chevron-right" size={18} color="#8F727F" />
+                      <AppIcon name="chevron-right" size={18} color="#8E93A2" />
                     </Pressable>
 
                     {/* Level & EXP */}
@@ -2908,7 +2895,7 @@ export default function LelangScreen() {
                     >
                       <View style={styles.profileMenuLeft}>
                         <View style={styles.profileMenuIconBox}>
-                          <AppIcon name="shield-outline" size={17} color="#C4A6B3" />
+                          <AppIcon name="shield-outline" size={17} color="#9CA3AF" />
                         </View>
                         <View style={{ gap: 2 }}>
                           <Text style={styles.profileMenuLabel}>Level & EXP</Text>
@@ -2917,7 +2904,7 @@ export default function LelangScreen() {
                           </Text>
                         </View>
                       </View>
-                      <AppIcon name="chevron-right" size={18} color="#8F727F" />
+                      <AppIcon name="chevron-right" size={18} color="#8E93A2" />
                     </Pressable>
 
                     {/* Crystal */}
@@ -2941,7 +2928,7 @@ export default function LelangScreen() {
                           </Text>
                         </View>
                       </View>
-                      <AppIcon name="chevron-right" size={18} color="#8F727F" />
+                      <AppIcon name="chevron-right" size={18} color="#8E93A2" />
                     </Pressable>
 
                     {/* Riwayat */}
@@ -2956,11 +2943,11 @@ export default function LelangScreen() {
                     >
                       <View style={styles.profileMenuLeft}>
                         <View style={styles.profileMenuIconBox}>
-                          <AppIcon name="history" size={17} color="#C4A6B3" />
+                          <AppIcon name="history" size={17} color="#9CA3AF" />
                         </View>
                         <Text style={styles.profileMenuLabel}>Riwayat</Text>
                       </View>
-                      <AppIcon name="chevron-right" size={18} color="#8F727F" />
+                      <AppIcon name="chevron-right" size={18} color="#8E93A2" />
                     </Pressable>
 
                     {/* Bantuan */}
@@ -2975,11 +2962,11 @@ export default function LelangScreen() {
                     >
                       <View style={styles.profileMenuLeft}>
                         <View style={styles.profileMenuIconBox}>
-                          <AppIcon name="help-circle-outline" size={17} color="#C4A6B3" />
+                          <AppIcon name="help-circle-outline" size={17} color="#9CA3AF" />
                         </View>
                         <Text style={styles.profileMenuLabel}>Bantuan & Panduan</Text>
                       </View>
-                      <AppIcon name="chevron-right" size={18} color="#8F727F" />
+                      <AppIcon name="chevron-right" size={18} color="#8E93A2" />
                     </Pressable>
                   </View>
                 </View>
@@ -3003,7 +2990,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="home"
                 size={20}
-                color={activeTab === "home" && !isRiwayatOpen ? "#EF4444" : "#8F727F"}
+                color={activeTab === "home" && !isRiwayatOpen ? "#EF4444" : "#8E93A2"}
               />
               <Text
                 style={[
@@ -3027,7 +3014,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="gavel"
                 size={20}
-                color={activeTab === "lelang" && !isRiwayatOpen ? "#EF4444" : "#8F727F"}
+                color={activeTab === "lelang" && !isRiwayatOpen ? "#EF4444" : "#8E93A2"}
               />
               <Text
                 style={[
@@ -3051,7 +3038,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="layers"
                 size={20}
-                color={activeTab === "koleksi" && !isRiwayatOpen ? "#EF4444" : "#8F727F"}
+                color={activeTab === "koleksi" && !isRiwayatOpen ? "#EF4444" : "#8E93A2"}
               />
               <Text
                 style={[
@@ -3075,7 +3062,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="star"
                 size={20}
-                color={activeTab === "event" && !isRiwayatOpen ? "#EF4444" : "#8F727F"}
+                color={activeTab === "event" && !isRiwayatOpen ? "#EF4444" : "#8E93A2"}
               />
               <Text
                 style={[
@@ -3099,7 +3086,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="account"
                 size={20}
-                color={activeTab === "profile" || isRiwayatOpen ? "#EF4444" : "#8F727F"}
+                color={activeTab === "profile" || isRiwayatOpen ? "#EF4444" : "#8E93A2"}
               />
               <Text
                 style={[
@@ -3147,7 +3134,7 @@ export default function LelangScreen() {
                     onPress={() => setIsConfirmModalOpen(false)}
                     style={styles.modalCloseBtn}
                   >
-                    <AppIcon name="close" size={18} color="#C4A6B3" />
+                    <AppIcon name="close" size={18} color="#9CA3AF" />
                   </Pressable>
                 </View>
 
@@ -3160,7 +3147,7 @@ export default function LelangScreen() {
                       <AppIcon
                         name={selectedDetailItem.type === "banner" ? "image-outline" : "crop-free"}
                         size={10}
-                        color="#FB7185"
+                        color="#FFFFFF"
                       />
                       <Text style={styles.modalItemTagText}>
                         {selectedDetailItem.type === "banner" ? "Banner" : "Border"}
@@ -3209,7 +3196,7 @@ export default function LelangScreen() {
                         keyboardType="number-pad"
                         value={bidAmountInput}
                         onChangeText={setBidAmountInput}
-                        placeholderTextColor="#8F727F"
+                        placeholderTextColor="#8E93A2"
                       />
                     </View>
                   </View>
@@ -3243,22 +3230,22 @@ export default function LelangScreen() {
                     style={[
                       styles.modalWarningBanner,
                       {
-                        borderColor: "rgba(245, 158, 11, 0.45)",
-                        backgroundColor: "rgba(245, 158, 11, 0.14)",
+                        borderColor: "rgba(245, 197, 24, 0.45)",
+                        backgroundColor: "rgba(245, 197, 24, 0.14)",
                       },
                     ]}
                   >
                     <View style={styles.warningCircleIcon}>
-                      <AppIcon name="alert-circle-outline" size={15} color="#F59E0B" />
+                      <AppIcon name="alert-circle-outline" size={15} color="#F5C518" />
                     </View>
-                    <Text style={[styles.warningBannerText, { color: "#FBBF24" }]}>
+                    <Text style={[styles.warningBannerText, { color: "#F5C518" }]}>
                       Kamu saat ini sudah memegang penawaran tertinggi! Tunggu peserta lain menaikkan tawaran lelang.
                     </Text>
                   </View>
                 ) : (
                   <View style={styles.modalWarningBanner}>
                     <View style={styles.warningCircleIcon}>
-                      <AppIcon name="arrow-down-circle" size={15} color="#F59E0B" />
+                      <AppIcon name="arrow-down-circle" size={15} color="#F5C518" />
                     </View>
                     <Text style={styles.warningBannerText}>
                       Penawaran harus lebih tinggi dari harga tertinggi saat ini.
@@ -3361,7 +3348,7 @@ export default function LelangScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   btnPressed: {
     opacity: 0.8,
@@ -3380,7 +3367,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 255, 255, 0.08)",
-    backgroundColor: "rgba(13, 8, 11, 0.95)",
+    backgroundColor: "rgba(18,19,22, 0.95)",
   },
   headerLeft: {
     flexDirection: "row",
@@ -3403,7 +3390,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16.5,
     color: "#FFFFFF",
     letterSpacing: -0.2,
@@ -3411,7 +3398,7 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 1,
   },
   headerRight: {
@@ -3481,7 +3468,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.15)",
     paddingHorizontal: 16,
@@ -3491,7 +3478,7 @@ const styles = StyleSheet.create({
   toastText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 12,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
 
   /* ── SCROLL CONTENT (MAIN TABS) ── */
@@ -3508,7 +3495,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     overflow: "hidden",
     marginBottom: 16,
   },
@@ -3519,7 +3506,7 @@ const styles = StyleSheet.create({
   },
   heroOverlay: {
     padding: 14,
-    backgroundColor: "rgba(13, 8, 11, 0.96)",
+    backgroundColor: "rgba(18,19,22, 0.96)",
   },
   heroBadgeRow: {
     flexDirection: "row",
@@ -3544,10 +3531,10 @@ const styles = StyleSheet.create({
   heroLiveMeta: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   heroTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
     color: "#FFFFFF",
     lineHeight: 20,
@@ -3556,7 +3543,7 @@ const styles = StyleSheet.create({
   heroDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 16,
     marginBottom: 12,
   },
@@ -3575,9 +3562,9 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   heroPrimaryBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#0D080B",
+    color: "#121316",
   },
   heroSecondaryBtn: {
     flexDirection: "row",
@@ -3593,7 +3580,7 @@ const styles = StyleSheet.create({
   heroSecondaryBtnText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
 
   /* ── 4 QUICK NAV BUTTONS ── */
@@ -3605,7 +3592,7 @@ const styles = StyleSheet.create({
   },
   quickNavCard: {
     flex: 1,
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
@@ -3623,7 +3610,7 @@ const styles = StyleSheet.create({
   quickNavText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
 
   /* ── SECTION HEADERS ── */
@@ -3639,14 +3626,14 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   sectionTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     color: "#FFFFFF",
   },
   sectionActionText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
 
   /* ── COMPACT LIST (TAB HOME) ── */
@@ -3657,7 +3644,7 @@ const styles = StyleSheet.create({
   compactAuctionCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
     borderRadius: 10,
@@ -3681,12 +3668,12 @@ const styles = StyleSheet.create({
   compactPriceVal: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   compactTimerText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   compactBidBtn: {
     backgroundColor: "#FFFFFF",
@@ -3695,9 +3682,9 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   compactBidBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#0D080B",
+    color: "#121316",
   },
 
   /* ── FILTER PILLS (TAB LELANG) ── */
@@ -3722,16 +3709,16 @@ const styles = StyleSheet.create({
   filterPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   filterPillTextActive: {
-    fontFamily: "Nunito-Black",
-    color: "#0D080B",
+    fontFamily: "Nunito-Bold",
+    color: "#121316",
   },
 
   /* ── AUCTION CARDS (TAB LELANG) ── */
   auctionCard: {
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
@@ -3763,12 +3750,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   typeBadgeText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   cardTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     color: "#FFFFFF",
     marginBottom: 8,
@@ -3785,7 +3772,7 @@ const styles = StyleSheet.create({
   priceTableLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   priceCrystalRow: {
     flexDirection: "row",
@@ -3807,7 +3794,7 @@ const styles = StyleSheet.create({
   priceTableVal: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   cardFooterRow: {
     flexDirection: "row",
@@ -3826,7 +3813,7 @@ const styles = StyleSheet.create({
   clockText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     letterSpacing: 0.5,
   },
   statusPill: {
@@ -3840,19 +3827,19 @@ const styles = StyleSheet.create({
     borderColor: "rgba(16, 185, 129, 0.3)",
   },
   statusPillScheduled: {
-    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.3)",
+    borderColor: "rgba(239, 68, 68, 0.3)",
   },
   statusPillText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
   },
   statusPillTextActive: {
     color: "#10B981",
   },
   statusPillTextScheduled: {
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   /* ── 2x2 CATALOG GRID ── */
@@ -3863,7 +3850,7 @@ const styles = StyleSheet.create({
   },
   catalogCard: {
     width: (Dimensions.get("window").width - 42) / 2,
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
     borderRadius: 10,
@@ -3889,7 +3876,7 @@ const styles = StyleSheet.create({
   catalogType: {
     fontFamily: "Nunito-Regular",
     fontSize: 9,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: 1,
   },
 
@@ -3898,7 +3885,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   koleksiIntroCard: {
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
@@ -3907,13 +3894,13 @@ const styles = StyleSheet.create({
   koleksiIntroDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 16,
   },
   ownedCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
     borderRadius: 10,
@@ -3950,7 +3937,7 @@ const styles = StyleSheet.create({
   ownedSource: {
     fontFamily: "Nunito-Regular",
     fontSize: 10,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginTop: 2,
   },
   equipBtn: {
@@ -3968,7 +3955,7 @@ const styles = StyleSheet.create({
   equipBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   equipBtnTextActive: {
     color: "#10B981",
@@ -3977,7 +3964,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 32,
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -3986,12 +3973,12 @@ const styles = StyleSheet.create({
   emptyStateTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   emptyStateDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 16,
   },
@@ -4003,14 +3990,14 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   emptyStateBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#0D080B",
+    color: "#121316",
   },
 
   /* ── TAB 4: EVENT SPESIAL & MISI ── */
   eventSpecialCard: {
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
@@ -4041,7 +4028,7 @@ const styles = StyleSheet.create({
     color: "#10B981",
   },
   eventSpecialTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
     color: "#FFFFFF",
     lineHeight: 20,
@@ -4049,7 +4036,7 @@ const styles = StyleSheet.create({
   eventSpecialDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 16,
   },
   eventSpecialActionBtn: {
@@ -4061,9 +4048,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   eventSpecialActionBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#0D080B",
+    color: "#121316",
   },
   missionHeaderContainer: {
     marginTop: 18,
@@ -4084,7 +4071,7 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   missionHeaderTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 13.5,
     color: "#FFFFFF",
     flexShrink: 1,
@@ -4093,9 +4080,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 12,
@@ -4104,24 +4091,24 @@ const styles = StyleSheet.create({
   dailyRewardPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   missionRewardHeader: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   missionIntroSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 16,
     marginBottom: 10,
   },
   missionCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
     borderRadius: 10,
@@ -4157,7 +4144,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -4166,12 +4153,12 @@ const styles = StyleSheet.create({
   missionRewardText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   missionDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 10,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   missionStatusIndicatorRow: {
     marginTop: 4,
@@ -4181,10 +4168,10 @@ const styles = StyleSheet.create({
   missionProgressText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   missionProgressTextReady: {
-    color: "#FB7185",
+    color: "#FFFFFF",
     fontFamily: "Nunito-Bold",
   },
   missionProgressTextClaimed: {
@@ -4224,11 +4211,11 @@ const styles = StyleSheet.create({
   claimBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   claimBtnTextReady: {
-    fontFamily: "Nunito-Black",
-    color: "#0D080B",
+    fontFamily: "Nunito-Bold",
+    color: "#121316",
   },
   claimBtnTextAction: {
     fontFamily: "Nunito-Bold",
@@ -4246,7 +4233,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderTopWidth: 1,
     borderTopColor: "rgba(255, 255, 255, 0.08)",
     paddingTop: 10,
@@ -4259,7 +4246,7 @@ const styles = StyleSheet.create({
   bottomTabLabel: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   bottomTabLabelActive: {
     fontFamily: "Nunito-Bold",
@@ -4312,7 +4299,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   profileHeaderCard: {
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -4339,7 +4326,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   profileDisplayNameHorizontal: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16.5,
     color: "#FFFFFF",
     maxWidth: "85%",
@@ -4354,9 +4341,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -4368,7 +4355,7 @@ const styles = StyleSheet.create({
   profileLevelPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   profileSpecialRoleBadge: {
     flexDirection: "row",
@@ -4395,12 +4382,12 @@ const styles = StyleSheet.create({
   profileMemberRoleText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   profileUserTag: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginTop: 1,
   },
   profileStatsRow: {
@@ -4417,14 +4404,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileStatValue: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
   },
   profileStatLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginTop: 2,
   },
   profileStatDivider: {
@@ -4435,7 +4422,7 @@ const styles = StyleSheet.create({
   profileLevelSubtitle: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   profileQuickRow: {
     flexDirection: "row",
@@ -4462,7 +4449,7 @@ const styles = StyleSheet.create({
   profileQuickBtn: {
     flex: 1,
     height: 76,
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 14,
@@ -4502,7 +4489,7 @@ const styles = StyleSheet.create({
   profileQuickBtnLabel: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   profileMenuSection: {
     marginBottom: 20,
@@ -4510,7 +4497,7 @@ const styles = StyleSheet.create({
   profileMenuSectionTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginBottom: 10,
     marginLeft: 2,
   },
@@ -4521,7 +4508,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 14,
@@ -4545,12 +4532,12 @@ const styles = StyleSheet.create({
   profileMenuLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
   },
   profileCrystalSubtitle: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   profileBottomDualRow: {
     flexDirection: "row",
@@ -4565,7 +4552,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
     height: 44,
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 12,
@@ -4608,7 +4595,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 255, 255, 0.06)",
-    backgroundColor: "rgba(13, 8, 11, 0.9)",
+    backgroundColor: "rgba(18,19,22, 0.9)",
   },
   detailIconCircle: {
     width: 38,
@@ -4649,7 +4636,7 @@ const styles = StyleSheet.create({
     width: 170,
     height: 170,
     borderRadius: 85,
-    backgroundColor: "rgba(168, 85, 247, 0.15)",
+    backgroundColor: "rgba(156,163,175, 0.15)",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.6,
     shadowRadius: 20,
@@ -4674,9 +4661,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    backgroundColor: "rgba(244, 63, 94, 0.18)",
+    backgroundColor: "rgba(239, 68, 68, 0.18)",
     borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.35)",
+    borderColor: "rgba(239, 68, 68, 0.35)",
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 4,
@@ -4684,10 +4671,10 @@ const styles = StyleSheet.create({
   detailTypeBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   detailTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 22,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -4696,11 +4683,11 @@ const styles = StyleSheet.create({
   detailDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 18,
   },
   specCard: {
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
@@ -4719,7 +4706,7 @@ const styles = StyleSheet.create({
   specLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   specValueRow: {
     flexDirection: "row",
@@ -4748,7 +4735,7 @@ const styles = StyleSheet.create({
     gap: 7,
   },
   timerClockText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
     color: "#FFFFFF",
     letterSpacing: 1.5,
@@ -4759,7 +4746,7 @@ const styles = StyleSheet.create({
     color: "#EF4444",
   },
   timerCardEnded: {
-    backgroundColor: "rgba(35, 22, 31, 0.55)",
+    backgroundColor: "rgba(35,38,47, 0.55)",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
@@ -4770,17 +4757,17 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   timerEndedTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   timerEndedSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   highestBidCard: {
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
@@ -4794,14 +4781,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   highestBidLabel: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   userBalanceHeader: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   highestBidAmountBox: {
     flexDirection: "row",
@@ -4821,14 +4808,14 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   highestBidAmountText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
     color: "#FFFFFF",
   },
   highestBidTimeAgo: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   totalBiddersRow: {
     flexDirection: "row",
@@ -4838,7 +4825,7 @@ const styles = StyleSheet.create({
   totalBiddersLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   totalBiddersVal: {
     fontFamily: "Nunito-Bold",
@@ -4854,7 +4841,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   mainCtaBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
     color: "#FFFFFF",
     letterSpacing: 0.2,
@@ -4877,7 +4864,7 @@ const styles = StyleSheet.create({
   alreadyOwnedNoticeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#34D399",
+    color: "#10B981",
     flex: 1,
   },
   ctaBtnDisabledBox: {
@@ -4885,7 +4872,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: "rgba(35, 22, 31, 0.8)",
+    backgroundColor: "rgba(35,38,47, 0.8)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     borderRadius: 10,
@@ -4894,29 +4881,29 @@ const styles = StyleSheet.create({
   ctaBtnDisabledText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   leadingBidNoticeCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(245, 158, 11, 0.12)",
+    backgroundColor: "rgba(245, 197, 24, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.35)",
+    borderColor: "rgba(245, 197, 24, 0.35)",
     paddingHorizontal: 14,
     paddingVertical: 11,
     borderRadius: 10,
   },
   leadingBidNoticeTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FBBF24",
+    color: "#F5C518",
     marginBottom: 2,
   },
   leadingBidNoticeText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11.5,
-    color: "#FDE68A",
+    color: "#F5C518",
     lineHeight: 16,
   },
   ctaBtnLeadingBox: {
@@ -4924,24 +4911,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: "rgba(245, 158, 11, 0.16)",
+    backgroundColor: "rgba(245, 197, 24, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.45)",
+    borderColor: "rgba(245, 197, 24, 0.45)",
     borderRadius: 10,
     paddingVertical: 13,
   },
   ctaBtnLeadingText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   compactLeadingBadge: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(245, 158, 11, 0.14)",
+    backgroundColor: "rgba(245, 197, 24, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.4)",
+    borderColor: "rgba(245, 197, 24, 0.4)",
     paddingHorizontal: 8,
     paddingVertical: 5,
     borderRadius: 8,
@@ -4949,15 +4936,15 @@ const styles = StyleSheet.create({
   compactLeadingBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   statusPillLeading: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(245, 158, 11, 0.14)",
+    backgroundColor: "rgba(245, 197, 24, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.4)",
+    borderColor: "rgba(245, 197, 24, 0.4)",
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -4965,7 +4952,7 @@ const styles = StyleSheet.create({
   statusPillTextLeading: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   compactOwnedBadge: {
     flexDirection: "row",
@@ -4994,15 +4981,15 @@ const styles = StyleSheet.create({
   compactEndedBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   statusPillWinner: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(245, 158, 11, 0.15)",
+    backgroundColor: "rgba(245, 197, 24, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.4)",
+    borderColor: "rgba(245, 197, 24, 0.4)",
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 12,
@@ -5010,7 +4997,7 @@ const styles = StyleSheet.create({
   statusPillTextWinner: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   statusPillOwned: {
     flexDirection: "row",
@@ -5026,7 +5013,7 @@ const styles = StyleSheet.create({
   statusPillTextOwned: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#34D399",
+    color: "#10B981",
   },
   statusPillEnded: {
     backgroundColor: "rgba(100, 116, 139, 0.18)",
@@ -5039,7 +5026,7 @@ const styles = StyleSheet.create({
   statusPillTextEnded: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   bidHistorySection: {
     gap: 8,
@@ -5051,20 +5038,20 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   bidHistoryTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     color: "#FFFFFF",
   },
   bidHistoryCountText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   emptyBidHistoryCard: {
     paddingVertical: 24,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(25, 16, 22, 0.4)",
+    backgroundColor: "rgba(18, 19, 22, 0.4)",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.06)",
@@ -5073,14 +5060,14 @@ const styles = StyleSheet.create({
   emptyBidHistoryText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
   },
   bidHistoryRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 8,
@@ -5118,12 +5105,12 @@ const styles = StyleSheet.create({
   bidderNameText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   bidTimeAgoText: {
     fontFamily: "Nunito-Regular",
     fontSize: 10.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   /* ══════════════════════════════════════════════════════════════
@@ -5142,7 +5129,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0B0F19",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
     padding: 18,
   },
   modalHeaderRow: {
@@ -5153,7 +5140,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   modalTitleLarge: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15.5,
     color: "#FFFFFF",
   },
@@ -5177,7 +5164,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   modalItemTitleText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     color: "#FFFFFF",
   },
@@ -5185,9 +5172,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(244, 63, 94, 0.18)",
+    backgroundColor: "rgba(239, 68, 68, 0.18)",
     borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.35)",
+    borderColor: "rgba(239, 68, 68, 0.35)",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -5196,10 +5183,10 @@ const styles = StyleSheet.create({
   modalItemTagText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   modalInputBlockCard: {
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
@@ -5215,7 +5202,7 @@ const styles = StyleSheet.create({
   modalInputTopLabel: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   modalQuickChipsRow: {
     flexDirection: "row",
@@ -5223,9 +5210,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   chipPill: {
-    backgroundColor: "rgba(251, 113, 133, 0.15)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    borderColor: "rgba(255, 255, 255, 0.35)",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
@@ -5233,7 +5220,7 @@ const styles = StyleSheet.create({
   chipPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   modalTextInputBox: {
     flexDirection: "row",
@@ -5248,18 +5235,18 @@ const styles = StyleSheet.create({
   modalInputPlaceholder: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   modalInputNumericRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
     borderBottomWidth: 1.5,
-    borderBottomColor: "#FB7185",
+    borderBottomColor: "#FFFFFF",
     paddingBottom: 2,
   },
   modalNumericInput: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
     minWidth: 55,
@@ -5277,7 +5264,7 @@ const styles = StyleSheet.create({
   modalMetaLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   modalMetaVal: {
     fontFamily: "Nunito-Bold",
@@ -5288,9 +5275,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "rgba(245, 158, 11, 0.1)",
+    backgroundColor: "rgba(245, 197, 24, 0.1)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.35)",
+    borderColor: "rgba(245, 197, 24, 0.35)",
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -5303,12 +5290,12 @@ const styles = StyleSheet.create({
   warningBannerText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#F59E0B",
+    color: "#F5C518",
     flex: 1,
     lineHeight: 14,
   },
   reservationBox: {
-    backgroundColor: "rgba(25, 16, 22, 0.72)",
+    backgroundColor: "rgba(18, 19, 22, 0.72)",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
@@ -5318,7 +5305,7 @@ const styles = StyleSheet.create({
   reservationTitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginBottom: 4,
   },
   reservationMainRow: {
@@ -5336,14 +5323,14 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   reservationAmountText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
     color: "#FFFFFF",
   },
   reservationSisaText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   reservationSubRow: {
     flexDirection: "row",
@@ -5354,7 +5341,7 @@ const styles = StyleSheet.create({
   reservationSubLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   reservationSubVal: {
     fontFamily: "Nunito-Bold",
@@ -5383,11 +5370,11 @@ const styles = StyleSheet.create({
   agreementText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     flex: 1,
   },
   agreementLinkText: {
-    color: "#FB7185",
+    color: "#FFFFFF",
     textDecorationLine: "underline",
   },
   modalButtonsRow: {
@@ -5406,7 +5393,7 @@ const styles = StyleSheet.create({
   modalBatalBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   modalKonfirmasiBtn: {
     flex: 1,
@@ -5417,7 +5404,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   modalKonfirmasiBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12.5,
     color: "#FFFFFF",
   },
@@ -5443,7 +5430,7 @@ const styles = StyleSheet.create({
   detailLihatHasilBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   detailKlaimHadiahBtn: {
     flex: 1,
@@ -5501,7 +5488,7 @@ const styles = StyleSheet.create({
   riwayatFilterSegment: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 12,
@@ -5523,7 +5510,7 @@ const styles = StyleSheet.create({
   riwayatFilterTabText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 12.5,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   riwayatFilterTabTextActive: {
     fontFamily: "Nunito-Bold",
@@ -5533,7 +5520,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   riwayatCard: {
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -5593,12 +5580,12 @@ const styles = StyleSheet.create({
   riwayatMetaLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   riwayatMetaValue: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   riwayatCrystalRow: {
     flexDirection: "row",
@@ -5635,7 +5622,7 @@ const styles = StyleSheet.create({
   riwayatDetailBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   riwayatKlaimBtn: {
     flex: 1,
@@ -5669,7 +5656,7 @@ const styles = StyleSheet.create({
     paddingBottom: 36,
   },
   klaimItemCard: {
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -5709,11 +5696,11 @@ const styles = StyleSheet.create({
   klaimGreenDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 16,
   },
   klaimSpecCard: {
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -5729,15 +5716,15 @@ const styles = StyleSheet.create({
   klaimSpecLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   klaimSpecValue: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 12.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   klaimSpecValueBold: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
     color: "#FFFFFF",
   },
@@ -5749,13 +5736,13 @@ const styles = StyleSheet.create({
   klaimStatusText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   klaimStatusTextDone: {
     color: "#10B981",
   },
   klaimBalanceCard: {
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -5765,7 +5752,7 @@ const styles = StyleSheet.create({
   klaimBalanceLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginBottom: 10,
   },
   klaimBalanceRow: {
@@ -5778,14 +5765,14 @@ const styles = StyleSheet.create({
     height: 20,
   },
   klaimBalanceAmount: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
   },
   klaimTopupBtn: {
-    backgroundColor: "rgba(251, 113, 133, 0.1)",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    borderColor: "rgba(255, 255, 255, 0.35)",
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 8,
@@ -5793,7 +5780,7 @@ const styles = StyleSheet.create({
   klaimTopupBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   klaimPayBtn: {
     height: 48,
@@ -5813,7 +5800,7 @@ const styles = StyleSheet.create({
     borderColor: "#10B981",
   },
   klaimPayBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14,
     color: "#FFFFFF",
   },
@@ -5829,7 +5816,7 @@ const styles = StyleSheet.create({
   klaimTermsText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textDecorationLine: "underline",
   },
 
@@ -5843,7 +5830,7 @@ const styles = StyleSheet.create({
   hasilServerHeaderTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 14.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   hasilScrollContent: {
     paddingHorizontal: 16,
@@ -5858,20 +5845,20 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "rgba(245, 158, 11, 0.12)",
+    backgroundColor: "rgba(245, 197, 24, 0.12)",
     borderWidth: 1.5,
-    borderColor: "rgba(245, 158, 11, 0.3)",
+    borderColor: "rgba(245, 197, 24, 0.3)",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 12,
-    shadowColor: "#F59E0B",
+    shadowColor: "#F5C518",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 16,
     elevation: 6,
   },
   hasilCelebrationTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 20,
     color: "#FFFFFF",
     marginBottom: 4,
@@ -5879,13 +5866,13 @@ const styles = StyleSheet.create({
   hasilCelebrationSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   hasilItemCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -5902,7 +5889,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   hasilWinnerCard: {
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -5923,7 +5910,7 @@ const styles = StyleSheet.create({
   hasilWinnerTitleText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   hasilKamuMenangPill: {
     backgroundColor: "rgba(16, 185, 129, 0.12)",
@@ -5939,9 +5926,9 @@ const styles = StyleSheet.create({
     color: "#10B981",
   },
   hasilTutupPill: {
-    backgroundColor: "rgba(196, 166, 179, 0.12)",
+    backgroundColor: "rgba(156,163,175, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(196, 166, 179, 0.3)",
+    borderColor: "rgba(156,163,175, 0.3)",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
@@ -5949,7 +5936,7 @@ const styles = StyleSheet.create({
   hasilTutupText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   hasilSelesaiPill: {
     backgroundColor: "rgba(100, 116, 139, 0.15)",
@@ -5962,12 +5949,12 @@ const styles = StyleSheet.create({
   hasilSelesaiText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   hasilEmptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginTop: 2,
   },
   hasilUserRow: {
@@ -5982,7 +5969,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderWidth: 2,
     borderColor: "#6366F1",
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -5995,7 +5982,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   hasilMemberTag: {
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderRadius: 4,
@@ -6004,7 +5991,7 @@ const styles = StyleSheet.create({
   hasilMemberTagText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   hasilPriceRow: {
     flexDirection: "row",
@@ -6015,10 +6002,10 @@ const styles = StyleSheet.create({
   hasilPriceLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   hasilPriceAmount: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
     color: "#FFFFFF",
   },
@@ -6035,7 +6022,7 @@ const styles = StyleSheet.create({
   hasilDualStatsLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   hasilDualStatsVal: {
     fontFamily: "Nunito-Bold",
@@ -6044,7 +6031,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   hasilLeaderboardCard: {
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -6083,7 +6070,7 @@ const styles = StyleSheet.create({
   rankNameText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   rankAmountText: {
     fontFamily: "Nunito-Bold",
@@ -6113,7 +6100,7 @@ const styles = StyleSheet.create({
   },
   hasilLihatDetailBtn: {
     height: 44,
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 12,
@@ -6123,12 +6110,12 @@ const styles = StyleSheet.create({
   hasilLihatDetailBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
 
   /* ── HALAMAN INFORMASI & PANDUAN LELANG ── */
   infoHeroCard: {
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -6151,11 +6138,11 @@ const styles = StyleSheet.create({
   infoHeroDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 18,
   },
   infoSectionCard: {
-    backgroundColor: "#0D1322",
+    backgroundColor: "#121316",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -6212,12 +6199,12 @@ const styles = StyleSheet.create({
   infoStepHeading: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   infoStepDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 17,
   },
   infoRuleRow: {
@@ -6230,7 +6217,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     lineHeight: 17,
   },
 
@@ -6258,7 +6245,7 @@ const styles = StyleSheet.create({
   fullLoadingSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 18,
   },

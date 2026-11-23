@@ -89,14 +89,14 @@ export const ChatStickerPicker = React.memo(function ChatStickerPicker({
           hitSlop={8}
           style={({ pressed }) => [styles.closeBtn, pressed && styles.btnPressed]}
         >
-          <AppIcon name="close" size={18} color="#C4A6B3" />
+          <AppIcon name="close" size={18} color="#9CA3AF" />
         </Pressable>
       </View>
 
       {/* ─── Status / Cooldown Banner ─── */}
       {cooldownRemaining > 0 && (
         <View style={styles.cooldownBanner}>
-          <AppIcon name="timer-outline" size={13} color="#F59E0B" />
+          <AppIcon name="timer-outline" size={13} color="#F5C518" />
           <Text style={styles.cooldownText}>
             Jeda kirim aktif: tunggu {cooldownRemaining} detik lagi
           </Text>
@@ -154,7 +154,7 @@ export const ChatStickerPicker = React.memo(function ChatStickerPicker({
 
       {/* ─── Footer Keterangan Singkat ─── */}
       <View style={styles.footerNoteRow}>
-        <AppIcon name="emoticon-happy-outline" size={13} color="#FB7185" />
+        <AppIcon name="emoticon-happy-outline" size={13} color="#FFFFFF" />
         <Text style={styles.footerNoteText}>
           Pilih stiker untuk mengirim langsung ke chat
         </Text>
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     height: 250,
     backgroundColor: "#11141B",
     borderTopWidth: 1,
-    borderTopColor: "#1E2738",
+    borderTopColor: "#1B1D22",
     paddingHorizontal: 12,
     paddingTop: 8,
     paddingBottom: 4,
@@ -203,16 +203,16 @@ const styles = StyleSheet.create({
     borderColor: "#222D40",
   },
   tabPillActive: {
-    backgroundColor: "rgba(2, 132, 199, 0.2)",
-    borderColor: "#E11D48",
+    backgroundColor: "rgba(156,163,175, 0.2)",
+    borderColor: "#EF4444",
   },
   tabPillText: {
     fontSize: 11.5,
     fontWeight: "600",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   tabPillTextActive: {
-    color: "#FB7185",
+    color: "#FFFFFF",
     fontWeight: "700",
   },
   closeBtn: {
@@ -228,8 +228,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
-    backgroundColor: "rgba(245, 158, 11, 0.12)",
-    borderColor: "rgba(245, 158, 11, 0.3)",
+    backgroundColor: "rgba(245, 197, 24, 0.12)",
+    borderColor: "rgba(245, 197, 24, 0.3)",
     borderWidth: 1,
     borderRadius: 6,
     paddingVertical: 3,
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   cooldownText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   gridContent: {
     paddingVertical: 4,
@@ -258,8 +258,8 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   stickerItemPressed: {
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    borderColor: "rgba(255, 255, 255, 0.35)",
     transform: [{ scale: 0.94 }],
   },
   stickerItemDisabled: {
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   },
   stickerLabel: {
     fontSize: 9.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginTop: 2,
     textAlign: "center",
   },
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 12,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   footerNoteRow: {
     flexDirection: "row",
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
   footerNoteText: {
     fontSize: 10.5,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
 });
 

@@ -509,7 +509,7 @@ export default function PublicUserProfileScreen() {
     return (
       <SafeAreaView edges={["top"]} style={styles.container}>
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#FB7185" />
+          <ActivityIndicator size="large" color="#FFFFFF" />
           <Text style={styles.loadingText}>Memuat data profil pengguna...</Text>
         </View>
       </SafeAreaView>
@@ -526,7 +526,7 @@ export default function PublicUserProfileScreen() {
           <Text style={styles.headerTitle}>Profil</Text>
         </View>
         <View style={styles.centerContainer}>
-          <AppIcon name="account-search" size={54} color="#8F727F" />
+          <AppIcon name="account-search" size={54} color="#8E93A2" />
           <Text style={styles.notFoundTitle}>Pengguna Tidak Ditemukan</Text>
           <Text style={styles.notFoundSub}>
             Akun ini mungkin sudah dihapus atau ID yang dimasukkan tidak tepat.
@@ -553,7 +553,7 @@ export default function PublicUserProfileScreen() {
       {toastMessage && (
         <View style={styles.toastContainer}>
           <View style={styles.toastBox}>
-            <AppIcon name="check-circle" size={16} color="#FB7185" />
+            <AppIcon name="check-circle" size={16} color="#FFFFFF" />
             <Text style={styles.toastText}>{toastMessage}</Text>
           </View>
         </View>
@@ -578,7 +578,7 @@ export default function PublicUserProfileScreen() {
           onPress={() => router.push("/connections" as never)}
           style={({ pressed }) => [styles.headerRightBtn, pressed && styles.btnPressed]}
         >
-          <AppIcon name="account-group" size={22} color="#EDE0E5" />
+          <AppIcon name="account-group" size={22} color="#F3F4F6" />
         </Pressable>
       </View>
 
@@ -595,11 +595,11 @@ export default function PublicUserProfileScreen() {
           />
           <LinearGradient
             colors={[
-              "rgba(11, 14, 20, 0.3)",
+              "rgba(22,24,30, 0.3)",
               "transparent",
-              "rgba(11, 14, 20, 0.45)",
-              "rgba(11, 14, 20, 0.85)",
-              "#0D080B",
+              "rgba(22,24,30, 0.45)",
+              "rgba(22,24,30, 0.85)",
+              "#121316",
             ]}
             locations={[0, 0.25, 0.65, 0.88, 1]}
             style={StyleSheet.absoluteFillObject}
@@ -674,7 +674,7 @@ export default function PublicUserProfileScreen() {
                     tierInfo?.isInfinity && {
                       color: "#EF4444",
                       fontSize: 12.5,
-                      fontFamily: "Nunito-Black",
+                      fontFamily: "Nunito-Bold",
                     },
                   ]}
                 >
@@ -699,7 +699,7 @@ export default function PublicUserProfileScreen() {
                 onPress={() => router.push("/connections" as never)}
                 style={({ pressed }) => [styles.friendsPill, pressed && styles.btnPressed]}
               >
-                <AppIcon name="account-group" size={14} color="#C4A6B3" />
+                <AppIcon name="account-group" size={14} color="#9CA3AF" />
                 <Text style={styles.friendsPillText}>{targetFriendCount} Teman</Text>
               </Pressable>
 
@@ -714,12 +714,12 @@ export default function PublicUserProfileScreen() {
                   <AppIcon
                     name={isOwnProfile ? "lock-check" : "lock"}
                     size={12}
-                    color={isOwnProfile ? "#F59E0B" : "#C4A6B3"}
+                    color={isOwnProfile ? "#F5C518" : "#9CA3AF"}
                   />
                   <Text
                     style={[
                       styles.privacyStatusPillText,
-                      isOwnProfile && { color: "#FBBF24" },
+                      isOwnProfile && { color: "#F5C518" },
                     ]}
                   >
                     {isOwnProfile ? "Profil Privat" : "Privat"}
@@ -742,7 +742,7 @@ export default function PublicUserProfileScreen() {
           <View style={styles.statColumn}>
             {!isOwnProfile && targetUser.isPrivate ? (
               <View style={styles.statLockWrapper}>
-                <AppIcon name="lock" size={16} color="#8F727F" />
+                <AppIcon name="lock" size={16} color="#8E93A2" />
               </View>
             ) : (
               <Text style={styles.statNumber}>{userComments.length}</Text>
@@ -755,7 +755,7 @@ export default function PublicUserProfileScreen() {
           <View style={styles.statColumn}>
             {!isOwnProfile && targetUser.isPrivate ? (
               <View style={styles.statLockWrapper}>
-                <AppIcon name="lock" size={16} color="#8F727F" />
+                <AppIcon name="lock" size={16} color="#8E93A2" />
               </View>
             ) : (
               <Text style={styles.statNumber}>{userHistory.length}</Text>
@@ -768,7 +768,7 @@ export default function PublicUserProfileScreen() {
           <View style={styles.statColumn}>
             {!isOwnProfile && targetUser.isPrivate ? (
               <View style={styles.statLockWrapper}>
-                <AppIcon name="lock" size={16} color="#8F727F" />
+                <AppIcon name="lock" size={16} color="#8E93A2" />
               </View>
             ) : (
               <Text style={styles.statNumber}>{totalMinutes}</Text>
@@ -801,8 +801,8 @@ export default function PublicUserProfileScreen() {
                   onPress={handleUnfriend}
                   style={({ pressed }) => [styles.liquidGlassBtn, pressed && styles.btnPressed]}
                 >
-                  <AppIcon name="account-check" size={17} color="#34D399" />
-                  <Text style={[styles.liquidGlassText, { color: "#34D399" }]}>✓ Berteman</Text>
+                  <AppIcon name="account-check" size={17} color="#10B981" />
+                  <Text style={[styles.liquidGlassText, { color: "#10B981" }]}>✓ Berteman</Text>
                 </Pressable>
               ) : friendStatus === "pending_sent" ? (
                 <Pressable
@@ -814,7 +814,7 @@ export default function PublicUserProfileScreen() {
                     <ActivityIndicator size="small" color="#FFFFFF" />
                   ) : (
                     <>
-                      <AppIcon name="clock-outline" size={17} color="#EDE0E5" />
+                      <AppIcon name="clock-outline" size={17} color="#F3F4F6" />
                       <Text style={styles.liquidGlassText}>Permintaan Terkirim (Batalkan)</Text>
                     </>
                   )}
@@ -932,14 +932,14 @@ export default function PublicUserProfileScreen() {
         {!isOwnProfile && targetUser.isPrivate ? (
           <View style={styles.lockedContainer}>
             <View style={styles.lockedIconCircle}>
-              <AppIcon name="lock" size={38} color="#FB7185" />
+              <AppIcon name="lock" size={38} color="#FFFFFF" />
             </View>
             <Text style={styles.lockedTitle}>Akun Ini Bersifat Privat</Text>
             <Text style={styles.lockedSubtitle}>
               Pengguna ini telah mengatur profilnya menjadi privat. Riwayat tontonan, anime favorit, dan komentar disembunyikan.
             </Text>
             <View style={styles.lockedBadge}>
-              <AppIcon name="shield-lock-outline" size={15} color="#C4A6B3" />
+              <AppIcon name="shield-lock-outline" size={15} color="#9CA3AF" />
               <Text style={styles.lockedBadgeText}>
                 Hanya pemilik akun yang dapat mengakses konten ini
               </Text>
@@ -1004,7 +1004,7 @@ export default function PublicUserProfileScreen() {
               {userComments.length === 0 ? (
                 <View style={styles.emptyStateBox}>
                   <View style={styles.emptyIconCircle}>
-                    <AppIcon name="comment-outline" size={26} color="#8F727F" />
+                    <AppIcon name="comment-outline" size={26} color="#8E93A2" />
                   </View>
                   <Text style={styles.emptyTitle}>Belum Ada Komentar</Text>
                   <Text style={styles.emptySubtitle}>
@@ -1058,7 +1058,7 @@ export default function PublicUserProfileScreen() {
                         ) : null}
                         {animeInfo?.banner ? (
                           <LinearGradient
-                            colors={["rgba(11, 15, 23, 0.78)", "rgba(11, 15, 23, 0.94)"]}
+                            colors={["rgba(22,24,30, 0.78)", "rgba(22,24,30, 0.94)"]}
                             style={StyleSheet.absoluteFillObject}
                           />
                         ) : null}
@@ -1072,7 +1072,7 @@ export default function PublicUserProfileScreen() {
                           />
                         ) : (
                           <View style={styles.commentAnimeThumbFallback}>
-                            <AppIcon name="movie-open-outline" size={16} color="#8F727F" />
+                            <AppIcon name="movie-open-outline" size={16} color="#8E93A2" />
                           </View>
                         )}
                         <View style={styles.commentAnimeInfo}>
@@ -1101,13 +1101,13 @@ export default function PublicUserProfileScreen() {
                           accessibilityRole="button"
                           accessibilityLabel="Lihat balasan komentar"
                         >
-                          <AppIcon name="reply-outline" size={13} color="#C4A6B3" />
+                          <AppIcon name="reply-outline" size={13} color="#9CA3AF" />
                           <Text style={styles.commentRepliesText}>
                             Balasan {replyCount > 0 ? `(${replyCount})` : ""}
                           </Text>
                         </Pressable>
                         <View style={styles.commentLikesBadge}>
-                          <AppIcon name="heart-outline" size={13} color="#C4A6B3" />
+                          <AppIcon name="heart-outline" size={13} color="#9CA3AF" />
                           <Text style={styles.commentLikesText}>
                             {(comment.likes || 0).toString()}
                           </Text>
@@ -1126,7 +1126,7 @@ export default function PublicUserProfileScreen() {
               {userBookmarks.length === 0 ? (
                 <View style={styles.emptyStateBox}>
                   <View style={styles.emptyIconCircle}>
-                    <AppIcon name="bookmark-outline" size={26} color="#8F727F" />
+                    <AppIcon name="bookmark-outline" size={26} color="#8E93A2" />
                   </View>
                   <Text style={styles.emptyTitle}>Belum Ada Favorit</Text>
                   <Text style={styles.emptySubtitle}>
@@ -1166,7 +1166,7 @@ export default function PublicUserProfileScreen() {
               {userHistory.length === 0 ? (
                 <View style={styles.emptyStateBox}>
                   <View style={styles.emptyIconCircle}>
-                    <AppIcon name="history" size={26} color="#8F727F" />
+                    <AppIcon name="history" size={26} color="#8E93A2" />
                   </View>
                   <Text style={styles.emptyTitle}>Belum Ada Riwayat</Text>
                   <Text style={styles.emptySubtitle}>
@@ -1227,7 +1227,7 @@ export default function PublicUserProfileScreen() {
             {/* Sheet Header */}
             <View style={styles.replySheetHeader}>
               <View style={styles.replySheetTitleRow}>
-                <AppIcon name="chat" size={19} color="#FB7185" />
+                <AppIcon name="chat" size={19} color="#FFFFFF" />
                 <Text style={styles.replySheetTitle}>Balasan Komentar</Text>
                 <View style={styles.replyCountBadge}>
                   <Text style={styles.replyCountBadgeText}>{repliesList.length}</Text>
@@ -1240,7 +1240,7 @@ export default function PublicUserProfileScreen() {
                 style={({ pressed }) => [styles.replyCloseBtn, pressed && styles.btnPressed]}
                 hitSlop={10}
               >
-                <AppIcon name="close" size={18} color="#C4A6B3" />
+                <AppIcon name="close" size={18} color="#9CA3AF" />
               </Pressable>
             </View>
 
@@ -1271,7 +1271,7 @@ export default function PublicUserProfileScreen() {
                   {activeReplyComment.content}
                 </Text>
                 <View style={styles.replyPinnedMeta}>
-                  <AppIcon name="movie-open-outline" size={12} color="#8F727F" />
+                  <AppIcon name="movie-open-outline" size={12} color="#8E93A2" />
                   <Text style={styles.replyPinnedAnime} numberOfLines={1}>
                     {activeReplyComment.animeTitle}{" "}
                     {activeReplyComment.episode_number
@@ -1298,13 +1298,13 @@ export default function PublicUserProfileScreen() {
             >
               {loadingReplies ? (
                 <View style={styles.replyLoadingBox}>
-                  <ActivityIndicator size="small" color="#FB7185" />
+                  <ActivityIndicator size="small" color="#FFFFFF" />
                   <Text style={styles.replyLoadingText}>Memuat balasan komunitas...</Text>
                 </View>
               ) : repliesList.length === 0 ? (
                 <View style={styles.replyEmptyBox}>
                   <View style={styles.replyEmptyIconCircle}>
-                    <AppIcon name="chat" size={24} color="#8F727F" />
+                    <AppIcon name="chat" size={24} color="#8E93A2" />
                   </View>
                   <Text style={styles.replyEmptyTitle}>Belum Ada Balasan</Text>
                   <Text style={styles.replyEmptySubtitle}>
@@ -1357,7 +1357,7 @@ export default function PublicUserProfileScreen() {
                 value={newReplyText}
                 onChangeText={setNewReplyText}
                 placeholder="Tulis balasan balik..."
-                placeholderTextColor="#8F727F"
+                placeholderTextColor="#8E93A2"
                 style={styles.replyInput}
                 maxLength={500}
                 multiline={false}
@@ -1390,7 +1390,7 @@ export default function PublicUserProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   btnPressed: {
     opacity: 0.85,
@@ -1406,22 +1406,22 @@ const styles = StyleSheet.create({
   loadingText: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   notFoundTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 17,
     color: "#FFFFFF",
   },
   notFoundSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#8F727F",
+    color: "#8E93A2",
     textAlign: "center",
     maxWidth: 280,
   },
   backBtn: {
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderRadius: 8,
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -1430,7 +1430,7 @@ const styles = StyleSheet.create({
   backBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // ─── FLOATING TOAST NOTIFICATION ───
@@ -1451,7 +1451,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
@@ -1471,7 +1471,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     zIndex: 20,
   },
   headerBackBtn: {
@@ -1481,7 +1481,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     flex: 1,
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 17.5,
     color: "#FFFFFF",
     marginHorizontal: 12,
@@ -1502,7 +1502,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 190,
     position: "relative",
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     overflow: "hidden",
   },
   bannerCityPlaque: {
@@ -1560,7 +1560,7 @@ const styles = StyleSheet.create({
     height: 25,
   },
   displayNameText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 20,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -1570,7 +1570,7 @@ const styles = StyleSheet.create({
   userTagText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     includeFontPadding: false,
     textAlignVertical: "center",
   },
@@ -1596,9 +1596,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 14,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
   },
   tierPillIcon: {
     width: 16,
@@ -1607,7 +1607,7 @@ const styles = StyleSheet.create({
   levelPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   roleTagPill: {
     flexDirection: "row",
@@ -1639,7 +1639,7 @@ const styles = StyleSheet.create({
   friendsPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   // ─── STATS CARD (4 STATS TRANSPARAN SEAMLESS) ───
@@ -1659,7 +1659,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   statNumber: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 18,
     color: "#FFFFFF",
     letterSpacing: -0.2,
@@ -1672,7 +1672,7 @@ const styles = StyleSheet.create({
   statLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
     textTransform: "lowercase",
   },
   statDivider: {
@@ -1781,7 +1781,7 @@ const styles = StyleSheet.create({
   rejectBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   // Secondary buttons (Peliharaan & Afinitas)
@@ -1840,11 +1840,11 @@ const styles = StyleSheet.create({
   tabButtonText: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#8F727F",
+    color: "#8E93A2",
     textAlign: "center",
   },
   tabButtonTextActive: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     color: "#FFFFFF",
   },
   tabActiveBar: {
@@ -1853,7 +1853,7 @@ const styles = StyleSheet.create({
     left: "18%",
     right: "18%",
     height: 3,
-    backgroundColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
   },
 
   // ─── TAB CONTENT AREA ───
@@ -1880,7 +1880,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   emptyTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15.5,
     color: "#FFFFFF",
     textAlign: "center",
@@ -1888,7 +1888,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     textAlign: "center",
     lineHeight: 18,
     maxWidth: 280,
@@ -1912,13 +1912,13 @@ const styles = StyleSheet.create({
     maxWidth: 140,
   },
   commentTimeDot: {
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 12,
   },
   commentTimeText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   commentAnimeRow: {
     position: "relative",
@@ -1941,7 +1941,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 48,
     borderRadius: 6,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1957,12 +1957,12 @@ const styles = StyleSheet.create({
   commentEpisodeText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   commentBodyText: {
     fontFamily: "Nunito-Regular",
     fontSize: 13.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     lineHeight: 19,
   },
   commentFooterRow: {
@@ -1983,7 +1983,7 @@ const styles = StyleSheet.create({
   commentRepliesText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   commentLikesBadge: {
     flexDirection: "row",
@@ -1993,7 +1993,7 @@ const styles = StyleSheet.create({
   commentLikesText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   // ─── BOTTOM SHEET BALASAN KOMENTAR ───
@@ -2046,14 +2046,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 12,
-    backgroundColor: "rgba(251, 113, 133, 0.15)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
   },
   replyCountBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   replyCloseBtn: {
     width: 32,
@@ -2068,9 +2068,9 @@ const styles = StyleSheet.create({
     marginTop: 12,
     padding: 12,
     borderRadius: 14,
-    backgroundColor: "rgba(251, 113, 133, 0.05)",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.15)",
+    borderColor: "rgba(255, 255, 255, 0.15)",
     gap: 6,
   },
   replyPinnedHeader: {
@@ -2085,18 +2085,18 @@ const styles = StyleSheet.create({
     maxWidth: 130,
   },
   replyPinnedDot: {
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 11,
   },
   replyPinnedTime: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   replyPinnedText: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     lineHeight: 18,
   },
   replyPinnedMeta: {
@@ -2108,7 +2108,7 @@ const styles = StyleSheet.create({
   replyPinnedAnime: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#FB7185",
+    color: "#FFFFFF",
     flex: 1,
   },
   replySectionDivider: {
@@ -2119,7 +2119,7 @@ const styles = StyleSheet.create({
   replySectionTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
@@ -2140,7 +2140,7 @@ const styles = StyleSheet.create({
   replyLoadingText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   replyEmptyBox: {
     alignItems: "center",
@@ -2165,7 +2165,7 @@ const styles = StyleSheet.create({
   replyEmptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#8F727F",
+    color: "#8E93A2",
     textAlign: "center",
     paddingHorizontal: 20,
     lineHeight: 16,
@@ -2190,18 +2190,18 @@ const styles = StyleSheet.create({
     maxWidth: 120,
   },
   replyCardDot: {
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 11,
   },
   replyCardTime: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   replyCardBody: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     lineHeight: 18,
     paddingLeft: 32,
   },
@@ -2230,7 +2230,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2257,7 +2257,7 @@ const styles = StyleSheet.create({
   bookmarkImageWrap: {
     width: "100%",
     aspectRatio: 0.72,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
   },
   bookmarkImage: {
     width: "100%",
@@ -2288,7 +2288,7 @@ const styles = StyleSheet.create({
     width: 68,
     height: 44,
     borderRadius: 6,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
   },
   historyMeta: {
     flex: 1,
@@ -2302,7 +2302,7 @@ const styles = StyleSheet.create({
   historyEpText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
 
   // ─── PRIVACY STATUS PILLS ───
@@ -2316,8 +2316,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   privacyStatusPillOwner: {
-    backgroundColor: "rgba(245, 158, 11, 0.12)",
-    borderColor: "rgba(245, 158, 11, 0.35)",
+    backgroundColor: "rgba(245, 197, 24, 0.12)",
+    borderColor: "rgba(245, 197, 24, 0.35)",
   },
   privacyStatusPillLocked: {
     backgroundColor: "rgba(255, 255, 255, 0.05)",
@@ -2326,7 +2326,7 @@ const styles = StyleSheet.create({
   privacyStatusPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   // ─── LOCKED STATE (PROFIL PRIVAT) ───
@@ -2336,7 +2336,7 @@ const styles = StyleSheet.create({
     paddingVertical: 36,
     paddingHorizontal: 20,
     borderRadius: 20,
-    backgroundColor: "rgba(25, 16, 22, 0.6)",
+    backgroundColor: "rgba(18, 19, 22, 0.6)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
     alignItems: "center",
@@ -2347,15 +2347,15 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: "rgba(251, 113, 133, 0.1)",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 4,
   },
   lockedTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 17,
     color: "#FFFFFF",
     textAlign: "center",
@@ -2363,7 +2363,7 @@ const styles = StyleSheet.create({
   lockedSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 19,
     maxWidth: 310,
@@ -2383,6 +2383,6 @@ const styles = StyleSheet.create({
   lockedBadgeText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11.5,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
 });

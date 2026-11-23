@@ -59,9 +59,9 @@ export const RARITY_CONFIG: Record<
   Mythic: {
     category: "Premium",
     expBonus: 25,
-    color: "#EC4899", // Vibrant Pink/Rose
-    bgColor: "rgba(236, 72, 153, 0.12)",
-    borderColor: "#EC4899",
+    color: "#9CA3AF", // Vibrant Pink/Rose
+    bgColor: "rgba(156,163,175, 0.12)",
+    borderColor: "#9CA3AF",
     rate: 2, // 2%
     label: "Mythic",
     price: 5000,
@@ -79,9 +79,9 @@ export const RARITY_CONFIG: Record<
   Epic: {
     category: "Standard",
     expBonus: 15,
-    color: "#A855F7", // Purple
-    bgColor: "rgba(168, 85, 247, 0.12)",
-    borderColor: "#A855F7",
+    color: "#9CA3AF", // Purple
+    bgColor: "rgba(156,163,175, 0.12)",
+    borderColor: "#9CA3AF",
     rate: 20, // 20%
     label: "Epic",
     price: 2000,
@@ -89,9 +89,9 @@ export const RARITY_CONFIG: Record<
   Rare: {
     category: "Standard",
     expBonus: 10,
-    color: "#38BDF8", // Cyan / Blue
-    bgColor: "rgba(56, 189, 248, 0.12)",
-    borderColor: "#38BDF8",
+    color: "#9CA3AF", // Cyan / Blue
+    bgColor: "rgba(156,163,175, 0.12)",
+    borderColor: "#9CA3AF",
     rate: 30, // 30%
     label: "Rare",
     price: 1500,

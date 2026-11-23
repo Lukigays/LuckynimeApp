@@ -624,7 +624,7 @@ export default function AvatarDecorationsScreen() {
 
                 <View style={styles.coSummaryRow}>
                   <Text style={styles.coSummaryLabel}>Harga Border ({checkoutBorder.rarity}):</Text>
-                  <Text style={[styles.coSummaryValue, { color: "#F43F5E" }]}>
+                  <Text style={[styles.coSummaryValue, { color: "#EF4444" }]}>
                     - {price.toLocaleString()}
                   </Text>
                 </View>
@@ -640,7 +640,7 @@ export default function AvatarDecorationsScreen() {
                     <Text
                       style={[
                         styles.coSummaryTotalValue,
-                        !hasEnough && { color: "#F43F5E" },
+                        !hasEnough && { color: "#EF4444" },
                       ]}
                     >
                       {hasEnough
@@ -654,7 +654,7 @@ export default function AvatarDecorationsScreen() {
               {/* 5. Error banner jika ada error */}
               {checkoutError && (
                 <View style={styles.coErrorBanner}>
-                  <AppIcon name="alert-circle" size={16} color="#F43F5E" />
+                  <AppIcon name="alert-circle" size={16} color="#EF4444" />
                   <Text style={styles.coErrorText}>{checkoutError}</Text>
                 </View>
               )}
@@ -662,7 +662,7 @@ export default function AvatarDecorationsScreen() {
               {/* 6. Saldo Kurang Notice */}
               {!hasEnough && (
                 <View style={styles.coWarningBanner}>
-                  <AppIcon name="alert-outline" size={18} color="#F59E0B" />
+                  <AppIcon name="alert-outline" size={18} color="#F5C518" />
                   <View style={{ flex: 1 }}>
                     <Text style={styles.coWarningTitle}>Saldo Crystal Tidak Mencukupi</Text>
                     <Text style={styles.coWarningText}>
@@ -803,7 +803,7 @@ export default function AvatarDecorationsScreen() {
               </Text>
             </View>
             <View style={styles.crystalPlusPill}>
-              <AppIcon name="plus" size={12} color="#FB7185" />
+              <AppIcon name="plus" size={12} color="#FFFFFF" />
             </View>
           </Pressable>
         </View>
@@ -822,7 +822,7 @@ export default function AvatarDecorationsScreen() {
           <AppIcon
             name="storefront-outline"
             size={16}
-            color={activeTab === "shop" ? "#FFFFFF" : "#C4A6B3"}
+            color={activeTab === "shop" ? "#FFFFFF" : "#9CA3AF"}
           />
           <Text style={[styles.tabText, activeTab === "shop" && styles.tabTextActive]}>
             Shop ({liveBorders.length})
@@ -840,7 +840,7 @@ export default function AvatarDecorationsScreen() {
           <AppIcon
             name="image-multiple-outline"
             size={16}
-            color={activeTab === "collection" ? "#FFFFFF" : "#C4A6B3"}
+            color={activeTab === "collection" ? "#FFFFFF" : "#9CA3AF"}
           />
           <Text style={[styles.tabText, activeTab === "collection" && styles.tabTextActive]}>
             Koleksi ({ownedBorderIds.length})
@@ -852,11 +852,11 @@ export default function AvatarDecorationsScreen() {
       <View style={styles.filterSection}>
         {/* Search bar */}
         <View style={styles.searchBar}>
-          <AppIcon name="magnify" size={19} color="#8F727F" />
+          <AppIcon name="magnify" size={19} color="#8E93A2" />
           <TextInput
             style={styles.searchInput}
             placeholder="Cari nama border..."
-            placeholderTextColor="#8F727F"
+            placeholderTextColor="#8E93A2"
             value={searchQuery}
             onChangeText={setSearchQuery}
             returnKeyType="search"
@@ -867,7 +867,7 @@ export default function AvatarDecorationsScreen() {
               hitSlop={8}
               style={styles.clearSearchBtn}
             >
-              <AppIcon name="close-circle" size={16} color="#8F727F" />
+              <AppIcon name="close-circle" size={16} color="#8E93A2" />
             </Pressable>
           )}
         </View>
@@ -969,7 +969,7 @@ export default function AvatarDecorationsScreen() {
           {(!border.assetUrl || border.isReleased === false) && (
             <View style={styles.comingSoonPillWrap}>
               <View style={styles.comingSoonPill}>
-                <AppIcon name="clock-outline" size={9.5} color="#F59E0B" />
+                <AppIcon name="clock-outline" size={9.5} color="#F5C518" />
                 <Text style={styles.comingSoonPillText}>Segera Hadir</Text>
               </View>
             </View>
@@ -1026,7 +1026,7 @@ export default function AvatarDecorationsScreen() {
             </Pressable>
           ) : border.isReleased === false || !border.assetUrl ? (
             <View style={styles.actionBtnLocked}>
-              <AppIcon name="lock-outline" size={12} color="#8F727F" />
+              <AppIcon name="lock-outline" size={12} color="#8E93A2" />
               <Text style={styles.actionTextLocked}>Segera Hadir</Text>
             </View>
           ) : (
@@ -1089,7 +1089,7 @@ export default function AvatarDecorationsScreen() {
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <AppIcon name="palette-swatch-outline" size={48} color="#785D6A" />
+            <AppIcon name="palette-swatch-outline" size={48} color="#6B7280" />
             <Text style={styles.emptyTitle}>Tidak ada border ditemukan</Text>
             <Text style={styles.emptySubtitle}>
               {activeTab === "collection"
@@ -1107,7 +1107,7 @@ export default function AvatarDecorationsScreen() {
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   btnPressed: {
     opacity: 0.82,
@@ -1192,7 +1192,7 @@ const styles = StyleSheet.create({
     color: "#10B981",
   },
   statusBadgeTextInactive: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   crystalBalanceBtn: {
     flexDirection: "row",
@@ -1222,13 +1222,13 @@ const styles = StyleSheet.create({
   crystalUnitText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   crystalPlusPill: {
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "rgba(251, 113, 133, 0.14)",
+    backgroundColor: "rgba(255, 255, 255, 0.14)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1259,7 +1259,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   tabTextActive: {
     fontFamily: "Nunito-Bold",
@@ -1302,8 +1302,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   chipBtnActive: {
-    backgroundColor: "rgba(251, 113, 133, 0.14)",
-    borderColor: "#FB7185",
+    backgroundColor: "rgba(255, 255, 255, 0.14)",
+    borderColor: "#FFFFFF",
   },
   chipBtnInactive: {
     backgroundColor: "#13192B",
@@ -1314,10 +1314,10 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
   },
   chipTextActive: {
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   chipTextInactive: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   // ─── 5. GRID BORDERS ───
@@ -1359,7 +1359,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   categoryBadgeText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     letterSpacing: 0.4,
   },
@@ -1381,11 +1381,11 @@ const styles = StyleSheet.create({
     borderColor: "rgba(16, 185, 129, 0.45)",
   },
   cardStatusComingSoon: {
-    backgroundColor: "rgba(245, 158, 11, 0.15)",
-    borderColor: "rgba(245, 158, 11, 0.45)",
+    backgroundColor: "rgba(245, 197, 24, 0.15)",
+    borderColor: "rgba(245, 197, 24, 0.45)",
   },
   cardStatusText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9,
     letterSpacing: 0.3,
   },
@@ -1393,7 +1393,7 @@ const styles = StyleSheet.create({
     color: "#10B981",
   },
   cardStatusTextComingSoon: {
-    color: "#F59E0B",
+    color: "#F5C518",
   },
   unreleasedBadge: {
     position: "absolute",
@@ -1409,7 +1409,7 @@ const styles = StyleSheet.create({
   unreleasedBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   cardInfoWrap: {
     paddingHorizontal: 12,
@@ -1426,8 +1426,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(245, 158, 11, 0.12)",
-    borderColor: "rgba(245, 158, 11, 0.35)",
+    backgroundColor: "rgba(245, 197, 24, 0.12)",
+    borderColor: "rgba(245, 197, 24, 0.35)",
     borderWidth: 1,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -1436,7 +1436,7 @@ const styles = StyleSheet.create({
   comingSoonPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#F59E0B",
+    color: "#F5C518",
     letterSpacing: 0.2,
   },
   borderNameText: {
@@ -1448,7 +1448,7 @@ const styles = StyleSheet.create({
   borderDescText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
     textAlign: "center",
   },
   cardActionWrap: {
@@ -1465,12 +1465,12 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   shopPriceText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FBBF24",
+    color: "#F5C518",
   },
   shopPriceTextOwned: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 12,
   },
   ownedBadgeInline: {
@@ -1493,9 +1493,9 @@ const styles = StyleSheet.create({
 
   // Price button (Belum Dimiliki) — legacy
   actionBtnPrice: {
-    backgroundColor: "rgba(217, 119, 6, 0.16)",
+    backgroundColor: "rgba(245,197,24, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.4)",
+    borderColor: "rgba(245, 197, 24, 0.4)",
     borderRadius: 12,
     paddingVertical: 7,
     paddingHorizontal: 8,
@@ -1505,9 +1505,9 @@ const styles = StyleSheet.create({
 
   // Tombol Beli
   actionBtnBuy: {
-    backgroundColor: "rgba(217, 119, 6, 0.18)",
+    backgroundColor: "rgba(245,197,24, 0.18)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.5)",
+    borderColor: "rgba(245, 197, 24, 0.5)",
     borderRadius: 12,
     paddingVertical: 8,
     paddingHorizontal: 8,
@@ -1519,13 +1519,13 @@ const styles = StyleSheet.create({
     borderColor: "rgba(100, 116, 139, 0.35)",
   },
   actionTextBuy: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FBBF24",
+    color: "#F5C518",
     letterSpacing: 0.2,
   },
   actionTextBuyInsufficient: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   priceRow: {
     flexDirection: "row",
@@ -1537,9 +1537,9 @@ const styles = StyleSheet.create({
     height: 14,
   },
   priceNumberText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FBBF24",
+    color: "#F5C518",
   },
 
   // Locked button (Unreleased slots)
@@ -1558,7 +1558,7 @@ const styles = StyleSheet.create({
   actionTextLocked: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
 
   // Action button (Sudah Dimiliki)
@@ -1577,9 +1577,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(16, 185, 129, 0.4)",
   },
   actionBtnUnequipped: {
-    backgroundColor: "rgba(251, 113, 133, 0.14)",
+    backgroundColor: "rgba(255, 255, 255, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.4)",
+    borderColor: "rgba(255, 255, 255, 0.4)",
   },
   actionTextEquipped: {
     fontFamily: "Nunito-Bold",
@@ -1589,7 +1589,7 @@ const styles = StyleSheet.create({
   actionTextUnequipped: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
 
   // Empty state
@@ -1603,12 +1603,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 15,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#8F727F",
+    color: "#8E93A2",
     textAlign: "center",
     lineHeight: 18,
   },
@@ -1617,7 +1617,7 @@ const styles = StyleSheet.create({
   checkoutSubTitle: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     marginTop: -2,
   },
   checkoutScrollContent: {
@@ -1648,22 +1648,22 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   coItemName: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
   },
   coItemDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 16,
   },
   coPricePill: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
-    borderColor: "rgba(251, 113, 133, 0.3)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
     borderWidth: 1,
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -1672,9 +1672,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   coPriceText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   coInstantBanner: {
     flexDirection: "row",
@@ -1703,7 +1703,7 @@ const styles = StyleSheet.create({
   coInstantText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     lineHeight: 16,
   },
   coSectionCard: {
@@ -1729,11 +1729,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
   },
   coMethodName: {
     fontFamily: "Nunito-Bold",
@@ -1743,7 +1743,7 @@ const styles = StyleSheet.create({
   coMethodSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   coAutoBadge: {
     backgroundColor: "rgba(16, 185, 129, 0.15)",
@@ -1766,7 +1766,7 @@ const styles = StyleSheet.create({
   coSummaryLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   coSummaryValue: {
     fontFamily: "Nunito-Bold",
@@ -1784,7 +1784,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   coSummaryTotalValue: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
     color: "#10B981",
   },
@@ -1792,9 +1792,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.35)",
+    borderColor: "rgba(239, 68, 68, 0.35)",
     padding: 12,
     borderRadius: 14,
   },
@@ -1802,28 +1802,28 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: "Nunito-SemiBold",
     fontSize: 12,
-    color: "#F43F5E",
+    color: "#EF4444",
   },
   coWarningBanner: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 12,
-    backgroundColor: "rgba(245, 158, 11, 0.1)",
+    backgroundColor: "rgba(245, 197, 24, 0.1)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.35)",
+    borderColor: "rgba(245, 197, 24, 0.35)",
     padding: 14,
     borderRadius: 16,
   },
   coWarningTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#F59E0B",
+    color: "#F5C518",
     marginBottom: 2,
   },
   coWarningText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     lineHeight: 16,
   },
   coPayBtn: {
@@ -1842,7 +1842,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   coPayBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
     color: "#FFFFFF",
     letterSpacing: 0.2,
@@ -1863,7 +1863,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   coTopUpBtnText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 14.5,
     color: "#FFFFFF",
   },
@@ -1898,7 +1898,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   successTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 20,
     color: "#FFFFFF",
     textAlign: "center",
@@ -1906,7 +1906,7 @@ const styles = StyleSheet.create({
   successSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 18,
     paddingHorizontal: 8,
@@ -1917,7 +1917,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   successBorderName: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
   },
@@ -1936,12 +1936,12 @@ const styles = StyleSheet.create({
   successBalanceLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   successBalanceValue: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   successActionCol: {
     width: "100%",
@@ -1974,7 +1974,7 @@ const styles = StyleSheet.create({
   successBackBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
   },
   loadingContainer: {
     flex: 1,
@@ -1997,7 +1997,7 @@ const styles = StyleSheet.create({
   loadingSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 18,
     maxWidth: 280,

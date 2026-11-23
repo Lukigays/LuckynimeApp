@@ -332,7 +332,7 @@ export function AppUpdatePrompt() {
                 pressed && styles.btnPressedSubtle,
               ]}
             >
-              <AppIcon name="close" size={15} color="#C4A6B3" />
+              <AppIcon name="close" size={15} color="#9CA3AF" />
             </Pressable>
           )}
 
@@ -365,7 +365,7 @@ export function AppUpdatePrompt() {
           {changelog.length > 0 && (
             <View style={styles.changelogSection}>
               <View style={styles.sectionHeaderRow}>
-                <AppIcon name="format-list-bulleted" size={14} color="#FB7185" />
+                <AppIcon name="format-list-bulleted" size={14} color="#FFFFFF" />
                 <Text style={styles.sectionLabel}>CATATAN PEMBARUAN</Text>
               </View>
 
@@ -393,7 +393,7 @@ export function AppUpdatePrompt() {
           {/* ── Mandatory notice ── */}
           {isForceUpdate && (
             <View style={styles.mandatoryRow}>
-              <AppIcon name="alert-circle-outline" size={15} color="#F43F5E" />
+              <AppIcon name="alert-circle-outline" size={15} color="#EF4444" />
               <Text style={styles.mandatoryText}>
                 Versi lama tidak dapat digunakan lagi. Silakan unduh & pasang versi terbaru dari GitHub Release.
               </Text>
@@ -414,7 +414,7 @@ export function AppUpdatePrompt() {
               >
                 <View style={styles.abiSelectorLeft}>
                   <View style={styles.abiIconBadge}>
-                    <AppIcon name="android" size={15} color="#FB7185" />
+                    <AppIcon name="android" size={15} color="#FFFFFF" />
                   </View>
                   <View>
                     <Text style={styles.abiSelectorValue}>
@@ -432,7 +432,7 @@ export function AppUpdatePrompt() {
                 <AppIcon
                   name={showAbiMenu ? "chevron-up" : "chevron-down"}
                   size={16}
-                  color="#C4A6B3"
+                  color="#9CA3AF"
                 />
               </Pressable>
 
@@ -516,7 +516,7 @@ export function AppUpdatePrompt() {
           {/* ── Error ── */}
           {phase === "error" && errorMsg && (
             <View style={styles.errorRow}>
-              <AppIcon name="alert-circle-outline" size={15} color="#F43F5E" />
+              <AppIcon name="alert-circle-outline" size={15} color="#EF4444" />
               <Text style={styles.errorText}>{errorMsg}</Text>
             </View>
           )}
@@ -559,7 +559,7 @@ export function AppUpdatePrompt() {
                 ]}
                 accessibilityRole="button"
               >
-                <AppIcon name="github" size={15} color="#F5E9EE" />
+                <AppIcon name="github" size={15} color="#F3F4F6" />
                 <Text style={styles.githubBtnText}>Buka GitHub Release</Text>
               </Pressable>
 
@@ -573,7 +573,7 @@ export function AppUpdatePrompt() {
                   ]}
                   accessibilityRole="button"
                 >
-                  <AppIcon name="refresh" size={14} color="#C4A6B3" />
+                  <AppIcon name="refresh" size={14} color="#9CA3AF" />
                   <Text style={styles.laterBtnText}>Cek Ulang</Text>
                 </Pressable>
               ) : (
@@ -649,9 +649,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     alignSelf: "flex-start",
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.34)",
+    borderColor: "rgba(239, 68, 68, 0.34)",
     borderRadius: 20,
     paddingHorizontal: 9,
     paddingVertical: 3.5,
@@ -660,12 +660,12 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
   },
   updateBadgeText: {
     fontSize: 9.5,
     fontWeight: "800",
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 0.7,
   },
   versionRow: {
@@ -682,9 +682,9 @@ const styles = StyleSheet.create({
     letterSpacing: -0.4,
   },
   versionCompareBadge: {
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.28)",
+    borderColor: "rgba(255, 255, 255, 0.28)",
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 2.5,
@@ -692,11 +692,11 @@ const styles = StyleSheet.create({
   versionCompareText: {
     fontSize: 10.5,
     fontWeight: "700",
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   subtitle: {
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 17,
     marginTop: 1,
   },
@@ -713,7 +713,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 10,
     fontWeight: "800",
-    color: "#8F727F",
+    color: "#8E93A2",
     letterSpacing: 0.8,
   },
   changelogScroll: {
@@ -737,7 +737,7 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
     marginTop: 5,
     flexShrink: 0,
   },
@@ -748,12 +748,12 @@ const styles = StyleSheet.create({
   changelogItemTitle: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     lineHeight: 16,
   },
   changelogItemDesc: {
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 16,
   },
 
@@ -762,9 +762,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "rgba(244, 63, 94, 0.09)",
+    backgroundColor: "rgba(239, 68, 68, 0.09)",
     borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.25)",
+    borderColor: "rgba(239, 68, 68, 0.25)",
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -772,7 +772,7 @@ const styles = StyleSheet.create({
   mandatoryText: {
     fontSize: 11.5,
     fontWeight: "600",
-    color: "#FDA4AF",
+    color: "#D1D5DB",
     flex: 1,
     lineHeight: 16,
   },
@@ -801,7 +801,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -812,7 +812,7 @@ const styles = StyleSheet.create({
   },
   abiSelectorSize: {
     fontSize: 10.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginTop: 1,
   },
   abiMenu: {
@@ -833,7 +833,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(255, 255, 255, 0.05)",
   },
   abiMenuItemSelected: {
-    backgroundColor: "rgba(251, 113, 133, 0.08)",
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
   },
   abiMenuItemLeft: {
     flexDirection: "row",
@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
   },
   abiMenuItemText: {
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   abiMenuItemTextSelected: {
     fontWeight: "700",
@@ -855,7 +855,7 @@ const styles = StyleSheet.create({
   },
   abiMenuItemSize: {
     fontSize: 11,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   recommendedBadge: {
     backgroundColor: "rgba(16, 185, 129, 0.14)",
@@ -868,7 +868,7 @@ const styles = StyleSheet.create({
   recommendedText: {
     fontSize: 8.5,
     fontWeight: "800",
-    color: "#34D399",
+    color: "#10B981",
     letterSpacing: 0.5,
   },
 
@@ -884,12 +884,12 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: 6,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
     borderRadius: 3,
   },
   progressLabel: {
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     textAlign: "center",
   },
 
@@ -898,15 +898,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 8,
-    backgroundColor: "rgba(244, 63, 94, 0.08)",
+    backgroundColor: "rgba(239, 68, 68, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(244, 63, 94, 0.22)",
+    borderColor: "rgba(239, 68, 68, 0.22)",
     borderRadius: 10,
     padding: 10,
   },
   errorText: {
     fontSize: 11.5,
-    color: "#FDA4AF",
+    color: "#D1D5DB",
     flex: 1,
     lineHeight: 16,
   },
@@ -926,9 +926,9 @@ const styles = StyleSheet.create({
     minHeight: 46,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#E11D48",
+    backgroundColor: "#EF4444",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.45)",
+    borderColor: "rgba(255, 255, 255, 0.45)",
     borderRadius: 14,
   },
   primaryBtnText: {
@@ -957,7 +957,7 @@ const styles = StyleSheet.create({
   githubBtnText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#F5E9EE",
+    color: "#F3F4F6",
   },
   recheckBtn: {
     minHeight: 40,
@@ -974,7 +974,7 @@ const styles = StyleSheet.create({
   laterBtnText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   btnDisabled: {

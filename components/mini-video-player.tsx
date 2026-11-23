@@ -82,7 +82,7 @@ export function MiniVideoPlayer() {
                 contentFit="cover"
               />
             ) : (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0D080B" }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#121316" }]} />
             )}
 
             {playerData.videoSourceUri ? (
@@ -162,7 +162,7 @@ export function MiniVideoPlayer() {
             style={({ pressed }) => [styles.actionBtn, pressed && styles.btnPressed]}
             hitSlop={10}
           >
-            <AppIcon name="close" size={20} color="#EDE0E5" />
+            <AppIcon name="close" size={20} color="#F3F4F6" />
           </Pressable>
         </View>
       </View>
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 8,
     overflow: "hidden",
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
   },
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   subtitleText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   actionsRow: {
     flexDirection: "row",

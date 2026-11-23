@@ -311,7 +311,7 @@ export default function SearchScreen() {
         </Pressable>
 
         <View style={styles.searchInputWrap}>
-          <AppIcon name="magnify" size={18} color="#FB7185" />
+          <AppIcon name="magnify" size={18} color="#FFFFFF" />
           <TextInput
             accessibilityRole="search"
             accessibilityLabel="Cari anime"
@@ -324,7 +324,7 @@ export default function SearchScreen() {
                 ? `Cari dalam ${categoryLabel}...`
                 : "Cari judul anime, genre, karakter..."
             }
-            placeholderTextColor="#8F727F"
+            placeholderTextColor="#6B7280"
             style={styles.input}
             returnKeyType="search"
           />
@@ -339,7 +339,7 @@ export default function SearchScreen() {
               hitSlop={8}
               style={styles.clearInputIconBtn}
             >
-              <AppIcon name="close-circle" size={16} color="#C4A6B3" />
+              <AppIcon name="close-circle" size={16} color="#9CA3AF" />
             </Pressable>
           ) : null}
         </View>
@@ -361,7 +361,7 @@ export default function SearchScreen() {
           <AppIcon
             name="tune-variant"
             size={18}
-            color={activeFilterCount ? "#FFFFFF" : "#FB7185"}
+            color="#FFFFFF"
           />
           {activeFilterCount ? (
             <View style={styles.filterBadge}>
@@ -405,7 +405,7 @@ export default function SearchScreen() {
                       }}
                       style={styles.recentItemClickable}
                     >
-                      <AppIcon name="clock-outline" size={14} color="#8F727F" />
+                      <AppIcon name="clock-outline" size={14} color="#8E93A2" />
                       <Text numberOfLines={1} style={styles.recentTermText}>
                         {entry.term}
                       </Text>
@@ -420,7 +420,7 @@ export default function SearchScreen() {
                       hitSlop={8}
                       style={styles.recentRemoveBtn}
                     >
-                      <AppIcon name="close" size={13} color="#8F727F" />
+                      <AppIcon name="close" size={13} color="#8E93A2" />
                     </Pressable>
                   </View>
                 ))}
@@ -593,31 +593,20 @@ export default function SearchScreen() {
       ) : (
         <View style={styles.resultsWrap}>
           <View style={styles.resultsHead}>
-            <View style={styles.resultsHeadLeft}>
-              <View style={styles.resultsCountBadge}>
-                <Text style={styles.resultsCountText}>
-                  {media.length} DITEMUKAN
-                </Text>
-              </View>
-              {isCategoryMode ? (
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`Bersihkan kategori ${categoryLabel}`}
-                  onPress={() => router.replace("/search" as never)}
-                  style={styles.activeCategoryPill}
-                >
-                  <Text style={styles.activeCategoryText} numberOfLines={1}>
-                    {categoryLabel.toUpperCase()}
-                  </Text>
-                  <AppIcon name="close" size={12} color="#EF4444" />
-                </Pressable>
-              ) : (
-                <Text style={styles.resultsCategoryText}>
-                  {`HASIL UNTUK "${query.toUpperCase()}"`}
-                </Text>
-              )}
-            </View>
+            <Text style={styles.resultsCountText}>{`Hasil Pencarian (${media.length})`}</Text>
+            <Text style={styles.sortText}>Relevan ▾</Text>
           </View>
+          {isCategoryMode ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`Bersihkan kategori ${categoryLabel}`}
+              onPress={() => router.replace("/search" as never)}
+              style={styles.activeCategoryPill}
+            >
+              <Text style={styles.activeCategoryText} numberOfLines={1}>{categoryLabel}</Text>
+              <AppIcon name="close" size={12} color="#FFFFFF" />
+            </Pressable>
+          ) : null}
           <FlatList
             data={media}
             keyExtractor={(item) => String(item.id)}
@@ -670,7 +659,7 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   header: {
     minHeight: 66,
@@ -680,9 +669,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(251, 113, 133, 0.14)",
+    borderBottomColor: "rgba(255, 255, 255, 0.14)",
   },
   backBtn: {
     width: 42,
@@ -690,9 +679,9 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
   },
   searchInputWrap: {
     flex: 1,
@@ -702,15 +691,15 @@ const styles = StyleSheet.create({
     minHeight: 44,
     paddingHorizontal: 14,
     borderRadius: 15,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.24)",
+    borderColor: "rgba(255, 255, 255, 0.24)",
     overflow: "hidden",
   },
   input: {
     flex: 1,
     minHeight: 44,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 14,
     fontFamily: "Nunito-SemiBold",
     ...(Platform.OS === "web" ? ({ outlineStyle: "none" } as any) : {}),
@@ -725,12 +714,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 3.5,
     borderRadius: 99,
-    backgroundColor: "rgba(244, 63, 94, 0.16)",
+    backgroundColor: "rgba(239, 68, 68, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    borderColor: "rgba(255, 255, 255, 0.35)",
   },
   activeCategoryText: {
-    color: "#FB7185",
+    color: "#FFFFFF",
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.3,
@@ -739,16 +728,16 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 14,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
   },
   filterBtnActive: {
-    backgroundColor: "#E11D48",
-    borderColor: "#FDA4AF",
+    backgroundColor: "#EF4444",
+    borderColor: "#D1D5DB",
   },
   filterBadge: {
     position: "absolute",
@@ -758,12 +747,12 @@ const styles = StyleSheet.create({
     height: 17,
     paddingHorizontal: 4,
     borderRadius: 9,
-    backgroundColor: "#FBBF24",
+    backgroundColor: "#F5C518",
     alignItems: "center",
     justifyContent: "center",
   },
   filterBadgeText: {
-    color: "#0D080B",
+    color: "#121316",
     fontSize: 9.5,
     fontWeight: "900",
   },
@@ -789,9 +778,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sectionTitle: {
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 16,
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     letterSpacing: -0.2,
   },
   clearAllBtn: {
@@ -801,7 +790,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   clearAllText: {
-    color: "#FB7185",
+    color: "#FFFFFF",
     fontSize: 12,
     fontFamily: "Nunito-Bold",
   },
@@ -815,9 +804,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 13,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.14)",
+    borderColor: "rgba(255, 255, 255, 0.14)",
     gap: 10,
   },
   recentItemClickable: {
@@ -828,19 +817,19 @@ const styles = StyleSheet.create({
   },
   recentTermText: {
     flex: 1,
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 13.5,
     fontFamily: "Nunito-Bold",
   },
   recentTimeText: {
-    color: "#8F727F",
+    color: "#8E93A2",
     fontSize: 11,
     fontFamily: "Nunito-SemiBold",
   },
   recentRemoveBtn: {
     padding: 4,
     borderRadius: 8,
-    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
   },
 
   genrePillsWrap: {
@@ -855,17 +844,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 99,
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
   },
   genrePillPressed: {
-    backgroundColor: "#F43F5E",
-    borderColor: "#FDA4AF",
+    backgroundColor: "#EF4444",
+    borderColor: "#D1D5DB",
     transform: [{ scale: 0.98 }],
   },
   genrePillText: {
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 12.5,
     fontFamily: "Nunito-Bold",
   },
@@ -883,10 +872,10 @@ const styles = StyleSheet.create({
     height: 166,
     borderRadius: 15,
     overflow: "hidden",
-    backgroundColor: "#180F15",
+    backgroundColor: "#1B1D22",
     position: "relative",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
   },
   trendingScoreBadge: {
     position: "absolute",
@@ -895,7 +884,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(13, 8, 11, 0.84)",
+    backgroundColor: "rgba(18,19,22, 0.84)",
     paddingHorizontal: 6.5,
     paddingVertical: 2.5,
     borderRadius: 99,
@@ -903,18 +892,18 @@ const styles = StyleSheet.create({
     borderColor: "rgba(251, 191, 36, 0.36)",
   },
   trendingScoreText: {
-    color: "#FBBF24",
+    color: "#F5C518",
     fontSize: 10,
     fontFamily: "Nunito-Bold",
   },
   trendingCardTitle: {
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 12.5,
     fontFamily: "Nunito-Bold",
     lineHeight: 16,
   },
   trendingCardMeta: {
-    color: "#9A7D8A",
+    color: "#8E93A2",
     fontSize: 11,
     fontFamily: "Nunito-SemiBold",
   },
@@ -936,21 +925,25 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   resultsCountBadge: {
-    backgroundColor: "rgba(244, 63, 94, 0.16)",
+    backgroundColor: "rgba(239, 68, 68, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.34)",
+    borderColor: "rgba(255, 255, 255, 0.34)",
     paddingHorizontal: 9,
     paddingVertical: 3.5,
     borderRadius: 99,
   },
   resultsCountText: {
-    color: "#FB7185",
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 0.5,
+    color: "#F3F4F6",
+    fontSize: 15,
+    fontFamily: "Nunito-Bold",
+  },
+  sortText: {
+    color: "#9CA3AF",
+    fontSize: 13,
+    fontFamily: "Nunito-SemiBold",
   },
   resultsCategoryText: {
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     fontSize: 12,
     fontFamily: "Nunito-Bold",
   },
@@ -984,13 +977,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.28)",
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    borderColor: "rgba(255, 255, 255, 0.28)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
     alignItems: "center",
     justifyContent: "center",
   },
   loadMoreText: {
-    color: "#FB7185",
+    color: "#FFFFFF",
     fontSize: 12,
     fontWeight: "800",
     letterSpacing: 0.6,

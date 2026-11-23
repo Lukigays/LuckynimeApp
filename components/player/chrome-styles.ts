@@ -61,7 +61,7 @@ export const chrome = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(9,9,9,0.8)",
+    backgroundColor: "rgba(18,19,22,0.8)",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,

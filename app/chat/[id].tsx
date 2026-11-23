@@ -471,7 +471,7 @@ export default function PrivateChatRoomScreen() {
               value={inputText}
               onChangeText={setInputText}
               placeholder={cooldownRemaining > 0 ? `Tunggu ${cooldownRemaining} detik...` : "Ketik pesan..."}
-              placeholderTextColor="#8F727F"
+              placeholderTextColor="#8E93A2"
               style={styles.textInput}
               multiline
               maxLength={1000}
@@ -491,14 +491,14 @@ export default function PrivateChatRoomScreen() {
             ]}
           >
             {sending ? (
-              <ActivityIndicator size="small" color="#0D080B" />
+              <ActivityIndicator size="small" color="#121316" />
             ) : cooldownRemaining > 0 ? (
               <Text style={styles.sendBtnCooldownText}>{cooldownRemaining}s</Text>
             ) : (
               <AppIcon
                 name="send"
                 size={18}
-                color={inputText.trim() ? "#0D080B" : "#8F727F"}
+                color={inputText.trim() ? "#121316" : "#8E93A2"}
               />
             )}
           </Pressable>
@@ -511,7 +511,7 @@ export default function PrivateChatRoomScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   btnPressed: {
     opacity: 0.82,
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 255, 255, 0.06)",
     gap: 12,
@@ -559,7 +559,7 @@ const styles = StyleSheet.create({
     gap: 1,
   },
   headerFriendName: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 15,
     color: "#FFFFFF",
     letterSpacing: -0.2,
@@ -567,12 +567,12 @@ const styles = StyleSheet.create({
   headerMemberTag: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
   headerSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#8F727F",
+    color: "#8E93A2",
   },
 
   // ─── EMPTY STATE (PERSIS SCREENSHOT 1) ───
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   emptyTitle: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 16,
     color: "#FFFFFF",
     textAlign: "center",
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#8F727F",
+    color: "#8E93A2",
     textAlign: "center",
     lineHeight: 18,
   },
@@ -621,13 +621,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   bubbleMine: {
-    backgroundColor: "#23161F",
+    backgroundColor: "#23262F",
     borderBottomRightRadius: 4,
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.25)",
   },
   bubbleOther: {
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderBottomLeftRadius: 4,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
   messageTimeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#8F727F",
+    color: "#8E93A2",
     alignSelf: "flex-end",
   },
 
@@ -654,11 +654,11 @@ const styles = StyleSheet.create({
     gap: 10,
     borderTopWidth: 1,
     borderTopColor: "rgba(255, 255, 255, 0.06)",
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
   },
   inputWrap: {
     flex: 1,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: Platform.OS === "ios" ? 10 : 6,
@@ -680,26 +680,26 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   sendBtnActive: {
-    backgroundColor: "#FB7185",
-    shadowColor: "#FB7185",
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#FFFFFF",
     shadowOpacity: 0.35,
     shadowRadius: 8,
     elevation: 4,
   },
   sendBtnInactive: {
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
   },
   sendBtnCooldown: {
-    backgroundColor: "rgba(245, 158, 11, 0.18)",
+    backgroundColor: "rgba(245, 197, 24, 0.18)",
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.45)",
+    borderColor: "rgba(245, 197, 24, 0.45)",
   },
   sendBtnCooldownText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
     fontWeight: "800",
-    color: "#F59E0B",
+    color: "#F5C518",
   },
 });

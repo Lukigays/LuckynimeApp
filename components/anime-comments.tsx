@@ -34,14 +34,14 @@ import {
 
 const NAME_COLORS = [
   "#EF4444", // Red (Developer / Admin)
-  "#FB7185", // Cyan
+  "#FFFFFF", // Cyan
   "#10B981", // Emerald
-  "#F59E0B", // Amber
-  "#EC4899", // Pink
+  "#F5C518", // Amber
+  "#9CA3AF", // Pink
   "#8B5CF6", // Purple
-  "#06B6D4", // Sky
+  "#9CA3AF", // Sky
   "#84CC16", // Lime
-  "#F97316", // Orange
+  "#F5C518", // Orange
   "#6366F1", // Indigo
 ];
 
@@ -68,33 +68,33 @@ function getTierPillColors(tierName: string) {
       };
     case "eternal":
       return {
-        bg: "rgba(168, 85, 247, 0.16)",
-        border: "rgba(168, 85, 247, 0.45)",
+        bg: "rgba(156,163,175, 0.16)",
+        border: "rgba(156,163,175, 0.45)",
         text: "#D8B4FE",
       };
     case "celestial":
       return {
-        bg: "rgba(251, 146, 60, 0.16)",
-        border: "rgba(251, 146, 60, 0.45)",
+        bg: "rgba(245,197,24, 0.16)",
+        border: "rgba(245,197,24, 0.45)",
         text: "#FDBA74",
       };
     case "ruby star":
       return {
-        bg: "rgba(251, 113, 133, 0.16)",
-        border: "rgba(251, 113, 133, 0.45)",
-        text: "#FDA4AF",
+        bg: "rgba(255, 255, 255, 0.16)",
+        border: "rgba(255, 255, 255, 0.45)",
+        text: "#D1D5DB",
       };
     case "amethyst":
       return {
-        bg: "rgba(192, 132, 252, 0.16)",
-        border: "rgba(192, 132, 252, 0.45)",
+        bg: "rgba(156,163,175, 0.16)",
+        border: "rgba(156,163,175, 0.45)",
         text: "#E9D5FF",
       };
     case "sapphire":
       return {
-        bg: "rgba(251, 113, 133, 0.16)",
-        border: "rgba(251, 113, 133, 0.45)",
-        text: "#FDA4AF",
+        bg: "rgba(255, 255, 255, 0.16)",
+        border: "rgba(255, 255, 255, 0.45)",
+        text: "#D1D5DB",
       };
     case "emerald":
       return {
@@ -110,21 +110,21 @@ function getTierPillColors(tierName: string) {
       };
     case "silver":
       return {
-        bg: "rgba(237, 224, 229, 0.16)",
-        border: "rgba(237, 224, 229, 0.45)",
-        text: "#F5E9EE",
+        bg: "rgba(243,244,246, 0.16)",
+        border: "rgba(243,244,246, 0.45)",
+        text: "#F3F4F6",
       };
     case "bronze":
       return {
-        bg: "rgba(217, 119, 6, 0.16)",
-        border: "rgba(217, 119, 6, 0.45)",
+        bg: "rgba(245,197,24, 0.16)",
+        border: "rgba(245,197,24, 0.45)",
         text: "#FDBA74",
       };
     default:
       return {
-        bg: "rgba(196, 166, 179, 0.16)",
-        border: "rgba(196, 166, 179, 0.45)",
-        text: "#C4A6B3",
+        bg: "rgba(156,163,175, 0.16)",
+        border: "rgba(156,163,175, 0.45)",
+        text: "#9CA3AF",
       };
   }
 }
@@ -267,7 +267,7 @@ function CommentAuthor({ comment }: { comment: SharedComment }) {
                 tierInfo?.isInfinity && {
                   color: "#EF4444",
                   fontSize: 12,
-                  fontFamily: "Nunito-Black",
+                  fontFamily: "Nunito-Bold",
                 },
               ]}
             >
@@ -611,7 +611,7 @@ export const AnimeComments = memo(function AnimeComments({
                 onPress={() => setReplyTo(null)}
                 style={styles.replyBarClose}
               >
-                <AppIcon name="close" size={14} color="#C4A6B3" />
+                <AppIcon name="close" size={14} color="#9CA3AF" />
               </Pressable>
             </View>
           ) : null}
@@ -675,7 +675,7 @@ export const AnimeComments = memo(function AnimeComments({
               {comments.add.isPending ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
               ) : cooldownSeconds > 0 ? (
-                <Text style={{ fontFamily: "Nunito-Bold", fontSize: 11, color: "#C4A6B3" }}>
+                <Text style={{ fontFamily: "Nunito-Bold", fontSize: 11, color: "#9CA3AF" }}>
                   {cooldownSeconds}s
                 </Text>
               ) : (
@@ -686,17 +686,17 @@ export const AnimeComments = memo(function AnimeComments({
 
           {cooldownSeconds > 0 ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginTop: 6 }}>
-              <AppIcon name="clock-outline" size={13} color="#FB7185" />
-              <Text style={{ fontFamily: "Nunito-Medium", fontSize: 11, color: "#FB7185" }}>
+              <AppIcon name="clock-outline" size={13} color="#FFFFFF" />
+              <Text style={{ fontFamily: "Nunito-SemiBold", fontSize: 11, color: "#FFFFFF" }}>
                 Jeda 1 menit aktif: dapat mengirim lagi dalam {cooldownSeconds} detik.
               </Text>
             </View>
           ) : null}
 
           {securityWarning ? (
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginTop: 6, backgroundColor: "rgba(245, 158, 11, 0.12)", padding: 6, borderRadius: 8 }}>
-              <AppIcon name="alert-circle-outline" size={14} color="#F59E0B" />
-              <Text style={{ fontFamily: "Nunito-Medium", fontSize: 11, color: "#FBBF24", flex: 1 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginTop: 6, backgroundColor: "rgba(245, 197, 24, 0.12)", padding: 6, borderRadius: 8 }}>
+              <AppIcon name="alert-circle-outline" size={14} color="#F5C518" />
+              <Text style={{ fontFamily: "Nunito-SemiBold", fontSize: 11, color: "#F5C518", flex: 1 }}>
                 {securityWarning}
               </Text>
             </View>
@@ -786,7 +786,7 @@ export const AnimeComments = memo(function AnimeComments({
                       cachePolicy="memory-disk"
                     />
                     <LinearGradient
-                      colors={["rgba(10, 15, 26, 0.65)", "rgba(10, 15, 26, 0.40)"]}
+                      colors={["rgba(22,24,30, 0.65)", "rgba(22,24,30, 0.40)"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={StyleSheet.absoluteFillObject}
@@ -869,7 +869,7 @@ export const AnimeComments = memo(function AnimeComments({
                     <AppIcon
                       name={isLiked ? "heart" : "heart-outline"}
                       size={15}
-                      color={isLiked ? "#EF4444" : "#C4A6B3"}
+                      color={isLiked ? "#EF4444" : "#9CA3AF"}
                     />
                     <Text
                       style={[
@@ -889,7 +889,7 @@ export const AnimeComments = memo(function AnimeComments({
                     }}
                     style={styles.commentAction}
                   >
-                    <AppIcon name="reply-outline" size={15} color="#C4A6B3" />
+                    <AppIcon name="reply-outline" size={15} color="#9CA3AF" />
                     <Text style={styles.commentActionText}>Reply</Text>
                   </Pressable>
 
@@ -951,7 +951,7 @@ export const AnimeComments = memo(function AnimeComments({
                             cachePolicy="memory-disk"
                           />
                           <LinearGradient
-                            colors={["rgba(10, 15, 26, 0.65)", "rgba(10, 15, 26, 0.40)"]}
+                            colors={["rgba(22,24,30, 0.65)", "rgba(22,24,30, 0.40)"]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                             style={StyleSheet.absoluteFillObject}
@@ -1062,14 +1062,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   communityBadge: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10,
     letterSpacing: 1.2,
     color: "rgba(255, 255, 255, 0.45)",
     textTransform: "uppercase",
   },
   title: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 22,
     color: "#FFFFFF",
     marginTop: 2,
@@ -1121,7 +1121,7 @@ const styles = StyleSheet.create({
   sortPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   sortPillTextActive: {
     color: "#EF4444",
@@ -1188,7 +1188,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239, 68, 68, 0.4)",
   },
   toolText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10.5,
     letterSpacing: 0.6,
     color: "rgba(255, 255, 255, 0.6)",
@@ -1225,7 +1225,7 @@ const styles = StyleSheet.create({
   guestText: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 18,
   },
   guestBtn: {
@@ -1288,7 +1288,7 @@ const styles = StyleSheet.create({
   },
   commentBannerOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(10, 15, 26, 0.52)",
+    backgroundColor: "rgba(22,24,30, 0.52)",
   },
   commentAuthor: {
     flexDirection: "row",
@@ -1316,7 +1316,7 @@ const styles = StyleSheet.create({
   },
   memberTagText: {
     fontSize: 10.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     fontWeight: "700",
   },
   cityClanRow: {
@@ -1343,7 +1343,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   rankTierText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     letterSpacing: 0.5,
     textTransform: "uppercase",
@@ -1364,18 +1364,18 @@ const styles = StyleSheet.create({
   levelPillText: {
     fontSize: 9.5,
     fontWeight: "700",
-    color: "#FB7185",
+    color: "#FFFFFF",
   },
   authorMeta: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#8F727F",
+    color: "#8E93A2",
     marginLeft: 2,
   },
   commentText: {
     fontFamily: "Nunito-Regular",
     fontSize: 14,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     lineHeight: 21,
   },
   commentGif: {
@@ -1427,7 +1427,7 @@ const styles = StyleSheet.create({
   commentActionText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
   commentActionTextActive: {
     color: "#EF4444",
@@ -1461,7 +1461,7 @@ const styles = StyleSheet.create({
   showMoreText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     letterSpacing: 0.5,
   },
   pressed: {

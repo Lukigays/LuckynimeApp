@@ -20,19 +20,19 @@ import { getLeaderboard, formatXp, type LeaderboardEntry } from "@/lib/leaderboa
 import { supabase } from "@/lib/supabase";
 import { hapticLight } from "@/lib/haptics";
 
-const GOLD = "#FBBF24";
+const GOLD = "#F5C518";
 const SILVER = "#F1D4DE";
-const BRONZE = "#FB7185";
+const BRONZE = "#FFFFFF";
 
 const NAME_COLORS = [
-  "#FB7185",
-  "#FBBF24",
-  "#F43F5E",
-  "#C084FC",
-  "#34D399",
-  "#FDA4AF",
+  "#FFFFFF",
+  "#F5C518",
+  "#EF4444",
+  "#9CA3AF",
+  "#10B981",
+  "#D1D5DB",
   "#F472B6",
-  "#F59E0B",
+  "#F5C518",
 ];
 
 function getUsernameColor(name: string): string {
@@ -48,7 +48,7 @@ function rankColor(rank: number): string {
   if (rank === 1) return GOLD;
   if (rank === 2) return SILVER;
   if (rank === 3) return BRONZE;
-  return "#8F727F";
+  return "#8E93A2";
 }
 
 function crownIcon(rank: number): string | null {
@@ -205,7 +205,7 @@ export function HomeTopLeaderboard() {
   return (
     <View style={styles.cardContainer}>
       <LinearGradient
-        colors={["rgba(244, 63, 94, 0.14)", "rgba(251, 191, 36, 0.04)", "rgba(25, 16, 22, 0.96)"]}
+        colors={["rgba(239, 68, 68, 0.14)", "rgba(251, 191, 36, 0.04)", "rgba(18, 19, 22, 0.96)"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -214,7 +214,7 @@ export function HomeTopLeaderboard() {
       <View style={styles.headerRow}>
         <View style={styles.headerLeft}>
           <View style={styles.trophyBadge}>
-            <AppIcon name="trophy" size={14} color="#FBBF24" />
+            <AppIcon name="trophy" size={14} color="#F5C518" />
           </View>
           <View>
             <Text style={styles.headerEyebrow}>HALL OF FAME</Text>
@@ -231,13 +231,13 @@ export function HomeTopLeaderboard() {
           hitSlop={8}
         >
           <Text style={styles.seeAllText}>Peringkat</Text>
-          <AppIcon name="arrow-right" size={12} color="#FB7185" />
+          <AppIcon name="arrow-right" size={12} color="#FFFFFF" />
         </Pressable>
       </View>
 
       {isLoading ? (
         <View style={styles.loadingBox}>
-          <ActivityIndicator size="small" color="#F43F5E" />
+          <ActivityIndicator size="small" color="#EF4444" />
         </View>
       ) : top3.length === 0 ? (
         <View style={styles.emptyBox}>
@@ -265,9 +265,9 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: "100%",
     borderRadius: 22,
-    backgroundColor: "#191016",
+    backgroundColor: "#1B1D22",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+    borderColor: "rgba(255, 255, 255, 0.22)",
     padding: 15,
     gap: 10,
     overflow: "hidden",
@@ -299,8 +299,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerEyebrow: {
-    fontFamily: "SpaceGrotesk-Bold",
-    color: "#FB7185",
+    fontFamily: "Nunito-Bold",
+    color: "#FFFFFF",
     fontSize: 9.5,
     letterSpacing: 1.1,
   },
@@ -310,8 +310,8 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   headerTitle: {
-    fontFamily: "Nunito-ExtraBold",
-    color: "#FFF5F7",
+    fontFamily: "Nunito-Bold",
+    color: "#F3F4F6",
     fontSize: 14.5,
     letterSpacing: -0.2,
   },
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 3.5,
-    backgroundColor: "#F43F5E",
+    backgroundColor: "#EF4444",
   },
   seeAllBtn: {
     flexDirection: "row",
@@ -328,13 +328,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     paddingVertical: 5,
     borderRadius: 99,
-    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.26)",
+    borderColor: "rgba(255, 255, 255, 0.26)",
   },
   seeAllText: {
     fontFamily: "Nunito-Bold",
-    color: "#FB7185",
+    color: "#FFFFFF",
     fontSize: 11.5,
   },
   loadingBox: {
@@ -349,12 +349,12 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontFamily: "Nunito-Bold",
-    color: "#FFF5F7",
+    color: "#F3F4F6",
     fontSize: 13,
   },
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
-    color: "#9A7D8A",
+    color: "#8E93A2",
     fontSize: 11.5,
     textAlign: "center",
   },
@@ -374,15 +374,15 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   podiumItemFirst: {
-    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
     borderWidth: 1,
     borderColor: "rgba(251, 191, 36, 0.36)",
     paddingVertical: 12,
   },
   podiumItemOther: {
-    backgroundColor: "rgba(255, 245, 247, 0.035)",
+    backgroundColor: "rgba(243,244,246, 0.035)",
     borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.14)",
+    borderColor: "rgba(255, 255, 255, 0.14)",
   },
   podiumItemEmpty: {
     flex: 1,
@@ -410,12 +410,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1.5,
-    borderColor: "#191016",
+    borderColor: "#1B1D22",
   },
   nearAvatarText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#0D080B",
+    color: "#121316",
     fontWeight: "900",
   },
   nameRow: {
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   userName: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 11.5,
     flexShrink: 1,
   },
@@ -451,12 +451,12 @@ const styles = StyleSheet.create({
     height: 12,
   },
   tierText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     fontWeight: "800",
   },
   xpText: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "Nunito-Bold",
     fontSize: 10.5,
     fontWeight: "700",
     marginTop: 1,

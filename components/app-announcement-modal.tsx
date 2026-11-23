@@ -153,7 +153,7 @@ export function AppAnnouncementModal({
           {/* Header Row: Bell Icon + Title + Close Button */}
           <View style={styles.headerRow}>
             <View style={styles.titleWithIcon}>
-              <AppIcon name="bell" size={18} color="#FB7185" />
+              <AppIcon name="bell" size={18} color="#FFFFFF" />
               <Text style={styles.headerTitle}>{config.title || "[ INFO ]"}</Text>
             </View>
 
@@ -164,7 +164,7 @@ export function AppAnnouncementModal({
               style={styles.closeBtn}
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             >
-              <AppIcon name="close" size={18} color="#C4A6B3" />
+              <AppIcon name="close" size={18} color="#9CA3AF" />
             </TouchableOpacity>
           </View>
 
@@ -229,7 +229,7 @@ export function AppAnnouncementModal({
               style={styles.glassBtnSecondary}
               activeOpacity={0.78}
             >
-              <AppIcon name="information" size={15} color="#F5E9EE" />
+              <AppIcon name="information" size={15} color="#F3F4F6" />
               <Text style={styles.glassBtnTextSecondary} numberOfLines={1}>
                 {config.secondaryButtonText || "Detail"}
               </Text>
@@ -244,7 +244,7 @@ export function AppAnnouncementModal({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(3, 7, 18, 0.78)",
+    backgroundColor: "rgba(18,19,22, 0.78)",
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#111A2E",
     borderRadius: 22,
     borderWidth: 1.5,
-    borderColor: "#23161F",
+    borderColor: "#23262F",
     paddingHorizontal: 22,
     paddingTop: 20,
     paddingBottom: 22,
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   paragraphText: {
     fontSize: 13.5,
     lineHeight: 21,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     fontWeight: "500",
     marginBottom: 4,
   },
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   },
   bulletSymbol: {
     fontSize: 14,
-    color: "#FB7185",
+    color: "#FFFFFF",
     marginRight: 8,
     lineHeight: 20,
     fontWeight: "800",
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     lineHeight: 20,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     fontWeight: "500",
   },
   versionContainer: {
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   versionTagText: {
     fontSize: 12.5,
     fontWeight: "700",
-    color: "#FB7185",
+    color: "#FFFFFF",
     letterSpacing: 0.3,
   },
   glassActionsRow: {
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     fontFamily: Platform.select({ ios: "System", android: "Roboto" }),
     fontSize: 13,
     fontWeight: "700",
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     letterSpacing: 0.3,
   },
 });

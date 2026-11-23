@@ -187,7 +187,7 @@ export default function DeveloperScreen() {
       >
         {/* Hero */}
         <View style={styles.heroBadge}>
-          <AppIcon name="users" size={13} color="#F5E9EE" />
+          <AppIcon name="users" size={13} color="#F3F4F6" />
           <Text style={styles.heroBadgeText}>TEAM LUCKYNIME</Text>
         </View>
         <Text style={styles.heroHeadline}>Orang di Balik Luckynime</Text>
@@ -198,7 +198,7 @@ export default function DeveloperScreen() {
         {/* Loading Indicator if fetching */}
         {isLoading && devList.length === 0 ? (
           <View style={styles.loadingBox}>
-            <ActivityIndicator size="small" color="#F5E9EE" />
+            <ActivityIndicator size="small" color="#F3F4F6" />
             <Text style={styles.loadingText}>Memuat data tim developer...</Text>
           </View>
         ) : (
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 6,
     paddingBottom: 14,
-    backgroundColor: "#0D080B",
+    backgroundColor: "#121316",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.05)",
   },
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   subtitleText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   // Scroll area
@@ -283,13 +283,13 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.2)",
   },
   heroBadgeText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#F5E9EE",
+    color: "#F3F4F6",
     letterSpacing: 1.2,
   },
   heroHeadline: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 23,
     color: "#FFFFFF",
     letterSpacing: -0.4,
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   heroSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     lineHeight: 19,
     marginTop: -4,
   },
@@ -345,12 +345,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarInitial: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 38,
   },
 
   devName: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 22,
     color: "#FFFFFF",
     letterSpacing: -0.3,
@@ -388,14 +388,14 @@ const styles = StyleSheet.create({
   roleLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
     letterSpacing: 1,
     textTransform: "uppercase",
   },
   roleText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#EDE0E5",
+    color: "#F3F4F6",
     textAlign: "center",
     lineHeight: 19,
     paddingHorizontal: 10,
@@ -432,13 +432,13 @@ const styles = StyleSheet.create({
   loadingText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#C4A6B3",
+    color: "#9CA3AF",
   },
 
   footerText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#8F727F",
+    color: "#8E93A2",
     textAlign: "center",
     marginTop: 8,
   },

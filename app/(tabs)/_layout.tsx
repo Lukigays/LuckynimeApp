@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Tabs } from "expo-router";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import * as Haptics from "expo-haptics";
@@ -21,34 +20,38 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { routeName: "index", label: "Eksplor", icon: "home-outline", activeIcon: "home" },
-  { routeName: "schedule", label: "Rilis", icon: "calendar", activeIcon: "calendar-check" },
+  { routeName: "index", label: "Beranda", icon: "home-outline", activeIcon: "home" },
+  { routeName: "schedule", label: "Jadwal", icon: "calendar", activeIcon: "calendar-check" },
+  { routeName: "history", label: "Riwayat", icon: "history", activeIcon: "history" },
   { routeName: "library", label: "Koleksi", icon: "bookmark-outline", activeIcon: "bookmark" },
-  { routeName: "history", label: "Jejak", icon: "history", activeIcon: "history" },
-  { routeName: "profile", label: "Akun", icon: "account-outline", activeIcon: "account", isProfile: true },
+  { routeName: "profile", label: "Profil", icon: "account-outline", activeIcon: "account", isProfile: true },
 ];
 
 export default function TabsLayout() {
   return (
     <Tabs
-      tabBar={(props) => <KuroSakuraDock {...props} />}
+      tabBar={(props) => <WibukuBottomBar {...props} />}
       screenOptions={{
         headerShown: false,
-        sceneStyle: { backgroundColor: "#0D080B" },
+        sceneStyle: { backgroundColor: "#121316" },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: "Eksplor" }} />
-      <Tabs.Screen name="schedule" options={{ title: "Rilis" }} />
+      <Tabs.Screen name="index" options={{ title: "Beranda" }} />
+      <Tabs.Screen name="schedule" options={{ title: "Jadwal" }} />
+      <Tabs.Screen name="history" options={{ title: "Riwayat" }} />
       <Tabs.Screen name="library" options={{ title: "Koleksi" }} />
-      <Tabs.Screen name="history" options={{ title: "Jejak" }} />
-      <Tabs.Screen name="profile" options={{ title: "Akun" }} />
+      <Tabs.Screen name="profile" options={{ title: "Profil" }} />
       <Tabs.Screen name="catalog" options={{ href: null }} />
       <Tabs.Screen name="random" options={{ href: null }} />
     </Tabs>
   );
 }
 
-function KuroSakuraDock({ state, navigation }: BottomTabBarProps) {
+/**
+ * Wibuku-style Flat Matte Dark Bottom Bar:
+ * Minimalist icon bar with a soft slate capsule pill (#2C3040) around the active icon.
+ */
+function WibukuBottomBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const auth = useLuckynimeAuth();
   const [profileAvatar, setProfileAvatar] = useState<string | null>(null);
@@ -104,8 +107,6 @@ function KuroSakuraDock({ state, navigation }: BottomTabBarProps) {
     auth.user?.user_metadata?.avatar_url ||
     DEFAULT_AVATAR_URL;
 
-  const bottomOffset = Math.max(insets.bottom, 10);
-
   const navigateTab = (routeName: string) => {
     const targetRoute = state.routes.find((r) => r.name === routeName);
     if (!targetRoute) return;
@@ -124,53 +125,34 @@ function KuroSakuraDock({ state, navigation }: BottomTabBarProps) {
   };
 
   return (
-    <View
-      pointerEvents="box-none"
-      style={[styles.dockWrapper, { bottom: bottomOffset }]}
-    >
-      <View style={styles.unifiedDock}>
-        <LinearGradient
-          colors={["rgba(244, 63, 94, 0.42)", "rgba(251, 113, 133, 0.12)", "rgba(244, 63, 94, 0.36)"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.topGlowHairline}
-        />
+    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 6) }]}>
+      <View style={styles.row}>
         {NAV_ITEMS.map((item) => {
-          const active = currentRouteName === item.routeName;
+          const focused = currentRouteName === item.routeName;
           return (
             <Pressable
               key={item.routeName}
               accessibilityRole="tab"
+              accessibilityState={{ selected: focused }}
               accessibilityLabel={item.label}
-              accessibilityState={{ selected: active }}
               onPress={() => navigateTab(item.routeName)}
-              style={({ pressed }) => [styles.tabSlot, pressed && styles.pressed]}
+              style={({ pressed }) => [styles.tabItem, pressed && { opacity: 0.72 }]}
             >
-              {active ? <View style={styles.activeLaserBar} /> : null}
-              <View style={[styles.iconPill, active && styles.iconPillActive]}>
-                {item.isProfile ? (
-                  <View style={[styles.avatarRing, active && styles.avatarRingActive]}>
-                    <Image
-                      source={{ uri: avatarUri }}
-                      style={styles.avatarImg}
-                      contentFit="cover"
-                      cachePolicy="memory-disk"
-                    />
-                  </View>
+              <View style={[styles.iconPill, focused && styles.iconPillActive]}>
+                {item.isProfile && auth.user ? (
+                  <Image
+                    source={{ uri: avatarUri }}
+                    style={[styles.avatar, focused && styles.avatarActive]}
+                    contentFit="cover"
+                  />
                 ) : (
                   <AppIcon
-                    name={(active ? item.activeIcon : item.icon) as any}
-                    size={20}
-                    color={active ? "#FFF5F7" : "#8D707D"}
+                    name={(focused ? item.activeIcon : item.icon) as any}
+                    size={21}
+                    color={focused ? "#FFFFFF" : "#8E93A2"}
                   />
                 )}
               </View>
-              <Text
-                style={[styles.tabLabel, active ? styles.tabLabelActive : styles.tabLabelInactive]}
-                numberOfLines={1}
-              >
-                {item.label}
-              </Text>
             </Pressable>
           );
         })}
@@ -180,103 +162,43 @@ function KuroSakuraDock({ state, navigation }: BottomTabBarProps) {
 }
 
 const styles = StyleSheet.create({
-  dockWrapper: {
-    position: "absolute",
-    left: 14,
-    right: 14,
-    zIndex: 100,
+  bar: {
+    backgroundColor: "#141519",
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "#242731",
+    paddingTop: 8,
   },
-  unifiedDock: {
-    height: 66,
-    borderRadius: 22,
-    backgroundColor: "rgba(20, 11, 16, 0.96)",
-    borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.22)",
+  row: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 6,
-    overflow: "hidden",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.55,
-    shadowRadius: 18,
-    elevation: 16,
-    ...(Platform.OS === "web"
-      ? ({
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-        } as any)
-      : {}),
+    justifyContent: "space-around",
+    height: 44,
+    paddingHorizontal: 8,
   },
-  topGlowHairline: {
-    position: "absolute",
-    top: 0,
-    left: 18,
-    right: 18,
-    height: 1.5,
-  },
-  tabSlot: {
+  tabItem: {
     flex: 1,
-    height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    gap: 3,
-    position: "relative",
-  },
-  activeLaserBar: {
-    position: "absolute",
-    top: 0,
-    width: 24,
-    height: 3,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-    backgroundColor: "#F43F5E",
+    height: "100%",
   },
   iconPill: {
-    width: 40,
-    height: 30,
-    borderRadius: 11,
+    width: 54,
+    height: 32,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
   },
   iconPillActive: {
-    backgroundColor: "rgba(244, 63, 94, 0.20)",
-    borderWidth: 1,
-    borderColor: "rgba(251, 113, 133, 0.34)",
+    backgroundColor: "#2D3142",
   },
-  avatarRing: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    overflow: "hidden",
+  avatar: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     borderWidth: 1.5,
-    borderColor: "rgba(251, 113, 133, 0.35)",
+    borderColor: "transparent",
   },
-  avatarRingActive: {
-    borderColor: "#F43F5E",
-    borderWidth: 2,
-  },
-  avatarImg: {
-    width: "100%",
-    height: "100%",
-  },
-  tabLabel: {
-    fontSize: 10,
-    letterSpacing: 0.15,
-  },
-  tabLabelActive: {
-    color: "#FB7185",
-    fontFamily: "Nunito-ExtraBold",
-    fontWeight: "800",
-  },
-  tabLabelInactive: {
-    color: "#8D707D",
-    fontFamily: "Nunito-SemiBold",
-    fontWeight: "600",
-  },
-  pressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.95 }],
+  avatarActive: {
+    borderColor: "#FFFFFF",
   },
 });
