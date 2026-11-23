@@ -266,6 +266,15 @@ export function matchSubtitleTrack(
   if (!validTracks.length) return null;
   const preferred = normalizeSubtitleLang(preferredLanguage);
   if (!preferred) return validTracks[0] ?? null;
+  // Indonesian is strict: never fall back to English or any other language.
+  if (preferred === "id") {
+    const isIndo = (track: SubtitleTrackLike) => {
+      if (normalizeSubtitleLang(track.lang) === "id") return true;
+      const label = String(track.label ?? "").toLowerCase();
+      return /indonesia|indo|bahasa/.test(label) && !/english|inggris/.test(label);
+    };
+    return validTracks.find(isIndo) ?? null;
+  }
   // Exact normalized match on lang or label first.
   for (const track of validTracks) {
     if (normalizeSubtitleLang(track.lang) === preferred) return track;
@@ -278,13 +287,6 @@ export function matchSubtitleTrack(
     if (lang.startsWith(preferred) || preferred.startsWith(lang) || label.startsWith(preferred) || preferred.startsWith(label)) {
       if (lang || label) return track;
     }
-  }
-  // If Indonesian was preferred and missing, prefer English before arbitrary foreign tracks.
-  if (preferred === "id") {
-    const englishFallback = validTracks.find(
-      (track) => normalizeSubtitleLang(track.lang) === "en" || normalizeSubtitleLang(track.label) === "en",
-    );
-    if (englishFallback) return englishFallback;
   }
   return validTracks[0] ?? null;
 }

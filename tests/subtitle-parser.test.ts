@@ -74,6 +74,11 @@ describe("subtitle parser spine", () => {
     ];
     expect(matchSubtitleTrack(tracks, "en")?.url).toBe("https://cdn.example/en.vtt");
     expect(matchSubtitleTrack(tracks, "english")?.url).toBe("https://cdn.example/en.vtt");
+    // Indonesian requested but only English exists: must NOT fall back to English.
+    const enOnly = [{ url: "https://cdn.example/en.vtt", lang: "en", label: "English" }];
+    expect(matchSubtitleTrack(enOnly, "id")).toBeNull();
+    expect(matchSubtitleTrack([{ url: "https://cdn.example/x.vtt", label: "Track 1" }], "id")).toBeNull();
+    expect(matchSubtitleTrack([...enOnly, { url: "https://cdn.example/id.vtt", lang: "id" }], "id")?.url).toBe("https://cdn.example/id.vtt");
     expect(matchSubtitleTrack(tracks, null)?.url).toBe("https://cdn.example/ja.vtt");
     expect(matchSubtitleTrack([], "en")).toBeNull();
   });

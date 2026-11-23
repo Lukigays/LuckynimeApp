@@ -64,7 +64,7 @@ const REPORT_CATEGORIES: ReportCategoryItem[] = [
   {
     id: "subtitle",
     label: "Subtitle Tidak Muncul / Rusak",
-    desc: "Sub Indo hilang, acak, atau terlambat dari dialog",
+    desc: "Subtitle hilang, acak, atau terlambat dari dialog",
     IconComponent: Subtitles,
   },
   {

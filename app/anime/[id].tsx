@@ -467,7 +467,7 @@ export default function AnimeDetailScreen() {
             <Text style={wb.sub} numberOfLines={1}>
               {[data.format, data.seasonYear ? String(data.seasonYear) : null, data.episodes ? `${data.episodes} Eps` : null]
                 .filter(Boolean)
-                .join(" • ") || "Sub Indo"}
+                .join(" • ")}
             </Text>
             <View style={wb.chipRow}>
               <View style={wb.chip}>

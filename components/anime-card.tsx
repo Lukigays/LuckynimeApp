@@ -77,7 +77,7 @@ function AnimeCardBase({ anime, compact = false }: { anime: Anime; compact?: boo
     if (anime.format) parts.push(String(anime.format).replace("_", " "));
     if (anime.seasonYear) parts.push(String(anime.seasonYear));
     else if (anime.genres?.[0]) parts.push(anime.genres[0]);
-    return parts.join(" • ") || "Sub Indo";
+    return parts.join(" • ");
   }, [anime.format, anime.seasonYear, anime.genres]);
 
   const cancelLongPress = () => {

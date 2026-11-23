@@ -474,9 +474,6 @@ export default function HomeScreen() {
                         {currentHero.episodes ? `${currentHero.episodes} EP` : "ONGOING"}
                       </Text>
                     </View>
-                    <View style={styles.stageSubChip}>
-                      <Text style={styles.stageSubText}>SUB INDO</Text>
-                    </View>
                   </View>
 
                   {currentHero.genres?.length ? (
@@ -604,12 +601,19 @@ export default function HomeScreen() {
                     key={`${item.anime_id}-${epNum}`}
                     onPress={() => {
                       hapticLight();
+                      const savedProgress = Number(item.progress) || 0;
+                      const savedDuration = Number(item.duration) || 0;
+                      const canResume =
+                        savedProgress > 3 &&
+                        (savedDuration <= 0 || (savedProgress < savedDuration - 8 && savedProgress / savedDuration < 0.96));
                       router.push({
                         pathname: "/watch/[id]",
                         params: {
                           id: String(item.anime_id),
-                          ep: String(epNum),
-                          title: item.episode_title ?? `Episode ${epNum}`,
+                          episode: String(epNum),
+                          title: item.anime_title || "Anime",
+                          image: item.anime_image || "",
+                          ...(canResume ? { resumeTime: String(Math.floor(savedProgress)) } : {}),
                         },
                       } as never);
                     }}

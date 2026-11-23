@@ -2756,7 +2756,7 @@ const DEFAULT_BROKEN_STREAMS: BrokenStreamReport[] = [
     animeTitle: "Attack on Titan Season 3",
     episodeNumber: 5,
     serverName: "Track 6 (Full HD)",
-    issueDescription: "Sub Indo tidak muncul dan player menampilkan error code 404.",
+    issueDescription: "Subtitle tidak muncul dan player menampilkan error code 404.",
     status: "investigating",
     reporter: "arisu_99",
     createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),

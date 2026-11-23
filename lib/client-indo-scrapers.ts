@@ -210,7 +210,7 @@ async function scrapeSamehadakuClient(
         out.push({
           id: `client-samehadaku-wibufile:sub:0`,
           provider: "client-samehadaku-wibufile",
-          label: "SAMEHADAKU WIBUFILE (SUB INDO)",
+          label: "SAMEHADAKU WIBUFILE",
           lang: "sub",
           sources: [
             {
@@ -247,7 +247,7 @@ async function scrapeSamehadakuClient(
       out.push({
         id: `client-samehadaku-pixeldrain:sub:0`,
         provider: "client-samehadaku-pixeldrain",
-        label: "SAMEHADAKU PIXELDRAIN HD (SUB INDO)",
+        label: "SAMEHADAKU PIXELDRAIN HD",
         lang: "sub",
         sources: pdSources,
         headers: { Referer: "https://pixeldrain.com/" },
@@ -258,7 +258,7 @@ async function scrapeSamehadakuClient(
       out.push({
         id: `client-samehadaku-embed:sub:0`,
         provider: "client-samehadaku-embed",
-        label: "SAMEHADAKU EMBED (SUB INDO)",
+        label: "SAMEHADAKU EMBED",
         lang: "sub",
         sources: [{ url: embedSrc, quality: "Auto", type: "embed", verification: "embed" }],
         headers: { Referer: epUrl },
@@ -340,7 +340,7 @@ async function scrapeOploverzClient(
       out.push({
         id: `client-oploverz-${idx}:sub:${idx}`,
         provider: `client-oploverz-${idx}`,
-        label: `OPLOVERZ ${labelClean} (SUB INDO)`,
+        label: `OPLOVERZ ${labelClean}`,
         lang: "sub",
         sources: [{ url: src, quality: "Auto", type: "embed", verification: "embed" }],
         headers: { Referer: `${OPLOVERZ_BASE}/` },
@@ -355,7 +355,7 @@ async function scrapeOploverzClient(
         out.push({
           id: `client-oploverz-main:sub:0`,
           provider: "client-oploverz-main",
-          label: "OPLOVERZ UTAMA (SUB INDO)",
+          label: "OPLOVERZ UTAMA",
           lang: "sub",
           sources: [{ url: ifr, quality: "Auto", type: "embed", verification: "embed" }],
           headers: { Referer: `${OPLOVERZ_BASE}/` },
@@ -405,7 +405,7 @@ async function scrapeAnoboyClient(
             {
               id: `client-anoboy:sub:0`,
               provider: "client-anoboy",
-              label: "ANOBOY SUB INDO",
+              label: "ANOBOY",
               lang: "sub",
               sources: [{ url: full, quality: "Auto", type: "embed", verification: "embed" }],
               headers: { Referer: `${ANOBOY_BASE}/` },

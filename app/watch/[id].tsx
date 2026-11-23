@@ -3994,32 +3994,6 @@ export default function WatchScreen() {
           <Text style={styles.actionPillText}>Download</Text>
         </Pressable>
 
-        {/* Subtitle Pill */}
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => setActivePanel(activePanel === "subtitles" ? null : "subtitles")}
-          style={[styles.actionPill, subtitlePrefs?.enabled && styles.actionPillSubtitleOn]}
-        >
-          <Subtitles size={15} color="#FFFFFF" weight="bold" />
-          <Text style={styles.actionPillText}>
-            {subtitlePrefs?.enabled !== false ? "Sub Indo" : "Subtitle"}
-          </Text>
-        </Pressable>
-
-        {/* Audio Dub / Sub Pill (if dub exists) */}
-        {providers.dub.length > 0 ? (
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => setActivePanel("language")}
-            style={styles.actionPill}
-          >
-            <Text style={styles.actionPillText}>
-              {language === "sub" ? "SUB" : "DUB"}
-            </Text>
-            <CaretDown size={12} color="#9CA3AF" weight="bold" />
-          </Pressable>
-        ) : null}
-
         {/* Share Pill */}
         <Pressable
           accessibilityRole="button"
