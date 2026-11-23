@@ -543,10 +543,6 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 12,
     paddingHorizontal: 16,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
     elevation: 20,
   },
   closeBtn: {

@@ -294,10 +294,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.45,
-    shadowRadius: 14,
     elevation: 12,
   },
   swipeHandleWrap: {

@@ -259,10 +259,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingTop: 20,
     paddingBottom: 22,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
     elevation: 10,
   },
   headerRow: {

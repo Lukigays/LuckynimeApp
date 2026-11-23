@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 11,
     color: "#F3F4F6",
-    letterSpacing: 0.2,
+    letterSpacing: 1.2,
   },
   heroHeadline: {
     fontFamily: "Nunito-Bold",
@@ -389,7 +389,8 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#9CA3AF",
-    letterSpacing: 0.2,
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
   roleText: {
     fontFamily: "Nunito-SemiBold",

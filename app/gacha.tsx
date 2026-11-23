@@ -525,7 +525,7 @@ export default function GachaScreen() {
             />
             {/* Subtle inner dark gradient for contrast */}
             <LinearGradient
-              colors={["transparent", "rgba(22,24,30, 0.45)"]}
+              colors={["transparent", "rgba(10, 14, 23, 0.45)"]}
               style={StyleSheet.absoluteFillObject}
             />
           </View>
@@ -839,7 +839,7 @@ export default function GachaScreen() {
                               paddingHorizontal: 6,
                               paddingVertical: 2,
                               borderRadius: 4,
-                              backgroundColor: "rgba(156,163,175, 0.85)",
+                              backgroundColor: "rgba(168, 85, 247, 0.85)",
                             }}
                           >
                             <Text style={{ fontSize: 9, fontWeight: "800", color: "#FFFFFF", letterSpacing: 0.6 }}>
@@ -1719,10 +1719,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 5,
     elevation: 6,
   },
   floatingCrystalPill: {
@@ -1735,10 +1731,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
     elevation: 6,
   },
   floatingCrystalIcon: {
@@ -1754,7 +1746,7 @@ const styles = StyleSheet.create({
   // ─── ANIMATION OVERLAY (CLEAN PLAYBACK WITHOUT EXTRA EFFECTS) ───
   animationOverlayBackdrop: {
     flex: 1,
-    backgroundColor: "rgba(22,24,30, 0.72)",
+    backgroundColor: "rgba(10, 15, 26, 0.72)",
     ...(Platform.OS === "web"
       ? ({
           backdropFilter: "blur(20px)",
@@ -1774,7 +1766,7 @@ const styles = StyleSheet.create({
   // ─── GACHA RESULT MODAL ───
   resultModalBackdrop: {
     flex: 1,
-    backgroundColor: "rgba(18,19,22, 0.88)",
+    backgroundColor: "rgba(3, 7, 18, 0.88)",
     ...(Platform.OS === "web" ? { backdropFilter: "blur(20px)" } : {}),
     alignItems: "center",
     justifyContent: "center",
@@ -2173,10 +2165,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
     elevation: 8,
   },
   toastSuccess: {
@@ -2226,10 +2214,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#EF4444",
     flex: 1.25,
     paddingHorizontal: 12,
-    shadowColor: "#EF4444",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
     elevation: 4,
   },
   insufficientTopupText: {

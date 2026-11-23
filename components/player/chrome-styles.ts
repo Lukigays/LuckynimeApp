@@ -128,10 +128,6 @@ export const chrome = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#FFF",
     elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   actionRail: {
     flexDirection: "row",
@@ -175,10 +171,6 @@ export const chrome = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: 3,
     elevation: 6,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
   },
   lockedOverlay: {
     ...StyleSheet.absoluteFillObject,

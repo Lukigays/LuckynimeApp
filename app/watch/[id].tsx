@@ -4829,10 +4829,6 @@ const styles = StyleSheet.create({
     marginLeft: -6.5,
     bottom: -5,
     elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.45,
-    shadowRadius: 2,
   },
   redScrubberKnobActive: {
     width: 16,
@@ -4867,10 +4863,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexShrink: 0,
     elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
   },
   bigPlayButtonFullscreen: { width: 66, height: 66, borderRadius: 33 },
   hudBadge: { position: "absolute", top: 20, alignSelf: "center", backgroundColor: "rgba(0,0,0,0.75)", paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, flexDirection: "row", alignItems: "center", gap: 5, zIndex: 10 },
@@ -4910,10 +4902,6 @@ const styles = StyleSheet.create({
     maxHeight: "52%",
     paddingTop: 10,
     paddingBottom: Platform.OS === "ios" ? 28 : 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -6 },
-    shadowOpacity: 0.45,
-    shadowRadius: 14,
     elevation: 20,
     ...(Platform.OS === "web"
       ? ({

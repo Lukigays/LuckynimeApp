@@ -324,7 +324,7 @@ export default function SearchScreen() {
                 ? `Cari dalam ${categoryLabel}...`
                 : "Cari judul anime, genre, karakter..."
             }
-            placeholderTextColor="#6B7280"
+            placeholderTextColor="#8E93A2"
             style={styles.input}
             returnKeyType="search"
           />
@@ -361,7 +361,7 @@ export default function SearchScreen() {
           <AppIcon
             name="tune-variant"
             size={18}
-            color="#FFFFFF"
+            color={activeFilterCount ? "#FFFFFF" : "#FFFFFF"}
           />
           {activeFilterCount ? (
             <View style={styles.filterBadge}>
@@ -593,20 +593,31 @@ export default function SearchScreen() {
       ) : (
         <View style={styles.resultsWrap}>
           <View style={styles.resultsHead}>
-            <Text style={styles.resultsCountText}>{`Hasil Pencarian (${media.length})`}</Text>
-            <Text style={styles.sortText}>Relevan ▾</Text>
+            <View style={styles.resultsHeadLeft}>
+              <View style={styles.resultsCountBadge}>
+                <Text style={styles.resultsCountText}>
+                  {media.length} DITEMUKAN
+                </Text>
+              </View>
+              {isCategoryMode ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Bersihkan kategori ${categoryLabel}`}
+                  onPress={() => router.replace("/search" as never)}
+                  style={styles.activeCategoryPill}
+                >
+                  <Text style={styles.activeCategoryText} numberOfLines={1}>
+                    {categoryLabel.toUpperCase()}
+                  </Text>
+                  <AppIcon name="close" size={12} color="#EF4444" />
+                </Pressable>
+              ) : (
+                <Text style={styles.resultsCategoryText}>
+                  {`HASIL UNTUK "${query.toUpperCase()}"`}
+                </Text>
+              )}
+            </View>
           </View>
-          {isCategoryMode ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={`Bersihkan kategori ${categoryLabel}`}
-              onPress={() => router.replace("/search" as never)}
-              style={styles.activeCategoryPill}
-            >
-              <Text style={styles.activeCategoryText} numberOfLines={1}>{categoryLabel}</Text>
-              <AppIcon name="close" size={12} color="#FFFFFF" />
-            </Pressable>
-          ) : null}
           <FlatList
             data={media}
             keyExtractor={(item) => String(item.id)}
@@ -884,7 +895,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(18,19,22, 0.84)",
+    backgroundColor: "rgba(13, 8, 11, 0.84)",
     paddingHorizontal: 6.5,
     paddingVertical: 2.5,
     borderRadius: 99,
@@ -933,14 +944,10 @@ const styles = StyleSheet.create({
     borderRadius: 99,
   },
   resultsCountText: {
-    color: "#F3F4F6",
-    fontSize: 15,
-    fontFamily: "Nunito-Bold",
-  },
-  sortText: {
-    color: "#9CA3AF",
-    fontSize: 13,
-    fontFamily: "Nunito-SemiBold",
+    color: "#FFFFFF",
+    fontSize: 10,
+    fontWeight: "900",
+    letterSpacing: 0.5,
   },
   resultsCategoryText: {
     color: "#9CA3AF",
@@ -986,7 +993,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 12,
     fontWeight: "800",
-    letterSpacing: 0.2,
+    letterSpacing: 0.6,
   },
 
   btnPressed: {

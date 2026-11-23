@@ -221,7 +221,7 @@ export default function RootLayout() {
               marginTop: 12,
               fontSize: 9.5,
               fontWeight: "700",
-              letterSpacing: 0.2,
+              letterSpacing: 3.6,
               color: "#FFFFFF",
               textAlign: "center",
             }}
@@ -350,7 +350,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
               color: "#F87171",
               fontFamily: "Nunito-Bold",
               fontSize: 10.5,
-              letterSpacing: 0.2,
+              letterSpacing: 1.2,
             }}
           >
             APPLICATION STATE

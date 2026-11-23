@@ -760,10 +760,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     zIndex: 100,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.45,
-    shadowRadius: 12,
     elevation: 10,
   },
   floatingNextText: {

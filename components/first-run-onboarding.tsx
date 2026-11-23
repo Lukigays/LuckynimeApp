@@ -667,10 +667,6 @@ const styles = StyleSheet.create({
           filter: "blur(60px)",
         } as any)
       : {
-          shadowColor: "#000000",
-          shadowOffset: { width: 0, height: 0 },
-          shadowOpacity: 0.2,
-          shadowRadius: 60,
           elevation: 2,
         }),
   },
@@ -699,10 +695,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: "#10B981",
     marginRight: 7,
-    shadowColor: "#10B981",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 5,
     elevation: 2,
   },
   topVersionText: {
@@ -773,10 +765,6 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 24,
     // Nol bayangan (tanpa shadow atau elevation)
-    shadowColor: "transparent",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
     elevation: 0,
     ...(Platform.OS === "web" ? ({ boxShadow: "none" } as any) : {}),
   },
@@ -965,10 +953,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "transparent",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
     elevation: 0,
     ...(Platform.OS === "web"
       ? ({
@@ -1114,10 +1098,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
     elevation: 3,
     ...(Platform.OS === "web"
       ? ({
@@ -1193,10 +1173,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
     alignItems: "center",
     gap: 7,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
     ...(Platform.OS === "web"
       ? ({
           backdropFilter: "blur(16px)",
@@ -1211,9 +1187,6 @@ const styles = StyleSheet.create({
   indicatorActive: {
     height: 26,
     backgroundColor: "#F3F4F6",
-    shadowColor: "#F3F4F6",
-    shadowOpacity: 0.9,
-    shadowRadius: 6,
   },
   indicatorInactive: {
     height: 6,

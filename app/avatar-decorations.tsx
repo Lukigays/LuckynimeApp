@@ -1493,7 +1493,7 @@ const styles = StyleSheet.create({
 
   // Price button (Belum Dimiliki) — legacy
   actionBtnPrice: {
-    backgroundColor: "rgba(245,197,24, 0.16)",
+    backgroundColor: "rgba(217, 119, 6, 0.16)",
     borderWidth: 1,
     borderColor: "rgba(245, 197, 24, 0.4)",
     borderRadius: 12,
@@ -1505,7 +1505,7 @@ const styles = StyleSheet.create({
 
   // Tombol Beli
   actionBtnBuy: {
-    backgroundColor: "rgba(245,197,24, 0.18)",
+    backgroundColor: "rgba(217, 119, 6, 0.18)",
     borderWidth: 1,
     borderColor: "rgba(245, 197, 24, 0.5)",
     borderRadius: 12,
@@ -1834,10 +1834,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#10B981",
     paddingVertical: 14,
     borderRadius: 16,
-    shadowColor: "#10B981",
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
     elevation: 4,
     marginTop: 6,
   },
@@ -1855,10 +1851,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#8C57FF",
     paddingVertical: 14,
     borderRadius: 16,
-    shadowColor: "#8C57FF",
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
     elevation: 4,
     marginTop: 6,
   },

@@ -64,10 +64,10 @@ const NAME_COLORS = [
   "#FFFFFF", // Cyan Sky
   "#4ADE80", // Emerald Green
   "#EF4444", // Rose Red
-  "#9CA3AF", // Purple
+  "#A855F7", // Purple
   "#F5C518", // Amber Gold
   "#2DD4BF", // Teal
-  "#9CA3AF", // Pink
+  "#EC4899", // Pink
   "#FFFFFF", // Blue
 ];
 
@@ -93,14 +93,14 @@ function getTierPillColors(tierName: string) {
       };
     case "eternal":
       return {
-        bg: "rgba(156,163,175, 0.16)",
-        border: "rgba(156,163,175, 0.45)",
+        bg: "rgba(168, 85, 247, 0.16)",
+        border: "rgba(168, 85, 247, 0.45)",
         text: "#D8B4FE",
       };
     case "celestial":
       return {
-        bg: "rgba(245,197,24, 0.16)",
-        border: "rgba(245,197,24, 0.45)",
+        bg: "rgba(251, 146, 60, 0.16)",
+        border: "rgba(251, 146, 60, 0.45)",
         text: "#FDBA74",
       };
     case "ruby star":
@@ -111,8 +111,8 @@ function getTierPillColors(tierName: string) {
       };
     case "amethyst":
       return {
-        bg: "rgba(156,163,175, 0.16)",
-        border: "rgba(156,163,175, 0.45)",
+        bg: "rgba(192, 132, 252, 0.16)",
+        border: "rgba(192, 132, 252, 0.45)",
         text: "#E9D5FF",
       };
     case "sapphire":
@@ -135,20 +135,20 @@ function getTierPillColors(tierName: string) {
       };
     case "silver":
       return {
-        bg: "rgba(243,244,246, 0.16)",
-        border: "rgba(243,244,246, 0.45)",
+        bg: "rgba(237, 224, 229, 0.16)",
+        border: "rgba(237, 224, 229, 0.45)",
         text: "#F3F4F6",
       };
     case "bronze":
       return {
-        bg: "rgba(245,197,24, 0.16)",
-        border: "rgba(245,197,24, 0.45)",
+        bg: "rgba(217, 119, 6, 0.16)",
+        border: "rgba(217, 119, 6, 0.45)",
         text: "#FDBA74",
       };
     default:
       return {
-        bg: "rgba(156,163,175, 0.16)",
-        border: "rgba(156,163,175, 0.45)",
+        bg: "rgba(196, 166, 179, 0.16)",
+        border: "rgba(196, 166, 179, 0.45)",
         text: "#F3F4F6",
       };
   }
@@ -1409,7 +1409,7 @@ const styles = StyleSheet.create({
   },
   warningBannerText: {
     fontSize: 12.5,
-    color: "#F5C518",
+    color: "#D97706",
     fontWeight: "600",
     flex: 1,
   },
@@ -1435,7 +1435,7 @@ const styles = StyleSheet.create({
   },
   roomPillActive: {
     borderColor: "#EF4444",
-    backgroundColor: "rgba(156,163,175, 0.15)",
+    backgroundColor: "rgba(2, 132, 199, 0.15)",
   },
   roomPillHash: {
     fontSize: 13,
@@ -1527,10 +1527,6 @@ const styles = StyleSheet.create({
   messageCardHighlighted: {
     borderColor: "#FFFFFF",
     borderWidth: 1.5,
-    shadowColor: "#FFFFFF",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 10,
     elevation: 8,
     ...(Platform.OS === "web"
       ? ({
@@ -1539,7 +1535,7 @@ const styles = StyleSheet.create({
       : {}),
   },
   messageCardSticker: {
-    backgroundColor: "rgba(27,29,34, 0.45)",
+    backgroundColor: "rgba(22, 27, 36, 0.45)",
     borderColor: "rgba(34, 45, 61, 0.5)",
   },
   messageCardPressed: {
@@ -1600,7 +1596,8 @@ const styles = StyleSheet.create({
   rankTierText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    letterSpacing: 0.2,
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
   },
   levelPill: {
     flexDirection: "row",
@@ -1770,7 +1767,7 @@ const styles = StyleSheet.create({
     borderColor: "#222D3D",
   },
   stickerToggleBtnActive: {
-    backgroundColor: "rgba(156,163,175, 0.18)",
+    backgroundColor: "rgba(2, 132, 199, 0.18)",
     borderColor: "#EF4444",
   },
   sendBtn: {
@@ -1852,10 +1849,6 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.45)",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
     elevation: 8,
   },
   scrollToBottomBtnPressed: {

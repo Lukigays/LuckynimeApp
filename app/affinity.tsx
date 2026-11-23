@@ -1541,7 +1541,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     color: "#FFFFFF",
-    letterSpacing: 0.2,
+    letterSpacing: 1.5,
   },
   topBarRight: {
     flexDirection: "row",
@@ -1646,10 +1646,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     transform: [{ translateX: -TIER_CREST_RADIUS }, { translateY: -TIER_CREST_RADIUS }],
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.35,
-    shadowRadius: 4,
     elevation: 3,
   },
   tierCrestImg: {
@@ -2094,7 +2090,7 @@ const styles = StyleSheet.create({
   rank1BadgeText: {
     fontSize: 10.5,
     fontWeight: "700",
-    letterSpacing: 0.2,
+    letterSpacing: 0.8,
     color: "#FFFFFF",
   },
   spotlightDuoNames: {
@@ -2126,7 +2122,7 @@ const styles = StyleSheet.create({
   totalAfinitasLabel: {
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.2,
+    letterSpacing: 0.8,
     color: "#FFFFFF",
   },
   totalAfinitasValRow: {

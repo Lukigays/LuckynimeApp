@@ -507,8 +507,8 @@ export default function TopUpScreen() {
       case "reversed":
         return (
           <View style={[styles.badgeBase, styles.badgeReversed]}>
-            <AppIcon name="history" size={13} color="#F5C518" />
-            <Text style={[styles.badgeText, { color: "#F5C518" }]}>Ditarik Kembali (Reversed)</Text>
+            <AppIcon name="history" size={13} color="#F97316" />
+            <Text style={[styles.badgeText, { color: "#F97316" }]}>Ditarik Kembali (Reversed)</Text>
           </View>
         );
       case "kedaluwarsa":
@@ -534,9 +534,9 @@ export default function TopUpScreen() {
       {/* Dark overlay gradasi halus */}
       <LinearGradient
         colors={[
-          "rgba(18,19,22, 0.72)",
-          "rgba(18,19,22, 0.86)",
-          "rgba(18,19,22, 0.96)",
+          "rgba(13, 8, 11, 0.72)",
+          "rgba(13, 8, 11, 0.86)",
+          "rgba(13, 8, 11, 0.96)",
         ]}
         style={StyleSheet.absoluteFillObject}
       />
@@ -1570,7 +1570,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: "rgba(18,19,22, 0.75)",
+    backgroundColor: "rgba(13, 8, 11, 0.75)",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 255, 255, 0.08)",
   },
@@ -1642,7 +1642,7 @@ const styles = StyleSheet.create({
   heroNoticeCard: {
     padding: 16,
     borderRadius: 14,
-    backgroundColor: "rgba(27,29,34, 0.85)",
+    backgroundColor: "rgba(18, 23, 34, 0.85)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     gap: 6,
@@ -1670,7 +1670,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
     color: "#FFFFFF",
-    letterSpacing: 0.2,
+    letterSpacing: 0.6,
   },
   historyShortcutBtn: {
     flexDirection: "row",
@@ -1712,7 +1712,7 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     paddingHorizontal: 12,
     borderRadius: 14,
-    backgroundColor: "rgba(27,29,34, 0.85)",
+    backgroundColor: "rgba(18, 23, 34, 0.85)",
     borderWidth: 1.5,
     borderColor: "rgba(255, 255, 255, 0.12)",
     gap: 6,
@@ -1796,7 +1796,7 @@ const styles = StyleSheet.create({
     gap: 8,
     padding: 12,
     borderRadius: 10,
-    backgroundColor: "rgba(27,29,34, 0.6)",
+    backgroundColor: "rgba(18, 23, 34, 0.6)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.06)",
   },
@@ -1832,7 +1832,7 @@ const styles = StyleSheet.create({
   },
   packageCardSkeleton: {
     borderColor: "rgba(255, 255, 255, 0.06)",
-    backgroundColor: "rgba(27,29,34, 0.5)",
+    backgroundColor: "rgba(18, 23, 34, 0.5)",
   },
   skeletonIconWrap: {
     width: 48,
@@ -1891,7 +1891,7 @@ const styles = StyleSheet.create({
   summaryCard: {
     padding: 16,
     borderRadius: 14,
-    backgroundColor: "rgba(27,29,34, 0.9)",
+    backgroundColor: "rgba(18, 23, 34, 0.9)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.25)",
     gap: 10,
@@ -1998,7 +1998,7 @@ const styles = StyleSheet.create({
     width: "48%",
     padding: 12,
     borderRadius: 12,
-    backgroundColor: "rgba(27,29,34, 0.85)",
+    backgroundColor: "rgba(18, 23, 34, 0.85)",
     borderWidth: 1.5,
     borderColor: "rgba(255, 255, 255, 0.1)",
     gap: 6,
@@ -2060,7 +2060,7 @@ const styles = StyleSheet.create({
   paymentDetailCard: {
     padding: 16,
     borderRadius: 14,
-    backgroundColor: "rgba(27,29,34, 0.9)",
+    backgroundColor: "rgba(18, 23, 34, 0.9)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     gap: 14,
@@ -2257,7 +2257,7 @@ const styles = StyleSheet.create({
   statusMainCard: {
     padding: 18,
     borderRadius: 14,
-    backgroundColor: "rgba(27,29,34, 0.9)",
+    backgroundColor: "rgba(18, 23, 34, 0.9)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     gap: 10,
@@ -2294,14 +2294,14 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239, 68, 68, 0.4)",
   },
   badgeReversed: {
-    backgroundColor: "rgba(245,197,24, 0.15)",
+    backgroundColor: "rgba(249, 115, 22, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(245,197,24, 0.4)",
+    borderColor: "rgba(249, 115, 22, 0.4)",
   },
   badgeMuted: {
-    backgroundColor: "rgba(156,163,175, 0.15)",
+    backgroundColor: "rgba(196, 166, 179, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(156,163,175, 0.4)",
+    borderColor: "rgba(196, 166, 179, 0.4)",
   },
   badgeText: {
     fontFamily: "Nunito-Bold",
@@ -2449,7 +2449,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 32,
     borderRadius: 14,
-    backgroundColor: "rgba(27,29,34, 0.8)",
+    backgroundColor: "rgba(18, 23, 34, 0.8)",
     gap: 8,
   },
   emptyStatusTitle: {

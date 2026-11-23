@@ -115,10 +115,6 @@ const styles = StyleSheet.create({
     padding: 28,
     gap: 14,
     elevation: 16,
-    shadowColor: "#EF4444",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 24,
   },
   iconWrap: {
     width: 52,

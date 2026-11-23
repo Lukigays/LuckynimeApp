@@ -201,10 +201,6 @@ const styles = StyleSheet.create({
     borderColor: "#1B1D22",
     padding: 26,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.6,
-    shadowRadius: 24,
     elevation: 12,
   },
   iconWrapper: {

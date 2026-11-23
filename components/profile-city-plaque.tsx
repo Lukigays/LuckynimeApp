@@ -544,9 +544,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#060C18',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 6,
     elevation: 6,
   },
   emblemWrapperCompact: {
@@ -567,10 +564,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     borderTopWidth: 1.5,
     borderBottomWidth: 1.5,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.7,
-    shadowRadius: 6,
     elevation: 4,
   },
   plaqueBodyCompact: {
@@ -637,10 +630,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     paddingVertical: 2.5,
     maxWidth: 200,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
     elevation: 3,
   },
   clanBadgeInline: {

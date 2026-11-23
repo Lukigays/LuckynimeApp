@@ -227,7 +227,6 @@ export function LelangItemArt({
             width: size,
             height: size,
             borderColor: item.accentColor,
-            shadowColor: item.accentColor,
           },
           style,
         ]}
@@ -251,7 +250,6 @@ export function LelangItemArt({
           width: size,
           height: size,
           borderColor: item.accentColor,
-          shadowColor: item.accentColor,
         },
         style,
       ]}
@@ -339,9 +337,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
     elevation: 4,
     position: "relative",
   },

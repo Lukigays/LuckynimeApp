@@ -297,9 +297,9 @@ export default function InventoryScreen() {
       {/* Dark overlay untuk kontras optimal */}
       <LinearGradient
         colors={[
-          "rgba(18,19,22, 0.72)",
-          "rgba(18,19,22, 0.85)",
-          "rgba(18,19,22, 0.95)",
+          "rgba(13, 8, 11, 0.72)",
+          "rgba(13, 8, 11, 0.85)",
+          "rgba(13, 8, 11, 0.95)",
         ]}
         style={StyleSheet.absoluteFillObject}
       />
@@ -638,7 +638,7 @@ export default function InventoryScreen() {
                     contentFit="cover"
                   />
                   <LinearGradient
-                    colors={["transparent", "rgba(18,19,22, 0.95)"]}
+                    colors={["transparent", "rgba(13, 8, 11, 0.95)"]}
                     style={StyleSheet.absoluteFill}
                   />
                   <View style={styles.gachaBannerOverlayTextWrap}>
@@ -935,7 +935,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 10,
     color: "#4ADE80",
-    letterSpacing: 0.2,
+    letterSpacing: 0.6,
   },
   headerSpacer: {
     width: 32,
@@ -954,7 +954,7 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 14,
     borderRadius: 14,
-    backgroundColor: "rgba(27,29,34, 0.82)",
+    backgroundColor: "rgba(18, 23, 34, 0.82)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.15)",
     ...(Platform.OS === "web"
@@ -1198,7 +1198,7 @@ const styles = StyleSheet.create({
   itemRarityMythic: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#9CA3AF",
+    color: "#EC4899",
     letterSpacing: 0.5,
   },
   itemRarityLegend: {
@@ -1210,7 +1210,7 @@ const styles = StyleSheet.create({
   itemRarityEpic: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#9CA3AF",
+    color: "#A855F7",
     letterSpacing: 0.5,
   },
   itemDesc: {
@@ -1467,16 +1467,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(27,29,34, 0.95)",
+    backgroundColor: "rgba(21, 13, 18, 0.95)",
     borderColor: "rgba(245, 197, 24, 0.5)",
     borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
     elevation: 8,
   },
   toastNoticeText: {

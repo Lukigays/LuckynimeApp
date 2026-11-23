@@ -1279,10 +1279,6 @@ const styles = StyleSheet.create({
   },
   commentCardWithBanner: {
     borderColor: "rgba(255, 255, 255, 0.14)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
     elevation: 4,
   },
   commentBannerOverlay: {

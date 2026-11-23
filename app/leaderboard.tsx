@@ -47,7 +47,7 @@ import {
 // ── Medal colors & glow ─────────────────────────────────────────────────────
 const GOLD = "#F5C518";
 const SILVER = "#F3F4F6";
-const BRONZE = "#F5C518";
+const BRONZE = "#F97316";
 
 function rankColor(rank: number): string {
   if (rank === 1) return GOLD;
@@ -68,10 +68,10 @@ const NAME_COLORS = [
   "#FFFFFF", // Cyan Sky
   "#4ADE80", // Emerald Green
   "#EF4444", // Rose Red
-  "#9CA3AF", // Purple
+  "#A855F7", // Purple
   "#F5C518", // Amber Gold
   "#2DD4BF", // Teal
-  "#9CA3AF", // Pink
+  "#EC4899", // Pink
   "#FFFFFF", // Blue
 ];
 
@@ -97,14 +97,14 @@ function getTierPillColors(tierName: string) {
       };
     case "eternal":
       return {
-        bg: "rgba(156,163,175, 0.16)",
-        border: "rgba(156,163,175, 0.45)",
+        bg: "rgba(168, 85, 247, 0.16)",
+        border: "rgba(168, 85, 247, 0.45)",
         text: "#D8B4FE",
       };
     case "celestial":
       return {
-        bg: "rgba(245,197,24, 0.16)",
-        border: "rgba(245,197,24, 0.45)",
+        bg: "rgba(251, 146, 60, 0.16)",
+        border: "rgba(251, 146, 60, 0.45)",
         text: "#FDBA74",
       };
     case "ruby star":
@@ -115,8 +115,8 @@ function getTierPillColors(tierName: string) {
       };
     case "amethyst":
       return {
-        bg: "rgba(156,163,175, 0.16)",
-        border: "rgba(156,163,175, 0.45)",
+        bg: "rgba(192, 132, 252, 0.16)",
+        border: "rgba(192, 132, 252, 0.45)",
         text: "#E9D5FF",
       };
     case "sapphire":
@@ -139,20 +139,20 @@ function getTierPillColors(tierName: string) {
       };
     case "silver":
       return {
-        bg: "rgba(243,244,246, 0.16)",
-        border: "rgba(243,244,246, 0.45)",
+        bg: "rgba(237, 224, 229, 0.16)",
+        border: "rgba(237, 224, 229, 0.45)",
         text: "#F3F4F6",
       };
     case "bronze":
       return {
-        bg: "rgba(245,197,24, 0.16)",
-        border: "rgba(245,197,24, 0.45)",
+        bg: "rgba(217, 119, 6, 0.16)",
+        border: "rgba(217, 119, 6, 0.45)",
         text: "#FDBA74",
       };
     default:
       return {
-        bg: "rgba(156,163,175, 0.16)",
-        border: "rgba(156,163,175, 0.45)",
+        bg: "rgba(196, 166, 179, 0.16)",
+        border: "rgba(196, 166, 179, 0.45)",
         text: "#F3F4F6",
       };
   }
@@ -1090,10 +1090,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 2,
     borderColor: "#121316",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
     elevation: 4,
     zIndex: 10,
   },
@@ -1156,6 +1152,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 8,
     letterSpacing: 0.4,
+    textTransform: "uppercase",
   },
   podiumLevelPill: {
     flexDirection: "row",
@@ -1225,6 +1222,7 @@ const styles = StyleSheet.create({
     color: "#6B7280",
     fontWeight: "700",
     letterSpacing: 0.5,
+    textTransform: "uppercase",
   },
 
   // Leader row
@@ -1299,7 +1297,8 @@ const styles = StyleSheet.create({
   rankTierText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    letterSpacing: 0.2,
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
   },
   levelPill: {
     flexDirection: "row",
@@ -1448,17 +1447,17 @@ const styles = StyleSheet.create({
     color: "#10B981",
   },
   sheetTierPill: {
-    backgroundColor: "rgba(156,163,175, 0.16)",
+    backgroundColor: "rgba(168, 85, 247, 0.16)",
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: "rgba(156,163,175, 0.3)",
+    borderColor: "rgba(168, 85, 247, 0.3)",
   },
   sheetTierPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#9CA3AF",
+    color: "#C084FC",
     letterSpacing: 0.5,
   },
   sheetMemberNumberText: {

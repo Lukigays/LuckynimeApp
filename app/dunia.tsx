@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: "#9CA3AF",
+    backgroundColor: "#A855F7",
   },
   syncText: {
     fontFamily: "Nunito-SemiBold",

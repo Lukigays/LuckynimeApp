@@ -192,10 +192,6 @@ const styles = StyleSheet.create({
     gap: 8,
     ...(Platform.OS !== "web"
       ? {
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 6 },
-          shadowOpacity: 0.45,
-          shadowRadius: 16,
           elevation: 12,
         }
       : ({

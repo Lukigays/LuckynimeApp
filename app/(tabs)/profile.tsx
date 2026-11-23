@@ -2341,10 +2341,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 12,
     gap: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
     elevation: 3,
     ...(Platform.OS === "web"
       ? ({
@@ -2468,10 +2464,6 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.11)",
     padding: 16,
     marginBottom: 18,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
     elevation: 3,
     ...(Platform.OS === "web"
       ? ({
@@ -2693,10 +2685,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.3)",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
     elevation: 8,
   },
   toastText: {
@@ -3004,10 +2992,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    shadowColor: "transparent",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
     elevation: 0,
     ...(Platform.OS === "web"
       ? ({
@@ -3038,10 +3022,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
     elevation: 3,
     ...(Platform.OS === "web"
       ? ({
@@ -3244,10 +3224,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.035)",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.07)",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
     elevation: 4,
   },
   bookmarkImageWrap: {

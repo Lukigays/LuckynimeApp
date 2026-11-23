@@ -681,9 +681,6 @@ const styles = StyleSheet.create({
   },
   sendBtnActive: {
     backgroundColor: "#FFFFFF",
-    shadowColor: "#FFFFFF",
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
     elevation: 4,
   },
   sendBtnInactive: {
