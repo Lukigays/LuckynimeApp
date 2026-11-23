@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AppIcon } from "@/components/app-icon";
@@ -19,19 +20,19 @@ import { getLeaderboard, formatXp, type LeaderboardEntry } from "@/lib/leaderboa
 import { supabase } from "@/lib/supabase";
 import { hapticLight } from "@/lib/haptics";
 
-const GOLD = "#F59E0B";
-const SILVER = "#CBD5E1";
-const BRONZE = "#F97316";
+const GOLD = "#FBBF24";
+const SILVER = "#F1D4DE";
+const BRONZE = "#FB7185";
 
 const NAME_COLORS = [
-  "#38BDF8", // Cyan Sky
-  "#4ADE80", // Emerald Green
-  "#F43F5E", // Rose Red
-  "#A855F7", // Purple
-  "#F59E0B", // Amber Gold
-  "#2DD4BF", // Teal
-  "#EC4899", // Pink
-  "#60A5FA", // Blue
+  "#FB7185",
+  "#FBBF24",
+  "#F43F5E",
+  "#C084FC",
+  "#34D399",
+  "#FDA4AF",
+  "#F472B6",
+  "#F59E0B",
 ];
 
 function getUsernameColor(name: string): string {
@@ -47,7 +48,7 @@ function rankColor(rank: number): string {
   if (rank === 1) return GOLD;
   if (rank === 2) return SILVER;
   if (rank === 3) return BRONZE;
-  return "#64748B";
+  return "#8F727F";
 }
 
 function crownIcon(rank: number): string | null {
@@ -57,11 +58,10 @@ function crownIcon(rank: number): string | null {
   return null;
 }
 
-// ── Podium Item Mini Card ───────────────────────────────────────────────────
 const HomePodiumItem = React.memo(function HomePodiumItem({ entry }: { entry: LeaderboardEntry }) {
   const isFirst = entry.rank === 1;
   const clr = rankColor(entry.rank);
-  const avatarSize = isFirst ? 52 : 42;
+  const avatarSize = isFirst ? 54 : 42;
   const { currentTier, isInfinity } = getTierForLevel(entry.level, (entry as any).role);
   const nameColor = useMemo(() => getUsernameColor(entry.displayName), [entry.displayName]);
 
@@ -72,14 +72,12 @@ const HomePodiumItem = React.memo(function HomePodiumItem({ entry }: { entry: Le
         isFirst ? styles.podiumItemFirst : styles.podiumItemOther,
       ]}
     >
-      {/* Crown on top */}
       <View style={styles.crownWrapper}>
         <Text style={[styles.crownText, isFirst && styles.crownTextFirst]}>
           {crownIcon(entry.rank)}
         </Text>
       </View>
 
-      {/* Avatar + Border + Rank Badge menempel di kanan bawah */}
       <View style={styles.avatarContainer}>
         <BorderAvatar
           avatarUrl={entry.avatarUrl}
@@ -88,7 +86,6 @@ const HomePodiumItem = React.memo(function HomePodiumItem({ entry }: { entry: Le
           avatarSize={avatarSize}
         />
 
-        {/* Rank Number Badge (1, 2, 3) */}
         <View
           style={[
             styles.nearAvatarBadge,
@@ -103,7 +100,6 @@ const HomePodiumItem = React.memo(function HomePodiumItem({ entry }: { entry: Le
         </View>
       </View>
 
-      {/* User Name & Verification Badge */}
       <View style={styles.nameRow}>
         <Text style={[styles.userName, { color: nameColor }]} numberOfLines={1}>
           {entry.displayName}
@@ -113,21 +109,16 @@ const HomePodiumItem = React.memo(function HomePodiumItem({ entry }: { entry: Le
 
       <SystemRoleBadge role={entry.role} compact />
 
-      {/* Plakat Kota & Klan (DRAKONIA / GELANDANGAN) */}
       <View style={styles.homeCityClanRow}>
-        <ProfileCityPlaque
-          userId={entry.userId}
-          podium
-        />
+        <ProfileCityPlaque userId={entry.userId} podium />
       </View>
 
-      {/* Level Tier Badge with Official Tier Icon */}
       <View
         style={[
           styles.tierPill,
           {
-            borderColor: `${currentTier.color}35`,
-            backgroundColor: `${currentTier.color}15`,
+            borderColor: `${currentTier.color}40`,
+            backgroundColor: `${currentTier.color}16`,
           },
         ]}
       >
@@ -142,7 +133,6 @@ const HomePodiumItem = React.memo(function HomePodiumItem({ entry }: { entry: Le
         </Text>
       </View>
 
-      {/* XP Counter */}
       <Text style={[styles.xpText, { color: clr }]}>
         {formatXp(entry.xpGained)}
       </Text>
@@ -150,7 +140,6 @@ const HomePodiumItem = React.memo(function HomePodiumItem({ entry }: { entry: Le
   );
 });
 
-// ── Main Home Top Leaderboard Card ──────────────────────────────────────────
 export function HomeTopLeaderboard() {
   const queryClient = useQueryClient();
 
@@ -161,7 +150,6 @@ export function HomeTopLeaderboard() {
     retry: 2,
   });
 
-  // Realtime listener Supabase untuk update otomatis seketika
   useEffect(() => {
     let channel: ReturnType<typeof supabase.channel> | null = null;
     const channelName = `home-top-leaderboard-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -197,12 +185,9 @@ export function HomeTopLeaderboard() {
     };
   }, [queryClient]);
 
-  const entries = useMemo(() => {
-    return data ?? [];
-  }, [data]);
+  const entries = useMemo(() => data ?? [], [data]);
   const top3 = entries.slice(0, 3);
 
-  // Urutan podium: 2nd (kiri) | 1st (tengah lebih tinggi) | 3rd (kanan)
   const podiumOrder =
     top3.length >= 3
       ? [top3[1], top3[0], top3[2]]
@@ -219,44 +204,50 @@ export function HomeTopLeaderboard() {
 
   return (
     <View style={styles.cardContainer}>
-      {/* Header Row */}
+      <LinearGradient
+        colors={["rgba(244, 63, 94, 0.14)", "rgba(251, 191, 36, 0.04)", "rgba(25, 16, 22, 0.96)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+
       <View style={styles.headerRow}>
         <View style={styles.headerLeft}>
-          <Image
-            source={{ uri: "https://i.ibb.co.com/ccJmQCfx/download-7-removebg-preview.png" }}
-            style={styles.leaderboardIcon}
-            contentFit="contain"
-          />
-          <Text style={styles.headerTitle}>TOP LEADERBOARD</Text>
-          <View style={styles.livePulseDot} />
+          <View style={styles.trophyBadge}>
+            <AppIcon name="trophy" size={14} color="#FBBF24" />
+          </View>
+          <View>
+            <Text style={styles.headerEyebrow}>HALL OF FAME</Text>
+            <View style={styles.titleLine}>
+              <Text style={styles.headerTitle}>Top Sultan & Sepuh</Text>
+              <View style={styles.livePulseDot} />
+            </View>
+          </View>
         </View>
 
         <Pressable
           onPress={handleOpenLeaderboard}
-          style={({ pressed }) => [styles.seeAllBtn, pressed && { opacity: 0.7 }]}
+          style={({ pressed }) => [styles.seeAllBtn, pressed && { opacity: 0.75 }]}
           hitSlop={8}
         >
-          <Text style={styles.seeAllText}>Lihat Semua &gt;</Text>
+          <Text style={styles.seeAllText}>Peringkat</Text>
+          <AppIcon name="arrow-right" size={12} color="#FB7185" />
         </Pressable>
       </View>
 
-      {/* Body: Podium or Empty */}
       {isLoading ? (
         <View style={styles.loadingBox}>
-          <ActivityIndicator size="small" color="#38BDF8" />
+          <ActivityIndicator size="small" color="#F43F5E" />
         </View>
       ) : top3.length === 0 ? (
         <View style={styles.emptyBox}>
-          <Text style={styles.emptyTitle}>Belum ada data Top Leaderboard.</Text>
+          <Text style={styles.emptyTitle}>Panggung Kehormatan Menunggu</Text>
           <Text style={styles.emptySubtitle}>
-            Papan peringkat akan segera diperbarui saat pengguna mulai beraktivitas!
+            Tonton anime & raih XP untuk menjadi pemuncak Hall of Fame!
           </Text>
         </View>
       ) : (
-        <Pressable
-          onPress={handleOpenLeaderboard}
-          style={styles.podiumRow}
-        >
+        <Pressable onPress={handleOpenLeaderboard} style={styles.podiumRow}>
           {podiumOrder.map((entry, idx) =>
             entry ? (
               <HomePodiumItem key={entry.userId} entry={entry} />
@@ -273,12 +264,13 @@ export function HomeTopLeaderboard() {
 const styles = StyleSheet.create({
   cardContainer: {
     width: "100%",
-    borderRadius: 20,
-    backgroundColor: "rgba(18, 24, 38, 0.7)",
+    borderRadius: 22,
+    backgroundColor: "#191016",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-    padding: 14,
-    gap: 8,
+    borderColor: "rgba(251, 113, 133, 0.22)",
+    padding: 15,
+    gap: 10,
+    overflow: "hidden",
     ...(Platform.OS === "web"
       ? ({
           backdropFilter: "blur(16px)",
@@ -286,100 +278,129 @@ const styles = StyleSheet.create({
         } as any)
       : {}),
   },
-
-  // Header
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 4,
   },
   headerLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 7,
+    gap: 9,
   },
-  leaderboardIcon: {
-    width: 20,
-    height: 20,
+  trophyBadge: {
+    width: 34,
+    height: 34,
+    borderRadius: 11,
+    backgroundColor: "rgba(251, 191, 36, 0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 191, 36, 0.34)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerEyebrow: {
+    fontFamily: "SpaceGrotesk-Bold",
+    color: "#FB7185",
+    fontSize: 9.5,
+    letterSpacing: 1.1,
+  },
+  titleLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
   headerTitle: {
     fontFamily: "Nunito-ExtraBold",
-    color: "#FFFFFF",
-    fontSize: 13,
-    letterSpacing: 0.4,
+    color: "#FFF5F7",
+    fontSize: 14.5,
+    letterSpacing: -0.2,
   },
   livePulseDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "#10B981",
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: "#F43F5E",
   },
   seeAllBtn: {
-    paddingVertical: 2,
-    paddingHorizontal: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+    borderRadius: 99,
+    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.26)",
   },
   seeAllText: {
     fontFamily: "Nunito-Bold",
-    color: "#38BDF8",
-    fontSize: 11,
+    color: "#FB7185",
+    fontSize: 11.5,
   },
-
-  // Podium Container
+  loadingBox: {
+    height: 120,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emptyBox: {
+    paddingVertical: 20,
+    alignItems: "center",
+    gap: 4,
+  },
+  emptyTitle: {
+    fontFamily: "Nunito-Bold",
+    color: "#FFF5F7",
+    fontSize: 13,
+  },
+  emptySubtitle: {
+    fontFamily: "Nunito-Regular",
+    color: "#9A7D8A",
+    fontSize: 11.5,
+    textAlign: "center",
+  },
   podiumRow: {
     flexDirection: "row",
     alignItems: "flex-end",
-    justifyContent: "center",
+    justifyContent: "space-between",
     gap: 8,
     paddingTop: 4,
   },
   podiumItem: {
     flex: 1,
     alignItems: "center",
-    paddingHorizontal: 4,
-    paddingBottom: 10,
-    gap: 3,
+    borderRadius: 16,
+    paddingHorizontal: 6,
+    paddingVertical: 10,
+    gap: 4,
   },
   podiumItemFirst: {
-    paddingTop: 4,
-    minHeight: 185,
-    justifyContent: "flex-end",
-    zIndex: 2,
+    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 191, 36, 0.36)",
+    paddingVertical: 12,
   },
   podiumItemOther: {
-    paddingTop: 10,
-    minHeight: 170,
-    justifyContent: "flex-end",
+    backgroundColor: "rgba(255, 245, 247, 0.035)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.14)",
   },
   podiumItemEmpty: {
     flex: 1,
   },
-  homeCityClanRow: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 2,
-    maxWidth: "100%",
-  },
-
-  // Crown
   crownWrapper: {
-    height: 20,
+    minHeight: 18,
     alignItems: "center",
     justifyContent: "center",
   },
   crownText: {
-    fontSize: 15,
+    fontSize: 13,
   },
   crownTextFirst: {
-    fontSize: 18,
+    fontSize: 16,
   },
-
-  // Avatar + Rank Badge
   avatarContainer: {
     position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 2,
+    marginVertical: 2,
   },
   nearAvatarBadge: {
     position: "absolute",
@@ -389,79 +410,55 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1.5,
-    borderColor: "#0B0E14",
-    elevation: 4,
-    zIndex: 10,
+    borderColor: "#191016",
   },
   nearAvatarText: {
+    fontFamily: "SpaceGrotesk-Bold",
     fontSize: 9.5,
+    color: "#0D080B",
     fontWeight: "900",
-    color: "#0B0E14",
   },
-
-  // Name & VIP
   nameRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 3,
+    maxWidth: "100%",
     marginTop: 2,
-    maxWidth: "92%",
   },
   userName: {
-    fontSize: 11,
-    fontWeight: "800",
-    color: "#F1F5F9",
-    textAlign: "center",
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 11.5,
+    flexShrink: 1,
   },
-
-  // Tier Badge
+  homeCityClanRow: {
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 16,
+  },
   tierPill: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 3,
-    borderRadius: 10,
-    paddingHorizontal: 5,
-    paddingVertical: 1.5,
+    gap: 4,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 99,
     borderWidth: 1,
+    marginTop: 1,
   },
   tierIcon: {
     width: 12,
     height: 12,
   },
   tierText: {
-    fontSize: 9,
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 9.5,
     fontWeight: "800",
   },
-
-  // XP
   xpText: {
-    fontSize: 11,
-    fontWeight: "900",
-    letterSpacing: 0.2,
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 10.5,
+    fontWeight: "700",
     marginTop: 1,
-  },
-
-  // Loading & Empty
-  loadingBox: {
-    height: 100,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  emptyBox: {
-    paddingVertical: 14,
-    alignItems: "center",
-    gap: 4,
-  },
-  emptyTitle: {
-    fontFamily: "Nunito-Bold",
-    color: "#CBD5E1",
-    fontSize: 12,
-    textAlign: "center",
-  },
-  emptySubtitle: {
-    fontFamily: "Nunito-Regular",
-    color: "#64748B",
-    fontSize: 11,
-    textAlign: "center",
   },
 });

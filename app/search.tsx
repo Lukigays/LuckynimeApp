@@ -311,7 +311,7 @@ export default function SearchScreen() {
         </Pressable>
 
         <View style={styles.searchInputWrap}>
-          <AppIcon name="magnify" size={18} color="#38BDF8" />
+          <AppIcon name="magnify" size={18} color="#FB7185" />
           <TextInput
             accessibilityRole="search"
             accessibilityLabel="Cari anime"
@@ -324,7 +324,7 @@ export default function SearchScreen() {
                 ? `Cari dalam ${categoryLabel}...`
                 : "Cari judul anime, genre, karakter..."
             }
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#8F727F"
             style={styles.input}
             returnKeyType="search"
           />
@@ -339,7 +339,7 @@ export default function SearchScreen() {
               hitSlop={8}
               style={styles.clearInputIconBtn}
             >
-              <AppIcon name="close-circle" size={16} color="#94A3B8" />
+              <AppIcon name="close-circle" size={16} color="#C4A6B3" />
             </Pressable>
           ) : null}
         </View>
@@ -361,7 +361,7 @@ export default function SearchScreen() {
           <AppIcon
             name="tune-variant"
             size={18}
-            color={activeFilterCount ? "#EF4444" : "#94A3B8"}
+            color={activeFilterCount ? "#FFFFFF" : "#FB7185"}
           />
           {activeFilterCount ? (
             <View style={styles.filterBadge}>
@@ -405,7 +405,7 @@ export default function SearchScreen() {
                       }}
                       style={styles.recentItemClickable}
                     >
-                      <AppIcon name="clock-outline" size={14} color="#64748B" />
+                      <AppIcon name="clock-outline" size={14} color="#8F727F" />
                       <Text numberOfLines={1} style={styles.recentTermText}>
                         {entry.term}
                       </Text>
@@ -420,7 +420,7 @@ export default function SearchScreen() {
                       hitSlop={8}
                       style={styles.recentRemoveBtn}
                     >
-                      <AppIcon name="close" size={13} color="#64748B" />
+                      <AppIcon name="close" size={13} color="#8F727F" />
                     </Pressable>
                   </View>
                 ))}
@@ -670,29 +670,29 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   header: {
-    minHeight: 64,
+    minHeight: 66,
     paddingHorizontal: 16,
     paddingTop: Platform.OS === "android" ? 12 : 8,
     paddingBottom: 12,
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.06)",
+    borderBottomColor: "rgba(251, 113, 133, 0.14)",
   },
   backBtn: {
     width: 42,
     height: 42,
-    borderRadius: 21,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    backgroundColor: "#180F15",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(251, 113, 133, 0.22)",
   },
   searchInputWrap: {
     flex: 1,
@@ -701,16 +701,16 @@ const styles = StyleSheet.create({
     gap: 10,
     minHeight: 44,
     paddingHorizontal: 14,
-    borderRadius: 22,
-    backgroundColor: "rgba(255, 255, 255, 0.055)",
+    borderRadius: 15,
+    backgroundColor: "#180F15",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderColor: "rgba(251, 113, 133, 0.24)",
     overflow: "hidden",
   },
   input: {
     flex: 1,
     minHeight: 44,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
     fontSize: 14,
     fontFamily: "Nunito-SemiBold",
     ...(Platform.OS === "web" ? ({ outlineStyle: "none" } as any) : {}),
@@ -722,15 +722,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    backgroundColor: "rgba(239, 68, 68, 0.15)",
+    paddingHorizontal: 9,
+    paddingVertical: 3.5,
+    borderRadius: 99,
+    backgroundColor: "rgba(244, 63, 94, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(239, 68, 68, 0.3)",
+    borderColor: "rgba(251, 113, 133, 0.35)",
   },
   activeCategoryText: {
-    color: "#EF4444",
+    color: "#FB7185",
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.3,
@@ -738,33 +738,33 @@ const styles = StyleSheet.create({
   filterBtn: {
     width: 42,
     height: 42,
-    borderRadius: 21,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderRadius: 14,
+    backgroundColor: "#180F15",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(251, 113, 133, 0.22)",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
   },
   filterBtnActive: {
-    backgroundColor: "rgba(239, 68, 68, 0.15)",
-    borderColor: "rgba(239, 68, 68, 0.35)",
+    backgroundColor: "#E11D48",
+    borderColor: "#FDA4AF",
   },
   filterBadge: {
     position: "absolute",
-    top: 2,
-    right: 2,
-    minWidth: 16,
-    height: 16,
+    top: -3,
+    right: -3,
+    minWidth: 17,
+    height: 17,
     paddingHorizontal: 4,
-    borderRadius: 8,
-    backgroundColor: "#EF4444",
+    borderRadius: 9,
+    backgroundColor: "#FBBF24",
     alignItems: "center",
     justifyContent: "center",
   },
   filterBadgeText: {
-    color: "#FFFFFF",
-    fontSize: 9,
+    color: "#0D080B",
+    fontSize: 9.5,
     fontWeight: "900",
   },
 
@@ -789,9 +789,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sectionTitle: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    fontFamily: "Nunito-Bold",
+    color: "#FFF5F7",
+    fontSize: 16,
+    fontFamily: "Nunito-ExtraBold",
     letterSpacing: -0.2,
   },
   clearAllBtn: {
@@ -801,21 +801,23 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   clearAllText: {
-    color: "#EF4444",
+    color: "#FB7185",
     fontSize: 12,
     fontFamily: "Nunito-Bold",
   },
 
-  // Recent searches list (clean, no heavy card background)
   recentGrid: {
-    gap: 0,
+    gap: 6,
   },
   recentItemCard: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.05)",
+    paddingHorizontal: 12,
+    borderRadius: 13,
+    backgroundColor: "#180F15",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.14)",
     gap: 10,
   },
   recentItemClickable: {
@@ -826,22 +828,21 @@ const styles = StyleSheet.create({
   },
   recentTermText: {
     flex: 1,
-    color: "#F1F5F9",
+    color: "#FFF5F7",
     fontSize: 13.5,
     fontFamily: "Nunito-Bold",
   },
   recentTimeText: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 11,
     fontFamily: "Nunito-SemiBold",
   },
   recentRemoveBtn: {
     padding: 4,
-    borderRadius: 6,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderRadius: 8,
+    backgroundColor: "rgba(244, 63, 94, 0.12)",
   },
 
-  // Genre pills
   genrePillsWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -853,40 +854,39 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.045)",
+    borderRadius: 99,
+    backgroundColor: "#180F15",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(251, 113, 133, 0.18)",
   },
   genrePillPressed: {
-    backgroundColor: "rgba(239, 68, 68, 0.15)",
-    borderColor: "rgba(239, 68, 68, 0.35)",
+    backgroundColor: "#F43F5E",
+    borderColor: "#FDA4AF",
     transform: [{ scale: 0.98 }],
   },
   genrePillText: {
-    color: "#E2E8F0",
+    color: "#FFF5F7",
     fontSize: 12.5,
     fontFamily: "Nunito-Bold",
   },
 
-  // Trending rail
   trendingRailContent: {
     gap: 12,
     paddingVertical: 2,
   },
   trendingCard: {
-    width: 112,
+    width: 118,
     gap: 6,
   },
   trendingPoster: {
-    width: 112,
-    height: 156,
-    borderRadius: 12,
+    width: 118,
+    height: 166,
+    borderRadius: 15,
     overflow: "hidden",
-    backgroundColor: "#161B26",
+    backgroundColor: "#180F15",
     position: "relative",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(251, 113, 133, 0.18)",
   },
   trendingScoreBadge: {
     position: "absolute",
@@ -895,26 +895,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(11, 14, 23, 0.85)",
-    paddingHorizontal: 6,
+    backgroundColor: "rgba(13, 8, 11, 0.84)",
+    paddingHorizontal: 6.5,
     paddingVertical: 2.5,
-    borderRadius: 6,
+    borderRadius: 99,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.12)",
+    borderColor: "rgba(251, 191, 36, 0.36)",
   },
   trendingScoreText: {
-    color: "#F5C518",
+    color: "#FBBF24",
     fontSize: 10,
     fontFamily: "Nunito-Bold",
   },
   trendingCardTitle: {
-    color: "#FFFFFF",
-    fontSize: 12,
+    color: "#FFF5F7",
+    fontSize: 12.5,
     fontFamily: "Nunito-Bold",
     lineHeight: 16,
   },
   trendingCardMeta: {
-    color: "#64748B",
+    color: "#9A7D8A",
     fontSize: 11,
     fontFamily: "Nunito-SemiBold",
   },
@@ -936,21 +936,21 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   resultsCountBadge: {
-    backgroundColor: "rgba(239, 68, 68, 0.15)",
+    backgroundColor: "rgba(244, 63, 94, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(239, 68, 68, 0.3)",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
+    borderColor: "rgba(251, 113, 133, 0.34)",
+    paddingHorizontal: 9,
+    paddingVertical: 3.5,
+    borderRadius: 99,
   },
   resultsCountText: {
-    color: "#EF4444",
+    color: "#FB7185",
     fontSize: 10,
     fontWeight: "900",
     letterSpacing: 0.5,
   },
   resultsCategoryText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 12,
     fontFamily: "Nunito-Bold",
   },
@@ -982,22 +982,22 @@ const styles = StyleSheet.create({
     minHeight: 46,
     marginTop: 12,
     marginBottom: 8,
-    borderRadius: 14,
+    borderRadius: 15,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderColor: "rgba(251, 113, 133, 0.28)",
+    backgroundColor: "rgba(244, 63, 94, 0.14)",
     alignItems: "center",
     justifyContent: "center",
   },
   loadMoreText: {
-    color: "#94A3B8",
+    color: "#FB7185",
     fontSize: 12,
     fontWeight: "800",
     letterSpacing: 0.6,
   },
 
   btnPressed: {
-    opacity: 0.75,
-    transform: [{ scale: 0.97 }],
+    opacity: 0.78,
+    transform: [{ scale: 0.975 }],
   },
 });

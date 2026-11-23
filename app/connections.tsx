@@ -211,7 +211,7 @@ export default function ConnectionsScreen() {
             }}
             style={({ pressed }) => [styles.headerBtn, pressed && styles.btnPressed]}
           >
-            <AppIcon name="chat" size={21} color="#38BDF8" />
+            <AppIcon name="chat" size={21} color="#FB7185" />
           </Pressable>
 
           {/* Info Modal Button */}
@@ -224,7 +224,7 @@ export default function ConnectionsScreen() {
             }}
             style={({ pressed }) => [styles.headerBtn, pressed && styles.btnPressed]}
           >
-            <AppIcon name="information" size={21} color="#CBD5E1" />
+            <AppIcon name="information" size={21} color="#EDE0E5" />
           </Pressable>
 
           {/* Search Toggle Button */}
@@ -238,7 +238,7 @@ export default function ConnectionsScreen() {
             }}
             style={({ pressed }) => [styles.headerBtn, pressed && styles.btnPressed]}
           >
-            <AppIcon name={isSearchOpen ? "close" : "magnify"} size={21} color="#CBD5E1" />
+            <AppIcon name={isSearchOpen ? "close" : "magnify"} size={21} color="#EDE0E5" />
           </Pressable>
 
           {/* Add Friend Button */}
@@ -251,7 +251,7 @@ export default function ConnectionsScreen() {
             }}
             style={({ pressed }) => [styles.headerBtn, pressed && styles.btnPressed]}
           >
-            <AppIcon name="account-plus" size={22} color="#CBD5E1" />
+            <AppIcon name="account-plus" size={22} color="#EDE0E5" />
           </Pressable>
         </View>
       </View>
@@ -260,19 +260,19 @@ export default function ConnectionsScreen() {
       {isSearchOpen && (
         <View style={styles.searchBarWrap}>
           <View style={styles.searchBarInner}>
-            <AppIcon name="magnify" size={17} color="#64748B" />
+            <AppIcon name="magnify" size={17} color="#8F727F" />
             <TextInput
               value={searchFilter}
               onChangeText={setSearchFilter}
               placeholder="Cari teman berdasarkan nama atau ID..."
-              placeholderTextColor="#64748B"
+              placeholderTextColor="#8F727F"
               style={styles.searchInput}
               autoFocus
               returnKeyType="search"
             />
             {searchFilter ? (
               <Pressable onPress={() => setSearchFilter("")}>
-                <AppIcon name="close-circle" size={16} color="#94A3B8" />
+                <AppIcon name="close-circle" size={16} color="#C4A6B3" />
               </Pressable>
             ) : null}
           </View>
@@ -326,7 +326,7 @@ export default function ConnectionsScreen() {
         <FlatList
           data={filteredFriends}
           keyExtractor={(item) => item.id}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#38BDF8" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FB7185" />}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => {
             const tierInfo = getTierForLevel(item.level || 1, item.role);
@@ -399,14 +399,14 @@ export default function ConnectionsScreen() {
                   }}
                   style={({ pressed }) => [styles.chatIconBtn, pressed && styles.btnPressed]}
                 >
-                  <AppIcon name="comment-text" size={22} color="#38BDF8" />
+                  <AppIcon name="comment-text" size={22} color="#FB7185" />
                 </Pressable>
               </Pressable>
             );
           }}
           ListEmptyComponent={
             <View style={styles.emptyWrap}>
-              <AppIcon name="account-group-outline" size={48} color="#475569" />
+              <AppIcon name="account-group-outline" size={48} color="#785D6A" />
               <Text style={styles.emptyTitle}>Belum ada teman terhubung</Text>
               <Text style={styles.emptySubtitle}>
                 Cari teman menggunakan tombol tambah di kanan atas untuk mulai berinteraksi!
@@ -419,7 +419,7 @@ export default function ConnectionsScreen() {
         <FlatList
           data={requests}
           keyExtractor={(item) => item.id}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#38BDF8" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FB7185" />}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => {
             const tierInfo = getTierForLevel(item.level || 1, item.role);
@@ -514,7 +514,7 @@ export default function ConnectionsScreen() {
         }}
         style={({ pressed }) => [styles.floatingCameraBtn, pressed && styles.btnPressed]}
       >
-        <AppIcon name="account-plus" size={20} color="#38BDF8" />
+        <AppIcon name="account-plus" size={20} color="#FB7185" />
       </Pressable>
 
       {/* ─── 5. MODAL: INFO CHAT PRIVATE ─── */}
@@ -559,7 +559,7 @@ export default function ConnectionsScreen() {
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 placeholder="User ID / Username / #Nomor"
-                placeholderTextColor="#64748B"
+                placeholderTextColor="#8F727F"
                 style={styles.searchModalInput}
                 autoFocus
                 returnKeyType="search"
@@ -668,7 +668,7 @@ export default function ConnectionsScreen() {
             ListEmptyComponent={
               searching ? (
                 <View style={styles.emptyWrap}>
-                  <ActivityIndicator size="small" color="#38BDF8" />
+                  <ActivityIndicator size="small" color="#FB7185" />
                   <Text style={styles.emptySubtitle}>Mencari pengguna...</Text>
                 </View>
               ) : hasSearched && searchQuery.trim().length > 0 ? (
@@ -680,7 +680,7 @@ export default function ConnectionsScreen() {
                 </View>
               ) : (
                 <View style={styles.emptyWrap}>
-                  <AppIcon name="account-search-outline" size={42} color="#475569" />
+                  <AppIcon name="account-search-outline" size={42} color="#785D6A" />
                   <Text style={styles.emptyTitle}>Cari Berdasarkan Nomor / Nama</Text>
                   <Text style={styles.emptySubtitle}>
                     Ketik nomor member (misal 0001, 0005) atau username di kolom pencarian di atas.
@@ -769,7 +769,7 @@ export default function ConnectionsScreen() {
               }}
               style={({ pressed }) => [styles.sheetActionRow, pressed && styles.btnPressed]}
             >
-              <AppIcon name="account" size={20} color="#CBD5E1" />
+              <AppIcon name="account" size={20} color="#EDE0E5" />
               <Text style={styles.sheetActionText}>Lihat Profil</Text>
             </Pressable>
 
@@ -819,7 +819,7 @@ export default function ConnectionsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   btnPressed: {
     opacity: 0.8,
@@ -865,7 +865,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -896,7 +896,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   tabTextActive: {
     color: "#FFFFFF",
@@ -1002,7 +1002,7 @@ const styles = StyleSheet.create({
   memberNumberText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
   },
   chatIconBtn: {
     padding: 8,
@@ -1013,7 +1013,7 @@ const styles = StyleSheet.create({
   requestCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(30, 41, 59, 0.75)",
+    backgroundColor: "rgba(35, 22, 31, 0.75)",
     borderRadius: 16,
     padding: 12,
     borderWidth: 1,
@@ -1069,7 +1069,7 @@ const styles = StyleSheet.create({
   rejectBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     letterSpacing: 0.1,
   },
 
@@ -1084,7 +1084,7 @@ const styles = StyleSheet.create({
   loadingText: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   emptyWrap: {
     alignItems: "center",
@@ -1102,7 +1102,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#64748B",
+    color: "#8F727F",
     textAlign: "center",
     lineHeight: 18,
   },
@@ -1115,9 +1115,9 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.4)",
+    borderColor: "rgba(251, 113, 133, 0.4)",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -1153,7 +1153,7 @@ const styles = StyleSheet.create({
   infoModalBody: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     lineHeight: 19,
   },
   infoModalBtn: {
@@ -1164,13 +1164,13 @@ const styles = StyleSheet.create({
   infoModalBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // ─── CARI TEMAN MODAL SCREEN ───
   searchModalContainer: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   searchModalHeader: {
     flexDirection: "row",
@@ -1188,7 +1188,7 @@ const styles = StyleSheet.create({
   },
   searchModalInputWrap: {
     flex: 1,
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -1256,7 +1256,7 @@ const styles = StyleSheet.create({
   sentBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   addFriendActionBtn: {
     flexDirection: "row",
@@ -1283,9 +1283,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   ownAccountBadge: {
-    backgroundColor: "rgba(56, 189, 248, 0.15)",
+    backgroundColor: "rgba(251, 113, 133, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.3)",
+    borderColor: "rgba(251, 113, 133, 0.3)",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 8,
@@ -1293,7 +1293,7 @@ const styles = StyleSheet.create({
   ownAccountText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // ─── BOTTOM SHEET MODAL (PERSIS SCREENSHOT 2) ───
@@ -1303,7 +1303,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   bottomSheetCard: {
-    backgroundColor: "#111622",
+    backgroundColor: "#170E14",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 12,

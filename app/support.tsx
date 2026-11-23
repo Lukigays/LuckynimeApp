@@ -142,7 +142,7 @@ export default function SupportScreen() {
 
           {/* URL display */}
           <View style={styles.urlBox}>
-            <AppIcon name="earth" size={14} color="#CBD5E1" />
+            <AppIcon name="earth" size={14} color="#EDE0E5" />
             <Text style={styles.urlText} numberOfLines={1}>{displayUrl}</Text>
           </View>
 
@@ -161,7 +161,7 @@ export default function SupportScreen() {
               onPress={() => void copySaweriaLink()}
               style={({ pressed }) => [styles.secondaryBtn, pressed && { opacity: 0.7 }]}
             >
-              <AppIcon name="content-copy" size={15} color={copied ? "#10B981" : "#CBD5E1"} />
+              <AppIcon name="content-copy" size={15} color={copied ? "#10B981" : "#EDE0E5"} />
             </Pressable>
           </View>
 
@@ -179,7 +179,7 @@ export default function SupportScreen() {
           {(config.perks && config.perks.length > 0 ? config.perks : DEFAULT_SUPPORT_CONFIG.perks).map((p) => (
             <View key={p.text} style={styles.perkRow}>
               <View style={styles.perkIconWrap}>
-                <AppIcon name={p.icon || "heart"} size={15} color="#E2E8F0" />
+                <AppIcon name={p.icon || "heart"} size={15} color="#F5E9EE" />
               </View>
               <Text style={styles.perkText}>{p.text}</Text>
             </View>
@@ -208,7 +208,7 @@ export default function SupportScreen() {
   );
 }
 
-const SILVER_ACCENT = "#E2E8F0";
+const SILVER_ACCENT = "#F5E9EE";
 
 const styles = StyleSheet.create({
   header: {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 6,
     paddingBottom: 14,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.05)",
   },
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   headerEyebrow: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     letterSpacing: 1,
   },
   headerText: {
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   },
   gifOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(11,14,23,0.55)",
+    backgroundColor: "rgba(13, 8, 11,0.55)",
   },
   gifTextOverlay: {
     position: "absolute",
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   gifBadge: {
     fontFamily: "Nunito-ExtraBold",
     fontSize: 10.5,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     letterSpacing: 1.2,
   },
   gifTitle: {
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
   cardDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 13.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 20,
   },
   urlBox: {
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
   urlText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     flex: 1,
   },
   actionRow: {
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
   perksTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   perkText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13.5,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     flex: 1,
   },
 
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
   thankyouText: {
     fontFamily: "Nunito-Regular",
     fontSize: 14,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     lineHeight: 22,
     paddingHorizontal: 16,
@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
   footnote: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#64748B",
+    color: "#8F727F",
     textAlign: "center",
     paddingHorizontal: 16,
     lineHeight: 17,

@@ -166,20 +166,20 @@ export default function LegalScreen() {
             style={({ pressed }) => [styles.sectionCard, pressed && { opacity: 0.7 }]}
           >
             <View style={styles.sectionIconWrap}>
-              <AppIcon name={section.icon} size={18} color="#E2E8F0" />
+              <AppIcon name={section.icon} size={18} color="#F5E9EE" />
             </View>
             <View style={styles.sectionBody}>
               <Text style={styles.sectionTitle}>{section.label}</Text>
               <Text style={styles.sectionDetail}>{section.detail}</Text>
             </View>
-            <AppIcon name="chevron-right" size={18} color="#94A3B8" />
+            <AppIcon name="chevron-right" size={18} color="#C4A6B3" />
           </Pressable>
         ))}
 
         {/* Contact card */}
         <View style={styles.contactCard}>
           <View style={styles.contactHeader}>
-            <AppIcon name="earth" size={15} color="#E2E8F0" />
+            <AppIcon name="earth" size={15} color="#F5E9EE" />
             <Text style={styles.contactTitle}>Kontak</Text>
           </View>
           {[
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 6,
     paddingBottom: 14,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.05)",
   },
@@ -222,14 +222,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 6,
     paddingBottom: 14,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.05)",
   },
   subHeaderTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 16,
-    color: "#64748B",
+    color: "#8F727F",
     letterSpacing: 0.3,
   },
   backBtn: {
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   headerEyebrow: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     letterSpacing: 1,
   },
   headerTitle: {
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   sectionDetail: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 17,
   },
 
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   contactTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
@@ -359,18 +359,18 @@ const styles = StyleSheet.create({
   contactLabel: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   contactValue: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
 
   footerNote: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#64748B",
+    color: "#8F727F",
     textAlign: "center",
     marginTop: 8,
   },
@@ -386,26 +386,26 @@ const styles = StyleSheet.create({
   legalDate: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     letterSpacing: 0.3,
     marginTop: -6,
   },
   legalBody: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     lineHeight: 21,
   },
   sectionSubtitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#F8FAFC",
+    color: "#FFF5F7",
     marginBottom: 6,
   },
   summaryBox: {
-    backgroundColor: "rgba(56, 189, 248, 0.08)",
+    backgroundColor: "rgba(251, 113, 133, 0.08)",
     borderLeftWidth: 3,
-    borderLeftColor: "#38BDF8",
+    borderLeftColor: "#FB7185",
     padding: 12,
     borderRadius: 8,
     marginVertical: 8,
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Medium",
     fontSize: 12.5,
     lineHeight: 18,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
   },
   contactFooterBox: {
     marginTop: 24,
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
   contactFooterText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#38BDF8",
+    color: "#FB7185",
     textAlign: "center",
   },
   licenseRow: {
@@ -444,12 +444,12 @@ const styles = StyleSheet.create({
   licenseType: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10.5,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   licenseCopyright: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   mitBox: {
     backgroundColor: "rgba(255, 255, 255, 0.05)",

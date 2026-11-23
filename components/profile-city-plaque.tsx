@@ -27,13 +27,13 @@ interface CityTheme {
 
 export const WANDERER_THEME: CityTheme = {
   name: 'GELANDANGAN',
-  accent: '#94A3B8',
-  secondary: '#CBD5E1',
+  accent: '#C4A6B3',
+  secondary: '#EDE0E5',
   material: 'iron',
 };
 
 const CITY_THEMES: Record<string, CityTheme> = {
-  aetheria: { name: 'AETHERIA', accent: '#38BDF8', secondary: '#E0F2FE', material: 'diamond' },
+  aetheria: { name: 'AETHERIA', accent: '#FB7185', secondary: '#E0F2FE', material: 'diamond' },
   lunaris: { name: 'LUNARIS', accent: '#22D3EE', secondary: '#CFFAFE', material: 'silver' },
   velmora: { name: 'VELMORA', accent: '#10B981', secondary: '#D1FAE5', material: 'emerald' },
   eldoria: { name: 'ELDORIA', accent: '#F59E0B', secondary: '#FEF3C7', material: 'gold' },
@@ -57,8 +57,8 @@ const CityEmblemSvg: React.FC<{ cityId: string; size?: number; accent: string }>
       <Defs>
         <SvgGradient id="shieldGrad" x1="6" y1="4" x2="58" y2="60">
           <Stop offset="0%" stopColor="#FFFFFF" />
-          <Stop offset="50%" stopColor="#CBD5E1" />
-          <Stop offset="100%" stopColor="#64748B" />
+          <Stop offset="50%" stopColor="#EDE0E5" />
+          <Stop offset="100%" stopColor="#8F727F" />
         </SvgGradient>
       </Defs>
 
@@ -75,21 +75,21 @@ const CityEmblemSvg: React.FC<{ cityId: string; size?: number; accent: string }>
           {/* Wanderer / Vagabond / Nomad: Crossed Explorer Staffs & Wind Rose */}
           <Defs>
             <SvgGradient id="wandererGrad" x1="10" y1="10" x2="54" y2="54">
-              <Stop offset="0%" stopColor="#E2E8F0" />
-              <Stop offset="50%" stopColor="#94A3B8" />
-              <Stop offset="100%" stopColor="#475569" />
+              <Stop offset="0%" stopColor="#F5E9EE" />
+              <Stop offset="50%" stopColor="#C4A6B3" />
+              <Stop offset="100%" stopColor="#785D6A" />
             </SvgGradient>
           </Defs>
           {/* Crossed traveler walking staff & explorer blade */}
           <Path
             d="M18 46L46 18M46 18L43 14L39 18M18 46L21 50L25 46"
-            stroke="#94A3B8"
+            stroke="#C4A6B3"
             strokeWidth="2.2"
             strokeLinecap="round"
           />
           <Path
             d="M46 46L18 18M18 18L14 21L18 25M46 46L50 43L46 39"
-            stroke="#64748B"
+            stroke="#8F727F"
             strokeWidth="2.2"
             strokeLinecap="round"
           />
@@ -97,11 +97,11 @@ const CityEmblemSvg: React.FC<{ cityId: string; size?: number; accent: string }>
           <Path
             d="M32 15L35.5 28.5L49 32L35.5 35.5L32 49L28.5 35.5L15 32L28.5 28.5L32 15Z"
             fill="url(#wandererGrad)"
-            stroke="#F1F5F9"
+            stroke="#FFF5F7"
             strokeWidth="1.6"
           />
-          <Circle cx="32" cy="32" r="4.2" fill="#0B132B" stroke="#E2E8F0" strokeWidth="1.5" />
-          <Circle cx="32" cy="32" r="1.8" fill="#38BDF8" />
+          <Circle cx="32" cy="32" r="4.2" fill="#0B132B" stroke="#F5E9EE" strokeWidth="1.5" />
+          <Circle cx="32" cy="32" r="1.8" fill="#FB7185" />
         </>
       ) : normId === 'aetheria' || !CITY_THEMES[normId] ? (
         <>
@@ -502,7 +502,7 @@ export const ProfileCityPlaque: React.FC<ProfileCityPlaqueProps> = React.memo(({
               styles.clanNameText,
               compact && styles.clanNameTextCompact,
               podium && styles.clanNameTextPodium,
-              { color: '#94A3B8' },
+              { color: '#C4A6B3' },
             ]}
             numberOfLines={1}
           >
@@ -594,7 +594,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   levelBadge: {
-    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+    backgroundColor: 'rgba(21, 13, 18, 0.95)',
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 4,
@@ -656,7 +656,7 @@ const styles = StyleSheet.create({
     maxWidth: 160,
   },
   clanTagPill: {
-    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+    backgroundColor: 'rgba(21, 13, 18, 0.9)',
     borderWidth: 1,
     borderRadius: 3.5,
     paddingHorizontal: 3.5,
@@ -679,7 +679,7 @@ const styles = StyleSheet.create({
   clanNameText: {
     fontFamily: 'Nunito-Bold',
     fontSize: 10,
-    color: '#E2E8F0',
+    color: '#F5E9EE',
     letterSpacing: 0.3,
   },
   clanNameTextCompact: {
@@ -690,7 +690,7 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: '#94A3B8',
+    backgroundColor: '#C4A6B3',
     opacity: 0.8,
   },
   noClanBadgeBelow: {
@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
   noClanText: {
     fontFamily: 'Nunito-Bold',
     fontSize: 9,
-    color: '#94A3B8',
+    color: '#C4A6B3',
     letterSpacing: 0.2,
   },
 

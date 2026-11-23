@@ -597,7 +597,7 @@ export default function ProfileScreen() {
         {toastMessage ? (
           <View style={styles.toastContainer} pointerEvents="none">
             <View style={styles.toastBox}>
-              <AppIcon name="information-outline" size={17} color="#38BDF8" />
+              <AppIcon name="information-outline" size={17} color="#FB7185" />
               <Text style={styles.toastText}>{toastMessage}</Text>
             </View>
           </View>
@@ -858,7 +858,7 @@ export default function ProfileScreen() {
               ]}
             >
               <View style={styles.profileQuickIconCircle}>
-                <AppIcon name="television-play" size={18} color="#E2E8F0" />
+                <AppIcon name="television-play" size={18} color="#F5E9EE" />
               </View>
               <Text style={styles.profileQuickTitle} numberOfLines={1}>
                 NOBAR ANIME
@@ -888,7 +888,7 @@ export default function ProfileScreen() {
               ]}
             >
               <View style={styles.profileQuickIconCircle}>
-                <AppIcon name="gavel" size={18} color="#E2E8F0" />
+                <AppIcon name="gavel" size={18} color="#F5E9EE" />
               </View>
               <Text style={styles.profileQuickTitle} numberOfLines={1}>
                 LELANG ANIME
@@ -986,7 +986,7 @@ export default function ProfileScreen() {
           hitSlop={8}
         >
           <View pointerEvents="none" style={{ pointerEvents: "none" } as any}>
-            <AppIcon name="account-multiple-plus" size={26} color="#0B0E14" />
+            <AppIcon name="account-multiple-plus" size={26} color="#0D080B" />
           </View>
         </Pressable>
 
@@ -1009,7 +1009,7 @@ export default function ProfileScreen() {
       {toastMessage ? (
         <View style={styles.toastContainer} pointerEvents="none">
           <View style={styles.toastBox}>
-            <AppIcon name="information-outline" size={17} color="#38BDF8" />
+            <AppIcon name="information-outline" size={17} color="#FB7185" />
             <Text style={styles.toastText}>{toastMessage}</Text>
           </View>
         </View>
@@ -1037,7 +1037,7 @@ export default function ProfileScreen() {
               "transparent",
               "rgba(11, 14, 20, 0.45)",
               "rgba(11, 14, 20, 0.85)",
-              "#0B0E14",
+              "#0D080B",
             ]}
             locations={[0, 0.25, 0.65, 0.88, 1]}
             style={StyleSheet.absoluteFillObject}
@@ -1248,7 +1248,7 @@ export default function ProfileScreen() {
                 }}
                 style={({ pressed }) => [styles.friendsPill, pressed && styles.btnPressed]}
               >
-                <AppIcon name="account-group" size={14} color="#94A3B8" />
+                <AppIcon name="account-group" size={14} color="#C4A6B3" />
                 <Text style={styles.friendsPillText}>{friendCount} Teman</Text>
               </Pressable>
             </View>
@@ -1392,13 +1392,13 @@ export default function ProfileScreen() {
             <View style={styles.tabItemsContainer}>
               {userCommentsQuery.isLoading ? (
                 <View style={styles.emptyStateBox}>
-                  <ActivityIndicator size="small" color="#38BDF8" />
+                  <ActivityIndicator size="small" color="#FB7185" />
                   <Text style={styles.emptySubtitle}>Memuat komentar Anda...</Text>
                 </View>
               ) : (userCommentsQuery.data?.length ?? 0) === 0 ? (
                 <View style={styles.emptyStateBox}>
                   <View style={styles.emptyIconCircle}>
-                    <AppIcon name="comment-outline" size={26} color="#64748B" />
+                    <AppIcon name="comment-outline" size={26} color="#8F727F" />
                   </View>
                   <Text style={styles.emptyTitle}>Belum Ada Komentar</Text>
                   <Text style={styles.emptySubtitle}>
@@ -1464,7 +1464,7 @@ export default function ProfileScreen() {
                           />
                         ) : (
                           <View style={styles.commentAnimeThumbFallback}>
-                            <AppIcon name="movie-open-outline" size={16} color="#64748B" />
+                            <AppIcon name="movie-open-outline" size={16} color="#8F727F" />
                           </View>
                         )}
                         <View style={styles.commentAnimeInfo}>
@@ -1493,13 +1493,13 @@ export default function ProfileScreen() {
                           accessibilityRole="button"
                           accessibilityLabel="Lihat balasan komentar"
                         >
-                          <AppIcon name="reply-outline" size={13} color="#94A3B8" />
+                          <AppIcon name="reply-outline" size={13} color="#C4A6B3" />
                           <Text style={styles.commentRepliesText}>
                             Balasan {(replyCountsQuery.data?.[comment.id] ?? 0) > 0 ? `(${replyCountsQuery.data?.[comment.id]})` : ""}
                           </Text>
                         </Pressable>
                         <View style={styles.commentLikesBadge}>
-                          <AppIcon name="heart-outline" size={13} color="#94A3B8" />
+                          <AppIcon name="heart-outline" size={13} color="#C4A6B3" />
                           <Text style={styles.commentLikesText}>
                             {(comment.likes || 0).toString()}
                           </Text>
@@ -1518,7 +1518,7 @@ export default function ProfileScreen() {
               {(bookmarks.data?.length ?? 0) === 0 ? (
                 <View style={styles.emptyStateBox}>
                   <View style={styles.emptyIconCircle}>
-                    <AppIcon name="bookmark-outline" size={26} color="#64748B" />
+                    <AppIcon name="bookmark-outline" size={26} color="#8F727F" />
                   </View>
                   <Text style={styles.emptyTitle}>Belum Ada Favorit</Text>
                   <Text style={styles.emptySubtitle}>
@@ -1547,7 +1547,7 @@ export default function ProfileScreen() {
                           />
                         ) : (
                           <View style={styles.bookmarkImageFallback}>
-                            <AppIcon name="movie-open-outline" size={26} color="#64748B" />
+                            <AppIcon name="movie-open-outline" size={26} color="#8F727F" />
                           </View>
                         )}
                         <LinearGradient
@@ -1586,7 +1586,7 @@ export default function ProfileScreen() {
               {displayRows.length === 0 ? (
                 <View style={styles.emptyStateBox}>
                   <View style={styles.emptyIconCircle}>
-                    <AppIcon name="history" size={26} color="#64748B" />
+                    <AppIcon name="history" size={26} color="#8F727F" />
                   </View>
                   <Text style={styles.emptyTitle}>Belum Ada Riwayat</Text>
                   <Text style={styles.emptySubtitle}>
@@ -1617,7 +1617,7 @@ export default function ProfileScreen() {
                         />
                       ) : (
                         <View style={styles.historyThumbFallback}>
-                          <AppIcon name="play" size={20} color="#64748B" />
+                          <AppIcon name="play" size={20} color="#8F727F" />
                         </View>
                       )}
                       <View style={styles.historyMeta}>
@@ -1679,7 +1679,7 @@ export default function ProfileScreen() {
             {/* Modal Header */}
             <View style={styles.avatarModalHeader}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
-                <AppIcon name="camera" size={20} color="#38BDF8" />
+                <AppIcon name="camera" size={20} color="#FB7185" />
                 <Text style={styles.modalTitle}>
                   {avatarMode === "choice"
                     ? "Ganti Avatar Profil"
@@ -1697,7 +1697,7 @@ export default function ProfileScreen() {
                   }}
                   style={styles.avatarBackPill}
                 >
-                  <AppIcon name="arrow-left" size={14} color="#94A3B8" />
+                  <AppIcon name="arrow-left" size={14} color="#C4A6B3" />
                   <Text style={styles.avatarBackText}>Pilihan</Text>
                 </Pressable>
               )}
@@ -1742,7 +1742,7 @@ export default function ProfileScreen() {
                       Buka pencarian gambar Google, salin URL gambar langsung, dan terapkan
                     </Text>
                   </View>
-                  <AppIcon name="chevron-right" size={16} color="#64748B" />
+                  <AppIcon name="chevron-right" size={16} color="#8F727F" />
                 </Pressable>
 
                 {/* Option 2: Direct Image URL */}
@@ -1755,8 +1755,8 @@ export default function ProfileScreen() {
                   }}
                   style={({ pressed }) => [styles.avatarOptionCard, pressed && styles.btnPressed]}
                 >
-                  <View style={[styles.avatarOptionIconWrap, { backgroundColor: "rgba(56, 189, 248, 0.15)" }]}>
-                    <AppIcon name="link-variant" size={22} color="#38BDF8" />
+                  <View style={[styles.avatarOptionIconWrap, { backgroundColor: "rgba(251, 113, 133, 0.15)" }]}>
+                    <AppIcon name="link-variant" size={22} color="#FB7185" />
                   </View>
                   <View style={{ flex: 1, gap: 2 }}>
                     <Text style={styles.avatarOptionTitle}>2. Gunakan Tautan Gambar</Text>
@@ -1764,7 +1764,7 @@ export default function ProfileScreen() {
                       Masukkan URL direct image (GIF animasi, PNG, JPG, JPEG)
                     </Text>
                   </View>
-                  <AppIcon name="chevron-right" size={16} color="#64748B" />
+                  <AppIcon name="chevron-right" size={16} color="#8F727F" />
                 </Pressable>
 
                 {/* Option 3: Cancel */}
@@ -1862,7 +1862,7 @@ export default function ProfileScreen() {
                         onPress={handlePasteAvatarUrl}
                         style={({ pressed }) => [styles.avatarPasteBtn, pressed && styles.btnPressed]}
                       >
-                        <AppIcon name="clipboard-outline" size={15} color="#38BDF8" />
+                        <AppIcon name="clipboard-outline" size={15} color="#FB7185" />
                         <Text style={styles.avatarPasteText}>Tempel</Text>
                       </Pressable>
                     )}
@@ -1970,7 +1970,7 @@ export default function ProfileScreen() {
                         onPress={handlePasteAvatarUrl}
                         style={({ pressed }) => [styles.avatarPasteBtn, pressed && styles.btnPressed]}
                       >
-                        <AppIcon name="clipboard-outline" size={15} color="#38BDF8" />
+                        <AppIcon name="clipboard-outline" size={15} color="#FB7185" />
                         <Text style={styles.avatarPasteText}>Tempel</Text>
                       </Pressable>
                     )}
@@ -2042,7 +2042,7 @@ export default function ProfileScreen() {
             {/* Sheet Header */}
             <View style={styles.replySheetHeader}>
               <View style={styles.replySheetTitleRow}>
-                <AppIcon name="chat" size={19} color="#38BDF8" />
+                <AppIcon name="chat" size={19} color="#FB7185" />
                 <Text style={styles.replySheetTitle}>Balasan Komentar</Text>
                 <View style={styles.replyCountBadge}>
                   <Text style={styles.replyCountBadgeText}>{repliesList.length}</Text>
@@ -2055,7 +2055,7 @@ export default function ProfileScreen() {
                 style={({ pressed }) => [styles.replyCloseBtn, pressed && styles.btnPressed]}
                 hitSlop={10}
               >
-                <AppIcon name="close" size={18} color="#94A3B8" />
+                <AppIcon name="close" size={18} color="#C4A6B3" />
               </Pressable>
             </View>
 
@@ -2086,7 +2086,7 @@ export default function ProfileScreen() {
                   {activeReplyComment.content}
                 </Text>
                 <View style={styles.replyPinnedMeta}>
-                  <AppIcon name="movie-open-outline" size={12} color="#64748B" />
+                  <AppIcon name="movie-open-outline" size={12} color="#8F727F" />
                   <Text style={styles.replyPinnedAnime} numberOfLines={1}>
                     {activeReplyComment.animeTitle}{" "}
                     {activeReplyComment.episode_number
@@ -2113,13 +2113,13 @@ export default function ProfileScreen() {
             >
               {loadingReplies ? (
                 <View style={styles.replyLoadingBox}>
-                  <ActivityIndicator size="small" color="#38BDF8" />
+                  <ActivityIndicator size="small" color="#FB7185" />
                   <Text style={styles.replyLoadingText}>Memuat balasan komunitas...</Text>
                 </View>
               ) : repliesList.length === 0 ? (
                 <View style={styles.replyEmptyBox}>
                   <View style={styles.replyEmptyIconCircle}>
-                    <AppIcon name="chat" size={24} color="#64748B" />
+                    <AppIcon name="chat" size={24} color="#8F727F" />
                   </View>
                   <Text style={styles.replyEmptyTitle}>Belum Ada Balasan</Text>
                   <Text style={styles.replyEmptySubtitle}>
@@ -2172,7 +2172,7 @@ export default function ProfileScreen() {
                 value={newReplyText}
                 onChangeText={setNewReplyText}
                 placeholder="Tulis balasan balik..."
-                placeholderTextColor="#64748B"
+                placeholderTextColor="#8F727F"
                 style={styles.replyInput}
                 maxLength={500}
                 multiline={false}
@@ -2205,13 +2205,13 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
   },
 
   // ─── INITIAL SOCIAL / FEED SCREEN (MATCHING SCREENSHOT) ───
   socialContainer: {
     flex: 1,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
   },
   socialHeader: {
     paddingHorizontal: 16,
@@ -2307,7 +2307,7 @@ const styles = StyleSheet.create({
   socialLevelText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   socialSettingsBtn: {
     width: 38,
@@ -2334,7 +2334,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(22, 27, 38, 0.72)",
+    backgroundColor: "rgba(25, 16, 22, 0.72)",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
@@ -2366,22 +2366,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.2)",
+    borderColor: "rgba(251, 113, 133, 0.2)",
   },
   profileQuickTitle: {
     flex: 1,
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#F8FAFC",
+    color: "#FFF5F7",
     letterSpacing: 0.2,
   },
   inventoryInfoBanner: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(30, 41, 59, 0.45)",
+    backgroundColor: "rgba(35, 22, 31, 0.45)",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.2)",
+    borderColor: "rgba(251, 113, 133, 0.2)",
     paddingVertical: 10,
     paddingHorizontal: 14,
     marginBottom: 18,
@@ -2411,26 +2411,26 @@ const styles = StyleSheet.create({
   inventoryTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#F8FAFC",
+    color: "#FFF5F7",
   },
   inventoryBadge: {
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderRadius: 6,
-    backgroundColor: "rgba(226, 232, 240, 0.15)",
+    backgroundColor: "rgba(251, 113, 133, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.3)",
+    borderColor: "rgba(251, 113, 133, 0.3)",
   },
   inventoryBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     textTransform: "uppercase",
   },
   inventorySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   inventoryActionBtn: {
     flexDirection: "row",
@@ -2440,12 +2440,12 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.2)",
+    borderColor: "rgba(251, 113, 133, 0.2)",
   },
   inventoryActionText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     marginRight: 2,
   },
   socialSectionHeader: {
@@ -2454,16 +2454,16 @@ const styles = StyleSheet.create({
   socialSectionTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 15,
-    color: "#F1F5F9",
+    color: "#FFF5F7",
   },
   socialSectionSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#64748B",
+    color: "#8F727F",
     marginTop: 1,
   },
   infoBoardCard: {
-    backgroundColor: "rgba(22, 27, 38, 0.72)",
+    backgroundColor: "rgba(25, 16, 22, 0.72)",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
@@ -2497,13 +2497,13 @@ const styles = StyleSheet.create({
   infoBoardTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 14.5,
-    color: "#F8FAFC",
+    color: "#FFF5F7",
     marginBottom: 4,
   },
   infoBoardDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 18,
   },
   featureCardsGrid: {
@@ -2514,7 +2514,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(18, 22, 31, 0.75)",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.22)",
+    borderColor: "rgba(251, 113, 133, 0.22)",
     padding: 16,
     position: "relative",
     overflow: "hidden",
@@ -2540,14 +2540,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
-    backgroundColor: "rgba(226, 232, 240, 0.12)",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.3)",
+    borderColor: "rgba(251, 113, 133, 0.3)",
   },
   featureCardBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     letterSpacing: 0.6,
   },
   featureCardTitle: {
@@ -2559,7 +2559,7 @@ const styles = StyleSheet.create({
   featureCardDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 17,
     marginBottom: 12,
   },
@@ -2571,7 +2571,7 @@ const styles = StyleSheet.create({
   featureCardCta: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
   },
   socialNoticeCard: {
     flexDirection: "row",
@@ -2597,13 +2597,13 @@ const styles = StyleSheet.create({
   socialNoticeTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     marginBottom: 2,
   },
   socialNoticeSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
     lineHeight: 15,
   },
   duniaFab: {
@@ -2632,7 +2632,7 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#0F172A",
+    borderColor: "#150D12",
   },
   duniaFabBadgeText: {
     fontFamily: "Nunito-Bold",
@@ -2647,7 +2647,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#F5E9EE",
     borderWidth: 1.5,
     borderColor: "#FFFFFF",
     alignItems: "center",
@@ -2693,7 +2693,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.3)",
+    borderColor: "rgba(251, 113, 133, 0.3)",
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
@@ -2711,7 +2711,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 180,
     position: "relative",
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
     overflow: "hidden",
   },
   bannerCityPlaque: {
@@ -2786,7 +2786,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     borderWidth: 3.5,
-    borderColor: "#0B0E14",
+    borderColor: "#0D080B",
     overflow: "hidden",
     backgroundColor: "#1E2536",
   },
@@ -2797,7 +2797,7 @@ const styles = StyleSheet.create({
   avatarFallback: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2820,9 +2820,9 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
     borderWidth: 2,
-    borderColor: "#0B0E14",
+    borderColor: "#0D080B",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 10,
@@ -2856,7 +2856,7 @@ const styles = StyleSheet.create({
   userTagText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#64748B",
+    color: "#8F727F",
     includeFontPadding: false,
     textAlignVertical: "center",
   },
@@ -2924,9 +2924,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 14,
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.25)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
   },
   tierPillIcon: {
     width: 16,
@@ -2935,7 +2935,7 @@ const styles = StyleSheet.create({
   levelPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   friendsPill: {
     flexDirection: "row",
@@ -2951,7 +2951,7 @@ const styles = StyleSheet.create({
   friendsPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
 
   // ─── STATS CARD (SEAMLESS / TRANSPARENT) ───
@@ -2979,7 +2979,7 @@ const styles = StyleSheet.create({
   statLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
     textTransform: "lowercase",
   },
   statDivider: {
@@ -2997,7 +2997,7 @@ const styles = StyleSheet.create({
   addFriendBtn: {
     height: 46,
     borderRadius: 16,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
     borderWidth: 1,
     borderColor: "rgba(147, 197, 253, 0.28)",
     flexDirection: "row",
@@ -3088,7 +3088,7 @@ const styles = StyleSheet.create({
   tabButtonText: {
     fontFamily: "Nunito-Bold",
     fontSize: 14.5,
-    color: "#64748B",
+    color: "#8F727F",
     textAlign: "center",
   },
   tabButtonTextActive: {
@@ -3101,7 +3101,7 @@ const styles = StyleSheet.create({
     left: "18%",
     right: "18%",
     height: 3,
-    backgroundColor: "#38BDF8",
+    backgroundColor: "#FB7185",
     borderRadius: 1.5,
   },
 
@@ -3134,7 +3134,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -3150,13 +3150,13 @@ const styles = StyleSheet.create({
     maxWidth: 140,
   },
   commentTimeDot: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 12,
   },
   commentTimeText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#64748B",
+    color: "#8F727F",
   },
   commentAnimeRow: {
     position: "relative",
@@ -3179,7 +3179,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 48,
     borderRadius: 6,
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -3195,12 +3195,12 @@ const styles = StyleSheet.create({
   commentEpisodeText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   commentBodyText: {
     fontFamily: "Nunito-Regular",
     fontSize: 13.5,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     lineHeight: 19,
   },
   commentFooterRow: {
@@ -3217,7 +3217,7 @@ const styles = StyleSheet.create({
   commentRepliesText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   commentLikesBadge: {
     flexDirection: "row",
@@ -3227,7 +3227,7 @@ const styles = StyleSheet.create({
   commentLikesText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
 
   // ─── BOOKMARKS GRID (1 BARIS UNTUK 2 CARD) ───
@@ -3254,7 +3254,7 @@ const styles = StyleSheet.create({
     width: "100%",
     aspectRatio: 0.72,
     position: "relative",
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
   },
   bookmarkImage: {
     width: "100%",
@@ -3263,7 +3263,7 @@ const styles = StyleSheet.create({
   bookmarkImageFallback: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -3313,7 +3313,7 @@ const styles = StyleSheet.create({
   bookmarkTypeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textTransform: "uppercase",
   },
   bookmarkBody: {
@@ -3345,7 +3345,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 48,
     borderRadius: 8,
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -3367,17 +3367,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 6,
-    backgroundColor: "rgba(56, 189, 248, 0.15)",
+    backgroundColor: "rgba(251, 113, 133, 0.15)",
   },
   historyEpText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   historyTimeText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
   },
   historyPlayBtn: {
     width: 32,
@@ -3412,7 +3412,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#64748B",
+    color: "#8F727F",
     textAlign: "center",
     maxWidth: 260,
     lineHeight: 18,
@@ -3453,7 +3453,7 @@ const styles = StyleSheet.create({
   avatarBackText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   modalTitle: {
     fontFamily: "Nunito-Bold",
@@ -3464,7 +3464,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 18,
   },
   cooldownAlertBox: {
@@ -3529,7 +3529,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderRadius: 12,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
   },
   googleSearchBtnText: {
     fontFamily: "Nunito-Bold",
@@ -3545,7 +3545,7 @@ const styles = StyleSheet.create({
   googleStepItem: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 15,
   },
   avatarPreviewCenter: {
@@ -3565,7 +3565,7 @@ const styles = StyleSheet.create({
     height: 76,
     borderRadius: 38,
     borderWidth: 3,
-    borderColor: "#0B0E14",
+    borderColor: "#0D080B",
     overflow: "hidden",
     backgroundColor: "#1E2536",
   },
@@ -3590,7 +3590,7 @@ const styles = StyleSheet.create({
   avatarPreviewHint: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
   },
   formatBadgesRow: {
@@ -3609,7 +3609,7 @@ const styles = StyleSheet.create({
   formatBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   avatarInputRow: {
     flexDirection: "row",
@@ -3623,14 +3623,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 12,
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.25)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
   },
   avatarPasteText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   modalTextInput: {
     backgroundColor: "rgba(255, 255, 255, 0.06)",
@@ -3673,13 +3673,13 @@ const styles = StyleSheet.create({
   modalBtnSecondaryText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   modalBtnPrimary: {
     flex: 1,
     paddingVertical: 11,
     borderRadius: 12,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -3759,14 +3759,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 12,
-    backgroundColor: "rgba(56, 189, 248, 0.15)",
+    backgroundColor: "rgba(251, 113, 133, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.3)",
+    borderColor: "rgba(251, 113, 133, 0.3)",
   },
   replyCountBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   replyCloseBtn: {
     width: 32,
@@ -3781,9 +3781,9 @@ const styles = StyleSheet.create({
     marginTop: 12,
     padding: 12,
     borderRadius: 14,
-    backgroundColor: "rgba(56, 189, 248, 0.05)",
+    backgroundColor: "rgba(251, 113, 133, 0.05)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.15)",
+    borderColor: "rgba(251, 113, 133, 0.15)",
     gap: 6,
   },
   replyPinnedHeader: {
@@ -3798,18 +3798,18 @@ const styles = StyleSheet.create({
     maxWidth: 130,
   },
   replyPinnedDot: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 11,
   },
   replyPinnedTime: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
   },
   replyPinnedText: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     lineHeight: 18,
   },
   replyPinnedMeta: {
@@ -3821,7 +3821,7 @@ const styles = StyleSheet.create({
   replyPinnedAnime: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#38BDF8",
+    color: "#FB7185",
     flex: 1,
   },
   replySectionDivider: {
@@ -3832,7 +3832,7 @@ const styles = StyleSheet.create({
   replySectionTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
@@ -3853,7 +3853,7 @@ const styles = StyleSheet.create({
   replyLoadingText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   replyEmptyBox: {
     alignItems: "center",
@@ -3878,7 +3878,7 @@ const styles = StyleSheet.create({
   replyEmptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#64748B",
+    color: "#8F727F",
     textAlign: "center",
     paddingHorizontal: 20,
     lineHeight: 16,
@@ -3903,18 +3903,18 @@ const styles = StyleSheet.create({
     maxWidth: 120,
   },
   replyCardDot: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 11,
   },
   replyCardTime: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
   },
   replyCardBody: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     lineHeight: 18,
     paddingLeft: 32,
   },
@@ -3943,7 +3943,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -3954,7 +3954,7 @@ const styles = StyleSheet.create({
   nobarAnimeBanner: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(22, 27, 38, 0.72)",
+    backgroundColor: "rgba(25, 16, 22, 0.72)",
     borderRadius: 12,
     padding: 13,
     marginBottom: 12,
@@ -3970,7 +3970,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 12,
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.25)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
   },
   nobarTextCol: {
     flex: 1,
@@ -4012,7 +4012,7 @@ const styles = StyleSheet.create({
   nobarSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginTop: 2,
   },
   nobarActionBtn: {
@@ -4024,11 +4024,11 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     gap: 3,
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.22)",
+    borderColor: "rgba(251, 113, 133, 0.22)",
   },
   nobarActionText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
   },
 });

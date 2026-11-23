@@ -2,9 +2,9 @@ import { memo, useEffect, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   FlatList,
-  Platform,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -23,7 +23,6 @@ import { ErrorState, LoadingState, EmptyState } from "@/components/async-state";
 import { AppIcon } from "@/components/app-icon";
 import { hapticLight } from "@/lib/haptics";
 
-/** Same slim media fragment lib/anilist.ts ships for schedule rows. */
 const SCHEDULE_MEDIA_FIELDS = `id type title { romaji english native } coverImage { large extraLarge } format status averageScore popularity`;
 
 type ArchivePage = {
@@ -31,7 +30,6 @@ type ArchivePage = {
   airingSchedules?: AiringScheduleItem[];
 };
 
-// Archive round trips are spaced so rapid "previous day" taps cannot burn AniList rate limit
 let nextArchiveRequestAt = 0;
 const ARCHIVE_REQUEST_INTERVAL_MS = 2_500;
 
@@ -80,16 +78,18 @@ function localDayKey(value: Date) {
 }
 
 const ID_DAYS = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"] as const;
+const ID_DAYS_SHORT = ["MIN", "SEN", "SEL", "RAB", "KAM", "JUM", "SAB"] as const;
 
 type DayGroup = {
   key: string;
   dayName: string;
+  dayShort: string;
+  dayNum: string;
   dateLabel: string;
   items: AiringScheduleItem[];
 };
 
-/** Memoized timeline item row with authentic Liquid Glass card */
-const TimelineScheduleRow = memo(function TimelineScheduleRow({
+const SakuraScheduleCard = memo(function SakuraScheduleCard({
   item,
   isLast,
 }: {
@@ -107,34 +107,39 @@ const TimelineScheduleRow = memo(function TimelineScheduleRow({
 
   const isAired = item.airingAt * 1000 <= Date.now();
 
-  // Score & popularity formatting from live AniList metadata (no longer dummy data)
-  const scoreVal = typeof anime.averageScore === "number" && anime.averageScore > 0
-    ? (anime.averageScore / 10).toFixed(1)
-    : "—";
-  const popVal = typeof anime.popularity === "number" && anime.popularity > 0
-    ? anime.popularity >= 1000
-      ? `${(anime.popularity / 1000).toFixed(anime.popularity >= 10000 ? 0 : 1)}K`
-      : String(anime.popularity)
-    : "—";
+  const scoreVal =
+    typeof anime.averageScore === "number" && anime.averageScore > 0
+      ? (anime.averageScore / 10).toFixed(1)
+      : "—";
+  const popVal =
+    typeof anime.popularity === "number" && anime.popularity > 0
+      ? anime.popularity >= 1000
+        ? `${(anime.popularity / 1000).toFixed(anime.popularity >= 10000 ? 0 : 1)}K`
+        : String(anime.popularity)
+      : "—";
 
   return (
     <View style={styles.timelineRow}>
-      {/* Left Column: Time & Silver Dot & Vertical Connector */}
-      <View style={styles.timelineCol}>
-        <Text style={styles.timelineTime}>{timeStr}</Text>
-        <View style={styles.timelineDot} />
-        {!isLast ? <View style={styles.timelineLine} /> : null}
+      {/* Left Time Rail */}
+      <View style={styles.timeRailCol}>
+        <View style={[styles.timeBadge, isAired && styles.timeBadgeAired]}>
+          <Text style={[styles.timeBadgeText, isAired && styles.timeBadgeTextAired]}>
+            {timeStr}
+          </Text>
+        </View>
+        <View style={[styles.railNode, isAired && styles.railNodeAired]} />
+        {!isLast ? <View style={styles.railConnector} /> : null}
       </View>
 
-      {/* Right Column: Liquid Glass Anime Card */}
+      {/* Right Sakura Card */}
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`Buka ${title}`}
         onPress={() => {
           hapticLight();
-          router.push((`/anime/${anime.id}`) as never);
+          router.push(`/anime/${anime.id}` as never);
         }}
-        style={({ pressed }) => [styles.glassCard, pressed && styles.btnPressed]}
+        style={({ pressed }) => [styles.releaseCard, pressed && styles.btnPressed]}
       >
         <Image
           source={{ uri: anime.coverImage?.large || anime.coverImage?.extraLarge || "" }}
@@ -144,28 +149,35 @@ const TimelineScheduleRow = memo(function TimelineScheduleRow({
           cachePolicy="memory-disk"
         />
 
-        <View style={styles.cardInfo}>
-          <Text style={styles.cardTitle} numberOfLines={1}>
+        <View style={styles.cardBody}>
+          <View style={styles.cardTopMeta}>
+            <View style={styles.epRibbon}>
+              <Text style={styles.epRibbonText}>EP {item.episode}</Text>
+            </View>
+            <View style={[styles.airStatePill, isAired ? styles.airStateDone : styles.airStateSoon]}>
+              <Text style={[styles.airStateText, isAired ? styles.airStateTextDone : styles.airStateTextSoon]}>
+                {isAired ? "TERSEDIA" : "SEGERA"}
+              </Text>
+            </View>
+          </View>
+
+          <Text style={styles.cardTitle} numberOfLines={2}>
             {title}
-          </Text>
-          <Text style={styles.cardEpisode}>Episode {item.episode}</Text>
-          <Text style={styles.cardStatus}>
-            {isAired ? "Sudah Tayang" : "Menunggu Update"}
           </Text>
 
           <View style={styles.cardStatsRow}>
             <View style={styles.cardStatItem}>
-              <AppIcon name="play" size={11} color="#94A3B8" />
-              <Text style={styles.cardStatText}>{popVal}</Text>
+              <Text style={styles.starIcon}>★</Text>
+              <Text style={styles.scoreText}>{scoreVal}</Text>
             </View>
+            <Text style={styles.statDot}>•</Text>
             <View style={styles.cardStatItem}>
-              <Text style={styles.cardStarIcon}>★</Text>
-              <Text style={styles.cardScoreText}>{scoreVal}</Text>
+              <AppIcon name="fire" size={11} color="#FB7185" />
+              <Text style={styles.popText}>{popVal} penonton</Text>
             </View>
           </View>
         </View>
 
-        {/* Bell Alert Toggle */}
         <Pressable
           accessibilityRole="switch"
           accessibilityState={{ checked: notify.enabled }}
@@ -184,7 +196,7 @@ const TimelineScheduleRow = memo(function TimelineScheduleRow({
           <AppIcon
             name={notify.enabled ? "bell" : "bell-outline"}
             size={16}
-            color={notify.enabled ? "#38BDF8" : "rgba(255, 255, 255, 0.45)"}
+            color={notify.enabled ? "#FFFFFF" : "#C4A6B3"}
           />
         </Pressable>
       </Pressable>
@@ -195,11 +207,10 @@ const TimelineScheduleRow = memo(function TimelineScheduleRow({
 let memoryScheduleCache: AiringSchedulePage | null = null;
 
 export default function ScheduleScreen() {
-  const [dayOffset, setDayOffset] = useState(0);
+  const [dayOffset] = useState(0);
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
   const [cachedSchedule, setCachedSchedule] = useState<AiringSchedulePage | null>(memoryScheduleCache);
 
-  // Ambil cache jadwal lokal secara instan pada startup agar tampilan langsung muncul tanpa loading
   useEffect(() => {
     void AsyncStorage.getItem("luckynime.cache.schedule.v1").then((raw) => {
       if (raw) {
@@ -241,7 +252,6 @@ export default function ScheduleScreen() {
     gcTime: 30 * 60_000,
   });
 
-  // Simpan jadwal hari ini ke local cache untuk zero-delay loading
   useEffect(() => {
     if (dayOffset === 0 && schedule.data?.airingSchedules?.length) {
       memoryScheduleCache = schedule.data;
@@ -249,27 +259,29 @@ export default function ScheduleScreen() {
     }
   }, [dayOffset, schedule.data]);
 
-  // Group schedules by local day
   const dayGroups: DayGroup[] = useMemo(() => {
     if (!schedule.data?.airingSchedules) return [];
-    const map = new Map<string, { dayName: string; dateLabel: string; items: AiringScheduleItem[] }>();
+    const map = new Map<
+      string,
+      { dayName: string; dayShort: string; dayNum: string; dateLabel: string; items: AiringScheduleItem[] }
+    >();
 
     schedule.data.airingSchedules.forEach((item) => {
       const d = new Date(item.airingAt * 1000);
       const dayKey = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
       const dayName = ID_DAYS[d.getDay()] || "Senin";
+      const dayShort = ID_DAYS_SHORT[d.getDay()] || "SEN";
+      const dayNum = String(d.getDate()).padStart(2, "0");
       const dateLabel = `${d.getDate()} ${d.toLocaleDateString("id-ID", { month: "short" })}`;
 
-      const current = map.get(dayKey) ?? { dayName, dateLabel, items: [] };
+      const current = map.get(dayKey) ?? { dayName, dayShort, dayNum, dateLabel, items: [] };
       current.items.push(item);
       map.set(dayKey, current);
     });
 
     return [...map.entries()].map(([key, val]) => ({
       key,
-      dayName: val.dayName,
-      dateLabel: val.dateLabel,
-      items: val.items,
+      ...val,
     }));
   }, [schedule.data]);
 
@@ -279,21 +291,38 @@ export default function ScheduleScreen() {
 
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.container}>
-      {/* 1. Header Bar: Jadwal Tayang */}
-      <View style={styles.headerBar}>
-        <Text style={styles.headerTitle}>Jadwal Tayang</Text>
+      {/* 1. Editorial Sakura Header */}
+      <View style={styles.headerRow}>
+        <View style={styles.headerLeft}>
+          <View style={styles.accentBlade} />
+          <View>
+            <Text style={styles.headerEyebrow}>SIMULCAST MINGGUAN</Text>
+            <Text style={styles.headerTitle}>Kalender Rilis</Text>
+          </View>
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Cari anime"
+          onPress={() => {
+            hapticLight();
+            router.push("/search" as never);
+          }}
+          style={({ pressed }) => [styles.headerSearchBtn, pressed && styles.btnPressed]}
+        >
+          <AppIcon name="magnify" size={19} color="#FB7185" />
+        </Pressable>
       </View>
 
-      {/* 2. Horizontal Day Chips Selection */}
+      {/* 2. Vertical Calendar Date Cards */}
       {dayGroups.length > 0 ? (
-        <View style={styles.dayTabsWrapper}>
+        <View style={styles.calendarStripWrap}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.dayTabsScroll}
+            contentContainerStyle={styles.calendarStripScroll}
           >
             {dayGroups.map((group, idx) => {
-              const isActive = safeIndex === idx;
+              const active = safeIndex === idx;
               return (
                 <Pressable
                   key={group.key}
@@ -302,19 +331,22 @@ export default function ScheduleScreen() {
                     setSelectedDayIndex(idx);
                   }}
                   style={({ pressed }) => [
-                    styles.dayTabPill,
-                    isActive && styles.dayTabPillActive,
+                    styles.dateCard,
+                    active && styles.dateCardActive,
                     pressed && styles.btnPressed,
                   ]}
                 >
-                  <Text
-                    style={[
-                      styles.dayTabPillText,
-                      isActive && styles.dayTabPillTextActive,
-                    ]}
-                  >
-                    {group.dayName}
+                  <Text style={[styles.dateShort, active && styles.dateShortActive]}>
+                    {group.dayShort}
                   </Text>
+                  <Text style={[styles.dateNumber, active && styles.dateNumberActive]}>
+                    {group.dayNum}
+                  </Text>
+                  <View style={[styles.dateCountDot, active && styles.dateCountDotActive]}>
+                    <Text style={[styles.dateCountText, active && styles.dateCountTextActive]}>
+                      {group.items.length}
+                    </Text>
+                  </View>
                 </Pressable>
               );
             })}
@@ -322,30 +354,39 @@ export default function ScheduleScreen() {
         </View>
       ) : null}
 
-      {/* 3. Day Header Row: [Senin] on Left, [7 Anime] on Right */}
+      {/* 3. Selected Day Summary Banner */}
       {currentGroup ? (
-        <View style={styles.dayInfoRow}>
-          <View style={styles.selectedDayPill}>
-            <Text style={styles.selectedDayPillText}>{currentGroup.dayName}</Text>
+        <View style={styles.summaryBanner}>
+          <LinearGradient
+            colors={["rgba(244, 63, 94, 0.18)", "rgba(25, 16, 22, 0.90)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={styles.summaryLeft}>
+            <AppIcon name="calendar-check" size={16} color="#FB7185" />
+            <Text style={styles.summaryDayText}>
+              {currentGroup.dayName}, {currentGroup.dateLabel}
+            </Text>
           </View>
-          <View style={styles.countBadgePill}>
-            <Text style={styles.countBadgePillText}>
-              {currentGroup.items.length} Anime
+          <View style={styles.summaryCountPill}>
+            <Text style={styles.summaryCountText}>
+              {currentGroup.items.length} Episode
             </Text>
           </View>
         </View>
       ) : null}
 
-      {/* 4. Main Timeline Content & States */}
+      {/* 4. Schedule Timeline List */}
       {schedule.isPending ? (
-        <LoadingState label="Memuat jadwal tayang anime..." />
+        <LoadingState label="Menyusun jadwal rilis minggu ini..." />
       ) : schedule.isError || !schedule.data ? (
         <ErrorState
           message={schedule.error?.message ?? "Gagal memuat jadwal tayang."}
           onRetry={() => void schedule.refetch()}
         />
       ) : !dayGroups.length || !currentGroup?.items.length ? (
-        <EmptyState label="Belum ada anime yang dijadwalkan untuk hari ini." />
+        <EmptyState label="Belum ada jadwal rilis pada hari ini." />
       ) : (
         <FlatList
           data={currentGroup.items}
@@ -356,11 +397,11 @@ export default function ScheduleScreen() {
             <RefreshControl
               refreshing={schedule.isFetching && !schedule.isPending}
               onRefresh={() => void schedule.refetch()}
-              tintColor="#38BDF8"
+              tintColor="#F43F5E"
             />
           }
           renderItem={({ item, index }) => (
-            <TimelineScheduleRow
+            <SakuraScheduleCard
               item={item}
               isLast={index === currentGroup.items.length - 1}
             />
@@ -368,7 +409,7 @@ export default function ScheduleScreen() {
         />
       )}
 
-      {/* 5. Floating Bottom-Right Next Day Pill (e.g. "Selasa →") */}
+      {/* 5. Floating Next Day Pill */}
       {nextGroup ? (
         <Pressable
           onPress={() => {
@@ -376,10 +417,10 @@ export default function ScheduleScreen() {
             setSelectedDayIndex((prev) => (prev + 1) % dayGroups.length);
           }}
           style={({ pressed }) => [styles.floatingNextBtn, pressed && styles.btnPressed]}
-          accessibilityLabel={`Pindah ke hari ${nextGroup.dayName}`}
+          accessibilityLabel={`Lanjut ke hari ${nextGroup.dayName}`}
         >
           <Text style={styles.floatingNextText}>{nextGroup.dayName}</Text>
-          <AppIcon name="arrow-right" size={15} color="#FFFFFF" />
+          <AppIcon name="arrow-right" size={14} color="#FFFFFF" />
         </Pressable>
       ) : null}
     </SafeAreaView>
@@ -389,252 +430,345 @@ export default function ScheduleScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   btnPressed: {
-    opacity: 0.82,
-    transform: [{ scale: 0.985 }],
+    opacity: 0.84,
+    transform: [{ scale: 0.98 }],
   },
-
-  // ─── HEADER ───
-  headerBar: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 10,
-    paddingBottom: 8,
-  },
-  headerTitle: {
-    fontFamily: "Nunito-Black",
-    fontSize: 20,
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
-  },
-
-  // ─── HORIZONTAL DAY TABS ───
-  dayTabsWrapper: {
-    paddingVertical: 6,
-  },
-  dayTabsScroll: {
-    paddingHorizontal: 16,
-    gap: 8,
-  },
-  dayTabPill: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 14,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
-  },
-  dayTabPillActive: {
-    backgroundColor: "rgba(255, 255, 255, 0.18)",
-    borderColor: "#E2E8F0",
-  },
-  dayTabPillText: {
-    fontFamily: "Nunito-Bold",
-    fontSize: 12.5,
-    color: "#94A3B8",
-  },
-  dayTabPillTextActive: {
-    color: "#FFFFFF",
-    fontFamily: "Nunito-Black",
-  },
-
-  // ─── DAY INFO ROW: [Senin] & [7 Anime] ───
-  dayInfoRow: {
+  headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    marginTop: 4,
-    marginBottom: 12,
+    paddingTop: 8,
+    paddingBottom: 10,
   },
-  selectedDayPill: {
-    backgroundColor: "rgba(255, 255, 255, 0.09)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 7,
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
-  selectedDayPillText: {
+  accentBlade: {
+    width: 4,
+    height: 28,
+    borderRadius: 99,
+    backgroundColor: "#F43F5E",
+  },
+  headerEyebrow: {
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 9.5,
+    color: "#FB7185",
+    letterSpacing: 1.1,
+  },
+  headerTitle: {
     fontFamily: "Nunito-Black",
-    color: "#FFFFFF",
-    fontSize: 13.5,
+    fontSize: 23,
+    color: "#FFF5F7",
+    letterSpacing: -0.4,
   },
-  countBadgePill: {
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
+  headerSearchBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 13,
+    backgroundColor: "#191016",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.12)",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-  },
-  countBadgePillText: {
-    fontFamily: "Nunito-Bold",
-    color: "#94A3B8",
-    fontSize: 12.5,
+    borderColor: "rgba(251, 113, 133, 0.24)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
-  // ─── TIMELINE & LIST ───
+  // ─── CALENDAR DATE STRIP ───
+  calendarStripWrap: {
+    paddingVertical: 4,
+  },
+  calendarStripScroll: {
+    paddingHorizontal: 16,
+    gap: 9,
+  },
+  dateCard: {
+    width: 58,
+    paddingVertical: 9,
+    borderRadius: 16,
+    backgroundColor: "#180F15",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.16)",
+    alignItems: "center",
+    gap: 3,
+  },
+  dateCardActive: {
+    backgroundColor: "#E11D48",
+    borderColor: "#FDA4AF",
+  },
+  dateShort: {
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 10,
+    color: "#9A7D8A",
+    letterSpacing: 0.6,
+  },
+  dateShortActive: {
+    color: "#FFE4E6",
+  },
+  dateNumber: {
+    fontFamily: "Nunito-Black",
+    fontSize: 17,
+    color: "#FFF5F7",
+  },
+  dateNumberActive: {
+    color: "#FFFFFF",
+  },
+  dateCountDot: {
+    paddingHorizontal: 7,
+    paddingVertical: 1.5,
+    borderRadius: 99,
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
+  },
+  dateCountDotActive: {
+    backgroundColor: "rgba(13, 8, 11, 0.34)",
+  },
+  dateCountText: {
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 9.5,
+    color: "#FB7185",
+  },
+  dateCountTextActive: {
+    color: "#FFFFFF",
+  },
+
+  // ─── SUMMARY BANNER ───
+  summaryBanner: {
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.22)",
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    overflow: "hidden",
+  },
+  summaryLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  summaryDayText: {
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 13.5,
+    color: "#FFF5F7",
+  },
+  summaryCountPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 3.5,
+    borderRadius: 99,
+    backgroundColor: "rgba(244, 63, 94, 0.20)",
+  },
+  summaryCountText: {
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 10.5,
+    color: "#FDA4AF",
+  },
+
+  // ─── TIMELINE LIST ───
   listContent: {
     paddingHorizontal: 14,
-    paddingBottom: 110,
+    paddingBottom: 112,
     paddingTop: 4,
   },
   timelineRow: {
     flexDirection: "row",
     alignItems: "stretch",
-    marginBottom: 16,
+    marginBottom: 14,
   },
-
-  // Left Column
-  timelineCol: {
-    width: 52,
+  timeRailCol: {
+    width: 56,
     alignItems: "center",
-    paddingTop: 10,
-    position: "relative",
+    paddingTop: 6,
     marginRight: 8,
-    alignSelf: "stretch",
+    position: "relative",
   },
-  timelineTime: {
-    fontFamily: "Nunito-Black",
-    color: "#CBD5E1",
-    fontSize: 12.5,
-    marginBottom: 8,
-    textAlign: "center",
+  timeBadge: {
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 8,
+    backgroundColor: "#1C1118",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.22)",
+    marginBottom: 7,
   },
-  timelineDot: {
+  timeBadgeAired: {
+    backgroundColor: "rgba(16, 185, 129, 0.14)",
+    borderColor: "rgba(52, 211, 153, 0.35)",
+  },
+  timeBadgeText: {
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 11,
+    color: "#FDA4AF",
+  },
+  timeBadgeTextAired: {
+    color: "#6EE7B7",
+  },
+  railNode: {
     width: 9,
     height: 9,
     borderRadius: 4.5,
-    backgroundColor: "#CBD5E1",
+    backgroundColor: "#F43F5E",
     borderWidth: 1.5,
-    borderColor: "#FFFFFF",
+    borderColor: "#FDA4AF",
     zIndex: 2,
   },
-  timelineLine: {
+  railNodeAired: {
+    backgroundColor: "#10B981",
+    borderColor: "#6EE7B7",
+  },
+  railConnector: {
     position: "absolute",
-    top: 40,
-    bottom: -18,
-    width: 2,
-    backgroundColor: "rgba(203, 213, 225, 0.35)",
+    top: 44,
+    bottom: -16,
+    width: 1.5,
+    backgroundColor: "rgba(251, 113, 133, 0.22)",
     zIndex: 1,
   },
 
-  // Right Column: Liquid Glass Anime Card
-  glassCard: {
+  // ─── RELEASE CARD ───
+  releaseCard: {
     flex: 1,
-    backgroundColor: "rgba(22, 27, 38, 0.72)",
+    backgroundColor: "#180F15",
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.11)",
+    borderColor: "rgba(251, 113, 133, 0.17)",
     padding: 10,
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-    ...(Platform.OS === "web"
-      ? ({
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-        } as any)
-      : {}),
+    gap: 11,
   },
   cardPoster: {
-    width: 70,
-    height: 98,
-    borderRadius: 12,
-    backgroundColor: "#161B26",
+    width: 68,
+    height: 96,
+    borderRadius: 13,
+    backgroundColor: "#23161F",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderColor: "rgba(251, 113, 133, 0.18)",
   },
-  cardInfo: {
+  cardBody: {
     flex: 1,
-    justifyContent: "center",
-    gap: 3,
+    gap: 5,
+    minWidth: 0,
+  },
+  cardTopMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  epRibbon: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 6,
+    backgroundColor: "rgba(244, 63, 94, 0.20)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.35)",
+  },
+  epRibbonText: {
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 9.5,
+    color: "#FDA4AF",
+  },
+  airStatePill: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  airStateDone: {
+    backgroundColor: "rgba(16, 185, 129, 0.15)",
+  },
+  airStateSoon: {
+    backgroundColor: "rgba(251, 191, 36, 0.14)",
+  },
+  airStateText: {
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 9,
+    letterSpacing: 0.5,
+  },
+  airStateTextDone: {
+    color: "#34D399",
+  },
+  airStateTextSoon: {
+    color: "#FBBF24",
   },
   cardTitle: {
-    fontFamily: "Nunito-Black",
-    fontSize: 14.5,
-    color: "#FFFFFF",
-    letterSpacing: -0.2,
-  },
-  cardEpisode: {
-    fontFamily: "Nunito-Bold",
-    fontSize: 12,
-    color: "#E2E8F0",
-  },
-  cardStatus: {
-    fontFamily: "Nunito-SemiBold",
-    fontSize: 11,
-    color: "#94A3B8",
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 14,
+    lineHeight: 18,
+    color: "#FFF5F7",
   },
   cardStatsRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-    marginTop: 3,
+    gap: 6,
   },
   cardStatItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 3,
   },
-  cardStatText: {
-    fontFamily: "Nunito-Bold",
+  starIcon: {
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#FBBF24",
   },
-  cardStarIcon: {
+  scoreText: {
+    fontFamily: "SpaceGrotesk-Bold",
     fontSize: 11,
-    color: "#CBD5E1",
+    color: "#FDE68A",
   },
-  cardScoreText: {
-    fontFamily: "Nunito-Bold",
+  statDot: {
+    color: "#7F6270",
+    fontSize: 10,
+  },
+  popText: {
+    fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#CBD5E1",
+    color: "#C4A6B3",
   },
   bellBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 34,
+    height: 34,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    backgroundColor: "#23161F",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderColor: "rgba(251, 113, 133, 0.18)",
   },
   bellBtnActive: {
-    backgroundColor: "rgba(56, 189, 248, 0.15)",
-    borderColor: "rgba(56, 189, 248, 0.4)",
+    backgroundColor: "#F43F5E",
+    borderColor: "#FDA4AF",
   },
-
-  // ─── FLOATING NEXT DAY BUTTON ───
   floatingNextBtn: {
     position: "absolute",
-    bottom: 84,
+    bottom: 88,
     right: 18,
-    backgroundColor: "rgba(22, 27, 38, 0.94)",
+    backgroundColor: "#E11D48",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.22)",
-    borderRadius: 22,
+    borderColor: "#FDA4AF",
+    borderRadius: 99,
     paddingHorizontal: 16,
     paddingVertical: 10,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
     zIndex: 100,
-    ...(Platform.OS === "web"
-      ? ({
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-        } as any)
-      : {}),
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 12,
+    elevation: 10,
   },
   floatingNextText: {
-    fontFamily: "Nunito-Black",
-    fontSize: 13,
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 12.5,
     color: "#FFFFFF",
-    letterSpacing: 0.2,
   },
 });

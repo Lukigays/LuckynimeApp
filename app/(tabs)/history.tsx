@@ -10,8 +10,8 @@ export default function HistoryTab() {
         initialTab="history"
         allowedTabs={["history"]}
         showTopBar={true}
-        headerTitle="Riwayat"
-        headerSubtitle="Lanjutkan anime yang kamu tonton"
+        headerTitle="Jejak Tontonan"
+        headerSubtitle="Lanjutkan episode terakhir yang kamu putar"
       />
     </SafeAreaView>
   );
@@ -20,7 +20,6 @@ export default function HistoryTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
 });
-

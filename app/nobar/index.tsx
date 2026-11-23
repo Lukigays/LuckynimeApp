@@ -326,7 +326,7 @@ export default function NobarLobbyScreen() {
           }}
           style={({ pressed }) => [styles.createBtnTop, pressed && styles.btnPressed]}
         >
-          <AppIcon name="plus" size={15} color="#0B0E17" />
+          <AppIcon name="plus" size={15} color="#0D080B" />
           <Text style={styles.createBtnTopText}>Buat Room</Text>
         </Pressable>
       </View>
@@ -334,18 +334,18 @@ export default function NobarLobbyScreen() {
       {/* ── 2. SEARCH BAR (STYLE PERSIS SEARCHGLASSBAR DI LIBRARYVIEW) ── */}
       <View style={styles.controlsRow}>
         <View style={styles.searchGlassBar}>
-          <AppIcon name="magnify" size={17} color="#94A3B8" />
+          <AppIcon name="magnify" size={17} color="#C4A6B3" />
           <TextInput
             style={styles.searchInput}
             placeholder="Cari anime, room, host, atau #tag..."
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#8F727F"
             value={searchQuery}
             onChangeText={setSearchQuery}
             clearButtonMode="while-editing"
           />
           {searchQuery ? (
             <Pressable onPress={() => setSearchQuery("")} hitSlop={10}>
-              <AppIcon name="close" size={15} color="#94A3B8" />
+              <AppIcon name="close" size={15} color="#C4A6B3" />
             </Pressable>
           ) : null}
         </View>
@@ -376,7 +376,7 @@ export default function NobarLobbyScreen() {
             <AppIcon
               name="earth"
               size={12}
-              color={filterTab === "public" ? "#E2E8F0" : "#94A3B8"}
+              color={filterTab === "public" ? "#F5E9EE" : "#C4A6B3"}
               style={{ marginRight: 4 }}
             />
             <Text style={[styles.chipText, filterTab === "public" && styles.chipTextActive]}>
@@ -394,7 +394,7 @@ export default function NobarLobbyScreen() {
             <AppIcon
               name="lock"
               size={12}
-              color={filterTab === "private" ? "#E2E8F0" : "#94A3B8"}
+              color={filterTab === "private" ? "#F5E9EE" : "#C4A6B3"}
               style={{ marginRight: 4 }}
             />
             <Text style={[styles.chipText, filterTab === "private" && styles.chipTextActive]}>
@@ -407,7 +407,7 @@ export default function NobarLobbyScreen() {
       {/* ── 4. ROOMS LIST (STYLE PERSIS GLASSCARD DI RIWAYAT) ── */}
       {loading ? (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="small" color="#CBD5E1" />
+          <ActivityIndicator size="small" color="#EDE0E5" />
           <Text style={styles.loadingText}>Memuat room aktif...</Text>
         </View>
       ) : (
@@ -420,14 +420,14 @@ export default function NobarLobbyScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#CBD5E1"
-              colors={["#CBD5E1"]}
+              tintColor="#EDE0E5"
+              colors={["#EDE0E5"]}
             />
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <View style={styles.emptyIconCircle}>
-                <AppIcon name="television-play" size={32} color="#CBD5E1" />
+                <AppIcon name="television-play" size={32} color="#EDE0E5" />
               </View>
               <Text style={styles.emptyTitle}>Belum Ada Room Nobar Aktif</Text>
               <Text style={styles.emptySubtitle}>
@@ -442,7 +442,7 @@ export default function NobarLobbyScreen() {
                 }}
                 style={styles.emptyActionBtn}
               >
-                <AppIcon name="plus" size={16} color="#0B0E17" />
+                <AppIcon name="plus" size={16} color="#0D080B" />
                 <Text style={styles.emptyActionBtnText}>Buat Room Sekarang</Text>
               </Pressable>
             </View>
@@ -464,7 +464,7 @@ export default function NobarLobbyScreen() {
                   />
                 ) : (
                   <View style={[styles.cardPoster, styles.placeholderPoster]}>
-                    <AppIcon name="movie-open" size={24} color="#64748B" />
+                    <AppIcon name="movie-open" size={24} color="#8F727F" />
                   </View>
                 )}
                 <View style={styles.epBadge}>
@@ -487,12 +487,12 @@ export default function NobarLobbyScreen() {
 
                   {item.is_private ? (
                     <View style={styles.privateBadge}>
-                      <AppIcon name="lock" size={10} color="#CBD5E1" />
+                      <AppIcon name="lock" size={10} color="#EDE0E5" />
                       <Text style={styles.privateBadgeText}>Privat</Text>
                     </View>
                   ) : (
                     <View style={styles.publicBadge}>
-                      <AppIcon name="earth" size={10} color="#94A3B8" />
+                      <AppIcon name="earth" size={10} color="#C4A6B3" />
                       <Text style={styles.publicBadgeText}>Publik</Text>
                     </View>
                   )}
@@ -528,7 +528,7 @@ export default function NobarLobbyScreen() {
 
                   <View style={styles.joinBtn}>
                     <Text style={styles.joinBtnText}>Gabung</Text>
-                    <AppIcon name="chevron-right" size={13} color="#E2E8F0" />
+                    <AppIcon name="chevron-right" size={13} color="#F5E9EE" />
                   </View>
                 </View>
               </View>
@@ -556,7 +556,7 @@ export default function NobarLobbyScreen() {
                 style={styles.modalCloseBtn}
                 hitSlop={10}
               >
-                <AppIcon name="close" size={18} color="#94A3B8" />
+                <AppIcon name="close" size={18} color="#C4A6B3" />
               </Pressable>
             </View>
 
@@ -566,7 +566,7 @@ export default function NobarLobbyScreen() {
               <TextInput
                 style={styles.textInput}
                 placeholder="Contoh: Nobar Solo Leveling"
-                placeholderTextColor="#64748B"
+                placeholderTextColor="#8F727F"
                 value={roomTitleInput}
                 onChangeText={setRoomTitleInput}
                 maxLength={50}
@@ -599,16 +599,16 @@ export default function NobarLobbyScreen() {
               ) : (
                 <View>
                   <View style={styles.animeSearchInputWrap}>
-                    <AppIcon name="magnify" size={16} color="#64748B" />
+                    <AppIcon name="magnify" size={16} color="#8F727F" />
                     <TextInput
                       style={styles.animeSearchInput}
                       placeholder="Ketik judul anime..."
-                      placeholderTextColor="#64748B"
+                      placeholderTextColor="#8F727F"
                       value={animeSearchQuery}
                       onChangeText={setAnimeSearchQuery}
                     />
                     {searchingAnime ? (
-                      <ActivityIndicator size="small" color="#CBD5E1" />
+                      <ActivityIndicator size="small" color="#EDE0E5" />
                     ) : null}
                   </View>
 
@@ -674,7 +674,7 @@ export default function NobarLobbyScreen() {
                   <AppIcon
                     name="minus"
                     size={16}
-                    color={episodeInput <= 1 ? "#475569" : "#E2E8F0"}
+                    color={episodeInput <= 1 ? "#785D6A" : "#F5E9EE"}
                   />
                 </Pressable>
                 <TextInput
@@ -716,7 +716,7 @@ export default function NobarLobbyScreen() {
                     name="plus"
                     size={16}
                     color={
-                      maxEpisodes && episodeInput >= maxEpisodes ? "#475569" : "#E2E8F0"
+                      maxEpisodes && episodeInput >= maxEpisodes ? "#785D6A" : "#F5E9EE"
                     }
                   />
                 </Pressable>
@@ -744,7 +744,7 @@ export default function NobarLobbyScreen() {
                   <AppIcon
                     name="earth"
                     size={18}
-                    color={!isPrivateInput ? "#E2E8F0" : "#64748B"}
+                    color={!isPrivateInput ? "#F5E9EE" : "#8F727F"}
                   />
                   <Text
                     style={[
@@ -770,7 +770,7 @@ export default function NobarLobbyScreen() {
                   <AppIcon
                     name="lock"
                     size={18}
-                    color={isPrivateInput ? "#E2E8F0" : "#64748B"}
+                    color={isPrivateInput ? "#F5E9EE" : "#8F727F"}
                   />
                   <Text
                     style={[
@@ -791,7 +791,7 @@ export default function NobarLobbyScreen() {
                   <TextInput
                     style={styles.textInput}
                     placeholder="Masukkan password"
-                    placeholderTextColor="#64748B"
+                    placeholderTextColor="#8F727F"
                     value={passwordInput}
                     onChangeText={setPasswordInput}
                     secureTextEntry
@@ -807,10 +807,10 @@ export default function NobarLobbyScreen() {
                 style={[styles.submitCreateBtn, submittingRoom && { opacity: 0.6 }]}
               >
                 {submittingRoom ? (
-                  <ActivityIndicator size="small" color="#0B0E17" />
+                  <ActivityIndicator size="small" color="#0D080B" />
                 ) : (
                   <>
-                    <AppIcon name="play-circle" size={18} color="#0B0E17" />
+                    <AppIcon name="play-circle" size={18} color="#0D080B" />
                     <Text style={styles.submitCreateBtnText}>Mulai Room Nobar</Text>
                   </>
                 )}
@@ -830,7 +830,7 @@ export default function NobarLobbyScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.passwordCard}>
             <View style={styles.lockIconCircle}>
-              <AppIcon name="lock" size={24} color="#E2E8F0" />
+              <AppIcon name="lock" size={24} color="#F5E9EE" />
             </View>
 
             <Text style={styles.passwordModalTitle}>Room Terkunci</Text>
@@ -841,7 +841,7 @@ export default function NobarLobbyScreen() {
             <TextInput
               style={[styles.textInput, styles.passwordInputBox]}
               placeholder="Masukkan password room"
-              placeholderTextColor="#64748B"
+              placeholderTextColor="#8F727F"
               value={inputtedPassword}
               onChangeText={(t) => {
                 setInputtedPassword(t);
@@ -880,7 +880,7 @@ export default function NobarLobbyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   btnPressed: {
     opacity: 0.75,
@@ -945,14 +945,14 @@ const styles = StyleSheet.create({
   headerSubtitleText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginTop: 2,
     marginLeft: 42,
   },
   createBtnTop: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#F5E9EE",
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 6,
@@ -961,7 +961,7 @@ const styles = StyleSheet.create({
   createBtnTopText: {
     fontFamily: "Nunito-Black",
     fontSize: 11,
-    color: "#0B0E17",
+    color: "#0D080B",
     letterSpacing: 0.4,
   },
   // Controls Row: Search Bar (Sama dengan searchGlassBar LibraryView)
@@ -1008,17 +1008,17 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.04)",
   },
   chipActive: {
-    borderColor: "rgba(226, 232, 240, 0.35)",
+    borderColor: "rgba(251, 113, 133, 0.35)",
     backgroundColor: "rgba(255, 255, 255, 0.12)",
   },
   chipText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     letterSpacing: 0.3,
   },
   chipTextActive: {
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     fontFamily: "Nunito-Black",
   },
   centerContainer: {
@@ -1031,7 +1031,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     marginTop: 10,
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   listContent: {
     paddingHorizontal: 16,
@@ -1039,7 +1039,7 @@ const styles = StyleSheet.create({
   },
   // Liquid Glass Card (Persis glassCard di LibraryView)
   glassCard: {
-    backgroundColor: "rgba(22, 27, 38, 0.72)",
+    backgroundColor: "rgba(25, 16, 22, 0.72)",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.11)",
@@ -1055,7 +1055,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     overflow: "hidden",
     position: "relative",
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
   },
@@ -1071,9 +1071,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 4,
     left: 4,
-    backgroundColor: "rgba(11, 14, 23, 0.85)",
+    backgroundColor: "rgba(13, 8, 11, 0.85)",
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.3)",
+    borderColor: "rgba(251, 113, 133, 0.3)",
     borderRadius: 4,
     paddingHorizontal: 5,
     paddingVertical: 1.5,
@@ -1081,7 +1081,7 @@ const styles = StyleSheet.create({
   epBadgeText: {
     fontFamily: "Nunito-Black",
     fontSize: 9,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   cardBody: {
     flex: 1,
@@ -1145,7 +1145,7 @@ const styles = StyleSheet.create({
   privateBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 8.5,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   publicBadge: {
     flexDirection: "row",
@@ -1161,7 +1161,7 @@ const styles = StyleSheet.create({
   publicBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 8.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   cardTitle: {
     fontFamily: "Nunito-Bold",
@@ -1172,7 +1172,7 @@ const styles = StyleSheet.create({
   cardAnimeTitle: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11.5,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   cardFooter: {
     flexDirection: "row",
@@ -1199,12 +1199,12 @@ const styles = StyleSheet.create({
   placeholderAvatarText: {
     fontFamily: "Nunito-Black",
     fontSize: 9,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   cardHostName: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginLeft: 6,
     flex: 1,
   },
@@ -1217,12 +1217,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     gap: 2,
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.22)",
+    borderColor: "rgba(251, 113, 133, 0.22)",
   },
   joinBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
   },
   emptyContainer: {
     alignItems: "center",
@@ -1250,7 +1250,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#64748B",
+    color: "#8F727F",
     textAlign: "center",
     marginTop: 4,
     lineHeight: 18,
@@ -1258,7 +1258,7 @@ const styles = StyleSheet.create({
   emptyActionBtn: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#F5E9EE",
     paddingHorizontal: 16,
     paddingVertical: 9,
     borderRadius: 6,
@@ -1268,7 +1268,7 @@ const styles = StyleSheet.create({
   emptyActionBtnText: {
     fontFamily: "Nunito-Black",
     fontSize: 12,
-    color: "#0B0E17",
+    color: "#0D080B",
   },
   // Modal Styles (Silver Glass)
   modalOverlay: {
@@ -1299,7 +1299,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginTop: 2,
   },
   modalCloseBtn: {
@@ -1318,7 +1318,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     marginBottom: 6,
   },
   textInput: {
@@ -1351,7 +1351,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   animeResultsList: {
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     borderRadius: 6,
     marginTop: 6,
     maxHeight: 180,
@@ -1370,7 +1370,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 44,
     borderRadius: 4,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   animeResultInfo: {
     marginLeft: 10,
@@ -1384,7 +1384,7 @@ const styles = StyleSheet.create({
   animeResultSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 10,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginTop: 2,
   },
   selectedAnimeBox: {
@@ -1394,7 +1394,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.3)",
+    borderColor: "rgba(251, 113, 133, 0.3)",
   },
   selectedAnimeCover: {
     width: 40,
@@ -1413,7 +1413,7 @@ const styles = StyleSheet.create({
   selectedAnimeEpisodes: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     marginTop: 2,
   },
   changeAnimeBtn: {
@@ -1427,7 +1427,7 @@ const styles = StyleSheet.create({
   changeAnimeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
   },
   inputLabelRow: {
     flexDirection: "row",
@@ -1437,17 +1437,17 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   maxEpBadge: {
-    backgroundColor: "rgba(226, 232, 240, 0.12)",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
     paddingHorizontal: 7,
     paddingVertical: 2.5,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.25)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
   },
   maxEpBadgeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   episodePickerRow: {
     flexDirection: "row",
@@ -1472,7 +1472,7 @@ const styles = StyleSheet.create({
   episodeLimitNote: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginTop: 6,
   },
   episodeInput: {
@@ -1502,12 +1502,12 @@ const styles = StyleSheet.create({
   },
   privacyOptionCardActive: {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderColor: "rgba(226, 232, 240, 0.4)",
+    borderColor: "rgba(251, 113, 133, 0.4)",
   },
   privacyOptionTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginTop: 4,
   },
   privacyOptionTitleActive: {
@@ -1517,7 +1517,7 @@ const styles = StyleSheet.create({
   privacyOptionDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 9.5,
-    color: "#64748B",
+    color: "#8F727F",
     marginTop: 2,
     textAlign: "center",
   },
@@ -1525,7 +1525,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#F5E9EE",
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 20,
@@ -1534,7 +1534,7 @@ const styles = StyleSheet.create({
   submitCreateBtnText: {
     fontFamily: "Nunito-Black",
     fontSize: 13,
-    color: "#0B0E17",
+    color: "#0D080B",
     letterSpacing: 0.3,
   },
   // Password Prompt Card
@@ -1558,7 +1558,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.25)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
   },
   passwordModalTitle: {
     fontFamily: "Nunito-Bold",
@@ -1569,7 +1569,7 @@ const styles = StyleSheet.create({
   passwordModalSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     marginTop: 4,
     lineHeight: 16,
@@ -1603,11 +1603,11 @@ const styles = StyleSheet.create({
   passwordCancelText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   passwordJoinBtn: {
     flex: 1,
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#F5E9EE",
     paddingVertical: 9,
     borderRadius: 6,
     alignItems: "center",
@@ -1615,6 +1615,6 @@ const styles = StyleSheet.create({
   passwordJoinText: {
     fontFamily: "Nunito-Black",
     fontSize: 12,
-    color: "#0B0E17",
+    color: "#0D080B",
   },
 });

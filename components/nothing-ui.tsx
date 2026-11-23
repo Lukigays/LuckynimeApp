@@ -1,32 +1,38 @@
 import type { ReactNode } from "react";
-import { Pressable, StyleSheet, Text, View, type GestureResponderEvent, type StyleProp, type ViewStyle } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View, type GestureResponderEvent, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
 import * as Haptics from "expo-haptics";
 import { AppIcon } from "@/components/app-icon";
 import { useTheme, lightColors, darkColors } from "@/providers/theme-provider";
 
+/**
+ * Kuro-Sakura Design Tokens (Luckynime v2.0)
+ * Warm Charcoal-Obsidian + Crimson Flame & Sakura Coral.
+ */
 export const nothing = {
-  black: "#090909",
-  surface: "#141414",
-  raised: "#1C1C1C",
-  line: "#343434",
-  white: "#F6F6F2",
-  muted: "#A2A2A0",
-  dim: "#666664",
-  red: "#FF4D4D",
-  green: "#96D37B",
+  black: "#0D080B",
+  surface: "#180F15",
+  raised: "#23161F",
+  panel: "#2C1B26",
+  line: "rgba(251, 113, 133, 0.16)",
+  lineStrong: "rgba(244, 63, 94, 0.35)",
+  white: "#FFF5F7",
+  muted: "#C4A6B3",
+  dim: "#7F6270",
+  red: "#F43F5E",
+  crimson: "#E11D48",
+  sakura: "#FB7185",
+  sakuraSoft: "rgba(251, 113, 133, 0.14)",
+  crimsonSoft: "rgba(244, 63, 94, 0.16)",
+  amber: "#FBBF24",
+  green: "#34D399",
   font: "SpaceGrotesk-Regular",
   fontMedium: "SpaceGrotesk-Medium",
   fontBold: "SpaceGrotesk-SemiBold",
-  mono: "monospace" as const,
-  /** Standard press feedback: opacity dim + subtle scale-in. */
-  pressed: { opacity: 0.72, transform: [{ scale: 0.97 }] } as const,
-  /** Lighter press feedback: opacity only, no scale. For buttons and chips. */
-  pressedSubtle: { opacity: 0.78 } as const,
-  /** Tight tracking for headlines and large display text. */
+  mono: Platform.select({ ios: "Menlo", android: "monospace", default: "monospace" }),
+  pressed: { opacity: 0.84, transform: [{ scale: 0.975 }] } as const,
+  pressedSubtle: { opacity: 0.80 } as const,
   trackingTight: -0.65 as const,
-  /** Normal tracking for body copy, labels, and meta. */
   trackingNormal: 0.3 as const,
-  /** Wide tracking for uppercase kickers, eyebrow labels, and small caps. */
   trackingWide: 0.6 as const,
 } as const;
 
@@ -44,24 +50,64 @@ export function useThemeColors() {
     muted: c.muted,
     dim: c.dim,
     red: c.accent,
-    green: isDark ? "#96D37B" : "#4CAF50",
+    green: isDark ? "#34D399" : "#059669",
     card: c.card,
     cardBorder: c.cardBorder,
   };
 }
 
-export function DotLabel({ children, tone = "muted" }: { children: ReactNode; tone?: "muted" | "signal" | "live" }) {
-  const color = tone === "signal" || tone === "live" ? nothing.red : nothing.muted;
-  const isDownloadLabel = children === "OFFLINE";
-  if (isDownloadLabel) return <View style={styles.downloadLabel}><AppIcon name="download" size={12} color={color} /><Text style={[styles.dotLabel, { color }]}>DOWNLOADS</Text></View>;
-  return <Text style={[styles.dotLabel, { color }]}>{children}</Text>;
+export function DotLabel({
+  children,
+  tone = "muted",
+  style,
+}: {
+  children: ReactNode;
+  tone?: "muted" | "white" | "red" | "signal" | "live";
+  style?: StyleProp<TextStyle>;
+}) {
+  const color =
+    tone === "red" || tone === "signal" || tone === "live"
+      ? nothing.sakura
+      : tone === "white"
+        ? nothing.white
+        : nothing.muted;
+  const text = typeof children === "string" ? children.trim().toLowerCase() : "";
+  if (text === "download" || text === "offline") {
+    return (
+      <View style={styles.downloadLabel}>
+        <AppIcon name="download" size={12} color={color} />
+        <Text style={[styles.dotLabel, { color }, style]}>
+          {children === "OFFLINE" ? "DOWNLOADS" : children}
+        </Text>
+      </View>
+    );
+  }
+  return <Text style={[styles.dotLabel, { color }, style]}>{children}</Text>;
 }
 
 export function LuckynimeMark({ size = 34, inverted = false }: { size?: number; inverted?: boolean }) {
-  const face = inverted ? nothing.white : nothing.black;
-  const ink = inverted ? nothing.black : nothing.white;
-  return <View style={[styles.mark, { width: size, height: size, borderRadius: Math.round(size * 0.31), backgroundColor: face, borderColor: inverted ? nothing.white : nothing.line }]}><View style={[styles.markOrbit, { borderColor: ink }]} /><View style={[styles.markDot, { backgroundColor: inverted ? nothing.green : nothing.black }]} /></View>;
+  const bg = inverted ? nothing.red : nothing.surface;
+  const fg = "#FFF5F7";
+  return (
+    <View
+      style={[
+        styles.mark,
+        {
+          width: size,
+          height: size,
+          borderRadius: Math.round(size * 0.34),
+          backgroundColor: bg,
+          borderColor: inverted ? nothing.sakura : nothing.lineStrong,
+        },
+      ]}
+    >
+      <View style={[styles.markOrbit, { borderColor: fg }]} />
+      <View style={[styles.markDot, { backgroundColor: inverted ? "#FFF5F7" : nothing.red }]} />
+    </View>
+  );
 }
+
+export const NothingMark = LuckynimeMark;
 
 export function NothingCard({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   return <View style={[styles.card, style]}>{children}</View>;
@@ -72,16 +118,22 @@ export function NothingButton({
   onPress,
   variant = "primary",
   disabled = false,
+  accessibilityLabel,
+  accessibilityHint,
 }: {
   label: string;
   onPress: (event: GestureResponderEvent) => void;
   variant?: "primary" | "outline" | "danger";
   disabled?: boolean;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={accessibilityLabel ?? label}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled: Boolean(disabled) }}
       disabled={disabled}
       onPress={(event) => {
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -96,33 +148,62 @@ export function NothingButton({
         pressed && styles.pressed,
       ]}
     >
-      <Text style={[styles.buttonText, variant === "primary" ? styles.primaryButtonText : styles.outlineButtonText]}>{label}</Text>
+      <Text style={[styles.buttonText, variant === "primary" ? styles.primaryButtonText : styles.outlineButtonText]}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
 
 export function Signal({ label, tone = "live" }: { label: string; tone?: "live" | "signal" | "muted" }) {
   const color = tone === "signal" || tone === "live" ? nothing.red : nothing.muted;
-  return <View style={styles.signalRow}><View style={[styles.signalDot, { backgroundColor: color }]} /><Text style={[styles.signalText, { color }]}>{label}</Text></View>;
+  return (
+    <View style={styles.signalRow}>
+      <View style={[styles.signalDot, { backgroundColor: color }]} />
+      <Text style={[styles.signalText, { color }]}>{label}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  dotLabel: { fontFamily: nothing.mono, fontSize: 10, fontWeight: "800", letterSpacing: 1, textTransform: "uppercase" },
+  dotLabel: { fontFamily: "SpaceGrotesk-SemiBold", fontSize: 10.5, fontWeight: "800", letterSpacing: 0.9, textTransform: "uppercase" },
   downloadLabel: { flexDirection: "row", alignItems: "center", gap: 5 },
   mark: { alignItems: "center", justifyContent: "center", borderWidth: 1, overflow: "hidden" },
-  markOrbit: { width: "56%", height: "56%", borderWidth: 2, borderRadius: 99, opacity: 0.9 },
+  markOrbit: { width: "54%", height: "54%", borderWidth: 2, borderRadius: 99, opacity: 0.92 },
   markDot: { width: 5, height: 5, borderRadius: 99, position: "absolute", right: "22%", bottom: "22%" },
-  card: { backgroundColor: nothing.surface, borderWidth: 1, borderColor: nothing.line, borderRadius: 8, overflow: "hidden" },
-  button: { alignItems: "center", justifyContent: "center", minHeight: 50, borderRadius: 8, paddingHorizontal: 18, borderWidth: 1 },
-  primaryButton: { backgroundColor: nothing.white, borderColor: nothing.white },
-  outlineButton: { backgroundColor: "transparent", borderColor: nothing.line },
-  dangerButton: { backgroundColor: "rgba(255,77,77,0.12)", borderColor: "rgba(255,77,77,0.55)" },
+  card: {
+    backgroundColor: nothing.surface,
+    borderWidth: 1,
+    borderColor: nothing.line,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 48,
+    borderRadius: 14,
+    paddingHorizontal: 18,
+    borderWidth: 1,
+  },
+  primaryButton: {
+    backgroundColor: nothing.red,
+    borderColor: nothing.sakura,
+  },
+  outlineButton: {
+    backgroundColor: "rgba(244, 63, 94, 0.08)",
+    borderColor: nothing.lineStrong,
+  },
+  dangerButton: {
+    backgroundColor: "rgba(239, 68, 68, 0.14)",
+    borderColor: "rgba(239, 68, 68, 0.50)",
+  },
   disabledButton: { opacity: 0.45 },
   pressed: nothing.pressed,
-  buttonText: { fontSize: 13, fontWeight: "900", letterSpacing: 0.25, textTransform: "uppercase" },
-  primaryButtonText: { color: nothing.black },
+  buttonText: { fontFamily: "Nunito-ExtraBold", fontSize: 13, fontWeight: "900", letterSpacing: 0.35 },
+  primaryButtonText: { color: "#FFFFFF" },
   outlineButtonText: { color: nothing.white },
   signalRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   signalDot: { width: 7, height: 7, borderRadius: 4 },
-  signalText: { fontSize: 10, fontWeight: "700", letterSpacing: 1 },
+  signalText: { fontFamily: "SpaceGrotesk-SemiBold", fontSize: 10, fontWeight: "700", letterSpacing: 0.9 },
 });

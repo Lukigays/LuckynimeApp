@@ -1,11 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Image } from "expo-image";
-import { router, useLocalSearchParams } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Alert,
-  Platform,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -14,21 +8,25 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router, useLocalSearchParams } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQuery } from "@tanstack/react-query";
 import { getAnimePage, getHomeAnime, getHomeRailAnime } from "@/lib/anilist";
 import { BANNER_W, POSTER_W, getOptimizedImageUri } from "@/lib/image-optimization";
 import { nsfwFilterParam, useNsfwPreference } from "@/lib/nsfw-preference";
-import { animeTitle } from "@/lib/types";
+import { animeTitle, type Anime } from "@/lib/types";
 import { hapticLight } from "@/lib/haptics";
 import { usePrefetchAnime } from "@/lib/prefetch";
 import { AnimeRail } from "@/components/anime-rail";
 import { ErrorState } from "@/components/async-state";
-import { SkeletonCard, SkeletonRail, SkeletonHero } from "@/components/skeleton";
+import { SkeletonHero, SkeletonRail } from "@/components/skeleton";
 import { NotificationSheet } from "@/components/notification-sheet";
 import { AppIcon } from "@/components/app-icon";
 import { InAppEpisodeAlertMonitor } from "@/hooks/use-in-app-episode-alerts";
 import { useWatchHistory } from "@/hooks/use-watch-history";
-import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useLuckynimeAuth } from "@/providers/auth-provider";
 import { useExp } from "@/providers/exp-toast-provider";
@@ -38,33 +36,63 @@ import { HomePublicDiscussionBar } from "@/components/home-public-discussion-bar
 
 export const SERIES_GENRES = [
   { id: "Action", label: "Action" },
-  { id: "Game", label: "Game" },
-  { id: "Fantasy", label: "Fantasy" },
-  { id: "Sci-Fi", label: "Sci-Fi" },
-  { id: "Adventure", label: "Adventure" },
-  { id: "Comedy", label: "Comedy" },
   { id: "Romance", label: "Romance" },
+  { id: "Fantasy", label: "Fantasy" },
+  { id: "Comedy", label: "Comedy" },
+  { id: "Adventure", label: "Adventure" },
+  { id: "Drama", label: "Drama" },
+  { id: "Sci-Fi", label: "Sci-Fi" },
   { id: "Mystery", label: "Mystery" },
   { id: "Supernatural", label: "Supernatural" },
-  { id: "Sports", label: "Sports" },
   { id: "Slice of Life", label: "Slice of Life" },
-  { id: "Drama", label: "Drama" },
-  { id: "Mecha", label: "Mecha" },
-  { id: "Music", label: "Music" },
+  { id: "Sports", label: "Sports" },
   { id: "Psychological", label: "Psychological" },
   { id: "Horror", label: "Horror" },
 ] as const;
 
-let memoryCachedHome: { trending: any[]; popular: any[]; upcoming: any[] } | null = null;
+const QUICK_HUBS: { label: string; sub: string; icon: string; route: string }[] = [
+  {
+    label: "Trending",
+    sub: "Paling Ramai",
+    icon: "fire",
+    route: "/search?sort=TRENDING_DESC&title=Trending%20Hari%20Ini",
+  },
+  {
+    label: "Musim Ini",
+    sub: "Episode Baru",
+    icon: "television-play",
+    route: "/search?status=RELEASING&sort=POPULARITY_DESC&title=Tayang%20Musim%20Ini",
+  },
+  {
+    label: "Bioskop",
+    sub: "Top Movie",
+    icon: "movie-open-outline",
+    route: "/search?format=MOVIE&sort=SCORE_DESC&title=Film%20Anime%20Terbaik",
+  },
+  {
+    label: "Sultan",
+    sub: "Leaderboard",
+    icon: "trophy-outline",
+    route: "/leaderboard",
+  },
+];
+
+function getTimeGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour >= 4 && hour < 11) return "Selamat Pagi";
+  if (hour >= 11 && hour < 15) return "Selamat Siang";
+  if (hour >= 15 && hour < 19) return "Selamat Sore";
+  return "Selamat Malam";
+}
+
+let memoryCachedHome: { trending: Anime[]; popular: Anime[]; upcoming: Anime[] } | null = null;
 
 export default function HomeScreen() {
-  const { width: windowWidth } = useWindowDimensions();
-  // 16 horizontal padding on each side = 32 total. 3 gaps of 8px between 4 items = 24.
-  const genreColWidth = Math.floor((Math.min(windowWidth, 600) - 32 - 24) / 4);
+  useWindowDimensions();
   const prefetch = usePrefetchAnime();
   const nsfw = useNsfwPreference();
   const auth = useLuckynimeAuth();
-  const bookmarks = useBookmarks();
+  const watchHistory = useWatchHistory();
   const { grantXp } = useExp();
   const dailyLoginChecked = useRef(false);
 
@@ -88,6 +116,11 @@ export default function HomeScreen() {
   const [notifSheetVisible, setNotifSheetVisible] = useState(false);
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
   const [selectedGenre, setSelectedGenre] = useState<string>("Action");
+  const [cachedHome, setCachedHome] = useState<{
+    trending: Anime[];
+    popular: Anime[];
+    upcoming: Anime[];
+  } | null>(memoryCachedHome);
 
   useEffect(() => {
     if (params?.openMailbox === "true") {
@@ -95,9 +128,6 @@ export default function HomeScreen() {
     }
   }, [params?.openMailbox]);
 
-  const [cachedHome, setCachedHome] = useState<{ trending: any[]; popular: any[]; upcoming: any[] } | null>(memoryCachedHome);
-
-  // Load cached home data instantly on startup for zero-delay first paint
   useEffect(() => {
     void AsyncStorage.getItem(`luckynime.cache.home.${isAdultParam}`).then((raw) => {
       if (raw) {
@@ -121,16 +151,16 @@ export default function HomeScreen() {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 4000),
   });
 
-  // Save fresh home data to cache
   useEffect(() => {
     if (home.data && home.data.trending && home.data.trending.length > 0) {
       memoryCachedHome = home.data;
-      void AsyncStorage.setItem(`luckynime.cache.home.${isAdultParam}`, JSON.stringify(home.data)).catch(() => {});
+      void AsyncStorage.setItem(
+        `luckynime.cache.home.${isAdultParam}`,
+        JSON.stringify(home.data)
+      ).catch(() => {});
     }
   }, [home.data, isAdultParam]);
 
-  // Secondary rails only fetch AFTER the hero & trending cards have arrived,
-  // preventing network bottleneck and AniList rate limit choke during initial load
   const rails = useQuery({
     queryKey: ["home-rails", isAdultParam],
     queryFn: () => getHomeRailAnime(isAdultParam),
@@ -167,18 +197,31 @@ export default function HomeScreen() {
     staleTime: 10 * 60_000,
   });
 
+  const continueWatchingItems = useMemo(() => {
+    const rows = watchHistory.displayRows ?? [];
+    const seen = new Set<number>();
+    const unique: typeof rows = [];
+    for (const r of rows) {
+      const aid = Number(r?.anime_id);
+      if (!aid || seen.has(aid)) continue;
+      seen.add(aid);
+      unique.push(r);
+      if (unique.length >= 8) break;
+    }
+    return unique;
+  }, [watchHistory.displayRows]);
+
   const [refreshing, setRefreshing] = useState(false);
 
-  const trendingList = home.data?.trending || [];
+  const trendingList: Anime[] = home.data?.trending || [];
   const heroCount = Math.min(trendingList.length, 5);
   const touchStartX = useRef<number>(0);
 
-  // Auto-slide featured banner setiap 5 detik
   useEffect(() => {
     if (heroCount <= 1) return;
     const timer = setInterval(() => {
       setActiveBannerIndex((prev) => (prev + 1) % heroCount);
-    }, 5000);
+    }, 5500);
     return () => clearInterval(timer);
   }, [heroCount, activeBannerIndex]);
 
@@ -194,7 +237,7 @@ export default function HomeScreen() {
         <InAppEpisodeAlertMonitor />
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <SkeletonHero />
-          <Text style={styles.skeletonRailLabel}>MEMUAT ANIME POPULER...</Text>
+          <Text style={styles.skeletonRailLabel}>MENYIAPKAN PANGGUNG LUCKYNIME...</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.skeletonRailRow}>
             {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonRail key={i} />
@@ -210,7 +253,7 @@ export default function HomeScreen() {
       <SafeAreaView edges={["top", "left", "right"]} style={styles.container}>
         <InAppEpisodeAlertMonitor />
         <ErrorState
-          message={home.error?.message ?? "Gagal memuat anime saat ini."}
+          message={home.error?.message ?? "Gagal memuat katalog anime saat ini."}
           onRetry={() => void home.refetch()}
         />
       </SafeAreaView>
@@ -218,18 +261,17 @@ export default function HomeScreen() {
   }
 
   const heroList = trendingList.slice(0, 5);
-  const currentHero = heroList[activeBannerIndex % (heroList.length || 1)] || trendingList[0];
+  const safeHeroIdx = activeBannerIndex % (heroList.length || 1);
+  const currentHero = heroList[safeHeroIdx] || trendingList[0];
   const top10Popular = trendingList.slice(0, 10);
 
-  const displayName =
+  const greetingName =
+    auth.profile?.display_name ||
+    auth.profile?.username ||
     auth.user?.user_metadata?.full_name ||
     auth.user?.user_metadata?.name ||
     auth.user?.email?.split("@")[0] ||
-    "Official Valoranime #25";
-
-  const avatarUri =
-    auth.user?.user_metadata?.avatar_url ||
-    "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=120&q=80";
+    "Sobat Luckynime";
 
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.container}>
@@ -238,91 +280,110 @@ export default function HomeScreen() {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#38BDF8" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#F43F5E" />
         }
         showsVerticalScrollIndicator={false}
       >
         {/* ══════════════════════════════════════════════════════════════
-            1. TOP APP BAR (LUCKYNIME BRAND & ACTIONS)
+            1. KURO-SAKURA HEADER + INTEGRATED SEARCH PILL BAR
             ══════════════════════════════════════════════════════════════ */}
-        <View style={styles.topHeaderBar}>
-          {/* Official Luckynime Logo Emblem */}
-          <View style={styles.brandLogoContainer}>
-            <Image
-              source={require("@/assets/images/luckynime-logo.png")}
-              style={styles.brandLogoImg}
-              contentFit="contain"
-            />
+        <View style={styles.headerBlock}>
+          <View style={styles.topHeaderBar}>
+            <View style={styles.brandCluster}>
+              <Image
+                source={require("@/assets/images/luckynime-logo.png")}
+                style={styles.brandLogoImg}
+                contentFit="contain"
+              />
+              <View style={styles.greetingWrap}>
+                <Text style={styles.greetingSub}>{getTimeGreeting()}</Text>
+                <Text style={styles.greetingUser} numberOfLines={1}>
+                  {greetingName}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.topHeaderActions}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Top Up Crystal"
+                onPress={() => {
+                  hapticLight();
+                  router.push("/topup" as never);
+                }}
+                style={({ pressed }) => [styles.crystalPillBtn, pressed && styles.btnPressed]}
+                hitSlop={10}
+              >
+                <Image
+                  source={require("@/assets/images/topup/topup-crystal.png")}
+                  style={styles.headerCrystalImg}
+                  contentFit="contain"
+                />
+                <Text style={styles.crystalPillLabel}>Crystal</Text>
+              </Pressable>
+
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Kotak Masuk dan Notifikasi"
+                onPress={() => {
+                  hapticLight();
+                  setNotifSheetVisible(true);
+                }}
+                style={({ pressed }) => [styles.headerActionCircle, pressed && styles.btnPressed]}
+                hitSlop={10}
+              >
+                <AppIcon name="bell" size={19} color="#FFF5F7" />
+                {unreadNotifCount > 0 ? <View style={styles.notifBadgeDot} /> : null}
+              </Pressable>
+            </View>
           </View>
 
-          {/* Right Action Icons: Chat Global, Search, Notifications/Hadiah & DylanCrystal */}
-          <View style={styles.topHeaderActions}>
+          {/* Integrated Search Capsule + Quick Random Pick */}
+          <View style={styles.searchStripRow}>
             <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Chat Global"
-              onPress={() => {
-                hapticLight();
-                router.push("/chat-global" as never);
-              }}
-              style={({ pressed }) => [styles.headerIconBtn, pressed && styles.btnPressed]}
-              hitSlop={10}
-            >
-              <AppIcon name="chat" size={21} color="#FFFFFF" />
-            </Pressable>
-
-            <Pressable
+              accessibilityRole="search"
+              accessibilityLabel="Cari judul anime, genre, atau studio"
               onPress={() => {
                 hapticLight();
                 router.push("/search" as never);
               }}
-              style={({ pressed }) => [styles.headerIconBtn, pressed && styles.btnPressed]}
-              accessibilityLabel="Pencarian"
-              hitSlop={10}
+              style={({ pressed }) => [styles.searchCapsule, pressed && styles.btnPressed]}
             >
-              <AppIcon name="magnify" size={22} color="#FFFFFF" />
-            </Pressable>
-
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Notifikasi dan Hadiah"
-              onPress={() => {
-                hapticLight();
-                setNotifSheetVisible(true);
-              }}
-              style={({ pressed }) => [styles.headerIconBtn, pressed && styles.btnPressed]}
-              hitSlop={10}
-            >
-              <View style={{ position: "relative" }}>
-                <AppIcon name="bell" size={22} color="#FFFFFF" />
-                {unreadNotifCount > 0 ? <View style={styles.notifBadgeDot} /> : null}
+              <AppIcon name="magnify" size={18} color="#FB7185" />
+              <Text style={styles.searchPlaceholder} numberOfLines={1}>
+                Cari anime, genre, atau musim...
+              </Text>
+              <View style={styles.searchKbdTag}>
+                <Text style={styles.searchKbdText}>CARI</Text>
               </View>
             </Pressable>
 
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Top Up Crystal"
+              accessibilityLabel="Pilih anime acak dari trending"
               onPress={() => {
                 hapticLight();
-                router.push("/topup" as never);
+                if (trendingList.length > 0) {
+                  const pick = trendingList[Math.floor(Math.random() * trendingList.length)];
+                  prefetch(pick.id);
+                  router.push(`/anime/${pick.id}` as never);
+                } else {
+                  router.push("/(tabs)/random" as never);
+                }
               }}
-              style={({ pressed }) => [styles.headerCrystalBtn, pressed && styles.btnPressed]}
-              hitSlop={14}
+              style={({ pressed }) => [styles.diceBtn, pressed && styles.btnPressed]}
             >
-              <Image
-                source={require("@/assets/images/topup/topup-crystal.png")}
-                style={styles.headerCrystalImg}
-                contentFit="contain"
-              />
+              <AppIcon name="shuffle-variant" size={18} color="#FFF5F7" />
             </Pressable>
           </View>
         </View>
 
         {/* ══════════════════════════════════════════════════════════════
-            2. FEATURED CAROUSEL BANNER (LIQUID GLASS)
+            2. SAKURA CINEMA STAGE — SPLIT-POSTER SPOTLIGHT HERO
             ══════════════════════════════════════════════════════════════ */}
         {currentHero ? (
           <View
-            style={styles.heroSection}
+            style={styles.heroWrapper}
             onTouchStart={(e) => {
               touchStartX.current = e.nativeEvent.pageX;
             }}
@@ -342,9 +403,9 @@ export default function HomeScreen() {
               onPress={() => {
                 hapticLight();
                 prefetch(currentHero.id);
-                router.push((`/anime/${currentHero.id}`) as never);
+                router.push(`/anime/${currentHero.id}` as never);
               }}
-              style={({ pressed }) => [styles.heroCard, pressed && styles.btnPressed]}
+              style={({ pressed }) => [styles.heroStageCard, pressed && styles.btnPressed]}
             >
               <Image
                 source={{
@@ -356,163 +417,291 @@ export default function HomeScreen() {
                 }}
                 style={StyleSheet.absoluteFill}
                 contentFit="cover"
-                transition={400}
-                cachePolicy="memory-disk"
+                transition={350}
               />
-              {/* Gradient Dark Overlay */}
-              <View style={styles.heroDarkMask} />
+              <LinearGradient
+                colors={[
+                  "rgba(13, 8, 11, 0.35)",
+                  "rgba(20, 10, 16, 0.84)",
+                  "rgba(13, 8, 11, 0.98)",
+                ]}
+                locations={[0, 0.52, 1]}
+                style={StyleSheet.absoluteFill}
+              />
 
-              {/* Top Badges */}
-              <View style={styles.heroTopBadges}>
-                <View style={styles.populerBadge}>
-                  <Text style={styles.populerBadgeText}>POPULER</Text>
+              <View style={styles.stageTopBar}>
+                <View style={styles.spotlightRibbon}>
+                  <View style={styles.spotlightPulse} />
+                  <Text style={styles.spotlightRibbonText}>
+                    SPOTLIGHT #{safeHeroIdx + 1}
+                  </Text>
                 </View>
-                <View style={styles.scoreBadge}>
-                  <Text style={styles.scoreStarText}>★</Text>
-                  <Text style={styles.scoreValueText}>
-                    {currentHero.averageScore
-                      ? (currentHero.averageScore / 10).toFixed(1)
-                      : "8.2"}
+
+                <View style={styles.stageCounterPill}>
+                  <Text style={styles.stageCounterText}>
+                    0{safeHeroIdx + 1} / 0{heroList.length}
                   </Text>
                 </View>
               </View>
 
-              {/* Bottom Details */}
-              <View style={styles.heroBottomContent}>
-                <Text style={styles.heroTitle} numberOfLines={2}>
-                  {animeTitle(currentHero)}
-                </Text>
-
-                <View style={styles.heroMetaRow}>
-                  <View style={styles.heroEpsBadge}>
-                    <Text style={styles.heroEpsBadgeText}>
-                      {currentHero.episodes ? `${currentHero.episodes} Eps` : "Ongoing"}
-                    </Text>
-                  </View>
-                  <Text style={styles.heroSubText}>Sub Indo</Text>
-                  <View style={styles.heroHdBadge}>
-                    <Text style={styles.heroHdBadgeText}>HD</Text>
-                  </View>
+              <View style={styles.stageBodyRow}>
+                <View style={styles.stagePosterFrame}>
+                  <Image
+                    source={{
+                      uri: getOptimizedImageUri(
+                        currentHero.coverImage?.extraLarge || currentHero.coverImage?.large || "",
+                        POSTER_W
+                      ),
+                    }}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                    transition={220}
+                  />
                 </View>
 
-                {/* Interactive Action Buttons */}
-                <View style={styles.heroActionsRow}>
-                  <Pressable
-                    onPress={() => {
-                      hapticLight();
-                      prefetch(currentHero.id);
-                      router.push((`/anime/${currentHero.id}`) as never);
-                    }}
-                    style={({ pressed }) => [
-                      styles.heroTontonBtn,
-                      pressed && styles.btnPressed,
-                    ]}
-                  >
-                    <AppIcon name="play" size={13} color="#FFFFFF" />
-                    <Text style={styles.heroTontonText}>Tonton Sekarang</Text>
-                  </Pressable>
+                <View style={styles.stageInfoCol}>
+                  <Text style={styles.stageTitle} numberOfLines={2}>
+                    {animeTitle(currentHero)}
+                  </Text>
 
-                  <Pressable
-                    onPress={() => {
-                      hapticLight();
-                      prefetch(currentHero.id);
-                      router.push((`/anime/${currentHero.id}`) as never);
-                    }}
-                    style={({ pressed }) => [
-                      styles.heroDetailBtn,
-                      pressed && styles.btnPressed,
-                    ]}
-                  >
-                    <AppIcon name="movie-open-outline" size={15} color="#E2E8F0" />
-                    <Text style={styles.heroDetailText}>Detail</Text>
-                  </Pressable>
+                  <View style={styles.stageChipsRow}>
+                    <View style={styles.stageScoreChip}>
+                      <Text style={styles.stageStar}>★</Text>
+                      <Text style={styles.stageScoreVal}>
+                        {currentHero.averageScore
+                          ? (currentHero.averageScore / 10).toFixed(1)
+                          : "8.5"}
+                      </Text>
+                    </View>
+                    <View style={styles.stageEpChip}>
+                      <Text style={styles.stageEpText}>
+                        {currentHero.episodes ? `${currentHero.episodes} EP` : "ONGOING"}
+                      </Text>
+                    </View>
+                    <View style={styles.stageSubChip}>
+                      <Text style={styles.stageSubText}>SUB INDO</Text>
+                    </View>
+                  </View>
+
+                  {currentHero.genres?.length ? (
+                    <Text style={styles.stageGenresLine} numberOfLines={1}>
+                      {currentHero.genres.slice(0, 3).join(" • ")}
+                    </Text>
+                  ) : null}
+
+                  <View style={styles.stageActionsRow}>
+                    <Pressable
+                      onPress={() => {
+                        hapticLight();
+                        prefetch(currentHero.id);
+                        router.push(`/anime/${currentHero.id}` as never);
+                      }}
+                      style={({ pressed }) => [
+                        styles.stagePrimaryBtn,
+                        pressed && styles.btnPressed,
+                      ]}
+                    >
+                      <AppIcon name="play" size={14} color="#FFFFFF" />
+                      <Text style={styles.stagePrimaryBtnText}>Putar</Text>
+                    </Pressable>
+
+                    <Pressable
+                      onPress={() => {
+                        hapticLight();
+                        prefetch(currentHero.id);
+                        router.push(`/anime/${currentHero.id}` as never);
+                      }}
+                      style={({ pressed }) => [
+                        styles.stageSecondaryBtn,
+                        pressed && styles.btnPressed,
+                      ]}
+                    >
+                      <Text style={styles.stageSecondaryBtnText}>Sinopsis</Text>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
-            </Pressable>
 
-            {/* Carousel Dot Indicators */}
-            <View style={styles.heroDotsRow}>
-              {heroList.map((_, idx) => {
-                const isActive = idx === (activeBannerIndex % (heroList.length || 1));
-                return (
-                  <Pressable
-                    key={idx}
-                    onPress={() => {
-                      hapticLight();
-                      setActiveBannerIndex(idx);
-                    }}
-                    hitSlop={10}
-                    style={[
-                      styles.heroDot,
-                      isActive ? styles.heroDotActive : styles.heroDotInactive,
-                    ]}
-                  />
-                );
-              })}
-            </View>
+              <View style={styles.stageSegmentsRow}>
+                {heroList.map((_: Anime, idx: number) => {
+                  const active = idx === safeHeroIdx;
+                  return (
+                    <Pressable
+                      key={idx}
+                      onPress={() => {
+                        hapticLight();
+                        setActiveBannerIndex(idx);
+                      }}
+                      hitSlop={8}
+                      style={[
+                        styles.stageSegment,
+                        active ? styles.stageSegmentActive : styles.stageSegmentIdle,
+                      ]}
+                    />
+                  );
+                })}
+              </View>
+            </Pressable>
           </View>
         ) : null}
 
         {/* ══════════════════════════════════════════════════════════════
-            4.5 PUBLIC DISKUSI (AKSES LANGSUNG KE CHAT GLOBAL)
+            3. BENTO QUICK HUBS (4 AKSES CEPAT)
             ══════════════════════════════════════════════════════════════ */}
-        <HomePublicDiscussionBar />
+        <View style={styles.quickHubGrid}>
+          {QUICK_HUBS.map((hub) => (
+            <Pressable
+              key={hub.label}
+              accessibilityRole="button"
+              accessibilityLabel={hub.label}
+              onPress={() => {
+                hapticLight();
+                router.push(hub.route as never);
+              }}
+              style={({ pressed }) => [styles.quickHubCard, pressed && styles.btnPressed]}
+            >
+              <View style={styles.quickHubIconWrap}>
+                <AppIcon name={hub.icon as any} size={17} color="#FB7185" />
+              </View>
+              <Text style={styles.quickHubTitle} numberOfLines={1}>
+                {hub.label}
+              </Text>
+              <Text style={styles.quickHubSub} numberOfLines={1}>
+                {hub.sub}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
 
         {/* ══════════════════════════════════════════════════════════════
-            5. TOP LEADERBOARD CARD (REALTIME)
+            4. LANJUTKAN TONTONANMU (CONTINUE WATCHING STRIP)
             ══════════════════════════════════════════════════════════════ */}
-        <HomeTopLeaderboard />
+        {continueWatchingItems.length > 0 ? (
+          <View style={styles.sectionBlock}>
+            <View style={styles.sectionHead}>
+              <View style={styles.sectionHeadLeft}>
+                <View style={styles.sakuraGem}>
+                  <View style={styles.sakuraGemInner} />
+                </View>
+                <View>
+                  <Text style={styles.sectionEyebrow}>TERAKHIR DIPUTAR</Text>
+                  <Text style={styles.sectionTitle}>Lanjutkan Tontonan</Text>
+                </View>
+              </View>
+              <Pressable
+                onPress={() => router.push("/(tabs)/history" as never)}
+                style={({ pressed }) => [styles.sectionMorePill, pressed && styles.btnPressed]}
+              >
+                <Text style={styles.sectionMoreText}>Jejak</Text>
+                <AppIcon name="arrow-right" size={12} color="#FB7185" />
+              </Pressable>
+            </View>
 
-        {/* ══════════════════════════════════════════════════════════════
-            5.5. ANIME TERBARU (REKOMENDASI ANIME TERBARU)
-            ══════════════════════════════════════════════════════════════ */}
-        {(latestAnime.data?.length || rails.data?.ongoing?.length) ? (
-          <AnimeRail
-            title="Anime Terbaru"
-            items={latestAnime.data?.length ? latestAnime.data : (rails.data?.ongoing ?? [])}
-            seeAllParams={{ status: "RELEASING", sort: "TRENDING_DESC", title: "Anime Terbaru" }}
-          />
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.continueRail}
+            >
+              {continueWatchingItems.map((item: any) => {
+                const prog = Number(item.progress) || 0;
+                const dur = Math.max(Number(item.duration) || 1440, 1);
+                const pct = Math.min(100, Math.max(6, Math.round((prog / dur) * 100)));
+                const epNum = Number(item.episode_number ?? item.episode ?? 1);
+                return (
+                  <Pressable
+                    key={`${item.anime_id}-${epNum}`}
+                    onPress={() => {
+                      hapticLight();
+                      router.push({
+                        pathname: "/watch/[id]",
+                        params: {
+                          id: String(item.anime_id),
+                          ep: String(epNum),
+                          title: item.episode_title ?? `Episode ${epNum}`,
+                        },
+                      } as never);
+                    }}
+                    style={({ pressed }) => [styles.continueCard, pressed && styles.btnPressed]}
+                  >
+                    <Image
+                      source={{ uri: item.anime_image || "" }}
+                      style={StyleSheet.absoluteFill}
+                      contentFit="cover"
+                    />
+                    <LinearGradient
+                      colors={["rgba(13,8,11,0.20)", "rgba(13,8,11,0.92)"]}
+                      style={StyleSheet.absoluteFill}
+                    />
+                    <View style={styles.continuePlayCircle}>
+                      <AppIcon name="play" size={14} color="#FFFFFF" />
+                    </View>
+                    <View style={styles.continueMeta}>
+                      <Text style={styles.continueEpTag}>EPISODE {epNum}</Text>
+                      <Text style={styles.continueAnimeTitle} numberOfLines={1}>
+                        {item.anime_title || "Anime"}
+                      </Text>
+                      <View style={styles.continueBarTrack}>
+                        <View style={[styles.continueBarFill, { width: `${pct}%` }]} />
+                      </View>
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
         ) : null}
 
         {/* ══════════════════════════════════════════════════════════════
-            6. TOP 10 ANIME TERPOPULER
+            5. SAKURA LOUNGE (LIVE CHAT) & HALL OF FAME (TOP SULTAN)
             ══════════════════════════════════════════════════════════════ */}
-        <View style={styles.sectionWrap}>
-          <View style={styles.sectionHeaderRow}>
-            <View style={styles.sectionHeaderLeft}>
-              <View style={styles.verticalBar} />
-              <Text style={styles.sectionTitleText}>Top 10 Anime Terpopuler</Text>
+        <HomePublicDiscussionBar />
+        <HomeTopLeaderboard />
+
+        {/* ══════════════════════════════════════════════════════════════
+            6. TOP 10 PERINGKAT ANIME (JAPANESE GIANT RANK NUMBERS)
+            ══════════════════════════════════════════════════════════════ */}
+        <View style={styles.sectionBlock}>
+          <View style={styles.sectionHead}>
+            <View style={styles.sectionHeadLeft}>
+              <View style={styles.sakuraGem}>
+                <View style={styles.sakuraGemInner} />
+              </View>
+              <View>
+                <Text style={styles.sectionEyebrow}>CHART HARIAN</Text>
+                <Text style={styles.sectionTitle}>Top 10 Paling Dicari</Text>
+              </View>
             </View>
             <Pressable
               onPress={() =>
                 router.push({
                   pathname: "/search",
-                  params: { sort: "POPULARITY_DESC", title: "Top 10 Anime" },
+                  params: { sort: "POPULARITY_DESC", title: "Top Peringkat Anime" },
                 } as never)
               }
+              style={({ pressed }) => [styles.sectionMorePill, pressed && styles.btnPressed]}
             >
-              <Text style={styles.rankingLinkText}>Ranking Lengkap &gt;</Text>
+              <Text style={styles.sectionMoreText}>Semua</Text>
+              <AppIcon name="arrow-right" size={12} color="#FB7185" />
             </Pressable>
           </View>
 
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalRailContent}
+            contentContainerStyle={styles.top10Rail}
           >
-            {top10Popular.map((item) => {
+            {top10Popular.map((item: Anime, idx: number) => {
+              const rankStr = String(idx + 1).padStart(2, "0");
               const isFinished =
                 item.status?.toUpperCase() === "FINISHED" ||
                 item.status?.toUpperCase() === "COMPLETED";
-              const statusBadge = isFinished
+              const epBadge = isFinished
                 ? "TAMAT"
                 : item.nextAiringEpisode?.episode
                   ? `EP ${item.nextAiringEpisode.episode}`
                   : typeof item.episodes === "number" && item.episodes > 0
                     ? `EP ${item.episodes}`
-                    : item.status?.toUpperCase() === "RELEASING"
-                      ? "ONGOING"
-                      : null;
+                    : "ONGOING";
 
               return (
                 <Pressable
@@ -520,11 +709,11 @@ export default function HomeScreen() {
                   onPress={() => {
                     hapticLight();
                     prefetch(item.id);
-                    router.push((`/anime/${item.id}`) as never);
+                    router.push(`/anime/${item.id}` as never);
                   }}
-                  style={({ pressed }) => [styles.animeCardWrap, pressed && styles.btnPressed]}
+                  style={({ pressed }) => [styles.rankCard, pressed && styles.btnPressed]}
                 >
-                  <View style={styles.animePosterWrap}>
+                  <View style={styles.rankPosterBox}>
                     <Image
                       source={{
                         uri: getOptimizedImageUri(
@@ -537,23 +726,30 @@ export default function HomeScreen() {
                       transition={150}
                       cachePolicy="memory-disk"
                     />
-                    {/* Status Badge (Pojok Kiri Atas: EP ... / TAMAT, Warna Putih, Tanpa Titik) */}
-                    {statusBadge ? (
-                      <View style={styles.cardStatusBadge}>
-                        <Text style={styles.cardStatusBadgeText}>{statusBadge}</Text>
-                      </View>
-                    ) : null}
-                    {/* Rating Tag */}
-                    <View style={styles.cardScoreBadge}>
-                      <Text style={styles.cardScoreStar}>★</Text>
-                      <Text style={styles.cardScoreValue}>
-                        {item.averageScore
-                          ? (item.averageScore / 10).toFixed(2)
-                          : "8.50"}
+                    <LinearGradient
+                      colors={["transparent", "rgba(13,8,11,0.35)", "rgba(13,8,11,0.95)"]}
+                      locations={[0.35, 0.68, 1]}
+                      style={StyleSheet.absoluteFill}
+                    />
+
+                    <View style={styles.rankScorePill}>
+                      <Text style={styles.rankStar}>★</Text>
+                      <Text style={styles.rankScoreText}>
+                        {item.averageScore ? (item.averageScore / 10).toFixed(1) : "8.5"}
                       </Text>
                     </View>
+
+                    <View style={styles.rankBottomOverlay}>
+                      <Text style={[styles.giantRankNum, idx < 3 && styles.giantRankTop3]}>
+                        {rankStr}
+                      </Text>
+                      <View style={styles.rankEpPill}>
+                        <Text style={styles.rankEpText}>{epBadge}</Text>
+                      </View>
+                    </View>
                   </View>
-                  <Text style={styles.animeCardTitle} numberOfLines={1}>
+
+                  <Text style={styles.rankCardTitle} numberOfLines={2}>
                     {animeTitle(item)}
                   </Text>
                 </Pressable>
@@ -563,138 +759,114 @@ export default function HomeScreen() {
         </View>
 
         {/* ══════════════════════════════════════════════════════════════
-            7. OTHER ANIME RAILS (TRENDING, ONGOING, POPULAR, MOVIES)
+            7. EKSPLORASI GENRE HORIZONTAL PILLS + RAIL DINAMIS
             ══════════════════════════════════════════════════════════════ */}
-        {home.data.trending?.length ? (
-          <AnimeRail
-            title="Trending now"
-            items={home.data.trending}
-            seeAllParams={{ sort: "TRENDING_DESC", title: "Trending now" }}
-          />
-        ) : null}
-
-        {rails.data?.ongoing?.length ? (
-          <AnimeRail
-            title="Airing this season"
-            items={rails.data.ongoing}
-            seeAllParams={{ status: "RELEASING", sort: "POPULARITY_DESC", title: "Airing this season" }}
-          />
-        ) : null}
-
-        {home.data.popular?.length ? (
-          <AnimeRail
-            title="All-time popular"
-            items={home.data.popular}
-            seeAllParams={{ sort: "POPULARITY_DESC", title: "All-time popular" }}
-          />
-        ) : null}
-
-        {rails.data?.topMovies?.length ? (
-          <AnimeRail
-            title="Top movies"
-            items={rails.data.topMovies}
-            seeAllParams={{ format: "MOVIE", sort: "SCORE_DESC", title: "Top Movies" }}
-          />
-        ) : null}
-
-        {/* ══════════════════════════════════════════════════════════════
-            8. GENRE SERIES EXPLORER (DI BAGIAN BAWAH HOME)
-            ══════════════════════════════════════════════════════════════ */}
-        <View style={styles.genreSectionWrap}>
-          {/* Section Header */}
-          <View style={styles.genreSectionHeader}>
-            <View style={{ flex: 1 }}>
-              <View style={styles.genreSectionBadgeRow}>
-                <View style={styles.genreBadgePill}>
-                  <Text style={styles.genreBadgeText}>SERIES</Text>
-                </View>
-                <Text style={styles.genreSectionTitle}>Genre Series</Text>
-              </View>
-              <Text style={styles.genreSectionSubtitle}>
-                Temukan anime series favoritmu berdasarkan kategori genre
-              </Text>
+        <View style={styles.genrePanel}>
+          <View style={styles.genreHeaderRow}>
+            <View>
+              <Text style={styles.sectionEyebrow}>KURASI KATEGORI</Text>
+              <Text style={styles.sectionTitle}>Jelajah Genre Pilihan</Text>
             </View>
             <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={`Lihat semua series genre ${selectedGenre}`}
               onPress={() => {
                 hapticLight();
                 router.push(
                   `/search?genre=${selectedGenre}&format=TV&title=${encodeURIComponent(
-                    selectedGenre + " Series"
+                    "Anime " + selectedGenre
                   )}` as never
                 );
               }}
-              style={({ pressed }) => [styles.seeAllGenreBtn, pressed && styles.btnPressed]}
+              style={({ pressed }) => [styles.sectionMorePill, pressed && styles.btnPressed]}
             >
-              <Text style={styles.seeAllGenreText}>Lihat Semua</Text>
-              <AppIcon name="chevron-right" size={14} color="#C0C0C0" />
+              <Text style={styles.sectionMoreText}>{selectedGenre}</Text>
+              <AppIcon name="arrow-right" size={12} color="#FB7185" />
             </Pressable>
           </View>
 
-          {/* 4-Column Text-Only Genre Grid (1 Baris 4 Kolom, Lalu ke Bawah) */}
-          <View style={styles.genreGrid}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.genrePillsRow}
+          >
             {SERIES_GENRES.map((g) => {
               const active = g.id === selectedGenre;
               return (
                 <Pressable
                   key={g.id}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Pilih genre ${g.label}`}
                   onPress={() => {
                     hapticLight();
-                    if (selectedGenre === g.id) {
-                      router.push(
-                        `/search?genre=${g.id}&format=TV&title=${encodeURIComponent(
-                          g.label + " Series"
-                        )}` as never
-                      );
-                    } else {
-                      setSelectedGenre(g.id);
-                    }
+                    setSelectedGenre(g.id);
                   }}
                   style={({ pressed }) => [
-                    styles.genreBtn,
-                    { width: genreColWidth },
-                    active && styles.genreBtnActive,
+                    styles.genreChip,
+                    active && styles.genreChipActive,
                     pressed && styles.btnPressed,
                   ]}
                 >
-                  <Text
-                    style={[styles.genreBtnText, active && styles.genreBtnTextActive]}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                  >
+                  <Text style={[styles.genreChipText, active && styles.genreChipTextActive]}>
                     {g.label}
                   </Text>
                 </Pressable>
               );
             })}
-          </View>
+          </ScrollView>
 
-          {/* Dynamic Anime Rail for Selected Genre */}
           {genreAnime.isLoading ? (
-            <View style={{ marginTop: 8 }}>
-              <SkeletonRail />
-            </View>
+            <SkeletonRail />
           ) : genreAnime.data?.length ? (
-            <View style={{ marginTop: 4 }}>
-              <AnimeRail
-                title={`Top ${selectedGenre} Series`}
-                items={genreAnime.data}
-                seeAllParams={{
-                  genre: selectedGenre,
-                  format: "TV",
-                  sort: "POPULARITY_DESC",
-                  title: `${selectedGenre} Series`,
-                }}
-              />
-            </View>
+            <AnimeRail
+              title={`Pilihan ${selectedGenre} Terbaik`}
+              items={genreAnime.data}
+              seeAllParams={{
+                genre: selectedGenre,
+                format: "TV",
+                sort: "POPULARITY_DESC",
+                title: `${selectedGenre} Series`,
+              }}
+            />
           ) : null}
         </View>
 
-        {/* Bottom space to scroll comfortably over floating liquid glass tab bar */}
-        <View style={{ height: 90 }} />
+        {/* ══════════════════════════════════════════════════════════════
+            8. CURATED CATALOG RAILS
+            ══════════════════════════════════════════════════════════════ */}
+        {(latestAnime.data?.length || rails.data?.ongoing?.length) ? (
+          <AnimeRail
+            label="UPDATE SEGAR"
+            title="Rilis Episode Terbaru"
+            items={latestAnime.data?.length ? latestAnime.data : (rails.data?.ongoing ?? [])}
+            seeAllParams={{ status: "RELEASING", sort: "TRENDING_DESC", title: "Rilis Terbaru" }}
+          />
+        ) : null}
+
+        {rails.data?.ongoing?.length ? (
+          <AnimeRail
+            label="MUSIM AKTIF"
+            title="Sedang Tayang Musim Ini"
+            items={rails.data.ongoing}
+            seeAllParams={{ status: "RELEASING", sort: "POPULARITY_DESC", title: "Tayang Musim Ini" }}
+          />
+        ) : null}
+
+        {home.data.popular?.length ? (
+          <AnimeRail
+            label="KLASIK & IKONIK"
+            title="Legendaris Sepanjang Masa"
+            items={home.data.popular}
+            seeAllParams={{ sort: "POPULARITY_DESC", title: "Legendaris Sepanjang Masa" }}
+          />
+        ) : null}
+
+        {rails.data?.topMovies?.length ? (
+          <AnimeRail
+            label="SINEMA JEPANG"
+            title="Film Anime Skor Tertinggi"
+            items={rails.data.topMovies}
+            seeAllParams={{ format: "MOVIE", sort: "SCORE_DESC", title: "Film Anime Terbaik" }}
+          />
+        ) : null}
+
+        <View style={{ height: 96 }} />
       </ScrollView>
 
       <NotificationSheet
@@ -710,623 +882,621 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E17", // Sleek dark grey background matching reference
+    backgroundColor: "#0D080B",
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingTop: 10,
-    gap: 16,
+    paddingTop: 8,
+    gap: 18,
   },
   btnPressed: {
-    opacity: 0.82,
-    transform: [{ scale: 0.985 }],
+    opacity: 0.84,
+    transform: [{ scale: 0.98 }],
+  },
+  skeletonRailLabel: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 11,
+    color: "#FB7185",
+    letterSpacing: 1.2,
+    marginTop: 12,
+  },
+  skeletonRailRow: {
+    gap: 12,
+    paddingVertical: 8,
   },
 
-  // ─── 1. TOP APP BAR (LUCKYNIME BRAND & ACTIONS) ───
+  // ─── 1. HEADER + INTEGRATED SEARCH ───
+  headerBlock: {
+    gap: 11,
+  },
   topHeaderBar: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 4,
-    paddingTop: 4,
-    paddingBottom: 8,
   },
-  brandLogoContainer: {
-    justifyContent: "center",
-    alignItems: "flex-start",
+  brandCluster: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    flex: 1,
+    minWidth: 0,
   },
   brandLogoImg: {
-    width: 110,
-    height: 36,
+    width: 96,
+    height: 34,
+  },
+  greetingWrap: {
+    flex: 1,
+    minWidth: 0,
+    borderLeftWidth: 1,
+    borderLeftColor: "rgba(251, 113, 133, 0.22)",
+    paddingLeft: 10,
+  },
+  greetingSub: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 9.5,
+    color: "#FB7185",
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+  },
+  greetingUser: {
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 13,
+    color: "#FFF5F7",
   },
   topHeaderActions: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
+    gap: 8,
   },
-  headerIconBtn: {
-    padding: 6,
+  crystalPillBtn: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-  },
-  headerCrystalBtn: {
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    ...(Platform.OS === "web" ? ({ cursor: "pointer" } as any) : {}),
+    gap: 5,
+    height: 36,
+    paddingHorizontal: 10,
+    borderRadius: 99,
+    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.30)",
   },
   headerCrystalImg: {
-    width: 28,
-    height: 28,
-  },
-  notifBadgeDot: {
-    position: "absolute",
-    top: -2,
-    right: -2,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#EF4444",
-    borderWidth: 1.5,
-    borderColor: "#0B0E17",
-  },
-
-  // ─── NUEGAME BAR ───
-  nueGameBar: {
-    width: "100%",
-    borderRadius: 16,
-    backgroundColor: "rgba(56, 189, 248, 0.08)",
-    borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.22)",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    ...(Platform.OS === "web"
-      ? ({
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-      } as any)
-      : {}),
-  },
-  nueGameLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  nueGameTitle: {
-    fontFamily: "Nunito-Black",
-    color: "#38BDF8",
-    fontSize: 13,
-  },
-  nueGameSub: {
-    fontFamily: "Nunito-SemiBold",
-    color: "#94A3B8",
-    fontSize: 11.5,
-  },
-
-  // ─── 2. FEATURED CAROUSEL BANNER ───
-  heroSection: {
-    width: "100%",
-    gap: 10,
-  },
-  heroCard: {
-    width: "100%",
-    height: 220,
-    borderRadius: 24,
-    overflow: "hidden",
-    backgroundColor: "#161B26",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.12)",
-    ...(Platform.OS !== "web"
-      ? {
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.45,
-          shadowRadius: 20,
-          elevation: 8,
-        }
-      : ({
-          boxShadow: "0 10px 20px rgba(0, 0, 0, 0.45)",
-        } as any)),
-  },
-  heroDarkMask: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(11, 14, 23, 0.3)",
-    ...(Platform.OS === "web"
-      ? ({
-        backgroundImage:
-          "linear-gradient(180deg, rgba(11,14,23,0) 0%, rgba(11,14,23,0.3) 35%, rgba(11,14,23,0.82) 75%, rgba(11,14,23,0.98) 100%)",
-      } as any)
-      : {}),
-  },
-  heroTopBadges: {
-    position: "absolute",
-    top: 12,
-    left: 12,
-    right: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  populerBadge: {
-    backgroundColor: "#EF4444",
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  populerBadgeText: {
-    fontFamily: "Nunito-Black",
-    color: "#FFFFFF",
-    fontSize: 10,
-    letterSpacing: 0.5,
-  },
-  scoreBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    backgroundColor: "rgba(0, 0, 0, 0.65)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 12,
-  },
-  scoreStarText: {
-    color: "#F5C518",
-    fontSize: 11,
-  },
-  scoreValueText: {
-    fontFamily: "Nunito-Bold",
-    color: "#FFFFFF",
-    fontSize: 11,
-  },
-  heroBottomContent: {
-    position: "absolute",
-    bottom: 14,
-    left: 14,
-    right: 14,
-    gap: 2,
-  },
-  heroTitle: {
-    fontFamily: "Nunito-Black",
-    color: "#FFFFFF",
-    fontSize: 19,
-    letterSpacing: -0.3,
-    textShadowColor: "rgba(0, 0, 0, 0.9)",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
-  },
-  heroMetaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 2,
-    marginBottom: 6,
-  },
-  heroEpsBadge: {
-    backgroundColor: "rgba(255, 255, 255, 0.14)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  heroEpsBadgeText: {
-    fontFamily: "Nunito-Bold",
-    color: "#E2E8F0",
-    fontSize: 11,
-  },
-  heroSubText: {
-    fontFamily: "Nunito-SemiBold",
-    color: "#CBD5E1",
-    fontSize: 11.5,
-  },
-  heroHdBadge: {
-    backgroundColor: "rgba(56, 189, 248, 0.18)",
-    borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.4)",
-    paddingHorizontal: 5,
-    paddingVertical: 1,
-    borderRadius: 4,
-  },
-  heroHdBadgeText: {
-    fontFamily: "Nunito-Black",
-    color: "#38BDF8",
-    fontSize: 9.5,
-  },
-  heroActionsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginTop: 2,
-  },
-  heroTontonBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 7,
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.22)",
-    borderRadius: 22,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    ...(Platform.OS === "web"
-      ? ({
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-      } as any)
-      : {}),
-  },
-  heroTontonText: {
-    fontFamily: "Nunito-Bold",
-    color: "#FFFFFF",
-    fontSize: 12.5,
-  },
-  heroDetailBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",
-    borderRadius: 22,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    ...(Platform.OS === "web"
-      ? ({
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-      } as any)
-      : {}),
-  },
-  heroDetailText: {
-    fontFamily: "Nunito-Bold",
-    color: "#E2E8F0",
-    fontSize: 12.5,
-  },
-  heroDotsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 5,
-  },
-  heroDot: {
-    borderRadius: 3,
-  },
-  heroDotActive: {
-    width: 22,
-    height: 5,
-    backgroundColor: "#38BDF8",
-  },
-  heroDotInactive: {
-    width: 5,
-    height: 5,
-    backgroundColor: "#334155",
-  },
-
-  // ─── 3. SEARCH BAR ───
-  searchGlassBar: {
-    width: "100%",
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "rgba(255, 255, 255, 0.045)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.09)",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 18,
-    ...(Platform.OS === "web"
-      ? ({
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-      } as any)
-      : {}),
-  },
-  searchPlaceholderText: {
-    fontFamily: "Nunito-SemiBold",
-    color: "#64748B",
-    fontSize: 13,
-  },
-
-  // ─── 4. LIVE CHAT GLOBAL BAR ───
-  liveChatGlassBar: {
-    width: "100%",
-    borderRadius: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.045)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.09)",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    ...(Platform.OS === "web"
-      ? ({
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-      } as any)
-      : {}),
-  },
-  liveBadge: {
-    backgroundColor: "#0284C7",
-    paddingHorizontal: 7,
-    paddingVertical: 2.5,
-    borderRadius: 8,
-  },
-  liveBadgeText: {
-    fontFamily: "Nunito-Black",
-    color: "#FFFFFF",
-    fontSize: 9.5,
-    letterSpacing: 0.5,
-  },
-  liveChatText: {
-    flex: 1,
-    fontFamily: "Nunito-SemiBold",
-    color: "#94A3B8",
-    fontSize: 12,
-  },
-
-  // ─── 5. TOP GIVEAWAY USERS CARD ───
-  giveawayGlassCard: {
-    width: "100%",
-    borderRadius: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.04)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-    padding: 16,
-    gap: 4,
-    ...(Platform.OS === "web"
-      ? ({
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-      } as any)
-      : {}),
-  },
-  giveawayHeaderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 6,
-  },
-  giveawayTitleLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  leaderboardIcon: {
     width: 20,
     height: 20,
   },
-  giveawayTrophyIcon: {
-    fontSize: 14,
-  },
-  giveawayTitleText: {
+  crystalPillLabel: {
     fontFamily: "Nunito-ExtraBold",
-    color: "#FFFFFF",
-    fontSize: 13,
-    letterSpacing: 0.4,
+    fontSize: 11.5,
+    color: "#FFF5F7",
   },
-  giveawayLinkText: {
-    fontFamily: "Nunito-Bold",
-    color: "#38BDF8",
-    fontSize: 11,
-  },
-  giveawayMainNotice: {
-    fontFamily: "Nunito-Bold",
-    color: "#CBD5E1",
-    fontSize: 12,
-    textAlign: "center",
-    marginTop: 4,
-  },
-  giveawaySubNotice: {
-    fontFamily: "Nunito-Regular",
-    color: "#64748B",
-    fontSize: 11,
-    textAlign: "center",
-  },
-
-  // ─── 6. TOP 10 ANIME TERPOPULER RAIL ───
-  sectionWrap: {
-    width: "100%",
-    gap: 12,
-    marginTop: 4,
-  },
-  sectionHeaderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  sectionHeaderLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  verticalBar: {
-    width: 3.5,
-    height: 16,
-    borderRadius: 2,
-    backgroundColor: "#C0C0C0",
-  },
-  sectionTitleText: {
-    fontFamily: "Nunito-Black",
-    color: "#FFFFFF",
-    fontSize: 16,
-    letterSpacing: -0.3,
-  },
-  rankingLinkText: {
-    fontFamily: "Nunito-Bold",
-    color: "#38BDF8",
-    fontSize: 11,
-  },
-  horizontalRailContent: {
-    gap: 12,
-    paddingRight: 10,
-  },
-  animeCardWrap: {
-    width: 120,
-    gap: 6,
-  },
-  animePosterWrap: {
-    width: 120,
-    height: 165,
-    borderRadius: 14,
-    overflow: "hidden",
-    backgroundColor: "#1E293B",
-  },
-  cardStatusBadge: {
-    position: "absolute",
-    top: 6,
-    left: 6,
-    backgroundColor: "rgba(0, 0, 0, 0.72)",
+  headerActionCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    backgroundColor: "#191016",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
+    borderColor: "rgba(251, 113, 133, 0.22)",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
   },
-  cardStatusBadgeText: {
-    fontFamily: "SpaceGrotesk-Bold",
-    fontSize: 10,
-    color: "#FFFFFF",
-    fontWeight: "800",
-    letterSpacing: 0.4,
-  },
-  cardScoreBadge: {
+  notifBadgeDot: {
     position: "absolute",
     top: 6,
     right: 6,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#F43F5E",
+    borderWidth: 1.5,
+    borderColor: "#191016",
+  },
+  searchStripRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 3,
-    backgroundColor: "rgba(0, 0, 0, 0.72)",
+    gap: 9,
+  },
+  searchCapsule: {
+    flex: 1,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: "#180F15",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
+    borderColor: "rgba(251, 113, 133, 0.20)",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 13,
+    gap: 9,
   },
-  cardScoreStar: {
-    color: "#F5C518",
+  searchPlaceholder: {
+    flex: 1,
+    fontFamily: "Nunito-SemiBold",
+    fontSize: 13,
+    color: "#9A7D8A",
+  },
+  searchKbdTag: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 7,
+    backgroundColor: "rgba(244, 63, 94, 0.16)",
+  },
+  searchKbdText: {
+    fontFamily: "SpaceGrotesk-SemiBold",
     fontSize: 9.5,
+    color: "#FB7185",
+    letterSpacing: 0.7,
   },
-  cardScoreValue: {
-    fontFamily: "Nunito-Bold",
-    color: "#FFFFFF",
-    fontSize: 10,
-  },
-  animeCardTitle: {
-    fontFamily: "Nunito-Bold",
-    color: "#FFFFFF",
-    fontSize: 12,
-  },
-
-  skeletonRailLabel: {
-    fontFamily: "Nunito-Bold",
-    color: "#64748B",
-    fontSize: 11,
-    paddingHorizontal: 4,
-  },
-  skeletonRailRow: {
-    gap: 10,
+  diceBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: "#E11D48",
+    borderWidth: 1,
+    borderColor: "#FB7185",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
-  // ─── GENRE SERIES EXPLORER STYLES ───
-  genreSectionWrap: {
-    marginTop: 10,
-    gap: 14,
+  // ─── 2. SAKURA CINEMA STAGE HERO ───
+  heroWrapper: {
+    width: "100%",
   },
-  genreSectionHeader: {
+  heroStageCard: {
+    borderRadius: 24,
+    overflow: "hidden",
+    backgroundColor: "#191016",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.26)",
+    padding: 15,
+    gap: 13,
+  },
+  stageTopBar: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 4,
-    gap: 12,
   },
-  genreSectionBadgeRow: {
+  spotlightRibbon: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 99,
+    backgroundColor: "rgba(225, 29, 72, 0.88)",
+    borderWidth: 1,
+    borderColor: "rgba(253, 164, 175, 0.45)",
+  },
+  spotlightPulse: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#FFF5F7",
+  },
+  spotlightRibbonText: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 10,
+    color: "#FFFFFF",
+    letterSpacing: 0.9,
+  },
+  stageCounterPill: {
+    paddingHorizontal: 9,
+    paddingVertical: 3.5,
+    borderRadius: 99,
+    backgroundColor: "rgba(13, 8, 11, 0.72)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.24)",
+  },
+  stageCounterText: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 10,
+    color: "#FDA4AF",
+    letterSpacing: 0.6,
+  },
+  stageBodyRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  stagePosterFrame: {
+    width: 104,
+    height: 150,
+    borderRadius: 15,
+    overflow: "hidden",
+    backgroundColor: "#23161F",
+    borderWidth: 1.5,
+    borderColor: "rgba(253, 164, 175, 0.40)",
+  },
+  stageInfoCol: {
+    flex: 1,
+    gap: 8,
+    minWidth: 0,
+  },
+  stageTitle: {
+    fontFamily: "Nunito-Black",
+    fontSize: 18.5,
+    lineHeight: 23,
+    color: "#FFF5F7",
+    letterSpacing: -0.3,
+  },
+  stageChipsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 6,
+  },
+  stageScoreChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    paddingHorizontal: 7,
+    paddingVertical: 2.5,
+    borderRadius: 7,
+    backgroundColor: "rgba(251, 191, 36, 0.16)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 191, 36, 0.38)",
+  },
+  stageStar: {
+    color: "#FBBF24",
+    fontSize: 10,
+  },
+  stageScoreVal: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 10.5,
+    color: "#FDE68A",
+  },
+  stageEpChip: {
+    paddingHorizontal: 7,
+    paddingVertical: 2.5,
+    borderRadius: 7,
+    backgroundColor: "rgba(244, 63, 94, 0.20)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.35)",
+  },
+  stageEpText: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 10,
+    color: "#FDA4AF",
+  },
+  stageSubChip: {
+    paddingHorizontal: 7,
+    paddingVertical: 2.5,
+    borderRadius: 7,
+    backgroundColor: "rgba(255, 245, 247, 0.10)",
+  },
+  stageSubText: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 9.5,
+    color: "#FFF5F7",
+  },
+  stageGenresLine: {
+    fontFamily: "Nunito-SemiBold",
+    fontSize: 11.5,
+    color: "#D9BECA",
+  },
+  stageActionsRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-  },
-  genreBadgePill: {
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
-    backgroundColor: "rgba(192, 192, 192, 0.14)",
-    borderWidth: 1,
-    borderColor: "rgba(192, 192, 192, 0.35)",
-  },
-  genreBadgeText: {
-    fontFamily: "Nunito-ExtraBold",
-    fontSize: 9.5,
-    color: "#C0C0C0",
-    letterSpacing: 0.6,
-  },
-  genreSectionTitle: {
-    fontFamily: "Nunito-Black",
-    fontSize: 19,
-    color: "#FFFFFF",
-    letterSpacing: -0.3,
-  },
-  genreSectionSubtitle: {
-    fontFamily: "Nunito-Regular",
-    fontSize: 12,
-    color: "#8E9AA8",
     marginTop: 2,
   },
-  seeAllGenreBtn: {
+  stagePrimaryBtn: {
+    flex: 1,
+    height: 38,
+    borderRadius: 11,
+    backgroundColor: "#F43F5E",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+  stagePrimaryBtnText: {
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 13,
+    color: "#FFFFFF",
+  },
+  stageSecondaryBtn: {
+    height: 38,
+    paddingHorizontal: 13,
+    borderRadius: 11,
+    backgroundColor: "rgba(255, 245, 247, 0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  stageSecondaryBtnText: {
+    fontFamily: "Nunito-Bold",
+    fontSize: 12.5,
+    color: "#FFF5F7",
+  },
+  stageSegmentsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingTop: 2,
+  },
+  stageSegment: {
+    flex: 1,
+    height: 3.5,
+    borderRadius: 99,
+  },
+  stageSegmentActive: {
+    backgroundColor: "#F43F5E",
+  },
+  stageSegmentIdle: {
+    backgroundColor: "rgba(255, 245, 247, 0.16)",
+  },
+
+  // ─── 3. BENTO QUICK HUBS ───
+  quickHubGrid: {
+    flexDirection: "row",
+    alignItems: "stretch",
+    gap: 9,
+  },
+  quickHubCard: {
+    flex: 1,
+    borderRadius: 16,
+    backgroundColor: "#180F15",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.16)",
+    paddingVertical: 11,
+    paddingHorizontal: 8,
+    alignItems: "center",
+    gap: 3,
+  },
+  quickHubIconWrap: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 2,
+  },
+  quickHubTitle: {
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 12,
+    color: "#FFF5F7",
+  },
+  quickHubSub: {
+    fontFamily: "Nunito-SemiBold",
+    fontSize: 9.5,
+    color: "#9A7D8A",
+  },
+
+  // ─── SHARED SECTION HEADERS ───
+  sectionBlock: {
+    gap: 12,
+  },
+  sectionHead: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  sectionHeadLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 9,
+  },
+  sakuraGem: {
+    width: 18,
+    height: 18,
+    borderRadius: 6,
+    backgroundColor: "rgba(244, 63, 94, 0.18)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.42)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sakuraGemInner: {
+    width: 6,
+    height: 6,
+    borderRadius: 2,
+    backgroundColor: "#F43F5E",
+    transform: [{ rotate: "45deg" }],
+  },
+  sectionEyebrow: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 9.5,
+    color: "#FB7185",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+  sectionTitle: {
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 17,
+    color: "#FFF5F7",
+    letterSpacing: -0.3,
+  },
+  sectionMorePill: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+    borderRadius: 99,
+    backgroundColor: "rgba(244, 63, 94, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(192, 192, 192, 0.25)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
   },
-  seeAllGenreText: {
+  sectionMoreText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#C0C0C0",
+    color: "#FB7185",
   },
-  genreGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginTop: 6,
+
+  // ─── 4. CONTINUE WATCHING ───
+  continueRail: {
+    gap: 12,
+    paddingRight: 8,
   },
-  genreBtn: {
-    paddingVertical: 10,
-    paddingHorizontal: 4,
-    borderRadius: 6,
-    backgroundColor: "rgba(22, 27, 38, 0.72)",
+  continueCard: {
+    width: 214,
+    height: 116,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "#191016",
     borderWidth: 1,
-    borderColor: "rgba(192, 192, 192, 0.22)",
+    borderColor: "rgba(251, 113, 133, 0.22)",
+    padding: 11,
+    justifyContent: "space-between",
+  },
+  continuePlayCircle: {
+    alignSelf: "flex-end",
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(244, 63, 94, 0.90)",
     alignItems: "center",
     justifyContent: "center",
-    ...(Platform.OS === "web"
-      ? ({
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-      } as any)
-      : {}),
   },
-  genreBtnActive: {
-    backgroundColor: "rgba(192, 192, 192, 0.22)",
-    borderColor: "#E2E8F0",
+  continueMeta: {
+    gap: 3,
   },
-  genreBtnText: {
-    fontFamily: "Nunito-Bold",
-    fontSize: 11,
-    color: "#CBD5E1",
-    textAlign: "center",
+  continueEpTag: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 9.5,
+    color: "#FDA4AF",
+    letterSpacing: 0.7,
   },
-  genreBtnTextActive: {
-    fontFamily: "Nunito-Black",
+  continueAnimeTitle: {
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 13,
+    color: "#FFF5F7",
+  },
+  continueBarTrack: {
+    height: 4,
+    borderRadius: 99,
+    backgroundColor: "rgba(255, 245, 247, 0.18)",
+    overflow: "hidden",
+    marginTop: 2,
+  },
+  continueBarFill: {
+    height: "100%",
+    borderRadius: 99,
+    backgroundColor: "#F43F5E",
+  },
+
+  // ─── 6. TOP 10 GIANT RANK CARDS ───
+  top10Rail: {
+    gap: 13,
+    paddingRight: 12,
+  },
+  rankCard: {
+    width: 148,
+    gap: 7,
+  },
+  rankPosterBox: {
+    height: 206,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "#191016",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.18)",
+  },
+  rankScorePill: {
+    position: "absolute",
+    top: 7,
+    right: 7,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    paddingHorizontal: 6.5,
+    paddingVertical: 2.5,
+    borderRadius: 99,
+    backgroundColor: "rgba(13, 8, 11, 0.80)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 191, 36, 0.36)",
+  },
+  rankStar: {
+    color: "#FBBF24",
+    fontSize: 9.5,
+  },
+  rankScoreText: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 10.5,
+    color: "#FFF5F7",
+  },
+  rankBottomOverlay: {
+    position: "absolute",
+    left: 8,
+    right: 8,
+    bottom: 6,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+  },
+  giantRankNum: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 34,
+    lineHeight: 36,
+    color: "#FFF5F7",
+    fontWeight: "900",
+    textShadowColor: "rgba(225, 29, 72, 0.85)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
+  },
+  giantRankTop3: {
+    color: "#FB7185",
+  },
+  rankEpPill: {
+    paddingHorizontal: 7,
+    paddingVertical: 2.5,
+    borderRadius: 7,
+    backgroundColor: "rgba(225, 29, 72, 0.90)",
+    marginBottom: 4,
+  },
+  rankEpText: {
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 9.5,
     color: "#FFFFFF",
+    fontWeight: "800",
+  },
+  rankCardTitle: {
+    fontFamily: "Nunito-Bold",
+    fontSize: 13,
+    lineHeight: 17,
+    color: "#FFF5F7",
+    paddingHorizontal: 2,
+  },
+
+  // ─── 7. GENRE EXPLORER PANEL ───
+  genrePanel: {
+    borderRadius: 22,
+    backgroundColor: "#150D12",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.16)",
+    padding: 15,
+    gap: 14,
+  },
+  genreHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  genrePillsRow: {
+    gap: 8,
+    paddingRight: 6,
+  },
+  genreChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 99,
+    backgroundColor: "#21141C",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.16)",
+  },
+  genreChipActive: {
+    backgroundColor: "#F43F5E",
+    borderColor: "#FDA4AF",
+  },
+  genreChipText: {
+    fontFamily: "Nunito-Bold",
+    fontSize: 12.5,
+    color: "#C4A6B3",
+  },
+  genreChipTextActive: {
+    color: "#FFFFFF",
+    fontFamily: "Nunito-ExtraBold",
   },
 });

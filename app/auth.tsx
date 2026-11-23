@@ -7,5 +7,5 @@ export default function AuthScreen() {
     router.replace("/(tabs)" as never);
   }, []);
 
-  return <View style={{ flex: 1, backgroundColor: "#0B0E17" }} />;
+  return <View style={{ flex: 1, backgroundColor: "#0D080B" }} />;
 }

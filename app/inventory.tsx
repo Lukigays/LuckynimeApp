@@ -297,9 +297,9 @@ export default function InventoryScreen() {
       {/* Dark overlay untuk kontras optimal */}
       <LinearGradient
         colors={[
-          "rgba(11, 14, 23, 0.72)",
-          "rgba(11, 14, 23, 0.85)",
-          "rgba(11, 14, 23, 0.95)",
+          "rgba(13, 8, 11, 0.72)",
+          "rgba(13, 8, 11, 0.85)",
+          "rgba(13, 8, 11, 0.95)",
         ]}
         style={StyleSheet.absoluteFillObject}
       />
@@ -385,7 +385,7 @@ export default function InventoryScreen() {
                 contentFit="contain"
               />
               <Text style={styles.crystalPillText}>{crystalBalance.toLocaleString("id-ID")}</Text>
-              <AppIcon name="plus" size={11} color="#38BDF8" style={{ marginLeft: 2 }} />
+              <AppIcon name="plus" size={11} color="#FB7185" style={{ marginLeft: 2 }} />
             </Pressable>
           </View>
 
@@ -470,7 +470,7 @@ export default function InventoryScreen() {
                   style={styles.modalCloseBtn}
                   hitSlop={10}
                 >
-                  <AppIcon name="close" size={20} color="#94A3B8" />
+                  <AppIcon name="close" size={20} color="#C4A6B3" />
                 </Pressable>
               </View>
 
@@ -564,7 +564,7 @@ export default function InventoryScreen() {
                   style={styles.modalCloseBtn}
                   hitSlop={10}
                 >
-                  <AppIcon name="close" size={20} color="#94A3B8" />
+                  <AppIcon name="close" size={20} color="#C4A6B3" />
                 </Pressable>
               </View>
 
@@ -626,7 +626,7 @@ export default function InventoryScreen() {
                   style={styles.modalCloseBtn}
                   hitSlop={10}
                 >
-                  <AppIcon name="close" size={20} color="#94A3B8" />
+                  <AppIcon name="close" size={20} color="#C4A6B3" />
                 </Pressable>
               </View>
 
@@ -638,7 +638,7 @@ export default function InventoryScreen() {
                     contentFit="cover"
                   />
                   <LinearGradient
-                    colors={["transparent", "rgba(11, 14, 23, 0.95)"]}
+                    colors={["transparent", "rgba(13, 8, 11, 0.95)"]}
                     style={StyleSheet.absoluteFill}
                   />
                   <View style={styles.gachaBannerOverlayTextWrap}>
@@ -731,11 +731,11 @@ export default function InventoryScreen() {
             <View style={styles.modalContainer}>
               <View style={styles.modalHeader}>
                 <View style={styles.modalTitleRow}>
-                  <AppIcon name="shield-crown" size={20} color="#38BDF8" />
+                  <AppIcon name="shield-crown" size={20} color="#FB7185" />
                   <Text style={styles.modalTitle}>Clans & Squad</Text>
                 </View>
                 <Pressable onPress={() => setActiveModal(null)} style={styles.modalCloseBtn}>
-                  <AppIcon name="close" size={20} color="#94A3B8" />
+                  <AppIcon name="close" size={20} color="#C4A6B3" />
                 </Pressable>
               </View>
 
@@ -788,11 +788,11 @@ export default function InventoryScreen() {
             <View style={styles.modalContainer}>
               <View style={styles.modalHeader}>
                 <View style={styles.modalTitleRow}>
-                  <AppIcon name="information" size={20} color="#38BDF8" />
+                  <AppIcon name="information" size={20} color="#FB7185" />
                   <Text style={styles.modalTitle}>Panduan Inventory</Text>
                 </View>
                 <Pressable onPress={() => setActiveModal(null)} style={styles.modalCloseBtn}>
-                  <AppIcon name="close" size={20} color="#94A3B8" />
+                  <AppIcon name="close" size={20} color="#C4A6B3" />
                 </Pressable>
               </View>
 
@@ -884,7 +884,7 @@ export default function InventoryScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   safeContainer: {
     flex: 1,
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#1E293B",
+    backgroundColor: "#23161F",
   },
   avatarInitialWrap: {
     width: 48,
@@ -1015,7 +1015,7 @@ const styles = StyleSheet.create({
   accountSubtitleText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   crystalPill: {
     flexDirection: "row",
@@ -1035,7 +1035,7 @@ const styles = StyleSheet.create({
   crystalPillText: {
     fontFamily: "Nunito-Black",
     fontSize: 12,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // ─── SECTION "MENU" ───
@@ -1089,7 +1089,7 @@ const styles = StyleSheet.create({
   menuSubtitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     textAlign: "center",
     textShadowColor: "rgba(0, 0, 0, 0.85)",
     textShadowOffset: { width: 0, height: 1.5 },
@@ -1115,7 +1115,7 @@ const styles = StyleSheet.create({
   clanHeroDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     lineHeight: 17,
   },
@@ -1159,7 +1159,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 18,
   },
   modalBodyScroll: {
@@ -1179,8 +1179,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   itemCardActive: {
-    borderColor: "#38BDF8",
-    backgroundColor: "rgba(56, 189, 248, 0.08)",
+    borderColor: "#FB7185",
+    backgroundColor: "rgba(251, 113, 133, 0.08)",
   },
   itemThumbImg: {
     width: 68,
@@ -1216,7 +1216,7 @@ const styles = StyleSheet.create({
   itemDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   equipBtn: {
     paddingHorizontal: 12,
@@ -1227,8 +1227,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.15)",
   },
   equipBtnActive: {
-    backgroundColor: "#38BDF8",
-    borderColor: "#38BDF8",
+    backgroundColor: "#FB7185",
+    borderColor: "#FB7185",
   },
   equipBtnText: {
     fontFamily: "Nunito-Bold",
@@ -1237,7 +1237,7 @@ const styles = StyleSheet.create({
   },
   equipBtnTextActive: {
     fontFamily: "Nunito-Black",
-    color: "#0B0E17",
+    color: "#0D080B",
   },
 
   // ─── GACHA WALLPAPER ───
@@ -1265,7 +1265,7 @@ const styles = StyleSheet.create({
   gachaBannerDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     marginTop: 2,
   },
   gachaBalanceRow: {
@@ -1283,7 +1283,7 @@ const styles = StyleSheet.create({
   gachaBalanceLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   gachaBalancePill: {
     flexDirection: "row",
@@ -1297,18 +1297,18 @@ const styles = StyleSheet.create({
   gachaBalanceVal: {
     fontFamily: "Nunito-Black",
     fontSize: 13,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   gachaTopUpLink: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
-    backgroundColor: "rgba(56, 189, 248, 0.15)",
+    backgroundColor: "rgba(251, 113, 133, 0.15)",
   },
   gachaTopUpLinkText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   feedbackAlert: {
     padding: 10,
@@ -1366,7 +1366,7 @@ const styles = StyleSheet.create({
   spinCostText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // ─── CLANS ───
@@ -1396,7 +1396,7 @@ const styles = StyleSheet.create({
   clanMeta: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   clanJoinedTag: {
     paddingHorizontal: 8,
@@ -1413,14 +1413,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
-    backgroundColor: "rgba(56, 189, 248, 0.16)",
+    backgroundColor: "rgba(251, 113, 133, 0.16)",
     borderWidth: 1,
-    borderColor: "#38BDF8",
+    borderColor: "#FB7185",
   },
   clanJoinBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // ─── TUTORIAL ───
@@ -1434,8 +1434,8 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: "rgba(56, 189, 248, 0.2)",
-    color: "#38BDF8",
+    backgroundColor: "rgba(251, 113, 133, 0.2)",
+    color: "#FB7185",
     fontFamily: "Nunito-Black",
     fontSize: 12,
     textAlign: "center",
@@ -1453,7 +1453,7 @@ const styles = StyleSheet.create({
   tutorialStepDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 17,
   },
 
@@ -1467,7 +1467,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(15, 23, 42, 0.95)",
+    backgroundColor: "rgba(21, 13, 18, 0.95)",
     borderColor: "rgba(245, 158, 11, 0.5)",
     borderWidth: 1,
     paddingHorizontal: 16,
@@ -1561,13 +1561,13 @@ const styles = StyleSheet.create({
   comingSoonDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     lineHeight: 19,
     marginBottom: 20,
   },
   comingSoonBtn: {
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 12,

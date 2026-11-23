@@ -129,7 +129,7 @@ export function SupportPrompt() {
               style={({ pressed }) => [styles.closeBtn, pressed && styles.btnPressed]}
               hitSlop={8}
             >
-              <AppIcon name="close" size={16} color="#94A3B8" />
+              <AppIcon name="close" size={16} color="#C4A6B3" />
             </Pressable>
           </View>
 
@@ -199,10 +199,10 @@ const styles = StyleSheet.create({
   card: {
     width: "100%",
     maxWidth: 360,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
     borderRadius: 24,
     borderWidth: 1.5,
-    borderColor: "rgba(56, 189, 248, 0.28)",
+    borderColor: "rgba(251, 113, 133, 0.28)",
     padding: 22,
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 8 },
@@ -224,14 +224,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 3,
     borderRadius: 20,
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.3)",
+    borderColor: "rgba(251, 113, 133, 0.3)",
   },
   categoryChipText: {
     fontFamily: "Nunito-Bold",
     fontSize: 9.5,
-    color: "#38BDF8",
+    color: "#FB7185",
     letterSpacing: 0.5,
   },
   optionalChip: {
@@ -277,12 +277,12 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 20,
-    backgroundColor: "rgba(56, 189, 248, 0.08)",
+    backgroundColor: "rgba(251, 113, 133, 0.08)",
     borderWidth: 1.5,
-    borderColor: "rgba(56, 189, 248, 0.35)",
+    borderColor: "rgba(251, 113, 133, 0.35)",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#38BDF8",
+    shadowColor: "#FB7185",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   copyText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     lineHeight: 18.5,
     marginTop: 6,
@@ -317,13 +317,13 @@ const styles = StyleSheet.create({
   primaryBtn: {
     minHeight: 46,
     borderRadius: 14,
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.6)",
+    borderColor: "rgba(251, 113, 133, 0.6)",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 16,
-    shadowColor: "#0284C7",
+    shadowColor: "#E11D48",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 8,
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
   secondaryBtnText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11.5,
-    color: "#64748B",
+    color: "#8F727F",
     letterSpacing: 0.2,
   },
   btnPressed: {

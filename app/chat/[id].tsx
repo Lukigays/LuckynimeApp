@@ -471,7 +471,7 @@ export default function PrivateChatRoomScreen() {
               value={inputText}
               onChangeText={setInputText}
               placeholder={cooldownRemaining > 0 ? `Tunggu ${cooldownRemaining} detik...` : "Ketik pesan..."}
-              placeholderTextColor="#64748B"
+              placeholderTextColor="#8F727F"
               style={styles.textInput}
               multiline
               maxLength={1000}
@@ -491,14 +491,14 @@ export default function PrivateChatRoomScreen() {
             ]}
           >
             {sending ? (
-              <ActivityIndicator size="small" color="#0B0E14" />
+              <ActivityIndicator size="small" color="#0D080B" />
             ) : cooldownRemaining > 0 ? (
               <Text style={styles.sendBtnCooldownText}>{cooldownRemaining}s</Text>
             ) : (
               <AppIcon
                 name="send"
                 size={18}
-                color={inputText.trim() ? "#0B0E14" : "#64748B"}
+                color={inputText.trim() ? "#0D080B" : "#8F727F"}
               />
             )}
           </Pressable>
@@ -511,7 +511,7 @@ export default function PrivateChatRoomScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
   },
   btnPressed: {
     opacity: 0.82,
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 255, 255, 0.06)",
     gap: 12,
@@ -567,12 +567,12 @@ const styles = StyleSheet.create({
   headerMemberTag: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#64748B",
+    color: "#8F727F",
   },
   headerSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11.5,
-    color: "#64748B",
+    color: "#8F727F",
   },
 
   // ─── EMPTY STATE (PERSIS SCREENSHOT 1) ───
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#64748B",
+    color: "#8F727F",
     textAlign: "center",
     lineHeight: 18,
   },
@@ -621,13 +621,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   bubbleMine: {
-    backgroundColor: "#1E293B",
+    backgroundColor: "#23161F",
     borderBottomRightRadius: 4,
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.25)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
   },
   bubbleOther: {
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     borderBottomLeftRadius: 4,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
   messageTimeText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#64748B",
+    color: "#8F727F",
     alignSelf: "flex-end",
   },
 
@@ -654,11 +654,11 @@ const styles = StyleSheet.create({
     gap: 10,
     borderTopWidth: 1,
     borderTopColor: "rgba(255, 255, 255, 0.06)",
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
   },
   inputWrap: {
     flex: 1,
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: Platform.OS === "ios" ? 10 : 6,
@@ -680,14 +680,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   sendBtnActive: {
-    backgroundColor: "#38BDF8",
-    shadowColor: "#38BDF8",
+    backgroundColor: "#FB7185",
+    shadowColor: "#FB7185",
     shadowOpacity: 0.35,
     shadowRadius: 8,
     elevation: 4,
   },
   sendBtnInactive: {
-    backgroundColor: "#161B26",
+    backgroundColor: "#191016",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
   },

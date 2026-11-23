@@ -279,7 +279,7 @@ export function NotificationSheet({
             {filter === "gifts" ? (
               loadingGifts && gifts.length === 0 ? (
                 <View style={styles.empty}>
-                  <ActivityIndicator size="small" color="#38BDF8" />
+                  <ActivityIndicator size="small" color="#FB7185" />
                   <Text style={styles.emptyText}>Memuat kotak hadiah...</Text>
                 </View>
               ) : gifts.length === 0 ? (
@@ -407,7 +407,7 @@ export function NotificationSheet({
               style={styles.viewAllFooterBtn}
             >
               <Text style={styles.viewAllFooterText}>Lihat Semua Notifikasi di Library</Text>
-              <AppIcon name="chevron-right" size={15} color="#38BDF8" />
+              <AppIcon name="chevron-right" size={15} color="#FB7185" />
             </Pressable>
           </View>
         </View>
@@ -486,15 +486,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   filterActive: {
-    borderColor: "#38BDF8",
-    backgroundColor: "rgba(56,189,248,0.12)",
+    borderColor: "#FB7185",
+    backgroundColor: "rgba(251, 113, 133,0.12)",
   },
   filterGiftActive: {
     borderColor: "#F59E0B",
     backgroundColor: "rgba(245,158,11,0.15)",
   },
   filterText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.6,
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
   filterGiftTextActive: { color: "#FDE68A" },
   markAllBtn: { marginLeft: "auto", paddingHorizontal: 8, paddingVertical: 4 },
   markAllText: {
-    color: "#38BDF8",
+    color: "#FB7185",
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.5,
@@ -535,14 +535,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 10,
-    backgroundColor: "rgba(56, 189, 248, 0.08)",
+    backgroundColor: "rgba(251, 113, 133, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.22)",
+    borderColor: "rgba(251, 113, 133, 0.22)",
   },
   viewAllFooterText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   unclaimedGiftBanner: {
@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   unclaimedGiftSub: {
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     fontSize: 10,
   },
   claimNowBtn: {
@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
 
   empty: { alignItems: "center", gap: 10, paddingVertical: 38 },
   emptyTitle: { color: "#FFFFFF", fontSize: 15, fontWeight: "700" },
-  emptyText: { color: "#64748B", fontSize: 13, textAlign: "center", paddingHorizontal: 32 },
+  emptyText: { color: "#8F727F", fontSize: 13, textAlign: "center", paddingHorizontal: 32 },
   list: { paddingHorizontal: 18 },
 
   row: {
@@ -592,17 +592,17 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   rowUnread: {
-    backgroundColor: "rgba(56,189,248,0.06)",
+    backgroundColor: "rgba(251, 113, 133,0.06)",
     marginHorizontal: -18,
     paddingHorizontal: 18,
     borderRadius: 8,
   },
   rowDot: { width: 14, paddingTop: 6, alignItems: "center" },
-  unreadDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: "#38BDF8" },
+  unreadDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: "#FB7185" },
   rowBody: { flex: 1, gap: 3 },
   notifTitle: { color: "#FFFFFF", fontSize: 13, fontWeight: "700" },
-  rowMessage: { color: "#CBD5E1", fontSize: 13, lineHeight: 17 },
-  rowTime: { color: "#64748B", fontSize: 11 },
+  rowMessage: { color: "#EDE0E5", fontSize: 13, lineHeight: 17 },
+  rowTime: { color: "#8F727F", fontSize: 11 },
 
   // Gift row styles
   giftRow: {
@@ -651,9 +651,9 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   rewardTagCrystal: {
-    backgroundColor: "rgba(56,189,248,0.15)",
+    backgroundColor: "rgba(251, 113, 133,0.15)",
     borderWidth: 1,
-    borderColor: "rgba(56,189,248,0.3)",
+    borderColor: "rgba(251, 113, 133,0.3)",
   },
   rewardTagBorder: {
     backgroundColor: "rgba(168,85,247,0.15)",
@@ -672,7 +672,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
   },
   statusClaimedText: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 10,
     fontWeight: "700",
   },

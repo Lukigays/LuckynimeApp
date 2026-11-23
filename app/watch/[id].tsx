@@ -4016,7 +4016,7 @@ export default function WatchScreen() {
             <Text style={styles.actionPillText}>
               {language === "sub" ? "SUB" : "DUB"}
             </Text>
-            <CaretDown size={12} color="#94A3B8" weight="bold" />
+            <CaretDown size={12} color="#C4A6B3" weight="bold" />
           </Pressable>
         ) : null}
 
@@ -4048,7 +4048,7 @@ export default function WatchScreen() {
               <Text style={styles.animeSubMetaText}>Episode {episode}</Text>
               <Text style={styles.animeSubMetaDot}>•</Text>
               <View style={styles.viewsRow}>
-                <Eye size={12} color="#94A3B8" />
+                <Eye size={12} color="#C4A6B3" />
                 <Text style={styles.animeSubMetaText}>
                   {formatCount(animeQuery.data?.popularity ? animeQuery.data.popularity * 12 : 1273878)}
                 </Text>
@@ -4066,7 +4066,7 @@ export default function WatchScreen() {
             onPress={reportBrokenSource}
             style={styles.reportPillBtn}
           >
-            <Flag size={13} color="#111827" weight="fill" />
+            <Flag size={13} color="#170E14" weight="fill" />
             <Text style={styles.reportPillText}>Report</Text>
           </Pressable>
         </View>
@@ -4156,7 +4156,7 @@ export default function WatchScreen() {
 
       {/* ── 6. Informasi Aturan Komunitas ── */}
       <View style={styles.communityRuleCard}>
-        <Info size={18} color="#60A5FA" weight="bold" />
+        <Info size={18} color="#FB7185" weight="bold" />
         <Text style={styles.communityRuleText}>
           Jangan lupa untuk membuat komentar yang sopan dan santun dan mengikuti{" "}
           <Text
@@ -4347,7 +4347,7 @@ export default function WatchScreen() {
           <View style={styles.serverSheetHeader}>
             <View style={{ flex: 1, gap: 2 }}>
               <View style={styles.serverTitleRow}>
-                <Subtitles size={16} color="#E2E8F0" weight="bold" />
+                <Subtitles size={16} color="#F5E9EE" weight="bold" />
                 <Text style={styles.serverSheetTitle}>PILIH AUDIO / BAHASA</Text>
               </View>
               <Text style={styles.serverSheetSubtitle}>
@@ -4366,7 +4366,7 @@ export default function WatchScreen() {
               accessibilityRole="button"
               accessibilityLabel="Tutup Pilihan Audio"
             >
-              <X size={16} color="#94A3B8" weight="bold" />
+              <X size={16} color="#C4A6B3" weight="bold" />
             </Pressable>
           </View>
 
@@ -4447,7 +4447,7 @@ export default function WatchScreen() {
           <View style={styles.serverSheetHeader}>
             <View style={{ flex: 1, gap: 2 }}>
               <View style={styles.serverTitleRow}>
-                <DownloadSimple size={16} color="#E2E8F0" weight="bold" />
+                <DownloadSimple size={16} color="#F5E9EE" weight="bold" />
                 <Text style={styles.serverSheetTitle}>
                   {`DOWNLOAD · ${language.toUpperCase()} · EP ${episode}`}
                 </Text>
@@ -4468,7 +4468,7 @@ export default function WatchScreen() {
               accessibilityRole="button"
               accessibilityLabel="Tutup Pilihan Download"
             >
-              <X size={16} color="#94A3B8" weight="bold" />
+              <X size={16} color="#C4A6B3" weight="bold" />
             </Pressable>
           </View>
 
@@ -4505,7 +4505,7 @@ export default function WatchScreen() {
                     </View>
                   </View>
                   <View style={styles.downloadIconWrap}>
-                    <Download size={16} color="#E2E8F0" weight="bold" />
+                    <Download size={16} color="#F5E9EE" weight="bold" />
                   </View>
                 </Pressable>
               ))
@@ -4815,7 +4815,7 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     height: 3,
-    backgroundColor: "#FF0000",
+    backgroundColor: "#F43F5E",
   },
   edgeSeekbarThick: {
     height: 4.5,
@@ -4825,7 +4825,7 @@ const styles = StyleSheet.create({
     width: 13,
     height: 13,
     borderRadius: 6.5,
-    backgroundColor: "#FF0000",
+    backgroundColor: "#F43F5E",
     marginLeft: -6.5,
     bottom: -5,
     elevation: 4,
@@ -4901,12 +4901,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   serverModalSheet: {
-    backgroundColor: "rgba(14, 18, 27, 0.96)",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    backgroundColor: "rgba(23, 14, 20, 0.98)",
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
     borderWidth: 1,
     borderBottomWidth: 0,
-    borderColor: "rgba(255, 255, 255, 0.12)",
+    borderColor: "rgba(251, 113, 133, 0.24)",
     maxHeight: "52%",
     paddingTop: 10,
     paddingBottom: Platform.OS === "ios" ? 28 : 16,
@@ -4926,7 +4926,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255, 255, 255, 0.22)",
+    backgroundColor: "rgba(251, 113, 133, 0.35)",
     alignSelf: "center",
     marginBottom: 10,
   },
@@ -4937,7 +4937,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.06)",
+    borderBottomColor: "rgba(251, 113, 133, 0.14)",
   },
   serverTitleRow: {
     flexDirection: "row",
@@ -4945,13 +4945,13 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   serverSheetTitle: {
-    color: "#FFFFFF",
+    color: "#FFF5F7",
     fontFamily: "Nunito-ExtraBold",
     fontSize: 13.5,
     letterSpacing: 0.6,
   },
   serverSheetSubtitle: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
   },
@@ -4998,7 +4998,7 @@ const styles = StyleSheet.create({
   serverNumText: {
     fontFamily: "Nunito-ExtraBold",
     fontSize: 14,
-    color: "#64748B",
+    color: "#8F727F",
     minWidth: 24,
   },
   serverNumTextActive: {
@@ -5006,7 +5006,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Black",
   },
   serverItemTitle: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
   },
@@ -5015,12 +5015,12 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-ExtraBold",
   },
   serverItemSub: {
-    color: "#475569",
+    color: "#785D6A",
     fontFamily: "Nunito-Medium",
     fontSize: 11,
   },
   serverItemSubActive: {
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   serverEmptyBox: {
     paddingVertical: 24,
@@ -5028,7 +5028,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   serverEmptyText: {
-    color: "#64748B",
+    color: "#8F727F",
     fontFamily: "Nunito-SemiBold",
     fontSize: 12,
   },
@@ -5112,12 +5112,14 @@ const styles = StyleSheet.create({
   errorAction: { paddingHorizontal: 12, paddingTop: 10 },
   errorCard: { gap: 6, padding: 12 },
   errorCopy: { color: nothing.muted, fontSize: 12, lineHeight: 16 },
-  scroll: { backgroundColor: "#101114", padding: 14, gap: 14, paddingBottom: 40 },
+  scroll: { backgroundColor: "#0D080B", padding: 14, gap: 14, paddingBottom: 40 },
   actionPillsRail: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   mergedReactionPill: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#20232B",
+    backgroundColor: "#191016",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.18)",
     borderRadius: 22,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -5131,76 +5133,78 @@ const styles = StyleSheet.create({
   reactionDivider: {
     width: 1,
     height: 14,
-    backgroundColor: "rgba(255, 255, 255, 0.22)",
+    backgroundColor: "rgba(251, 113, 133, 0.24)",
   },
-  actionPill: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#20232B", borderRadius: 22, paddingHorizontal: 14, paddingVertical: 8 },
-  actionPillSubtitleOn: { backgroundColor: "#20232B" },
-  actionPillActive: { backgroundColor: "rgba(239, 68, 68, 0.15)", borderColor: "rgba(239, 68, 68, 0.4)" },
-  actionPillServer: { backgroundColor: "rgba(56, 189, 248, 0.1)", borderColor: "rgba(56, 189, 248, 0.25)" },
-  actionPillLang: { backgroundColor: "rgba(167, 139, 250, 0.1)", borderColor: "rgba(167, 139, 250, 0.25)" },
-  actionPillText: { color: "#FFFFFF", fontSize: 12, fontWeight: "700" },
-  actionPillTextLiked: { color: "#EF4444" },
-  audioServerCard: { backgroundColor: "#16181F", borderRadius: 14, padding: 12, gap: 10, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.06)" },
+  actionPill: { flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: "#191016", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.18)", borderRadius: 22, paddingHorizontal: 14, paddingVertical: 8 },
+  actionPillSubtitleOn: { backgroundColor: "#23161F" },
+  actionPillActive: { backgroundColor: "rgba(244, 63, 94, 0.18)", borderColor: "#FB7185" },
+  actionPillServer: { backgroundColor: "rgba(244, 63, 94, 0.14)", borderColor: "rgba(251, 113, 133, 0.32)" },
+  actionPillLang: { backgroundColor: "rgba(251, 191, 36, 0.12)", borderColor: "rgba(251, 191, 36, 0.30)" },
+  actionPillText: { color: "#FFF5F7", fontSize: 12, fontWeight: "700" },
+  actionPillTextLiked: { color: "#FB7185" },
+  audioServerCard: { backgroundColor: "#180F15", borderRadius: 16, padding: 12, gap: 10, borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
   subDubPills: { flexDirection: "row", gap: 8 },
-  subDubPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 8, backgroundColor: "#20242F", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.08)" },
-  subDubPillActive: { backgroundColor: "#EF4444", borderColor: "#EF4444" },
-  subDubPillText: { color: "#94A3B8", fontSize: 11, fontWeight: "800" },
+  subDubPill: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 10, backgroundColor: "#23161F", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
+  subDubPillActive: { backgroundColor: "#F43F5E", borderColor: "#FDA4AF" },
+  subDubPillText: { color: "#C4A6B3", fontSize: 11, fontWeight: "800" },
   subDubPillTextActive: { color: "#FFFFFF" },
   serverPillsScroll: { flexDirection: "row", gap: 8 },
-  serverPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: "#1F232D", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.08)" },
-  serverPillActive: { backgroundColor: "#EF4444", borderColor: "#EF4444" },
-  serverPillText: { color: "#94A3B8", fontSize: 11, fontWeight: "700" },
+  serverPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: "#23161F", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
+  serverPillActive: { backgroundColor: "#F43F5E", borderColor: "#FDA4AF" },
+  serverPillText: { color: "#C4A6B3", fontSize: 11, fontWeight: "700" },
   serverPillTextActive: { color: "#FFFFFF", fontWeight: "800" },
   animeInfoCard: { paddingVertical: 2, gap: 10 },
   animeInfoHeaderRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-  animeAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "#222634", borderWidth: 1.5, borderColor: "rgba(255, 255, 255, 0.15)" },
+  animeAvatar: { width: 48, height: 48, borderRadius: 16, backgroundColor: "#23161F", borderWidth: 1.5, borderColor: "rgba(251, 113, 133, 0.32)" },
   animeInfoMetaCol: { flex: 1, gap: 3 },
-  animeMainTitle: { color: "#FFFFFF", fontSize: 16, fontWeight: "800", letterSpacing: -0.2 },
+  animeMainTitle: { color: "#FFF5F7", fontSize: 16, fontWeight: "800", letterSpacing: -0.2 },
   animeSubMetaRow: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 5 },
-  animeSubMetaText: { color: "#94A3B8", fontSize: 12, fontWeight: "600" },
-  animeSubMetaDot: { color: "#64748B", fontSize: 12 },
+  animeSubMetaText: { color: "#C4A6B3", fontSize: 12, fontWeight: "600" },
+  animeSubMetaDot: { color: "#8F727F", fontSize: 12 },
   viewsRow: { flexDirection: "row", alignItems: "center", gap: 3 },
   reportPillBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    backgroundColor: "#FACC15",
+    backgroundColor: "rgba(251, 191, 36, 0.18)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 191, 36, 0.42)",
     borderRadius: 20,
     paddingHorizontal: 13,
     paddingVertical: 7,
   },
-  reportPillText: { color: "#111827", fontSize: 12, fontWeight: "800" },
-  animeDescText: { color: "#CBD5E1", fontSize: 13, lineHeight: 19 },
+  reportPillText: { color: "#FDE68A", fontSize: 12, fontWeight: "800" },
+  animeDescText: { color: "#D9BECA", fontSize: 13, lineHeight: 19 },
   descToggleBtn: { alignSelf: "flex-start", marginTop: -4 },
-  descToggleText: { color: "#38BDF8", fontSize: 12, fontWeight: "700" },
-  crystalBannerCard: { paddingVertical: 4, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
+  descToggleText: { color: "#FB7185", fontSize: 12, fontWeight: "700" },
+  crystalBannerCard: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 16, backgroundColor: "#180F15", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.20)", flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
   crystalBannerLeft: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
   crystalIconImg: { width: 44, height: 44 },
   crystalTextCol: { flex: 1, gap: 2 },
   crystalTag: { flexDirection: "row", alignItems: "center" },
-  crystalTagText: { color: "#38BDF8", fontSize: 9, fontWeight: "900", letterSpacing: 0.6 },
-  crystalTitle: { color: "#FFFFFF", fontSize: 13, fontWeight: "800" },
-  crystalDesc: { color: "#94A3B8", fontSize: 11, lineHeight: 15 },
-  crystalBtn: { backgroundColor: "#2563EB", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 },
+  crystalTagText: { color: "#FB7185", fontSize: 9, fontWeight: "900", letterSpacing: 0.6 },
+  crystalTitle: { color: "#FFF5F7", fontSize: 13, fontWeight: "800" },
+  crystalDesc: { color: "#C4A6B3", fontSize: 11, lineHeight: 15 },
+  crystalBtn: { backgroundColor: "#F43F5E", borderRadius: 11, paddingHorizontal: 13, paddingVertical: 8 },
   crystalBtnText: { color: "#FFFFFF", fontSize: 11, fontWeight: "800" },
-  episodeSectionCard: { backgroundColor: "#16181F", borderRadius: 16, padding: 14, gap: 12, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.06)" },
+  episodeSectionCard: { backgroundColor: "#180F15", borderRadius: 18, padding: 14, gap: 12, borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.18)" },
   episodeHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  episodeSectionTitle: { color: "#FFFFFF", fontSize: 17, fontWeight: "900", letterSpacing: -0.3 },
-  episodeTotalCountBadge: { color: "#94A3B8", fontSize: 12, fontWeight: "700", backgroundColor: "rgba(255, 255, 255, 0.06)", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
+  episodeSectionTitle: { color: "#FFF5F7", fontSize: 17, fontWeight: "900", letterSpacing: -0.3 },
+  episodeTotalCountBadge: { color: "#FDA4AF", fontSize: 12, fontWeight: "700", backgroundColor: "rgba(244, 63, 94, 0.16)", paddingHorizontal: 9, paddingVertical: 3, borderRadius: 99 },
   episodeGridWrap: { gap: 10 },
   rangePillsRow: { flexDirection: "row", gap: 8, paddingBottom: 2 },
-  rangePill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: "#1F232D", borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.08)" },
-  rangePillActive: { backgroundColor: "#EF4444", borderColor: "#EF4444" },
-  rangePillText: { color: "#94A3B8", fontSize: 12, fontWeight: "700" },
+  rangePill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: "#23161F", borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
+  rangePillActive: { backgroundColor: "#F43F5E", borderColor: "#FDA4AF" },
+  rangePillText: { color: "#C4A6B3", fontSize: 12, fontWeight: "700" },
   rangePillTextActive: { color: "#FFFFFF", fontWeight: "800" },
   episodeCardsScroll: { flexDirection: "row", gap: 8, paddingVertical: 4 },
-  modernEpCard: { width: 54, height: 54, borderRadius: 12, backgroundColor: "#1F232D", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" },
-  modernEpCardActive: { backgroundColor: "#FFFFFF" },
-  modernEpNum: { color: "#CBD5E1", fontSize: 14, fontWeight: "700" },
-  modernEpNumActive: { color: "#111827", fontSize: 16, fontWeight: "900" },
-  communityRuleCard: { flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: "#16181F", borderRadius: 12, padding: 12, borderWidth: 1, borderColor: "rgba(255, 255, 255, 0.06)" },
-  communityRuleText: { flex: 1, color: "#94A3B8", fontSize: 12, lineHeight: 17 },
-  communityRuleLink: { color: "#60A5FA", fontWeight: "700", textDecorationLine: "underline" },
+  modernEpCard: { width: 54, height: 54, borderRadius: 14, backgroundColor: "#23161F", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" },
+  modernEpCardActive: { backgroundColor: "#F43F5E" },
+  modernEpNum: { color: "#D9BECA", fontSize: 14, fontWeight: "700" },
+  modernEpNumActive: { color: "#FFFFFF", fontSize: 16, fontWeight: "900" },
+  communityRuleCard: { flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: "#180F15", borderRadius: 14, padding: 12, borderWidth: 1, borderColor: "rgba(251, 113, 133, 0.16)" },
+  communityRuleText: { flex: 1, color: "#C4A6B3", fontSize: 12, lineHeight: 17 },
+  communityRuleLink: { color: "#FB7185", fontWeight: "700", textDecorationLine: "underline" },
   commentsContainer: { gap: 12 },
   episodeLoading: { minHeight: 72, alignItems: "center", justifyContent: "center", gap: 7, borderTopWidth: 1, borderTopColor: nothing.line },
   episodeLoadingText: { color: nothing.muted, fontFamily: nothing.mono, fontSize: 10, fontWeight: "900", letterSpacing: 0.7 },
@@ -5215,19 +5219,13 @@ const styles = StyleSheet.create({
   episodeSwipeContainer: { overflow: "hidden" },
   watchCommunitySection: { gap: 10, paddingTop: 2 },
   ratingCard: {
-    backgroundColor: "rgba(255, 255, 255, 0.04)",
+    backgroundColor: "#180F15",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.09)",
-    borderRadius: 14,
+    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderRadius: 16,
     paddingHorizontal: 14,
     paddingVertical: 12,
     gap: 12,
-    ...(Platform.OS === "web"
-      ? ({
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
-        } as any)
-      : {}),
   },
   ratingCardHeader: {
     flexDirection: "row",
@@ -5243,13 +5241,13 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   ratingMainTitle: {
-    color: "#FFFFFF",
+    color: "#FFF5F7",
     fontSize: 15,
     fontFamily: "Nunito-Black",
     letterSpacing: -0.2,
   },
   ratingSubtitle: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 11.5,
     fontFamily: "Nunito-Bold",
   },
@@ -5263,10 +5261,10 @@ const styles = StyleSheet.create({
     height: 28,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    backgroundColor: "#23161F",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.12)",
-    borderRadius: 6,
+    borderColor: "rgba(251, 113, 133, 0.18)",
+    borderRadius: 7,
     ...(Platform.OS === "web"
       ? ({
           cursor: "pointer",
@@ -5275,15 +5273,15 @@ const styles = StyleSheet.create({
       : {}),
   },
   ratingRectBoxActive: {
-    backgroundColor: "rgba(239, 68, 68, 0.22)",
-    borderColor: "#EF4444",
+    backgroundColor: "rgba(244, 63, 94, 0.25)",
+    borderColor: "#FB7185",
   },
   ratingRectBoxExact: {
-    backgroundColor: "#EF4444",
-    borderColor: "#EF4444",
+    backgroundColor: "#F43F5E",
+    borderColor: "#FDA4AF",
   },
   ratingRectText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
   },

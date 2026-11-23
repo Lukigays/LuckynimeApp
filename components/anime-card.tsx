@@ -1,6 +1,7 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Modal, Platform, Pressable, Share, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
@@ -16,34 +17,36 @@ import { useLuckynimeAuth } from "@/providers/auth-provider";
 
 type ActionItem = { label: string; icon: string; onPress: () => void };
 
-/** Fade-out time before the sheet's hooks tear down (matches the Modal fade). */
-const MENU_CLOSE_FADE_MS = 260;
-/** Safety cap: mark-as-watched never writes unbounded rows for 1000-episode franchises. */
+const MENU_CLOSE_FADE_MS = 240;
 const MARK_WATCHED_MAX_EPISODES = 24;
 
 function showQuickFeedback(message: string) {
   Alert.alert("", message, [{ text: "OK" }], { cancelable: true });
 }
 
-/** Episodes that have already aired (never the ones still to come). */
 function airedEpisodeCount(anime: Anime): number {
   const total = typeof anime.episodes === "number" && anime.episodes > 0 ? anime.episodes : null;
-  const next = typeof anime.nextAiringEpisode?.episode === "number" && anime.nextAiringEpisode.episode > 0 ? anime.nextAiringEpisode.episode : null;
-  // While airing, `nextAiringEpisode` is the next one TO AIR, so one less has aired.
+  const next =
+    typeof anime.nextAiringEpisode?.episode === "number" && anime.nextAiringEpisode.episode > 0
+      ? anime.nextAiringEpisode.episode
+      : null;
   const aired = next !== null ? Math.max(0, next - 1) : (total ?? 1);
   return total !== null ? Math.min(aired, total) : aired;
 }
 
-/** Same deep-link/share pattern as the detail screen's share button. */
 function shareAnime(anime: Anime, title: string) {
   const deepLink = `luckynime://anime/${anime.id}`;
   const webUrl = `https://luckynime.tech/anime/${anime.id}`;
-  void Share.share({ title, message: `Watch ${title} on Luckynime\n${deepLink}`, url: Platform.OS === "ios" ? deepLink : webUrl })
+  void Share.share({
+    title,
+    message: `Tonton ${title} di Luckynime\n${deepLink}`,
+    url: Platform.OS === "ios" ? deepLink : webUrl,
+  })
     .then((result) => {
-      if (result?.action !== "dismissedAction") showQuickFeedback(`Shared "${title}"`);
+      if (result?.action !== "dismissedAction") showQuickFeedback(`Berhasil membagikan "${title}"`);
     })
     .catch(() => {
-      showQuickFeedback("Unable to share right now");
+      showQuickFeedback("Tidak dapat membagikan saat ini");
     });
 }
 
@@ -69,6 +72,14 @@ function AnimeCardBase({ anime, compact = false }: { anime: Anime; compact?: boo
           ? "ONGOING"
           : null;
 
+  const subMeta = useMemo(() => {
+    const parts: string[] = [];
+    if (anime.format) parts.push(String(anime.format).replace("_", " "));
+    if (anime.seasonYear) parts.push(String(anime.seasonYear));
+    else if (anime.genres?.[0]) parts.push(anime.genres[0]);
+    return parts.join(" • ") || "Sub Indo";
+  }, [anime.format, anime.seasonYear, anime.genres]);
+
   const cancelLongPress = () => {
     if (longPressTimer.current) {
       clearTimeout(longPressTimer.current);
@@ -85,13 +96,13 @@ function AnimeCardBase({ anime, compact = false }: { anime: Anime; compact?: boo
     <>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Open ${title}`}
-        accessibilityHint="Double tap to view anime details. Long press for more options."
+        accessibilityLabel={`Buka ${title}`}
+        accessibilityHint="Ketuk untuk detail anime. Tahan untuk aksi cepat."
         onPress={() => {
           cancelLongPress();
           void Haptics.selectionAsync();
           prefetch(anime.id);
-          router.push((`/anime/${anime.id}`) as never);
+          router.push(`/anime/${anime.id}` as never);
         }}
         onPressIn={() => {
           longPressTimer.current = setTimeout(() => {
@@ -102,53 +113,55 @@ function AnimeCardBase({ anime, compact = false }: { anime: Anime; compact?: boo
         onPressOut={cancelLongPress}
         style={({ pressed }) => [styles.card, compact && styles.compactCard, pressed && styles.pressed]}
       >
-        <View style={styles.media}>
+        <View style={[styles.media, compact && styles.compactMedia]}>
           <View style={styles.artFallback}>
-            <Text style={styles.fallbackInitial}>{title.charAt(0)}</Text>
+            <Text style={styles.fallbackInitial}>{title.charAt(0).toUpperCase()}</Text>
           </View>
           {artwork ? (
             <Image
               source={{ uri: artwork }}
               style={styles.poster}
               contentFit="cover"
-              transition={0}
+              transition={140}
               cachePolicy="memory-disk"
             />
           ) : null}
-          {/* Status Badge (Pojok Kiri Atas: EP ... / TAMAT, Warna Putih, Tanpa Titik) */}
-          {statusBadge ? (
-            <View style={styles.statusBadge}>
-              <Text style={styles.statusBadgeText}>{statusBadge}</Text>
-            </View>
-          ) : null}
-          {/* Rating Badge (Pojok Kanan Atas - Persis Screenshot) */}
+
+          <LinearGradient
+            colors={["transparent", "rgba(13, 8, 11, 0.22)", "rgba(13, 8, 11, 0.88)"]}
+            locations={[0.46, 0.74, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+
+          {/* Score Pill Top-Right */}
           <View style={styles.cardScoreBadge}>
             <Text style={styles.cardScoreStar}>★</Text>
             <Text style={styles.cardScoreValue}>
-              {anime.averageScore
-                ? (anime.averageScore / 10).toFixed(2)
-                : "8.50"}
+              {anime.averageScore ? (anime.averageScore / 10).toFixed(1) : "8.5"}
             </Text>
           </View>
+
+          {/* Crimson Episode Ribbon Bottom-Left */}
+          {statusBadge ? (
+            <View style={[styles.statusBadge, isFinished && styles.statusBadgeFinished]}>
+              <Text style={styles.statusBadgeText}>{statusBadge}</Text>
+            </View>
+          ) : null}
         </View>
+
         <View style={styles.meta}>
-          <Text numberOfLines={1} style={styles.title}>{title}</Text>
+          <Text numberOfLines={2} style={styles.title}>{title}</Text>
+          <Text numberOfLines={1} style={styles.detail}>{subMeta}</Text>
         </View>
       </Pressable>
 
-      {/* The sheet mounts its hooks (bookmarks/watch history/auth) only while open,
-          so a rail full of cards never opens a realtime channel per card. */}
-      {menuVisible ? <AnimeCardMenu anime={anime} title={title} onClose={() => setMenuVisible(false)} /> : null}
+      {menuVisible ? (
+        <AnimeCardMenu anime={anime} title={title} onClose={() => setMenuVisible(false)} />
+      ) : null}
     </>
   );
 }
 
-/**
- * Memoized: rails render dozens of these and parent screens re-render on every
- * tick (timers, refresh spinners) — with a stable `anime` object from the
- * query cache this skips re-rendering the whole rail. The menu is mounted
- * conditionally inside, so memo cannot strand its internal state.
- */
 export const AnimeCard = memo(AnimeCardBase);
 
 function AnimeCardMenu({ anime, title, onClose }: { anime: Anime; title: string; onClose: () => void }) {
@@ -159,7 +172,6 @@ function AnimeCardMenu({ anime, title, onClose }: { anime: Anime; title: string;
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Flip on the next tick so the Modal still plays its fade-in animation.
     const openTimer = setTimeout(() => setVisible(true), 0);
     return () => {
       clearTimeout(openTimer);
@@ -186,8 +198,10 @@ function AnimeCardMenu({ anime, title, onClose }: { anime: Anime; title: string;
   const toggleLibrary = () => {
     if (!requireAccount()) return;
     bookmarks.toggle.mutate(anime, {
-      onSuccess: (added) => showQuickFeedback(added ? `Added "${title}" to your library` : `Removed "${title}" from your library`),
-      onError: (error) => showQuickFeedback(error instanceof Error ? error.message : "Could not update your library"),
+      onSuccess: (added) =>
+        showQuickFeedback(added ? `"${title}" disimpan ke Koleksi` : `"${title}" dihapus dari Koleksi`),
+      onError: (error) =>
+        showQuickFeedback(error instanceof Error ? error.message : "Gagal memperbarui Koleksi"),
     });
   };
 
@@ -196,27 +210,38 @@ function AnimeCardMenu({ anime, title, onClose }: { anime: Anime; title: string;
     const airedTotal = airedEpisodeCount(anime);
     const episodeCount = Math.min(airedTotal, MARK_WATCHED_MAX_EPISODES);
     if (episodeCount <= 0) {
-      showQuickFeedback(`"${title}" has no aired episodes yet`);
+      showQuickFeedback(`"${title}" belum memiliki episode tayang`);
       return;
     }
     const episodeDuration = Math.max(1, Math.round((anime.duration || 24) * 60));
     const image = anime.coverImage?.extraLarge || anime.coverImage?.large || null;
     void (async () => {
       try {
-        // Bounded concurrency: a whole cour lands in a couple of round trips
-        // instead of one serial request per episode.
         const CONCURRENCY = 6;
         for (let start = 1; start <= episodeCount; start += CONCURRENCY) {
           const chunk: Array<Promise<void>> = [];
           const end = Math.min(start + CONCURRENCY - 1, episodeCount);
           for (let episode = start; episode <= end; episode++) {
-            chunk.push(history.save.mutateAsync({ animeId: anime.id, animeTitle: title, animeImage: image, episode, progress: episodeDuration, duration: episodeDuration }));
+            chunk.push(
+              history.save.mutateAsync({
+                animeId: anime.id,
+                animeTitle: title,
+                animeImage: image,
+                episode,
+                progress: episodeDuration,
+                duration: episodeDuration,
+              })
+            );
           }
           await Promise.all(chunk);
         }
-        showQuickFeedback(episodeCount < airedTotal ? `${episodeCount} episodes of "${title}" marked as watched` : `"${title}" marked as watched`);
+        showQuickFeedback(
+          episodeCount < airedTotal
+            ? `${episodeCount} episode "${title}" ditandai selesai`
+            : `"${title}" ditandai selesai`
+        );
       } catch (error) {
-        showQuickFeedback(error instanceof Error ? error.message : `"${title}" could not be marked as watched`);
+        showQuickFeedback(error instanceof Error ? error.message : `Gagal menandai "${title}"`);
       }
     })();
   };
@@ -224,28 +249,28 @@ function AnimeCardMenu({ anime, title, onClose }: { anime: Anime; title: string;
   const openInBrowser = () => {
     const url = `https://anilist.co/anime/${anime.id}`;
     void Linking.openURL(url).catch(() => {
-      showQuickFeedback("Unable to open browser");
+      showQuickFeedback("Tidak dapat membuka browser");
     });
   };
 
   const actions: ActionItem[] = [
     {
-      label: "Add to Library",
+      label: "Simpan ke Koleksi",
       icon: "bookmark",
       onPress: () => close(toggleLibrary),
     },
     {
-      label: "Mark as Watched",
+      label: "Tandai Sudah Ditonton",
       icon: "check-circle",
       onPress: () => close(markAsWatched),
     },
     {
-      label: "Share",
+      label: "Bagikan Anime",
       icon: "share",
       onPress: () => close(() => shareAnime(anime, title)),
     },
     {
-      label: "Open in Browser",
+      label: "Buka di Browser",
       icon: "external-link",
       onPress: () => close(openInBrowser),
     },
@@ -255,7 +280,9 @@ function AnimeCardMenu({ anime, title, onClose }: { anime: Anime; title: string;
     <Modal transparent visible={visible} animationType="fade" onRequestClose={() => close()}>
       <Pressable style={styles.backdrop} onPress={() => close()}>
         <View style={styles.sheet} accessibilityViewIsModal>
+          <View style={styles.sheetHandle} />
           <View style={styles.sheetHeader}>
+            <Text style={styles.sheetEyebrow}>AKSI CEPAT</Text>
             <Text numberOfLines={1} style={styles.sheetTitle}>{title}</Text>
           </View>
           <View style={styles.divider} />
@@ -270,7 +297,9 @@ function AnimeCardMenu({ anime, title, onClose }: { anime: Anime; title: string;
               }}
               style={({ pressed }) => [styles.actionRow, pressed && styles.actionPressed]}
             >
-              <AppIcon name={action.icon as any} size={18} color={nothing.white} />
+              <View style={styles.actionIconBox}>
+                <AppIcon name={action.icon as any} size={16} color={nothing.sakura} />
+              </View>
               <Text style={styles.actionLabel}>{action.label}</Text>
             </Pressable>
           ))}
@@ -281,64 +310,141 @@ function AnimeCardMenu({ anime, title, onClose }: { anime: Anime; title: string;
 }
 
 const styles = StyleSheet.create({
-  card: { width: 144, gap: 8 },
-  compactCard: { width: 124 },
+  card: { width: 146, gap: 8 },
+  compactCard: { width: 126 },
   pressed: nothing.pressed,
-  media: { height: 204, borderRadius: 14, overflow: "hidden", backgroundColor: nothing.raised },
-  artFallback: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center", backgroundColor: "#242422" },
-  fallbackInitial: { color: nothing.dim, fontFamily: "Nunito-Black", fontSize: 54 },
+  media: {
+    height: 206,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: nothing.surface,
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.16)",
+  },
+  compactMedia: {
+    height: 178,
+  },
+  artFallback: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#21131B",
+  },
+  fallbackInitial: {
+    color: "rgba(251, 113, 133, 0.35)",
+    fontFamily: "Nunito-Black",
+    fontSize: 52,
+  },
   poster: { ...StyleSheet.absoluteFillObject },
   cardScoreBadge: {
     position: "absolute",
-    top: 6,
-    right: 6,
+    top: 7,
+    right: 7,
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(0, 0, 0, 0.72)",
+    backgroundColor: "rgba(13, 8, 11, 0.82)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
+    borderColor: "rgba(251, 191, 36, 0.36)",
+    paddingHorizontal: 6.5,
+    paddingVertical: 2.5,
+    borderRadius: 99,
   },
   cardScoreStar: {
-    color: "#F5C518",
-    fontSize: 10,
+    color: "#FBBF24",
+    fontSize: 9.5,
   },
   cardScoreValue: {
-    fontFamily: "SpaceGrotesk-Bold",
+    fontFamily: "SpaceGrotesk-SemiBold",
     fontSize: 10.5,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
     fontWeight: "700",
   },
   statusBadge: {
     position: "absolute",
-    left: 6,
-    top: 6,
-    backgroundColor: "rgba(0, 0, 0, 0.72)",
+    left: 7,
+    bottom: 7,
+    backgroundColor: "rgba(225, 29, 72, 0.92)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
+    borderColor: "rgba(253, 164, 175, 0.45)",
+    paddingHorizontal: 7.5,
+    paddingVertical: 2.5,
+    borderRadius: 8,
+  },
+  statusBadgeFinished: {
+    backgroundColor: "rgba(16, 185, 129, 0.88)",
+    borderColor: "rgba(110, 231, 183, 0.45)",
   },
   statusBadgeText: {
-    fontFamily: "SpaceGrotesk-Bold",
-    fontSize: 10,
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 9.5,
     color: "#FFFFFF",
     fontWeight: "800",
-    letterSpacing: 0.4,
+    letterSpacing: 0.45,
   },
-  meta: { gap: 3 },
-  title: { color: nothing.white, fontFamily: "Nunito-Bold", fontSize: 13, lineHeight: 17 },
-  detail: { color: nothing.muted, fontFamily: "Nunito-SemiBold", fontSize: 10, letterSpacing: 0.35 },
-  backdrop: { flex: 1, padding: 20, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.76)" },
-  sheet: { gap: 0, padding: 4, borderRadius: 10, borderWidth: 1, borderColor: nothing.line, backgroundColor: nothing.surface },
-  sheetHeader: { paddingHorizontal: 14, paddingTop: 12, paddingBottom: 10 },
-  sheetTitle: { color: nothing.white, fontSize: 15, fontWeight: "900", letterSpacing: -0.3 },
-  divider: { height: 1, backgroundColor: nothing.line, marginHorizontal: 10 },
-  actionRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 14, paddingHorizontal: 14 },
+  meta: { gap: 2, paddingHorizontal: 2 },
+  title: {
+    color: nothing.white,
+    fontFamily: "Nunito-Bold",
+    fontSize: 13,
+    lineHeight: 17,
+  },
+  detail: {
+    color: nothing.dim,
+    fontFamily: "Nunito-SemiBold",
+    fontSize: 10.5,
+    letterSpacing: 0.2,
+  },
+  backdrop: {
+    flex: 1,
+    padding: 18,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(8, 4, 7, 0.82)",
+  },
+  sheet: {
+    gap: 2,
+    padding: 8,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: nothing.lineStrong,
+    backgroundColor: "#170E14",
+  },
+  sheetHandle: {
+    alignSelf: "center",
+    width: 38,
+    height: 4,
+    borderRadius: 99,
+    backgroundColor: "rgba(251, 113, 133, 0.35)",
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  sheetHeader: { paddingHorizontal: 14, paddingTop: 6, paddingBottom: 10, gap: 2 },
+  sheetEyebrow: {
+    color: nothing.sakura,
+    fontFamily: "SpaceGrotesk-SemiBold",
+    fontSize: 9.5,
+    letterSpacing: 1.2,
+  },
+  sheetTitle: { color: nothing.white, fontFamily: "Nunito-ExtraBold", fontSize: 16 },
+  divider: { height: 1, backgroundColor: nothing.line, marginHorizontal: 10, marginBottom: 4 },
+  actionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 11,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+  },
   actionPressed: { backgroundColor: nothing.raised },
-  actionLabel: { color: nothing.white, fontSize: 14, fontWeight: "700" },
+  actionIconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: "rgba(244, 63, 94, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(251, 113, 133, 0.22)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  actionLabel: { color: nothing.white, fontFamily: "Nunito-Bold", fontSize: 13.5 },
 });

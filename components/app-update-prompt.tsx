@@ -332,7 +332,7 @@ export function AppUpdatePrompt() {
                 pressed && styles.btnPressedSubtle,
               ]}
             >
-              <AppIcon name="close" size={15} color="#94A3B8" />
+              <AppIcon name="close" size={15} color="#C4A6B3" />
             </Pressable>
           )}
 
@@ -365,7 +365,7 @@ export function AppUpdatePrompt() {
           {changelog.length > 0 && (
             <View style={styles.changelogSection}>
               <View style={styles.sectionHeaderRow}>
-                <AppIcon name="format-list-bulleted" size={14} color="#38BDF8" />
+                <AppIcon name="format-list-bulleted" size={14} color="#FB7185" />
                 <Text style={styles.sectionLabel}>CATATAN PEMBARUAN</Text>
               </View>
 
@@ -414,7 +414,7 @@ export function AppUpdatePrompt() {
               >
                 <View style={styles.abiSelectorLeft}>
                   <View style={styles.abiIconBadge}>
-                    <AppIcon name="android" size={15} color="#38BDF8" />
+                    <AppIcon name="android" size={15} color="#FB7185" />
                   </View>
                   <View>
                     <Text style={styles.abiSelectorValue}>
@@ -432,7 +432,7 @@ export function AppUpdatePrompt() {
                 <AppIcon
                   name={showAbiMenu ? "chevron-up" : "chevron-down"}
                   size={16}
-                  color="#94A3B8"
+                  color="#C4A6B3"
                 />
               </Pressable>
 
@@ -559,7 +559,7 @@ export function AppUpdatePrompt() {
                 ]}
                 accessibilityRole="button"
               >
-                <AppIcon name="github" size={15} color="#E2E8F0" />
+                <AppIcon name="github" size={15} color="#F5E9EE" />
                 <Text style={styles.githubBtnText}>Buka GitHub Release</Text>
               </Pressable>
 
@@ -573,7 +573,7 @@ export function AppUpdatePrompt() {
                   ]}
                   accessibilityRole="button"
                 >
-                  <AppIcon name="refresh" size={14} color="#94A3B8" />
+                  <AppIcon name="refresh" size={14} color="#C4A6B3" />
                   <Text style={styles.laterBtnText}>Cek Ulang</Text>
                 </Pressable>
               ) : (
@@ -682,9 +682,9 @@ const styles = StyleSheet.create({
     letterSpacing: -0.4,
   },
   versionCompareBadge: {
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.28)",
+    borderColor: "rgba(251, 113, 133, 0.28)",
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 2.5,
@@ -692,11 +692,11 @@ const styles = StyleSheet.create({
   versionCompareText: {
     fontSize: 10.5,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   subtitle: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 17,
     marginTop: 1,
   },
@@ -713,7 +713,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 10,
     fontWeight: "800",
-    color: "#64748B",
+    color: "#8F727F",
     letterSpacing: 0.8,
   },
   changelogScroll: {
@@ -737,7 +737,7 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: "#38BDF8",
+    backgroundColor: "#FB7185",
     marginTop: 5,
     flexShrink: 0,
   },
@@ -748,12 +748,12 @@ const styles = StyleSheet.create({
   changelogItemTitle: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#F1F5F9",
+    color: "#FFF5F7",
     lineHeight: 16,
   },
   changelogItemDesc: {
     fontSize: 11.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 16,
   },
 
@@ -801,7 +801,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -812,7 +812,7 @@ const styles = StyleSheet.create({
   },
   abiSelectorSize: {
     fontSize: 10.5,
-    color: "#64748B",
+    color: "#8F727F",
     marginTop: 1,
   },
   abiMenu: {
@@ -833,7 +833,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(255, 255, 255, 0.05)",
   },
   abiMenuItemSelected: {
-    backgroundColor: "rgba(56, 189, 248, 0.08)",
+    backgroundColor: "rgba(251, 113, 133, 0.08)",
   },
   abiMenuItemLeft: {
     flexDirection: "row",
@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
   },
   abiMenuItemText: {
     fontSize: 12.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   abiMenuItemTextSelected: {
     fontWeight: "700",
@@ -855,7 +855,7 @@ const styles = StyleSheet.create({
   },
   abiMenuItemSize: {
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
   },
   recommendedBadge: {
     backgroundColor: "rgba(16, 185, 129, 0.14)",
@@ -884,12 +884,12 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: 6,
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
     borderRadius: 3,
   },
   progressLabel: {
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
   },
 
@@ -926,9 +926,9 @@ const styles = StyleSheet.create({
     minHeight: 46,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.45)",
+    borderColor: "rgba(251, 113, 133, 0.45)",
     borderRadius: 14,
   },
   primaryBtnText: {
@@ -957,7 +957,7 @@ const styles = StyleSheet.create({
   githubBtnText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#E2E8F0",
+    color: "#F5E9EE",
   },
   recheckBtn: {
     minHeight: 40,
@@ -974,7 +974,7 @@ const styles = StyleSheet.create({
   laterBtnText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
 
   btnDisabled: {

@@ -187,7 +187,7 @@ export default function DeveloperScreen() {
       >
         {/* Hero */}
         <View style={styles.heroBadge}>
-          <AppIcon name="users" size={13} color="#E2E8F0" />
+          <AppIcon name="users" size={13} color="#F5E9EE" />
           <Text style={styles.heroBadgeText}>TEAM LUCKYNIME</Text>
         </View>
         <Text style={styles.heroHeadline}>Orang di Balik Luckynime</Text>
@@ -198,7 +198,7 @@ export default function DeveloperScreen() {
         {/* Loading Indicator if fetching */}
         {isLoading && devList.length === 0 ? (
           <View style={styles.loadingBox}>
-            <ActivityIndicator size="small" color="#E2E8F0" />
+            <ActivityIndicator size="small" color="#F5E9EE" />
             <Text style={styles.loadingText}>Memuat data tim developer...</Text>
           </View>
         ) : (
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 6,
     paddingBottom: 14,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.05)",
   },
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   subtitleText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
 
   // Scroll area
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   heroBadgeText: {
     fontFamily: "Nunito-ExtraBold",
     fontSize: 11,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     letterSpacing: 1.2,
   },
   heroHeadline: {
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   heroSub: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 19,
     marginTop: -4,
   },
@@ -388,14 +388,14 @@ const styles = StyleSheet.create({
   roleLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     letterSpacing: 1,
     textTransform: "uppercase",
   },
   roleText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     textAlign: "center",
     lineHeight: 19,
     paddingHorizontal: 10,
@@ -432,13 +432,13 @@ const styles = StyleSheet.create({
   loadingText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
 
   footerText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#64748B",
+    color: "#8F727F",
     textAlign: "center",
     marginTop: 8,
   },

@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     top: 52,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
   loadingSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     marginBottom: 32,
   },
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
   progressBarFill: {
     height: "100%",
     borderRadius: 4,
-    backgroundColor: "#38BDF8",
+    backgroundColor: "#FB7185",
   },
   progressTextRow: {
     width: "100%",
@@ -428,14 +428,14 @@ const styles = StyleSheet.create({
   progressStatusText: {
     fontFamily: "Nunito-Medium",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     flex: 1,
     marginRight: 8,
   },
   progressPercentText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   syncCard: {
     flexDirection: "row",
@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
   syncText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11.5,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   errorContainer: {
     flex: 1,
@@ -474,13 +474,13 @@ const styles = StyleSheet.create({
   errorDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     lineHeight: 19,
     maxWidth: 280,
   },
   retryBtn: {
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 12,

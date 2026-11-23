@@ -69,7 +69,7 @@ function GoogleLogo({ size = 20 }: { size?: number }) {
 }
 
 // Rotating circular spinner ("bundaran berputar") for loading state
-function RotatingSpinner({ size = 22, color = "#0B0E17" }: { size?: number; color?: string }) {
+function RotatingSpinner({ size = 22, color = "#0D080B" }: { size?: number; color?: string }) {
   const spinAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -107,7 +107,7 @@ function RotatingSpinner({ size = 22, color = "#0B0E17" }: { size?: number; colo
             cx="12"
             cy="12"
             r="9.5"
-            stroke="rgba(11, 14, 23, 0.15)"
+            stroke="rgba(13, 8, 11, 0.15)"
             strokeWidth="2.8"
             fill="none"
           />
@@ -407,7 +407,7 @@ export function FirstRunOnboarding({ onComplete }: { onComplete: () => void }) {
                 <View style={styles.cleanButtonInner}>
                   <Text style={styles.cleanButtonText}>Mulai Menonton</Text>
                   <View style={styles.cleanIconCircle}>
-                    <AppIcon name="chevron-right" size={16} color="#0F172A" />
+                    <AppIcon name="chevron-right" size={16} color="#150D12" />
                   </View>
                 </View>
               </Pressable>
@@ -557,7 +557,7 @@ export function FirstRunOnboarding({ onComplete }: { onComplete: () => void }) {
                 accessibilityLabel="Lanjut dengan Google"
               >
                 {signingIn ? (
-                  <RotatingSpinner size={22} color="#0B0E17" />
+                  <RotatingSpinner size={22} color="#0D080B" />
                 ) : (
                   <GoogleLogo size={22} />
                 )}
@@ -707,7 +707,7 @@ const styles = StyleSheet.create({
   },
   topVersionText: {
     fontFamily: "Nunito-Bold",
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 11.5,
     letterSpacing: 0.6,
   },
@@ -762,7 +762,7 @@ const styles = StyleSheet.create({
   },
   heroSubtitle: {
     fontFamily: "Nunito-SemiBold",
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 15,
     lineHeight: 22,
   },
@@ -788,7 +788,7 @@ const styles = StyleSheet.create({
   },
   cleanButtonText: {
     fontFamily: "Nunito-Black",
-    color: "#0F172A",
+    color: "#150D12",
     fontSize: 16,
     letterSpacing: 0.2,
   },
@@ -796,13 +796,13 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "rgba(15, 23, 42, 0.08)",
+    backgroundColor: "rgba(21, 13, 18, 0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
   heroVersionFooter: {
     fontFamily: "Nunito-SemiBold",
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 12,
     textAlign: "center",
     marginTop: 14,
@@ -848,7 +848,7 @@ const styles = StyleSheet.create({
   },
   welcomeSubtitle: {
     fontFamily: "Nunito-SemiBold",
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 14.5,
     lineHeight: 22,
     textAlign: "center",
@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
   },
   featurePillText: {
     fontFamily: "Nunito-Bold",
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     fontSize: 11.5,
     letterSpacing: 0.2,
   },
@@ -919,7 +919,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     fontSize: 13,
     lineHeight: 20,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     marginBottom: 14,
   },
   disclaimerBulletList: {
@@ -934,7 +934,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
     fontSize: 14,
     lineHeight: 20,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginRight: 8,
     width: 10,
   },
@@ -943,13 +943,13 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Regular",
     fontSize: 13,
     lineHeight: 20,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   disclaimerFooterNote: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
     lineHeight: 20,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     marginTop: 10,
   },
   disclaimerActions: {
@@ -979,7 +979,7 @@ const styles = StyleSheet.create({
   disclaimerWhiteButtonText: {
     fontFamily: "Nunito-Bold",
     fontSize: 15,
-    color: "#0F172A",
+    color: "#150D12",
     letterSpacing: 0.3,
   },
   disclaimerRejectButton: {
@@ -1001,7 +1001,7 @@ const styles = StyleSheet.create({
   disclaimerBrandFooter: {
     fontFamily: "Nunito-Medium",
     fontSize: 12,
-    color: "#64748B",
+    color: "#8F727F",
     marginTop: 4,
     marginBottom: 2,
     textAlign: "center",
@@ -1015,17 +1015,17 @@ const styles = StyleSheet.create({
   },
   readyTitle: {
     fontFamily: "Nunito-Black",
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     fontSize: 35,
     letterSpacing: 0.5,
     textAlign: "center",
-    textShadowColor: "rgba(226, 232, 240, 0.25)",
+    textShadowColor: "rgba(251, 113, 133, 0.25)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 6,
   },
   readySubtitle: {
     fontFamily: "Nunito-SemiBold",
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 14.5,
     lineHeight: 22,
     textAlign: "center",
@@ -1074,7 +1074,7 @@ const styles = StyleSheet.create({
   },
   googleButtonText: {
     fontFamily: "Nunito-ExtraBold",
-    color: "#0B0E17",
+    color: "#0D080B",
     fontSize: 15.5,
     letterSpacing: 0.2,
   },
@@ -1097,7 +1097,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     fontFamily: "Nunito-Bold",
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 12,
     paddingHorizontal: 12,
   },
@@ -1128,13 +1128,13 @@ const styles = StyleSheet.create({
   },
   testerButtonText: {
     fontFamily: "Nunito-Bold",
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     fontSize: 14,
   },
 
   legalNote: {
     fontFamily: "Nunito-Regular",
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 11,
     lineHeight: 16,
     textAlign: "center",
@@ -1155,21 +1155,21 @@ const styles = StyleSheet.create({
   legalLinkText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
-    color: "#38BDF8",
+    color: "#FB7185",
     textDecorationLine: "underline",
-    textDecorationColor: "rgba(56, 189, 248, 0.45)",
+    textDecorationColor: "rgba(251, 113, 133, 0.45)",
   },
   legalLinkDot: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#475569",
+    color: "#785D6A",
   },
   legalLinkPressed: {
     opacity: 0.6,
   },
   bottomVersionText: {
     fontFamily: "Nunito-SemiBold",
-    color: "#475569",
+    color: "#785D6A",
     fontSize: 11,
     marginTop: 8,
   },
@@ -1210,8 +1210,8 @@ const styles = StyleSheet.create({
   },
   indicatorActive: {
     height: 26,
-    backgroundColor: "#E2E8F0",
-    shadowColor: "#E2E8F0",
+    backgroundColor: "#F5E9EE",
+    shadowColor: "#F5E9EE",
     shadowOpacity: 0.9,
     shadowRadius: 6,
   },

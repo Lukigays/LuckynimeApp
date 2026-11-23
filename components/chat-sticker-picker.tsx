@@ -89,7 +89,7 @@ export const ChatStickerPicker = React.memo(function ChatStickerPicker({
           hitSlop={8}
           style={({ pressed }) => [styles.closeBtn, pressed && styles.btnPressed]}
         >
-          <AppIcon name="close" size={18} color="#94A3B8" />
+          <AppIcon name="close" size={18} color="#C4A6B3" />
         </Pressable>
       </View>
 
@@ -154,7 +154,7 @@ export const ChatStickerPicker = React.memo(function ChatStickerPicker({
 
       {/* ─── Footer Keterangan Singkat ─── */}
       <View style={styles.footerNoteRow}>
-        <AppIcon name="emoticon-happy-outline" size={13} color="#38BDF8" />
+        <AppIcon name="emoticon-happy-outline" size={13} color="#FB7185" />
         <Text style={styles.footerNoteText}>
           Pilih stiker untuk mengirim langsung ke chat
         </Text>
@@ -204,15 +204,15 @@ const styles = StyleSheet.create({
   },
   tabPillActive: {
     backgroundColor: "rgba(2, 132, 199, 0.2)",
-    borderColor: "#0284C7",
+    borderColor: "#E11D48",
   },
   tabPillText: {
     fontSize: 11.5,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   tabPillTextActive: {
-    color: "#38BDF8",
+    color: "#FB7185",
     fontWeight: "700",
   },
   closeBtn: {
@@ -258,8 +258,8 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   stickerItemPressed: {
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
-    borderColor: "rgba(56, 189, 248, 0.35)",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    borderColor: "rgba(251, 113, 133, 0.35)",
     transform: [{ scale: 0.94 }],
   },
   stickerItemDisabled: {
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   },
   stickerLabel: {
     fontSize: 9.5,
-    color: "#64748B",
+    color: "#8F727F",
     marginTop: 2,
     textAlign: "center",
   },
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 12,
-    color: "#64748B",
+    color: "#8F727F",
   },
   footerNoteRow: {
     flexDirection: "row",
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
   footerNoteText: {
     fontSize: 10.5,
-    color: "#64748B",
+    color: "#8F727F",
   },
 });
 

@@ -586,7 +586,7 @@ export default function GachaScreen() {
             </View>
             <View style={styles.infoCardRight}>
               <Text style={styles.infoCardLink}>Lihat info</Text>
-              <AppIcon name="arrow-right" size={14} color="#38BDF8" />
+              <AppIcon name="arrow-right" size={14} color="#FB7185" />
             </View>
           </Pressable>
 
@@ -606,13 +606,13 @@ export default function GachaScreen() {
               <AppIcon
                 name={equippedBonusPercent > 0 ? "shield-checkmark" : "information-circle-outline"}
                 size={14}
-                color={equippedBonusPercent > 0 ? "#10B981" : "#94A3B8"}
+                color={equippedBonusPercent > 0 ? "#10B981" : "#C4A6B3"}
               />
               <Text style={styles.activeWallpaperBonusText} numberOfLines={1}>
                 {equippedBonusPercent > 0 ? (
                   <>
                     Aktif:{" "}
-                    <Text style={{ color: "#38BDF8", fontWeight: "700" }}>
+                    <Text style={{ color: "#FB7185", fontWeight: "700" }}>
                       {allBanners.find((b) => b.id === activeWallpaperId)?.name || "Wallpaper Pilihan"}
                     </Text>{" "}
                     (
@@ -624,7 +624,7 @@ export default function GachaScreen() {
                 ) : (
                   <>
                     Belum ada wallpaper terpasang (
-                    <Text style={{ color: "#94A3B8" }}>Default: +0% EXP</Text>)
+                    <Text style={{ color: "#C4A6B3" }}>Default: +0% EXP</Text>)
                   </>
                 )}
               </Text>
@@ -712,7 +712,7 @@ export default function GachaScreen() {
             <TextInput
               style={styles.searchInput}
               placeholder="Cari koleksi wallpaper"
-              placeholderTextColor="#64748B"
+              placeholderTextColor="#8F727F"
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
@@ -722,7 +722,7 @@ export default function GachaScreen() {
                 hitSlop={8}
                 style={styles.clearSearchBtn}
               >
-                <AppIcon name="close" size={16} color="#94A3B8" />
+                <AppIcon name="close" size={16} color="#C4A6B3" />
               </Pressable>
             )}
           </View>
@@ -738,7 +738,7 @@ export default function GachaScreen() {
             </View>
           ) : allBanners.length === 0 ? (
             <View style={styles.emptyCatalogContainer}>
-              <AppIcon name="cube-outline" size={38} color="#64748B" />
+              <AppIcon name="cube-outline" size={38} color="#8F727F" />
               <Text style={styles.emptyCatalogTitle}>Koleksi Gacha Belum Tersedia</Text>
               <Text style={styles.emptyCatalogSubtitle}>
                 Saat ini belum ada banner yang aktif di pool gacha dari database. Silakan coba muat ulang atau periksa kembali nanti.
@@ -748,7 +748,7 @@ export default function GachaScreen() {
                 onPress={loadData}
                 style={({ pressed }) => [styles.reloadCatalogBtn, pressed && { opacity: 0.8 }]}
               >
-                <AppIcon name="refresh" size={15} color="#38BDF8" />
+                <AppIcon name="refresh" size={15} color="#FB7185" />
                 <Text style={styles.reloadCatalogBtnText}>Muat Ulang Katalog</Text>
               </Pressable>
             </View>
@@ -872,7 +872,7 @@ export default function GachaScreen() {
                             </Pressable>
                           ) : (
                             <View style={styles.lockedPill}>
-                              <AppIcon name="lock" size={11} color="#94A3B8" />
+                              <AppIcon name="lock" size={11} color="#C4A6B3" />
                               <Text style={styles.lockedPillText}>Terkunci</Text>
                             </View>
                           )}
@@ -1260,7 +1260,7 @@ export default function GachaScreen() {
 
             <Text style={[styles.previewSubtitle, { textAlign: "center", marginBottom: 16, lineHeight: 20 }]}>
               Saldo Crystal kamu saat ini{" "}
-              <Text style={{ color: "#38BDF8", fontWeight: "700" }}>{crystalBalance.toLocaleString()} Crystal</Text>,
+              <Text style={{ color: "#FB7185", fontWeight: "700" }}>{crystalBalance.toLocaleString()} Crystal</Text>,
               sedangkan untuk Summon {insufficientDetails?.count}x dibutuhkan{" "}
               <Text style={{ color: "#F59E0B", fontWeight: "700" }}>{insufficientDetails?.cost.toLocaleString()} Crystal</Text>.
               {"\n"}Silakan top up terlebih dahulu untuk melakukan gacha lagi!
@@ -1352,10 +1352,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#1E293B",
+    borderColor: "#23161F",
     marginTop: 6,
     marginBottom: 16,
-    backgroundColor: "#111827",
+    backgroundColor: "#170E14",
   },
   bannerImage: {
     width: "100%",
@@ -1388,7 +1388,7 @@ const styles = StyleSheet.create({
   summonTitle1x: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#38BDF8", // Cyan-blue
+    color: "#FB7185", // Cyan-blue
   },
   summonTitle10x: {
     fontSize: 16,
@@ -1411,12 +1411,12 @@ const styles = StyleSheet.create({
   summonCostText1x: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   summonCostText10x: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#E2E8F0",
+    color: "#F5E9EE",
   },
 
   // ─── CARA MENDAPATKAN CRYSTAL ───
@@ -1445,7 +1445,7 @@ const styles = StyleSheet.create({
   infoCardTitle: {
     fontSize: 13.5,
     fontWeight: "600",
-    color: "#E2E8F0",
+    color: "#F5E9EE",
   },
   infoCardRight: {
     flexDirection: "row",
@@ -1455,7 +1455,7 @@ const styles = StyleSheet.create({
   infoCardLink: {
     fontSize: 12.5,
     fontWeight: "600",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // ─── BONUS EXP WALLPAPER CARD ───
@@ -1475,7 +1475,7 @@ const styles = StyleSheet.create({
   },
   expBonusSubtitle: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginBottom: 12,
   },
   expPillRow: {
@@ -1549,7 +1549,7 @@ const styles = StyleSheet.create({
   toggleLockedText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
 
   // ─── SEARCH INPUT ───
@@ -1670,7 +1670,7 @@ const styles = StyleSheet.create({
   pakaiBtnText: {
     fontSize: 11.5,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   equippedBadge: {
     flexDirection: "row",
@@ -1700,7 +1700,7 @@ const styles = StyleSheet.create({
   lockedPillText: {
     fontSize: 10,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
 
   // ─── FLOATING CONTROLS (BOTTOM RIGHT) ───
@@ -1716,7 +1716,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -1784,7 +1784,7 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 480,
     maxHeight: "88%",
-    backgroundColor: "#111622",
+    backgroundColor: "#170E14",
     borderRadius: 18,
     borderWidth: 1,
     borderColor: "#222D42",
@@ -1803,7 +1803,7 @@ const styles = StyleSheet.create({
   },
   resultSubHeadline: {
     fontSize: 12.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
   },
 
@@ -1850,7 +1850,7 @@ const styles = StyleSheet.create({
   },
   singleItemAnime: {
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginBottom: 10,
   },
   singleExpBonusPill: {
@@ -1879,7 +1879,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   resultApplyBtn: {
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
   },
   resultApplyBtnText: {
     fontSize: 14,
@@ -1892,7 +1892,7 @@ const styles = StyleSheet.create({
   resultCloseBtnText: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
 
   // 10x Results
@@ -1994,7 +1994,7 @@ const styles = StyleSheet.create({
   },
   emptyCatalogSubtitle: {
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     lineHeight: 18,
     maxWidth: 380,
@@ -2003,8 +2003,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
-    borderColor: "#38BDF8",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
+    borderColor: "#FB7185",
     borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -2014,7 +2014,7 @@ const styles = StyleSheet.create({
   reloadCatalogBtnText: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // ─── FULL SCREEN INITIAL LOADING STATE (ANTI-CRASH) ───
@@ -2038,7 +2038,7 @@ const styles = StyleSheet.create({
   },
   loadingSubtitle: {
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     lineHeight: 18,
     maxWidth: 280,
@@ -2069,7 +2069,7 @@ const styles = StyleSheet.create({
   },
   previewSubtitle: {
     fontSize: 12.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginBottom: 14,
   },
   previewBannerFrame: {
@@ -2100,7 +2100,7 @@ const styles = StyleSheet.create({
   previewBannerExp: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   previewBtnRow: {
     flexDirection: "row",
@@ -2124,12 +2124,12 @@ const styles = StyleSheet.create({
   previewCancelText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     ...(Platform.OS === "web" ? ({ whiteSpace: "nowrap" } as any) : {}),
   },
   previewApplyBtn: {
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
   },
   previewApplyText: {
     fontSize: 13.5,
@@ -2152,11 +2152,11 @@ const styles = StyleSheet.create({
   crystalInfoNumber: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   crystalInfoText: {
     fontSize: 13,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     flex: 1,
   },
 
@@ -2223,10 +2223,10 @@ const styles = StyleSheet.create({
     borderColor: "#121722",
   },
   insufficientTopupBtn: {
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
     flex: 1.25,
     paddingHorizontal: 12,
-    shadowColor: "#0284C7",
+    shadowColor: "#E11D48",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 8,
@@ -2263,7 +2263,7 @@ const styles = StyleSheet.create({
   },
   activeWallpaperBonusText: {
     fontSize: 11.5,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     flex: 1,
   },
 

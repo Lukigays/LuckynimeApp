@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     minWidth: 120,
   },
   groupLabel: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontFamily: "Nunito-Bold",
     fontSize: 11.5,
     letterSpacing: 0.6,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.96 }],
   },
   chipText: {
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     fontSize: 11.5,
     fontFamily: "Nunito-Bold",
     letterSpacing: 0.3,

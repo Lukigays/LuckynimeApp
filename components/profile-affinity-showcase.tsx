@@ -364,12 +364,12 @@ const styles = StyleSheet.create({
   avatarFallback: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#1E293B",
+    backgroundColor: "#23161F",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarInitial: {
-    color: "#F8FAFC",
+    color: "#FFF5F7",
     fontSize: 13,
     fontWeight: "700",
   },

@@ -61,14 +61,14 @@ function formatChatTime(dateStr: string): string {
 
 // Generate nama warna yang harmonis dan konsisten berdasarkan string username
 const NAME_COLORS = [
-  "#38BDF8", // Cyan Sky
+  "#FB7185", // Cyan Sky
   "#4ADE80", // Emerald Green
   "#F43F5E", // Rose Red
   "#A855F7", // Purple
   "#F59E0B", // Amber Gold
   "#2DD4BF", // Teal
   "#EC4899", // Pink
-  "#60A5FA", // Blue
+  "#FB7185", // Blue
 ];
 
 function getUsernameColor(name: string): string {
@@ -117,9 +117,9 @@ function getTierPillColors(tierName: string) {
       };
     case "sapphire":
       return {
-        bg: "rgba(56, 189, 248, 0.16)",
-        border: "rgba(56, 189, 248, 0.45)",
-        text: "#7DD3FC",
+        bg: "rgba(251, 113, 133, 0.16)",
+        border: "rgba(251, 113, 133, 0.45)",
+        text: "#FDA4AF",
       };
     case "emerald":
       return {
@@ -135,9 +135,9 @@ function getTierPillColors(tierName: string) {
       };
     case "silver":
       return {
-        bg: "rgba(203, 213, 225, 0.16)",
-        border: "rgba(203, 213, 225, 0.45)",
-        text: "#E2E8F0",
+        bg: "rgba(237, 224, 229, 0.16)",
+        border: "rgba(237, 224, 229, 0.45)",
+        text: "#F5E9EE",
       };
     case "bronze":
       return {
@@ -147,9 +147,9 @@ function getTierPillColors(tierName: string) {
       };
     default:
       return {
-        bg: "rgba(148, 163, 184, 0.16)",
-        border: "rgba(148, 163, 184, 0.45)",
-        text: "#CBD5E1",
+        bg: "rgba(196, 166, 179, 0.16)",
+        border: "rgba(196, 166, 179, 0.45)",
+        text: "#EDE0E5",
       };
   }
 }
@@ -331,7 +331,7 @@ const ChatMessageItem = React.memo(
                     <AppIcon
                       name="arrow-up"
                       size={12}
-                      color="#38BDF8"
+                      color="#FB7185"
                       style={{ marginLeft: "auto" }}
                     />
                   </View>
@@ -462,7 +462,7 @@ const ChatInputBar = React.memo(
             <AppIcon
               name="emoticon-happy-outline"
               size={22}
-              color={showStickerPicker ? "#38BDF8" : "#94A3B8"}
+              color={showStickerPicker ? "#FB7185" : "#C4A6B3"}
             />
           </Pressable>
 
@@ -474,7 +474,7 @@ const ChatInputBar = React.memo(
                 ? `Tunggu ${cooldownRemaining} detik...`
                 : "Silakan masukkan pesan..."
             }
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#8F727F"
             value={text}
             onChangeText={setText}
             onFocus={onFocusInput}
@@ -1198,13 +1198,13 @@ export default function ChatGlobalScreen() {
                 <RefreshControl
                   refreshing={refreshing}
                   onRefresh={() => loadMessages(true)}
-                  tintColor="#38BDF8"
+                  tintColor="#FB7185"
                 />
               }
               ListEmptyComponent={
                 <View style={styles.emptyContainer}>
                   <View style={styles.emptyIconCircle}>
-                    <AppIcon name="chat" size={32} color="#64748B" />
+                    <AppIcon name="chat" size={32} color="#8F727F" />
                   </View>
                   <Text style={styles.emptyTitle}>Belum Ada Pesan</Text>
                   <Text style={styles.emptySubtitle}>
@@ -1246,7 +1246,7 @@ export default function ChatGlobalScreen() {
         {replyingTo && (
           <View style={styles.replyingBar}>
             <View style={styles.replyingBarLeft}>
-              <AppIcon name="reply" size={16} color="#38BDF8" />
+              <AppIcon name="reply" size={16} color="#FB7185" />
               <View style={{ flex: 1 }}>
                 <Text style={styles.replyingTargetName} numberOfLines={1}>
                   Membalas {replyingTo.senderName}
@@ -1261,7 +1261,7 @@ export default function ChatGlobalScreen() {
               hitSlop={8}
               style={styles.replyingCloseBtn}
             >
-              <AppIcon name="close" size={16} color="#94A3B8" />
+              <AppIcon name="close" size={16} color="#C4A6B3" />
             </Pressable>
           </View>
         )}
@@ -1370,7 +1370,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#1A202C",
+    borderBottomColor: "#1F131B",
     backgroundColor: "#0F1115",
   },
   headerBackBtn: {
@@ -1434,21 +1434,21 @@ const styles = StyleSheet.create({
     borderColor: "#222D3D",
   },
   roomPillActive: {
-    borderColor: "#0284C7",
+    borderColor: "#E11D48",
     backgroundColor: "rgba(2, 132, 199, 0.15)",
   },
   roomPillHash: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#64748B",
+    color: "#8F727F",
   },
   roomPillHashActive: {
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   roomPillLabel: {
     fontSize: 12.5,
     fontWeight: "600",
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   roomPillLabelActive: {
     color: "#FFFFFF",
@@ -1463,7 +1463,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   loadingText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 13,
     marginTop: 10,
   },
@@ -1492,7 +1492,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     maxWidth: 280,
     lineHeight: 18,
@@ -1525,16 +1525,16 @@ const styles = StyleSheet.create({
     width: "100%", // Panjang / lebar akhir rata dan seragam untuk semua pesan
   },
   messageCardHighlighted: {
-    borderColor: "#38BDF8",
+    borderColor: "#FB7185",
     borderWidth: 1.5,
-    shadowColor: "#38BDF8",
+    shadowColor: "#FB7185",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.9,
     shadowRadius: 10,
     elevation: 8,
     ...(Platform.OS === "web"
       ? ({
-        boxShadow: "0 0 10px rgba(56, 189, 248, 0.6)",
+        boxShadow: "0 0 10px rgba(251, 113, 133, 0.6)",
       } as any)
       : {}),
   },
@@ -1569,7 +1569,7 @@ const styles = StyleSheet.create({
   },
   memberTagText: {
     fontSize: 10,
-    color: "#64748B",
+    color: "#8F727F",
     fontWeight: "500",
   },
   cityClanRow: {
@@ -1619,7 +1619,7 @@ const styles = StyleSheet.create({
   levelPillText: {
     fontSize: 9.5,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // ─── REPLY QUOTE BOX ───
@@ -1634,7 +1634,7 @@ const styles = StyleSheet.create({
   },
   quoteBoxPressed: {
     opacity: 0.7,
-    backgroundColor: "rgba(56, 189, 248, 0.16)",
+    backgroundColor: "rgba(251, 113, 133, 0.16)",
   },
   quoteAccentLine: {
     width: 2.5,
@@ -1656,23 +1656,23 @@ const styles = StyleSheet.create({
   },
   quoteMemberNumber: {
     fontSize: 9.5,
-    color: "#64748B",
+    color: "#8F727F",
   },
   quoteText: {
     fontSize: 10.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     marginTop: 1,
   },
 
   // ─── MESSAGE TEXT & TIMESTAMP ───
   messageText: {
     fontSize: 12.5,
-    color: "#F1F5F9",
+    color: "#FFF5F7",
     lineHeight: 17.5,
   },
   timestampText: {
     fontSize: 9.5,
-    color: "#64748B",
+    color: "#8F727F",
     alignSelf: "flex-end",
     marginTop: 2,
     marginRight: 2,
@@ -1698,11 +1698,11 @@ const styles = StyleSheet.create({
   replyingTargetName: {
     fontSize: 11.5,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   replyingTextSnippet: {
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   replyingCloseBtn: {
     padding: 4,
@@ -1712,7 +1712,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     backgroundColor: "#0F1115",
     borderTopWidth: 1,
-    borderTopColor: "#1A202C",
+    borderTopColor: "#1F131B",
     paddingHorizontal: 16,
     paddingTop: 4,
     paddingBottom: 8,
@@ -1741,7 +1741,7 @@ const styles = StyleSheet.create({
   },
   charCounterText: {
     fontSize: 10,
-    color: "#64748B",
+    color: "#8F727F",
   },
   inputRow: {
     flexDirection: "row",
@@ -1772,18 +1772,18 @@ const styles = StyleSheet.create({
   },
   stickerToggleBtnActive: {
     backgroundColor: "rgba(2, 132, 199, 0.18)",
-    borderColor: "#0284C7",
+    borderColor: "#E11D48",
   },
   sendBtn: {
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
     alignItems: "center",
     justifyContent: "center",
   },
   sendBtnDisabled: {
-    backgroundColor: "#1E293B",
+    backgroundColor: "#23161F",
     opacity: 0.6,
   },
   sendBtnCooldown: {
@@ -1805,7 +1805,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     backgroundColor: "#0F1115",
     borderTopWidth: 1,
-    borderTopColor: "#1A202C",
+    borderTopColor: "#1F131B",
     paddingTop: 8,
   },
   bottomNavItem: {
@@ -1821,12 +1821,12 @@ const styles = StyleSheet.create({
     width: 32,
     height: 3,
     borderRadius: 2,
-    backgroundColor: "#0284C7",
+    backgroundColor: "#E11D48",
   },
   bottomNavText: {
     fontSize: 13.5,
     fontWeight: "600",
-    color: "#64748B",
+    color: "#8F727F",
   },
   bottomNavTextActive: {
     color: "#FFFFFF",
@@ -1850,7 +1850,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     backgroundColor: "#161D2B",
     borderWidth: 1.5,
-    borderColor: "rgba(56, 189, 248, 0.45)",
+    borderColor: "rgba(251, 113, 133, 0.45)",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",

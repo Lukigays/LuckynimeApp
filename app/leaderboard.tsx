@@ -46,14 +46,14 @@ import {
 
 // ── Medal colors & glow ─────────────────────────────────────────────────────
 const GOLD = "#F59E0B";
-const SILVER = "#CBD5E1";
+const SILVER = "#EDE0E5";
 const BRONZE = "#F97316";
 
 function rankColor(rank: number): string {
   if (rank === 1) return GOLD;
   if (rank === 2) return SILVER;
   if (rank === 3) return BRONZE;
-  return "#64748B";
+  return "#8F727F";
 }
 
 function crownIcon(rank: number): string | null {
@@ -65,14 +65,14 @@ function crownIcon(rank: number): string | null {
 
 // ── Generate nama warna yang harmonis persis seperti di Chat Global ──────────
 const NAME_COLORS = [
-  "#38BDF8", // Cyan Sky
+  "#FB7185", // Cyan Sky
   "#4ADE80", // Emerald Green
   "#F43F5E", // Rose Red
   "#A855F7", // Purple
   "#F59E0B", // Amber Gold
   "#2DD4BF", // Teal
   "#EC4899", // Pink
-  "#60A5FA", // Blue
+  "#FB7185", // Blue
 ];
 
 function getUsernameColor(name: string): string {
@@ -121,9 +121,9 @@ function getTierPillColors(tierName: string) {
       };
     case "sapphire":
       return {
-        bg: "rgba(56, 189, 248, 0.16)",
-        border: "rgba(56, 189, 248, 0.45)",
-        text: "#7DD3FC",
+        bg: "rgba(251, 113, 133, 0.16)",
+        border: "rgba(251, 113, 133, 0.45)",
+        text: "#FDA4AF",
       };
     case "emerald":
       return {
@@ -139,9 +139,9 @@ function getTierPillColors(tierName: string) {
       };
     case "silver":
       return {
-        bg: "rgba(203, 213, 225, 0.16)",
-        border: "rgba(203, 213, 225, 0.45)",
-        text: "#E2E8F0",
+        bg: "rgba(237, 224, 229, 0.16)",
+        border: "rgba(237, 224, 229, 0.45)",
+        text: "#F5E9EE",
       };
     case "bronze":
       return {
@@ -151,9 +151,9 @@ function getTierPillColors(tierName: string) {
       };
     default:
       return {
-        bg: "rgba(148, 163, 184, 0.16)",
-        border: "rgba(148, 163, 184, 0.45)",
-        text: "#CBD5E1",
+        bg: "rgba(196, 166, 179, 0.16)",
+        border: "rgba(196, 166, 179, 0.45)",
+        text: "#EDE0E5",
       };
   }
 }
@@ -654,7 +654,7 @@ export default function LeaderboardScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      <StatusBar barStyle="light-content" backgroundColor="#0B0E14" />
+      <StatusBar barStyle="light-content" backgroundColor="#0D080B" />
 
       {/* Header */}
       <View style={styles.header}>
@@ -734,7 +734,7 @@ export default function LeaderboardScreen() {
             <RefreshControl
               refreshing={isRefetching}
               onRefresh={handleRefresh}
-              tintColor="#38BDF8"
+              tintColor="#FB7185"
             />
           }
           ListHeaderComponent={
@@ -761,7 +761,7 @@ export default function LeaderboardScreen() {
 
               {rest.length > 0 && (
                 <View style={styles.restHeader}>
-                  <AppIcon name="format-list-numbered" size={14} color="#64748B" />
+                  <AppIcon name="format-list-numbered" size={14} color="#8F727F" />
                   <Text style={styles.restHeaderText}>Peringkat Selanjutnya</Text>
                 </View>
               )}
@@ -886,7 +886,7 @@ export default function LeaderboardScreen() {
               }}
               style={({ pressed }) => [styles.sheetActionRow, pressed && { opacity: 0.7 }]}
             >
-              <AppIcon name="account" size={20} color="#CBD5E1" />
+              <AppIcon name="account" size={20} color="#EDE0E5" />
               <Text style={styles.sheetActionText}>Lihat Profil</Text>
             </Pressable>
 
@@ -901,7 +901,7 @@ export default function LeaderboardScreen() {
                   style={({ pressed }) => [styles.sheetActionRow, pressed && { opacity: 0.7 }]}
                 >
                   {actionLoading ? (
-                    <ActivityIndicator size="small" color="#38BDF8" />
+                    <ActivityIndicator size="small" color="#FB7185" />
                   ) : friendStatus === "accepted" ? (
                     <>
                       <AppIcon name="trash-can-outline" size={20} color="#F87171" />
@@ -911,8 +911,8 @@ export default function LeaderboardScreen() {
                     </>
                   ) : friendStatus === "pending_sent" ? (
                     <>
-                      <AppIcon name="clock-outline" size={20} color="#94A3B8" />
-                      <Text style={[styles.sheetActionText, { color: "#94A3B8" }]}>
+                      <AppIcon name="clock-outline" size={20} color="#C4A6B3" />
+                      <Text style={[styles.sheetActionText, { color: "#C4A6B3" }]}>
                         Permintaan Terkirim (Batalkan)
                       </Text>
                     </>
@@ -925,8 +925,8 @@ export default function LeaderboardScreen() {
                     </>
                   ) : (
                     <>
-                      <AppIcon name="account-plus" size={20} color="#38BDF8" />
-                      <Text style={[styles.sheetActionText, { color: "#38BDF8" }]}>
+                      <AppIcon name="account-plus" size={20} color="#FB7185" />
+                      <Text style={[styles.sheetActionText, { color: "#FB7185" }]}>
                         Tambah Teman
                       </Text>
                     </>
@@ -945,7 +945,7 @@ export default function LeaderboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
   },
 
   // Header
@@ -996,23 +996,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tabBtnActive: {
-    backgroundColor: "rgba(56,189,248,0.18)",
-    borderColor: "#38BDF8",
+    backgroundColor: "rgba(251, 113, 133,0.18)",
+    borderColor: "#FB7185",
   },
   tabText: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#64748B",
+    color: "#8F727F",
     letterSpacing: 0.2,
   },
   tabTextActive: {
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // Period date
   periodDateLabel: {
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
     paddingHorizontal: 18,
     marginTop: 6,
     marginBottom: 12,
@@ -1029,7 +1029,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     paddingBottom: 14,
     paddingTop: 10,
-    backgroundColor: "rgba(18, 24, 38, 0.7)",
+    backgroundColor: "rgba(25, 16, 22, 0.7)",
     marginHorizontal: 8,
     borderRadius: 24,
     borderWidth: 1,
@@ -1089,7 +1089,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#0B0E14",
+    borderColor: "#0D080B",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -1100,7 +1100,7 @@ const styles = StyleSheet.create({
   nearAvatarRankText: {
     fontSize: 11,
     fontWeight: "900",
-    color: "#0B0E14",
+    color: "#0D080B",
   },
 
   // Podium Names & Member
@@ -1116,13 +1116,13 @@ const styles = StyleSheet.create({
   podiumName: {
     fontSize: 11,
     fontWeight: "800",
-    color: "#F1F5F9",
+    color: "#FFF5F7",
     textAlign: "center",
     maxWidth: "80%",
   },
   podiumMember: {
     fontSize: 9,
-    color: "#64748B",
+    color: "#8F727F",
     fontWeight: "700",
     marginTop: 1,
   },
@@ -1176,7 +1176,7 @@ const styles = StyleSheet.create({
   podiumLevelPillText: {
     fontSize: 8.5,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   // Level Tier Badge on Podium (legacy fallback)
@@ -1223,7 +1223,7 @@ const styles = StyleSheet.create({
   },
   restHeaderText: {
     fontSize: 11,
-    color: "#475569",
+    color: "#785D6A",
     fontWeight: "700",
     letterSpacing: 0.5,
     textTransform: "uppercase",
@@ -1266,12 +1266,12 @@ const styles = StyleSheet.create({
   rowName: {
     fontSize: 13.5,
     fontWeight: "800",
-    color: "#F1F5F9",
+    color: "#FFF5F7",
     maxWidth: "60%",
   },
   rowMember: {
     fontSize: 11,
-    color: "#475569",
+    color: "#785D6A",
     fontWeight: "700",
   },
   rowCityClanRow: {
@@ -1322,7 +1322,7 @@ const styles = StyleSheet.create({
   levelPillText: {
     fontSize: 9.5,
     fontWeight: "700",
-    color: "#38BDF8",
+    color: "#FB7185",
   },
 
   rowTierBadge: {
@@ -1350,7 +1350,7 @@ const styles = StyleSheet.create({
   rowXpText: {
     fontSize: 13.5,
     fontWeight: "900",
-    color: "#F1F5F9",
+    color: "#FFF5F7",
     letterSpacing: 0.2,
   },
   separator: {
@@ -1386,7 +1386,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   bottomSheetCard: {
-    backgroundColor: "#111622",
+    backgroundColor: "#170E14",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 12,
@@ -1467,7 +1467,7 @@ const styles = StyleSheet.create({
   sheetMemberNumberText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
   },
   sheetDivider: {
     height: 1,

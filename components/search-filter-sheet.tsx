@@ -54,7 +54,7 @@ export function SearchFilterSheet({ visible, filters, onClose, onApply }: Props)
               hitSlop={10}
               style={({ pressed }) => [styles.closeBtn, pressed && styles.btnPressed]}
             >
-              <AppIcon name="close" size={17} color="#94A3B8" />
+              <AppIcon name="close" size={17} color="#C4A6B3" />
             </Pressable>
           </View>
 
@@ -77,7 +77,7 @@ export function SearchFilterSheet({ visible, filters, onClose, onApply }: Props)
               }}
               style={({ pressed }) => [styles.clearBtn, pressed && styles.btnPressed]}
             >
-              <AppIcon name="refresh" size={15} color="#CBD5E1" />
+              <AppIcon name="refresh" size={15} color="#EDE0E5" />
               <Text style={styles.clearText}>
                 Reset{activeCount ? ` (${activeCount})` : ""}
               </Text>
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
       : {}),
   },
   clearText: {
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     fontSize: 13,
     fontFamily: "Nunito-Bold",
     letterSpacing: 0.3,

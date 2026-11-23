@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type PropsWithChildren } from "react";
+import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColorScheme } from "react-native";
 
@@ -10,7 +10,7 @@ type ThemeContextType = {
   setMode: (mode: ThemeMode) => void;
 };
 
-const STORAGE_KEY = "luckynime.theme.v1";
+const STORAGE_KEY = "luckynime.theme.v2";
 
 const ThemeContext = createContext<ThemeContextType>({
   mode: "dark",
@@ -23,11 +23,13 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   const [mode, setModeState] = useState<ThemeMode>("dark");
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then((stored) => {
-      if (stored === "light" || stored === "dark" || stored === "system") {
-        setModeState(stored);
-      }
-    }).catch(() => {});
+    AsyncStorage.getItem(STORAGE_KEY)
+      .then((stored) => {
+        if (stored === "light" || stored === "dark" || stored === "system") {
+          setModeState(stored);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const setMode = (next: ThemeMode) => {
@@ -44,32 +46,34 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   );
 }
 
+export const AppThemeProvider = ThemeProvider;
+
 export function useTheme() {
   return useContext(ThemeContext);
 }
 
 export const lightColors = {
-  background: "#FFFFFF",
-  surface: "#F5F5F5",
-  raised: "#E8E8E8",
-  line: "#D0D0D0",
-  text: "#1A1A1A",
-  muted: "#666666",
-  dim: "#999999",
-  accent: "#FF4D4D",
+  background: "#FFF8FA",
+  surface: "#FFFFFF",
+  raised: "#FFEEF3",
+  line: "rgba(225, 29, 72, 0.14)",
+  text: "#1F0D15",
+  muted: "#5C3A48",
+  dim: "#946F7E",
+  accent: "#E11D48",
   card: "#FFFFFF",
-  cardBorder: "#E0E0E0",
+  cardBorder: "rgba(225, 29, 72, 0.16)",
 };
 
 export const darkColors = {
-  background: "#090909",
-  surface: "#141414",
-  raised: "#1E1E1E",
-  line: "rgba(246,246,242,0.12)",
-  text: "#F6F6F2",
-  muted: "#888888",
-  dim: "#555555",
-  accent: "#FF4D4D",
-  card: "#141414",
-  cardBorder: "rgba(246,246,242,0.12)",
+  background: "#0D080B",
+  surface: "#180F15",
+  raised: "#23161F",
+  line: "rgba(251, 113, 133, 0.16)",
+  text: "#FFF5F7",
+  muted: "#C4A6B3",
+  dim: "#7F6270",
+  accent: "#F43F5E",
+  card: "#191016",
+  cardBorder: "rgba(251, 113, 133, 0.18)",
 };

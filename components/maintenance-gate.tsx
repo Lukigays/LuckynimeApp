@@ -122,7 +122,7 @@ export function MaintenanceGate() {
 
   return (
     <View style={styles.overlayContainer}>
-      <StatusBar barStyle="light-content" backgroundColor="#0B0E14" />
+      <StatusBar barStyle="light-content" backgroundColor="#0D080B" />
       <View style={styles.card}>
         <View style={styles.iconWrapper}>
           <Image
@@ -139,7 +139,7 @@ export function MaintenanceGate() {
 
         {Boolean(config.endsAt) && (
           <View style={styles.timeBox}>
-            <AppIcon name="time-outline" size={14} color="#94A3B8" />
+            <AppIcon name="time-outline" size={14} color="#C4A6B3" />
             <Text style={styles.timeText}>Estimasi selesai: {config.endsAt}</Text>
           </View>
         )}
@@ -172,7 +172,7 @@ export function MaintenanceGate() {
             }
             activeOpacity={0.78}
           >
-            <AppIcon name="logo-discord" size={16} color="#E2E8F0" />
+            <AppIcon name="logo-discord" size={16} color="#F5E9EE" />
             <Text style={styles.discordBtnText}>
               {config.secondaryButtonText || "Komunitas Discord"}
             </Text>
@@ -186,7 +186,7 @@ export function MaintenanceGate() {
 const styles = StyleSheet.create({
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
     zIndex: 999999,
     justifyContent: "center",
     alignItems: "center",
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 14,
     lineHeight: 22,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     textAlign: "center",
     marginBottom: 18,
   },
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontWeight: "600",
   },
   btnRow: {
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   discordBtn: {
     backgroundColor: "rgba(255, 255, 255, 0.08)",
     borderWidth: 1,
-    borderColor: "rgba(226, 232, 240, 0.22)",
+    borderColor: "rgba(251, 113, 133, 0.22)",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   discordBtnText: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     letterSpacing: 0.2,
   },
 });

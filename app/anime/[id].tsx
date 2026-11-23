@@ -461,10 +461,10 @@ export default function AnimeDetailScreen() {
           {/* Gradient fade: top darkened → fully transparent in middle → solid bg at bottom */}
           <LinearGradient
             colors={[
-              "rgba(11,14,23,0.35)",
-              "rgba(11,14,23,0.0)",
-              "rgba(11,14,23,0.85)",
-              "rgba(11,14,23,1.0)",
+              "rgba(13,8,11,0.38)",
+              "rgba(13,8,11,0.08)",
+              "rgba(13,8,11,0.88)",
+              "rgba(13,8,11,1.0)",
             ]}
             locations={[0, 0.3, 0.72, 1]}
             style={StyleSheet.absoluteFill}
@@ -484,7 +484,7 @@ export default function AnimeDetailScreen() {
               />
             ) : (
               <View style={[styles.posterImage, styles.posterFallback]}>
-                <AppIcon name="image-outline" size={32} color="#64748B" />
+                <AppIcon name="image-outline" size={32} color="#8F727F" />
               </View>
             )}
             {data.format ? (
@@ -633,7 +633,7 @@ export default function AnimeDetailScreen() {
         {/* Watch Progress Alert banner */}
         {animeHistory.length ? (
           <View style={styles.historyAlertCard}>
-            <AppIcon name="history" size={16} color="#38BDF8" />
+            <AppIcon name="history" size={16} color="#FB7185" />
             <Text style={styles.historyAlertText}>
               Kamu terakhir menonton hingga Episode {displayedResume}.
             </Text>
@@ -763,7 +763,7 @@ export default function AnimeDetailScreen() {
               <AppIcon
                 name={isSynopsisExpanded ? "chevron-up" : "chevron-down"}
                 size={16}
-                color="#38BDF8"
+                color="#FB7185"
               />
             </Pressable>
           ) : null}
@@ -1002,12 +1002,12 @@ export default function AnimeDetailScreen() {
 
           {/* Episode Search Bar */}
           <View style={styles.searchBarContainer}>
-            <AppIcon name="magnify" size={18} color="#64748B" />
+            <AppIcon name="magnify" size={18} color="#8F727F" />
             <TextInput
               value={episodeSearch}
               onChangeText={setEpisodeSearch}
               placeholder="Cari nomor atau judul episode..."
-              placeholderTextColor="#64748B"
+              placeholderTextColor="#8F727F"
               style={styles.searchBarInput}
               returnKeyType="done"
             />
@@ -1016,7 +1016,7 @@ export default function AnimeDetailScreen() {
                 onPress={() => setEpisodeSearch("")}
                 style={styles.clearSearchBtn}
               >
-                <AppIcon name="close-circle" size={16} color="#94A3B8" />
+                <AppIcon name="close-circle" size={16} color="#C4A6B3" />
               </Pressable>
             ) : null}
           </View>
@@ -1033,7 +1033,7 @@ export default function AnimeDetailScreen() {
             />
           ) : !episodeRows.length ? (
             <View style={styles.emptyEpisodesBox}>
-              <AppIcon name="movie-open-off-outline" size={32} color="#64748B" />
+              <AppIcon name="movie-open-off-outline" size={32} color="#8F727F" />
               <Text style={styles.emptyEpisodesTitle}>
                 Belum Ada Episode Tersedia
               </Text>
@@ -1070,7 +1070,7 @@ export default function AnimeDetailScreen() {
                       <AppIcon
                         name="chevron-left"
                         size={16}
-                        color={safeEpisodePage === 0 ? "#475569" : "#FFFFFF"}
+                        color={safeEpisodePage === 0 ? "#785D6A" : "#FFFFFF"}
                       />
                       <Text
                         style={[
@@ -1112,7 +1112,7 @@ export default function AnimeDetailScreen() {
                         size={16}
                         color={
                           safeEpisodePage >= totalEpisodePages - 1
-                            ? "#475569"
+                            ? "#785D6A"
                             : "#FFFFFF"
                         }
                       />
@@ -1195,7 +1195,7 @@ export default function AnimeDetailScreen() {
                               <AppIcon
                                 name="movie-play-outline"
                                 size={22}
-                                color="#64748B"
+                                color="#8F727F"
                               />
                             </View>
                           )}
@@ -1287,7 +1287,7 @@ export default function AnimeDetailScreen() {
                         <AppIcon
                           name={score ? "star" : "star-outline"}
                           size={13}
-                          color={score ? "#F5C518" : "#94A3B8"}
+                          color={score ? "#F5C518" : "#C4A6B3"}
                         />
                         <Text
                           style={[
@@ -1319,7 +1319,7 @@ export default function AnimeDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   scrollContent: {
     paddingHorizontal: 16,
@@ -1327,36 +1327,36 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   btnPressed: {
-    opacity: 0.8,
+    opacity: 0.82,
     transform: [{ scale: 0.98 }],
   },
 
   // ─── 1. TOP APP BAR ───
   topNav: {
-    height: 54,
+    height: 56,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.05)",
+    borderBottomColor: "rgba(251, 113, 133, 0.14)",
     zIndex: 10,
   },
   navTitle: {
     flex: 1,
     marginHorizontal: 12,
-    fontFamily: "Nunito-Bold",
+    fontFamily: "Nunito-ExtraBold",
     fontSize: 16,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
   },
   iconBtn: {
     width: 38,
     height: 38,
-    borderRadius: 19,
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    borderRadius: 13,
+    backgroundColor: "#180F15",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderColor: "rgba(251, 113, 133, 0.22)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1371,7 +1371,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   backdropOverlay: {
-    // Kept for reference — replaced by LinearGradient in JSX
     ...StyleSheet.absoluteFillObject,
   },
 
@@ -1380,17 +1379,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     gap: 16,
-    marginTop: 65,
+    marginTop: 62,
   },
   posterContainer: {
-    width: 122,
-    height: 180,
-    borderRadius: 14,
+    width: 124,
+    height: 182,
+    borderRadius: 16,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.15)",
-    backgroundColor: "#141923",
-    elevation: 8,
+    borderWidth: 1.5,
+    borderColor: "rgba(253, 164, 175, 0.38)",
+    backgroundColor: "#191016",
+    elevation: 10,
     ...(Platform.OS === "web"
       ? ({
           boxShadow: "0 10px 25px rgba(0, 0, 0, 0.7)",
@@ -1409,16 +1408,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 8,
     left: 8,
-    backgroundColor: "rgba(11, 14, 23, 0.8)",
+    backgroundColor: "rgba(225, 29, 72, 0.90)",
     paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: 6,
+    paddingVertical: 2.5,
+    borderRadius: 7,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.15)",
+    borderColor: "rgba(253, 164, 175, 0.45)",
   },
   posterFormatText: {
-    fontFamily: "Nunito-Bold",
-    fontSize: 10,
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 9.5,
     color: "#FFFFFF",
   },
   heroDetails: {
@@ -1436,12 +1435,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
-    paddingHorizontal: 8,
+    backgroundColor: "rgba(25, 16, 22, 0.86)",
+    paddingHorizontal: 9,
     paddingVertical: 4,
-    borderRadius: 8,
+    borderRadius: 99,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.12)",
+    borderColor: "rgba(251, 113, 133, 0.24)",
   },
   statusDot: {
     width: 6,
@@ -1449,41 +1448,41 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   statusDotLive: {
-    backgroundColor: "#10B981",
+    backgroundColor: "#34D399",
   },
   statusDotDone: {
-    backgroundColor: "#38BDF8",
+    backgroundColor: "#FB7185",
   },
   statusText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
   },
   scorePill: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "rgba(245, 197, 24, 0.15)",
-    paddingHorizontal: 8,
+    backgroundColor: "rgba(251, 191, 36, 0.16)",
+    paddingHorizontal: 9,
     paddingVertical: 4,
-    borderRadius: 8,
+    borderRadius: 99,
     borderWidth: 1,
-    borderColor: "rgba(245, 197, 24, 0.3)",
+    borderColor: "rgba(251, 191, 36, 0.36)",
   },
   scoreText: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: "SpaceGrotesk-Bold",
     fontSize: 11,
-    color: "#F5C518",
+    color: "#FDE68A",
   },
   animeTitle: {
     fontFamily: "Nunito-Black",
     fontSize: 20,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
     lineHeight: 25,
     letterSpacing: -0.3,
   },
 
-  // ─── 4. IMAGE 2 MATCHING BADGES ───
+  // ─── 4. HERO META BADGES ───
   image2BadgeRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -1492,39 +1491,39 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   capsuleBadge: {
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    backgroundColor: "rgba(244, 63, 94, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.18)",
+    borderColor: "rgba(251, 113, 133, 0.30)",
     paddingHorizontal: 9,
     paddingVertical: 3,
-    borderRadius: 7,
+    borderRadius: 8,
   },
   capsuleBadgeText: {
-    fontFamily: "Nunito-Bold",
-    fontSize: 12,
-    color: "#FFFFFF",
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 11,
+    color: "#FDA4AF",
   },
   subIndoText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#CBD5E1",
+    color: "#D9BECA",
   },
   hdBadge: {
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
+    backgroundColor: "rgba(251, 113, 133, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.45)",
+    borderColor: "rgba(251, 113, 133, 0.40)",
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 6,
   },
   hdBadgeText: {
-    fontFamily: "Nunito-Black",
+    fontFamily: "SpaceGrotesk-Bold",
     fontSize: 10,
-    color: "#38BDF8",
+    color: "#FB7185",
     letterSpacing: 0.5,
   },
 
-  // ─── 5. IMAGE 2 MATCHING BUTTONS (DARK GLASS CAPSULE, NOT BLUE) ───
+  // ─── 5. CRIMSON-SAKURA ACTION BUTTONS ───
   image2ButtonRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -1537,15 +1536,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    backgroundColor: "#F43F5E",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.22)",
-    height: 44,
-    borderRadius: 22,
+    borderColor: "#FDA4AF",
+    height: 46,
+    borderRadius: 14,
     paddingHorizontal: 16,
   },
   capsuleBtnPrimaryText: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: "Nunito-ExtraBold",
     fontSize: 14,
     color: "#FFFFFF",
   },
@@ -1554,38 +1553,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    backgroundColor: "#180F15",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.16)",
-    height: 44,
-    borderRadius: 22,
+    borderColor: "rgba(251, 113, 133, 0.25)",
+    height: 46,
+    borderRadius: 14,
     paddingHorizontal: 16,
   },
   capsuleBtnSaved: {
-    backgroundColor: "rgba(245, 197, 24, 0.15)",
-    borderColor: "rgba(245, 197, 24, 0.4)",
+    backgroundColor: "rgba(251, 191, 36, 0.16)",
+    borderColor: "rgba(251, 191, 36, 0.42)",
   },
   capsuleBtnSecondaryText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
   },
   capsuleBtnSavedText: {
-    color: "#F5C518",
+    color: "#FBBF24",
   },
   capsuleBtnIconOnly: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    backgroundColor: "#180F15",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.16)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
   capsuleBtnNotifyActive: {
-    backgroundColor: "rgba(239, 68, 68, 0.15)",
-    borderColor: "rgba(239, 68, 68, 0.4)",
+    backgroundColor: "rgba(244, 63, 94, 0.22)",
+    borderColor: "#FB7185",
   },
 
   // ─── 6. HISTORY ALERT BANNER ───
@@ -1594,27 +1593,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
-    backgroundColor: "rgba(56, 189, 248, 0.08)",
+    paddingVertical: 11,
+    borderRadius: 14,
+    backgroundColor: "rgba(244, 63, 94, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.2)",
+    borderColor: "rgba(251, 113, 133, 0.28)",
   },
   historyAlertText: {
     flex: 1,
-    fontFamily: "Nunito-SemiBold",
+    fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#7DD3FC",
+    color: "#FDA4AF",
     lineHeight: 18,
   },
 
   // ─── 7. SECTION CARDS ───
   sectionCard: {
-    backgroundColor: "rgba(255, 255, 255, 0.03)",
-    borderRadius: 18,
+    backgroundColor: "#170E14",
+    borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.07)",
+    borderColor: "rgba(251, 113, 133, 0.16)",
     gap: 14,
   },
   cardHeaderRow: {
@@ -1624,34 +1623,34 @@ const styles = StyleSheet.create({
   },
   cardHeaderIndicator: {
     width: 4,
-    height: 18,
-    borderRadius: 2,
-    backgroundColor: "#CBD5E1",
+    height: 20,
+    borderRadius: 99,
+    backgroundColor: "#F43F5E",
   },
   cardSectionTitle: {
     fontFamily: "Nunito-Black",
     fontSize: 17,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
     letterSpacing: -0.2,
   },
   cardSectionSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#64748B",
+    color: "#9A7D8A",
     marginTop: 1,
   },
   countBadge: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 9,
     paddingVertical: 3,
-    borderRadius: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    borderRadius: 99,
+    backgroundColor: "rgba(244, 63, 94, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.15)",
+    borderColor: "rgba(251, 113, 133, 0.30)",
   },
   countBadgeText: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: "SpaceGrotesk-Bold",
     fontSize: 11,
-    color: "#E2E8F0",
+    color: "#FDA4AF",
   },
 
   detailTable: {
@@ -1662,7 +1661,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 9,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.06)",
+    borderBottomColor: "rgba(251, 113, 133, 0.10)",
     gap: 12,
   },
   detailColLeft: {
@@ -1681,19 +1680,19 @@ const styles = StyleSheet.create({
     width: 68,
     fontFamily: "Nunito-SemiBold",
     fontSize: 12.5,
-    color: "#94A3B8",
+    color: "#9A7D8A",
   },
   detailVal: {
     flex: 1,
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#F8FAFC",
+    color: "#FFF5F7",
   },
 
   synopsisText: {
     fontFamily: "Nunito-Regular",
     fontSize: 14,
-    color: "#94A3B8",
+    color: "#D9BECA",
     lineHeight: 22,
   },
   synopsisToggleBtn: {
@@ -1707,9 +1706,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   synopsisToggleText: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: "Nunito-ExtraBold",
     fontSize: 13,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   genreList: {
     flexDirection: "row",
@@ -1718,17 +1717,17 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   genreChip: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 13,
     paddingVertical: 6,
-    borderRadius: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderRadius: 99,
+    backgroundColor: "rgba(244, 63, 94, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
   },
   genreChipText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#E2E8F0",
+    color: "#FDA4AF",
   },
 
   // ─── 8. RELATIONSHIPS & RECOMMENDATIONS ───
@@ -1742,12 +1741,12 @@ const styles = StyleSheet.create({
   relationGroupTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
   },
   relationGroupSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#64748B",
+    color: "#9A7D8A",
   },
   relationRailContent: {
     gap: 12,
@@ -1760,25 +1759,25 @@ const styles = StyleSheet.create({
   relationPosterWrap: {
     width: "100%",
     height: 168,
-    borderRadius: 12,
+    borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "#141923",
+    backgroundColor: "#23161F",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(251, 113, 133, 0.18)",
   },
   relationBadgePill: {
     position: "absolute",
     top: 6,
     left: 6,
-    backgroundColor: "rgba(11, 14, 23, 0.85)",
+    backgroundColor: "rgba(225, 29, 72, 0.90)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.2)",
-    paddingHorizontal: 6,
+    borderColor: "rgba(253, 164, 175, 0.45)",
+    paddingHorizontal: 6.5,
     paddingVertical: 2,
     borderRadius: 6,
   },
   relationBadgeText: {
-    fontFamily: "Nunito-ExtraBold",
+    fontFamily: "SpaceGrotesk-Bold",
     fontSize: 9,
     color: "#FFFFFF",
     textTransform: "uppercase",
@@ -1786,13 +1785,13 @@ const styles = StyleSheet.create({
   relationAnimeTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
     lineHeight: 17,
   },
   relationMetaText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#64748B",
+    color: "#9A7D8A",
   },
 
   recommendationsRail: {
@@ -1800,17 +1799,17 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   recCard: {
-    width: 120,
+    width: 122,
     gap: 6,
   },
   recPosterWrap: {
     width: "100%",
     height: 168,
-    borderRadius: 12,
+    borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "#141923",
+    backgroundColor: "#23161F",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(251, 113, 133, 0.18)",
   },
   recScoreBadge: {
     position: "absolute",
@@ -1819,33 +1818,33 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "rgba(11, 14, 23, 0.8)",
-    paddingHorizontal: 6,
+    backgroundColor: "rgba(13, 8, 11, 0.84)",
+    paddingHorizontal: 6.5,
     paddingVertical: 2,
-    borderRadius: 6,
+    borderRadius: 99,
     borderWidth: 1,
-    borderColor: "rgba(245, 197, 24, 0.3)",
+    borderColor: "rgba(251, 191, 36, 0.36)",
   },
   recScoreText: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: "SpaceGrotesk-Bold",
     fontSize: 10,
-    color: "#F5C518",
+    color: "#FBBF24",
   },
   recCardTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
     lineHeight: 17,
   },
   recMetaText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#64748B",
+    color: "#9A7D8A",
   },
   fallbackPosterLabel: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#64748B",
+    color: "#9A7D8A",
     alignSelf: "center",
     marginTop: 70,
   },
@@ -1855,18 +1854,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.04)",
-    borderRadius: 12,
+    backgroundColor: "#21141C",
+    borderRadius: 13,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(251, 113, 133, 0.20)",
     paddingHorizontal: 12,
-    height: 42,
+    height: 43,
   },
   searchBarInput: {
     flex: 1,
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
   },
   clearSearchBtn: {
     padding: 4,
@@ -1880,12 +1879,12 @@ const styles = StyleSheet.create({
   emptyEpisodesTitle: {
     fontFamily: "Nunito-Bold",
     fontSize: 15,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
   },
   emptyEpisodesDesc: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#64748B",
+    color: "#9A7D8A",
     textAlign: "center",
   },
   paginationBar: {
@@ -1897,7 +1896,7 @@ const styles = StyleSheet.create({
   paginationText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 11,
-    color: "#64748B",
+    color: "#9A7D8A",
   },
   pagerButtonsRow: {
     flexDirection: "row",
@@ -1907,12 +1906,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    paddingHorizontal: 11,
+    paddingVertical: 6,
+    borderRadius: 9,
+    backgroundColor: "rgba(244, 63, 94, 0.14)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderColor: "rgba(251, 113, 133, 0.26)",
   },
   pagerBtnDisabled: {
     opacity: 0.35,
@@ -1920,10 +1919,10 @@ const styles = StyleSheet.create({
   pagerBtnText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
   },
   pagerBtnTextDisabled: {
-    color: "#475569",
+    color: "#7F6270",
   },
 
   episodeCardList: {
@@ -1937,11 +1936,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "rgba(255, 255, 255, 0.03)",
-    borderRadius: 14,
+    backgroundColor: "#21141C",
+    borderRadius: 15,
     padding: 10,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.06)",
+    borderColor: "rgba(251, 113, 133, 0.16)",
     gap: 10,
   },
   episodeItemRowWide: {
@@ -1957,12 +1956,12 @@ const styles = StyleSheet.create({
   episodeThumbnailWrap: {
     width: 106,
     height: 64,
-    borderRadius: 10,
+    borderRadius: 11,
     overflow: "hidden",
-    backgroundColor: "#141923",
+    backgroundColor: "#140C11",
     position: "relative",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(251, 113, 133, 0.20)",
   },
   thumbnailFallback: {
     alignItems: "center",
@@ -1970,22 +1969,22 @@ const styles = StyleSheet.create({
   },
   episodeThumbnailOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.25)",
+    backgroundColor: "rgba(13, 8, 11, 0.22)",
   },
   episodeNumberBadge: {
     position: "absolute",
     bottom: 6,
     left: 6,
-    backgroundColor: "rgba(11, 14, 23, 0.85)",
-    paddingHorizontal: 6,
+    backgroundColor: "rgba(225, 29, 72, 0.92)",
+    paddingHorizontal: 6.5,
     paddingVertical: 2,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.15)",
+    borderColor: "rgba(253, 164, 175, 0.42)",
   },
   episodeNumberText: {
-    fontFamily: "Nunito-Black",
-    fontSize: 11,
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 10.5,
     color: "#FFFFFF",
   },
   thumbPlayIconWrap: {
@@ -1995,7 +1994,7 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: "rgba(255, 255, 255, 0.25)",
+    backgroundColor: "rgba(244, 63, 94, 0.85)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -2004,12 +2003,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 3,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    height: 3.5,
+    backgroundColor: "rgba(255, 245, 247, 0.22)",
   },
   thumbnailProgressFill: {
     height: "100%",
-    backgroundColor: "#F5C518",
+    backgroundColor: "#F43F5E",
   },
 
   episodeInfoCol: {
@@ -2017,9 +2016,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   episodeTitleText: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: "Nunito-ExtraBold",
     fontSize: 13,
-    color: "#FFFFFF",
+    color: "#FFF5F7",
     lineHeight: 18,
   },
   episodeBadgeStatusRow: {
@@ -2029,28 +2028,28 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   watchedPill: {
-    backgroundColor: "rgba(245, 197, 24, 0.12)",
-    paddingHorizontal: 6,
+    backgroundColor: "rgba(251, 191, 36, 0.14)",
+    paddingHorizontal: 6.5,
     paddingVertical: 2,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: "rgba(245, 197, 24, 0.3)",
+    borderColor: "rgba(251, 191, 36, 0.34)",
   },
   watchedPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10,
-    color: "#F5C518",
+    color: "#FBBF24",
   },
   readyPill: {
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
-    paddingHorizontal: 6,
+    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    paddingHorizontal: 6.5,
     paddingVertical: 2,
     borderRadius: 6,
   },
   readyPillText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 10,
-    color: "#94A3B8",
+    color: "#FDA4AF",
   },
   upcomingPill: {
     flexDirection: "row",
@@ -2061,10 +2060,10 @@ const styles = StyleSheet.create({
   upcomingPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 10.5,
-    color: "#C0C0C0",
+    color: "#C4A6B3",
   },
   thumbPlayIconWrapUpcoming: {
-    backgroundColor: "rgba(15, 23, 42, 0.75)",
+    backgroundColor: "rgba(13, 8, 11, 0.78)",
   },
   fillerPill: {
     backgroundColor: "rgba(239, 68, 68, 0.15)",
@@ -2084,23 +2083,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 8.5,
     paddingVertical: 6,
     borderRadius: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    backgroundColor: "#170E14",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(251, 113, 133, 0.18)",
   },
   ratingPillBtnActive: {
-    backgroundColor: "rgba(245, 197, 24, 0.12)",
-    borderColor: "rgba(245, 197, 24, 0.3)",
+    backgroundColor: "rgba(251, 191, 36, 0.14)",
+    borderColor: "rgba(251, 191, 36, 0.35)",
   },
   ratingPillText: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   ratingPillTextActive: {
-    color: "#F5C518",
+    color: "#FBBF24",
   },
 });

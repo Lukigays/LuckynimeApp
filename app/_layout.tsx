@@ -24,7 +24,7 @@ import { MaintenanceGate } from "@/components/maintenance-gate";
 import { BroadcastNotificationListener } from "@/components/broadcast-notification-listener";
 import { AppIcon } from "@/components/app-icon";
 
-const APP_BG_COLOR = "#0E0E11";
+const APP_BG_COLOR = "#0D080B";
 
 // Pastikan splash screen native tetap bertahan hingga view loading.gif siap
 void SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -182,7 +182,7 @@ export default function RootLayout() {
                   fontSize: 34,
                   fontWeight: "800",
                   letterSpacing: -0.5,
-                  color: "#FFFFFF",
+                  color: "#FFF5F7",
                 }}
               >
                 Lucky
@@ -192,7 +192,7 @@ export default function RootLayout() {
                   fontSize: 34,
                   fontWeight: "800",
                   letterSpacing: -0.5,
-                  color: "#C084FC",
+                  color: "#F43F5E",
                 }}
               >
                 nime
@@ -206,16 +206,18 @@ export default function RootLayout() {
               opacity: wordAnim,
               marginTop: 18,
               width: 172,
-              height: 1.5,
-              backgroundColor: "rgba(255, 255, 255, 0.08)",
+              height: 2,
+              borderRadius: 99,
+              backgroundColor: "rgba(251, 113, 133, 0.16)",
               overflow: "hidden",
             }}
           >
             <Animated.View
               style={{
                 width: 68,
-                height: 1.5,
-                backgroundColor: "#C084FC",
+                height: 2,
+                borderRadius: 99,
+                backgroundColor: "#F43F5E",
                 transform: [{ translateX: barTranslate }],
               }}
             />
@@ -228,11 +230,11 @@ export default function RootLayout() {
               fontSize: 9.5,
               fontWeight: "700",
               letterSpacing: 3.6,
-              color: "#64748B",
+              color: "#FB7185",
               textAlign: "center",
             }}
           >
-            STREAMING ANIME
+            SAKURA CINEMA EDITION
           </Animated.Text>
         </View>
       </GestureHandlerRootView>
@@ -297,7 +299,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
         padding: 24,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#080B11",
+        backgroundColor: "#0D080B",
       }}
     >
       <StatusBar style="light" />
@@ -309,7 +311,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
           width: 320,
           height: 320,
           borderRadius: 160,
-          backgroundColor: "rgba(56, 189, 248, 0.04)",
+          backgroundColor: "rgba(251, 113, 133, 0.04)",
           top: "28%",
         }}
         pointerEvents="none"
@@ -390,7 +392,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
         >
           <Text
             style={{
-              color: "#94A3B8",
+              color: "#C4A6B3",
               fontSize: 12.5,
               lineHeight: 18,
               textAlign: "center",

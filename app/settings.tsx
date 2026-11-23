@@ -495,7 +495,7 @@ export default function SettingsScreen() {
                 <AppIcon
                   name={!nameCooldown.canChange ? "clock-outline" : "pencil"}
                   size={14}
-                  color={!nameCooldown.canChange ? "#F59E0B" : "#38BDF8"}
+                  color={!nameCooldown.canChange ? "#F59E0B" : "#FB7185"}
                 />
               </Pressable>
             </View>
@@ -608,7 +608,7 @@ export default function SettingsScreen() {
                 <AppIcon
                   name={!nameCooldown.canChange ? "clock-outline" : "pencil"}
                   size={13}
-                  color={!nameCooldown.canChange ? "#F59E0B" : "#38BDF8"}
+                  color={!nameCooldown.canChange ? "#F59E0B" : "#FB7185"}
                 />
               </View>
             </Pressable>
@@ -632,7 +632,7 @@ export default function SettingsScreen() {
                 <AppIcon
                   name="chevron-right"
                   size={14}
-                  color="#38BDF8"
+                  color="#FB7185"
                 />
               </View>
             </Pressable>
@@ -646,7 +646,7 @@ export default function SettingsScreen() {
               <Switch
                 value={privateProfile}
                 onValueChange={togglePrivateProfile}
-                trackColor={{ false: "#27272A", true: "#2563EB" }}
+                trackColor={{ false: "#27272A", true: "#F43F5E" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -683,7 +683,7 @@ export default function SettingsScreen() {
               <Switch
                 value={autoPlay}
                 onValueChange={toggleAutoPlay}
-                trackColor={{ false: "#27272A", true: "#2563EB" }}
+                trackColor={{ false: "#27272A", true: "#F43F5E" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -697,7 +697,7 @@ export default function SettingsScreen() {
               <Switch
                 value={gestures}
                 onValueChange={toggleGestures}
-                trackColor={{ false: "#27272A", true: "#2563EB" }}
+                trackColor={{ false: "#27272A", true: "#F43F5E" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -711,7 +711,7 @@ export default function SettingsScreen() {
               <Switch
                 value={skipIntro}
                 onValueChange={toggleSkipIntro}
-                trackColor={{ false: "#27272A", true: "#2563EB" }}
+                trackColor={{ false: "#27272A", true: "#F43F5E" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -798,7 +798,7 @@ export default function SettingsScreen() {
               <Switch
                 value={wifiOnly}
                 onValueChange={toggleWifiOnly}
-                trackColor={{ false: "#27272A", true: "#2563EB" }}
+                trackColor={{ false: "#27272A", true: "#F43F5E" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -836,7 +836,7 @@ export default function SettingsScreen() {
               <Switch
                 value={notifTopic}
                 onValueChange={toggleNotifTopic}
-                trackColor={{ false: "#27272A", true: "#2563EB" }}
+                trackColor={{ false: "#27272A", true: "#F43F5E" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -850,7 +850,7 @@ export default function SettingsScreen() {
               <Switch
                 value={hapticsOn}
                 onValueChange={toggleHaptics}
-                trackColor={{ false: "#27272A", true: "#2563EB" }}
+                trackColor={{ false: "#27272A", true: "#F43F5E" }}
                 thumbColor="#FFFFFF"
               />
             </View>
@@ -951,11 +951,11 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.rowRightWrap}>
                 {checkingUpdate ? (
-                  <ActivityIndicator size="small" color="#38BDF8" />
+                  <ActivityIndicator size="small" color="#FB7185" />
                 ) : (
                   <Text style={styles.actionCheckUpdateText}>Cek Update</Text>
                 )}
-                <AppIcon name="refresh" size={15} color="#38BDF8" />
+                <AppIcon name="refresh" size={15} color="#FB7185" />
               </View>
             </Pressable>
 
@@ -971,7 +971,7 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.rowRightWrap}>
                 <Text style={styles.rowRightText}>Team Luckynime</Text>
-                <AppIcon name="chevron-right" size={16} color="#64748B" />
+                <AppIcon name="chevron-right" size={16} color="#8F727F" />
               </View>
             </Pressable>
           </View>
@@ -1004,7 +1004,7 @@ export default function SettingsScreen() {
         <Pressable style={styles.modalOverlay} onPress={() => setShowEditNameModal(false)}>
           <Pressable style={styles.modalCard} onPress={(e) => e.stopPropagation()}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <AppIcon name="pencil" size={20} color="#38BDF8" />
+              <AppIcon name="pencil" size={20} color="#FB7185" />
               <Text style={styles.modalTitle}>Ubah Nama Tampilan</Text>
             </View>
             <Text style={styles.modalSubtitle}>
@@ -1109,7 +1109,7 @@ export default function SettingsScreen() {
                 ]}
               >
                 <Text style={[styles.choiceText, quality === res && styles.choiceTextActive]}>{res}</Text>
-                {quality === res && <AppIcon name="check" size={18} color="#2563EB" />}
+                {quality === res && <AppIcon name="check" size={18} color="#F43F5E" />}
               </Pressable>
             ))}
           </View>
@@ -1139,7 +1139,7 @@ export default function SettingsScreen() {
                 <Text style={[styles.choiceText, introDuration === dur && styles.choiceTextActive]}>
                   {dur} {dur === "85s" ? "(Standar Anime)" : ""}
                 </Text>
-                {introDuration === dur && <AppIcon name="check" size={18} color="#2563EB" />}
+                {introDuration === dur && <AppIcon name="check" size={18} color="#F43F5E" />}
               </Pressable>
             ))}
           </View>
@@ -1178,7 +1178,7 @@ export default function SettingsScreen() {
                 >
                   {item.label}
                 </Text>
-                {subPrefs?.preferredLanguage === item.id && <AppIcon name="check" size={18} color="#2563EB" />}
+                {subPrefs?.preferredLanguage === item.id && <AppIcon name="check" size={18} color="#F43F5E" />}
               </Pressable>
             ))}
           </View>
@@ -1218,7 +1218,7 @@ export default function SettingsScreen() {
                 >
                   {item.label}
                 </Text>
-                {subPrefs?.fontSize === item.size && <AppIcon name="check" size={18} color="#2563EB" />}
+                {subPrefs?.fontSize === item.size && <AppIcon name="check" size={18} color="#F43F5E" />}
               </Pressable>
             ))}
           </View>
@@ -1386,7 +1386,7 @@ const styles = StyleSheet.create({
   editNameIconBtn: {
     padding: 4,
     borderRadius: 6,
-    backgroundColor: "rgba(56, 189, 248, 0.12)",
+    backgroundColor: "rgba(251, 113, 133, 0.12)",
   },
   profileEmail: {
     fontFamily: "Nunito-Regular",
@@ -1455,7 +1455,7 @@ const styles = StyleSheet.create({
   leaderboardText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
   },
   xpProgressMeta: {
     flexDirection: "row",
@@ -1470,7 +1470,7 @@ const styles = StyleSheet.create({
   xpPercentText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12,
-    color: "#60A5FA",
+    color: "#FB7185",
   },
   progressBarTrack: {
     height: 6,
@@ -1482,14 +1482,14 @@ const styles = StyleSheet.create({
   progressBarFill: {
     height: "100%",
     borderRadius: 3,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
   },
   progressDot: {
     position: "absolute",
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#38BDF8",
+    backgroundColor: "#FB7185",
     top: -1,
     marginLeft: -4,
   },
@@ -1561,17 +1561,17 @@ const styles = StyleSheet.create({
   rowRightTextActive: {
     fontFamily: "Nunito-Bold",
     fontSize: 13.5,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   actionEditText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   actionCheckUpdateText: {
     fontFamily: "Nunito-Bold",
     fontSize: 12.5,
-    color: "#38BDF8",
+    color: "#FB7185",
   },
   nsfwTagPill: {
     backgroundColor: "#EF4444",
@@ -1635,7 +1635,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     lineHeight: 18,
   },
   modalTextInput: {
@@ -1667,13 +1667,13 @@ const styles = StyleSheet.create({
   modalBtnSecondaryText: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   modalBtnPrimary: {
     flex: 1,
     paddingVertical: 12,
     borderRadius: 12,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1686,7 +1686,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 12,
     borderRadius: 12,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 6,
@@ -1701,14 +1701,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.03)",
   },
   choiceRowActive: {
-    backgroundColor: "rgba(37, 99, 235, 0.12)",
+    backgroundColor: "rgba(244, 63, 94, 0.12)",
     borderWidth: 1,
-    borderColor: "rgba(37, 99, 235, 0.3)",
+    borderColor: "rgba(244, 63, 94, 0.3)",
   },
   choiceText: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   choiceTextActive: {
     color: "#FFFFFF",
@@ -1745,7 +1745,7 @@ const styles = StyleSheet.create({
   xpInfoLabel: {
     fontFamily: "Nunito-Regular",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   xpInfoVal: {
     fontFamily: "Nunito-Bold",
@@ -1797,12 +1797,12 @@ const styles = StyleSheet.create({
   inputCharCountText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
   },
   inputHintText: {
     fontFamily: "Nunito-Regular",
     fontSize: 11,
-    color: "#64748B",
+    color: "#8F727F",
   },
   inputErrorText: {
     fontFamily: "Nunito-Bold",

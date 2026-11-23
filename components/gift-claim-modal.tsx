@@ -202,7 +202,7 @@ export function GiftClaimModal({
               </>
             ) : isClaimed ? (
               <>
-                <AppIcon name="check" size={18} color="#94A3B8" />
+                <AppIcon name="check" size={18} color="#C4A6B3" />
                 <Text style={styles.claimBtnTextDisabled}>Sudah Diklaim</Text>
               </>
             ) : (
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   messageText: {
     fontFamily: "Nunito-Regular",
     fontSize: 12.5,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     lineHeight: 18,
     textAlign: "center",
   },
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
   claimBtnTextDisabled: {
     fontFamily: "Nunito-Bold",
     fontSize: 14,
-    color: "#94A3B8",
+    color: "#C4A6B3",
   },
   borderRewardRow: {
     flexDirection: "row",
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   borderRarityTag: {
     fontFamily: "Nunito-Bold",
     fontSize: 11,
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     marginTop: 1,
   },
   successBanner: {
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   successMessage: {
     fontFamily: "Nunito-Regular",
     fontSize: 12,
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     textAlign: "center",
     lineHeight: 17,
   },

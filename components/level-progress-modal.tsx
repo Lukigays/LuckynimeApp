@@ -415,7 +415,7 @@ export const LevelProgressModal = memo(function LevelProgressModal({
                         </View>
                       ) : isActive ? (
                         <View style={styles.activeBadge}>
-                          <AppIcon name="check" size={11} color="#111622" />
+                          <AppIcon name="check" size={11} color="#170E14" />
                         </View>
                       ) : (
                         <View style={styles.lockedBadge}>
@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
   },
   progressBarTrackOuter: {
     height: 5,
-    backgroundColor: "#1E293B",
+    backgroundColor: "#23161F",
     borderRadius: 3,
     marginVertical: 6,
     overflow: "hidden",

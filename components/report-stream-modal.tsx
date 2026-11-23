@@ -159,7 +159,7 @@ export function ReportStreamModal({
           {/* Header */}
           <View style={styles.header}>
             <View style={styles.headerIconWrap}>
-              <WarningCircle size={20} color="#F1F5F9" weight="bold" />
+              <WarningCircle size={20} color="#FFF5F7" weight="bold" />
             </View>
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text style={styles.title}>Laporkan Kendala Video</Text>
@@ -168,7 +168,7 @@ export function ReportStreamModal({
               </Text>
             </View>
             <Pressable onPress={onClose} hitSlop={10} style={styles.closeBtn}>
-              <X size={18} color="#94A3B8" weight="bold" />
+              <X size={18} color="#C4A6B3" weight="bold" />
             </Pressable>
           </View>
 
@@ -184,7 +184,7 @@ export function ReportStreamModal({
               <View style={styles.contextDivider} />
               <View style={styles.contextItem}>
                 <Text style={styles.contextLabel}>PELAPOR</Text>
-                <Text style={[styles.contextValue, { color: "#E2E8F0" }]} numberOfLines={1}>
+                <Text style={[styles.contextValue, { color: "#F5E9EE" }]} numberOfLines={1}>
                   @{reporterDisplay}
                 </Text>
               </View>
@@ -212,7 +212,7 @@ export function ReportStreamModal({
                     <View style={[styles.categoryIconWrap, isSelected && styles.categoryIconWrapActive]}>
                       <IconComponent
                         size={17}
-                        color={isSelected ? "#FFFFFF" : "#94A3B8"}
+                        color={isSelected ? "#FFFFFF" : "#C4A6B3"}
                         weight={isSelected ? "fill" : "regular"}
                       />
                     </View>
@@ -239,7 +239,7 @@ export function ReportStreamModal({
               value={description}
               onChangeText={setDescription}
               placeholder="Tuliskan keterangan detail kendala (misal: macet di menit 14:20, suara hilang, server buffering terus, dll)..."
-              placeholderTextColor="#64748B"
+              placeholderTextColor="#8F727F"
               multiline
               numberOfLines={3}
               style={styles.textInput}
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   subtitle: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 12,
     marginTop: 2,
   },
@@ -373,19 +373,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
   },
   contextLabel: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 9.5,
     fontWeight: "800",
     letterSpacing: 0.5,
   },
   contextValue: {
-    color: "#F8FAFC",
+    color: "#FFF5F7",
     fontSize: 12.5,
     fontWeight: "700",
     marginTop: 2,
   },
   sectionLabel: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 10.5,
     fontWeight: "800",
     letterSpacing: 0.6,
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.15)",
   },
   categoryTitle: {
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     fontSize: 13,
     fontWeight: "700",
   },
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   categoryDesc: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 11,
     marginTop: 1,
   },
@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cancelText: {
-    color: "#CBD5E1",
+    color: "#EDE0E5",
     fontSize: 13,
     fontWeight: "700",
   },

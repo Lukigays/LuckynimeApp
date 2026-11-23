@@ -279,7 +279,7 @@ export default function NuePetZooScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
   },
   skyContainer: {
     backgroundColor: "#7CC5F8",
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     flex: 1,
-    backgroundColor: "#0B0E14",
+    backgroundColor: "#0D080B",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   },
   errorDesc: {
     fontSize: 13.5,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     lineHeight: 20,
   },
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 11,
     borderRadius: 12,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#F43F5E",
   },
   retryBtnText: {
     fontSize: 14,

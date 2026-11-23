@@ -10,6 +10,8 @@ export default function LibraryTab() {
         initialTab="bookmarks"
         allowedTabs={["bookmarks", "alerts"]}
         showTopBar={true}
+        headerTitle="Koleksi Anime"
+        headerSubtitle="Daftar anime langganan & pengingat rilis"
       />
     </SafeAreaView>
   );
@@ -18,6 +20,6 @@ export default function LibraryTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
 });

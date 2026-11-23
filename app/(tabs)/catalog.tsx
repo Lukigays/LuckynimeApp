@@ -317,7 +317,7 @@ export default function CatalogScreen() {
         </Pressable>
 
         <View style={styles.searchInputWrap}>
-          <AppIcon name="magnify" size={18} color="#38BDF8" />
+          <AppIcon name="magnify" size={18} color="#FB7185" />
           <TextInput
             accessibilityRole="search"
             accessibilityLabel="Cari anime"
@@ -330,7 +330,7 @@ export default function CatalogScreen() {
                 ? `Cari dalam ${categoryLabel}...`
                 : "Cari judul anime, genre, karakter..."
             }
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#8F727F"
             style={styles.input}
             returnKeyType="search"
           />
@@ -345,7 +345,7 @@ export default function CatalogScreen() {
               hitSlop={8}
               style={styles.clearInputIconBtn}
             >
-              <AppIcon name="close-circle" size={16} color="#94A3B8" />
+              <AppIcon name="close-circle" size={16} color="#C4A6B3" />
             </Pressable>
           ) : null}
         </View>
@@ -367,7 +367,7 @@ export default function CatalogScreen() {
           <AppIcon
             name="tune-variant"
             size={18}
-            color={activeFilterCount ? "#EF4444" : "#94A3B8"}
+            color={activeFilterCount ? "#EF4444" : "#C4A6B3"}
           />
           {activeFilterCount ? (
             <View style={styles.filterBadge}>
@@ -412,7 +412,7 @@ export default function CatalogScreen() {
                       }}
                       style={styles.recentItemClickable}
                     >
-                      <AppIcon name="clock-outline" size={14} color="#64748B" />
+                      <AppIcon name="clock-outline" size={14} color="#8F727F" />
                       <Text numberOfLines={1} style={styles.recentTermText}>
                         {entry.term}
                       </Text>
@@ -427,7 +427,7 @@ export default function CatalogScreen() {
                       hitSlop={8}
                       style={styles.recentRemoveBtn}
                     >
-                      <AppIcon name="close" size={13} color="#64748B" />
+                      <AppIcon name="close" size={13} color="#8F727F" />
                     </Pressable>
                   </View>
                 ))}
@@ -669,7 +669,7 @@ export default function CatalogScreen() {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   btnPressed: {
     opacity: 0.7,
@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 255, 255, 0.06)",
   },
@@ -826,12 +826,12 @@ const styles = StyleSheet.create({
   },
   recentTermText: {
     flex: 1,
-    color: "#F1F5F9",
+    color: "#FFF5F7",
     fontSize: 13.5,
     fontFamily: "Nunito-Bold",
   },
   recentTimeText: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 11,
     fontFamily: "Nunito-SemiBold",
   },
@@ -862,7 +862,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.98 }],
   },
   genrePillText: {
-    color: "#E2E8F0",
+    color: "#F5E9EE",
     fontSize: 12.5,
     fontFamily: "Nunito-Bold",
   },
@@ -897,7 +897,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   trendingScoreText: {
-    color: "#F8FAFC",
+    color: "#FFF5F7",
     fontSize: 9.5,
     fontFamily: "Nunito-Black",
   },
@@ -908,7 +908,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   trendingCardMeta: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 11,
     fontFamily: "Nunito-SemiBold",
   },
@@ -944,7 +944,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   resultsCategoryText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 12,
     fontFamily: "Nunito-Bold",
   },
@@ -972,7 +972,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   loadMoreText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 11.5,
     fontWeight: "800",
     letterSpacing: 0.6,

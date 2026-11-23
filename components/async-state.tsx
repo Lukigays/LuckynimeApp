@@ -1,4 +1,4 @@
-import { Platform, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 import { Image } from "expo-image";
 import { AppIcon } from "@/components/app-icon";
 import { ChibiLoading } from "@/components/chibi-loading";
@@ -6,7 +6,7 @@ import { ChibiLoading } from "@/components/chibi-loading";
 const EMPTY_ILLUSTRATION = require("@/assets/images/empty-state.png");
 
 export function LoadingState({
-  label = "Memuat data anime...",
+  label = "Menyiapkan katalog anime...",
   style,
 }: {
   label?: string;
@@ -41,7 +41,7 @@ export function ErrorState({
   return (
     <View accessibilityRole="alert" style={[styles.stateContainer, style]}>
       <View style={[styles.iconCard, styles.errorIconCard]}>
-        <AppIcon name="alert-circle-outline" size={28} color="#EF4444" />
+        <AppIcon name="alert-circle-outline" size={28} color="#FB7185" />
       </View>
       <Text style={styles.stateTitle}>
         {anilistOutage ? "Layanan AniList Sedang Sibuk" : "Gagal Memuat Data"}
@@ -114,79 +114,73 @@ const styles = StyleSheet.create({
   loadingText: {
     fontFamily: "Nunito-Bold",
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#C4A6B3",
     textAlign: "center",
     maxWidth: 280,
     lineHeight: 18,
   },
   stateContainer: {
     flex: 1,
-    minHeight: 260,
+    minHeight: 300,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 32,
-    paddingHorizontal: 20,
-    gap: 10,
-  },
-  emptyIllustration: {
-    marginBottom: 6,
+    paddingHorizontal: 28,
+    paddingVertical: 40,
+    gap: 12,
   },
   iconCard: {
-    width: 64,
-    height: 64,
-    borderRadius: 10,
-    backgroundColor: "rgba(22, 27, 38, 0.72)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.12)",
+    width: 60,
+    height: 60,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 4,
-    ...(Platform.OS === "web"
-      ? ({
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-        } as any)
-      : {}),
+    borderWidth: 1,
   },
   errorIconCard: {
-    borderColor: "rgba(239, 68, 68, 0.3)",
-    backgroundColor: "rgba(239, 68, 68, 0.08)",
+    backgroundColor: "rgba(244, 63, 94, 0.14)",
+    borderColor: "rgba(251, 113, 133, 0.34)",
+  },
+  emptyIllustration: {
+    marginBottom: 4,
+    opacity: 0.92,
   },
   stateTitle: {
-    fontFamily: "Nunito-Black",
-    fontSize: 15,
-    color: "#FFFFFF",
+    fontFamily: "Nunito-ExtraBold",
+    fontSize: 17,
+    color: "#FFF5F7",
     textAlign: "center",
   },
   stateDesc: {
     fontFamily: "Nunito-SemiBold",
-    fontSize: 12.5,
-    color: "#94A3B8",
+    fontSize: 13.5,
+    color: "#C4A6B3",
     textAlign: "center",
-    maxWidth: 290,
-    lineHeight: 18,
+    lineHeight: 20,
+    maxWidth: 300,
   },
   actionBtn: {
     marginTop: 6,
-    paddingHorizontal: 18,
-    paddingVertical: 9,
-    borderRadius: 6,
+    minHeight: 42,
+    paddingHorizontal: 22,
+    borderRadius: 99,
+    backgroundColor: "#F43F5E",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.16)",
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    borderColor: "#FDA4AF",
+    alignItems: "center",
+    justifyContent: "center",
   },
   actionBtnText: {
-    fontFamily: "Nunito-Bold",
-    fontSize: 11.5,
-    color: "#38BDF8",
-    letterSpacing: 0.5,
+    fontFamily: "SpaceGrotesk-Bold",
+    fontSize: 12,
+    color: "#FFFFFF",
+    letterSpacing: 0.8,
   },
   btnDisabled: {
-    opacity: 0.4,
+    opacity: 0.45,
   },
   btnPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.84,
+    transform: [{ scale: 0.975 }],
   },
 });

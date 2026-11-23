@@ -170,7 +170,7 @@ export default function DownloadsScreen() {
               onPress={() => cancelDownloadJob(job.id)}
               style={({ pressed }) => [styles.iconBtn, pressed && styles.btnPressed]}
             >
-              <AppIcon name="close" size={16} color="#94A3B8" />
+              <AppIcon name="close" size={16} color="#C4A6B3" />
             </Pressable>
           ) : (
             <Pressable
@@ -229,7 +229,7 @@ export default function DownloadsScreen() {
           onPress={() => confirmRemove(entry)}
           style={({ pressed }) => [styles.iconBtn, pressed && styles.btnPressed]}
         >
-          <AppIcon name="trash-can-outline" size={16} color="#64748B" />
+          <AppIcon name="trash-can-outline" size={16} color="#8F727F" />
         </Pressable>
         <View style={styles.playIconCircle}>
           <AppIcon name="play" size={16} color="#FFFFFF" />
@@ -255,7 +255,7 @@ export default function DownloadsScreen() {
           <Text style={styles.screenTitle}>Unduhan</Text>
         </View>
         <View style={styles.headerBrandBadge}>
-          <AppIcon name="download" size={18} color="#38BDF8" />
+          <AppIcon name="download" size={18} color="#FB7185" />
         </View>
       </View>
 
@@ -398,7 +398,7 @@ export default function DownloadsScreen() {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-    backgroundColor: "#0B0E17",
+    backgroundColor: "#0D080B",
   },
   headerWrap: {
     gap: 16,
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   eyebrow: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 10,
     fontFamily: "Nunito-Bold",
     letterSpacing: 0.5,
@@ -447,9 +447,9 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(56, 189, 248, 0.1)",
+    backgroundColor: "rgba(251, 113, 133, 0.1)",
     borderWidth: 1,
-    borderColor: "rgba(56, 189, 248, 0.25)",
+    borderColor: "rgba(251, 113, 133, 0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   bannerText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 12.5,
     fontFamily: "Nunito-Regular",
     lineHeight: 18,
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.2,
   },
   storageText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontFamily: "Nunito-Bold",
     fontSize: 11,
   },
@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
     fontFamily: "Nunito-Bold",
   },
   settingHint: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 11.5,
     fontFamily: "Nunito-Regular",
     lineHeight: 16,
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(239, 68, 68, 0.2)",
   },
   chipText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 11,
     fontFamily: "Nunito-Bold",
     letterSpacing: 0.3,
@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.08)",
   },
   countBadgeText: {
-    color: "#94A3B8",
+    color: "#C4A6B3",
     fontSize: 11,
     fontFamily: "Nunito-Bold",
   },
@@ -675,7 +675,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   thumbLetter: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 24,
     fontFamily: "Nunito-Black",
   },
@@ -691,10 +691,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 1.5,
     borderRadius: 4,
-    backgroundColor: "rgba(56, 189, 248, 0.15)",
+    backgroundColor: "rgba(251, 113, 133, 0.15)",
   },
   qualityBadgeText: {
-    color: "#38BDF8",
+    color: "#FB7185",
     fontSize: 9.5,
     fontFamily: "Nunito-Black",
     letterSpacing: 0.3,
@@ -706,7 +706,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   rowMeta: {
-    color: "#64748B",
+    color: "#8F727F",
     fontSize: 11,
     fontFamily: "Nunito-SemiBold",
   },
