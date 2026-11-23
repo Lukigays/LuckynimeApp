@@ -1719,6 +1719,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 5,
     elevation: 6,
   },
   floatingCrystalPill: {
@@ -1731,6 +1735,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
     elevation: 6,
   },
   floatingCrystalIcon: {
@@ -2165,6 +2173,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
     elevation: 8,
   },
   toastSuccess: {
@@ -2214,6 +2226,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#EF4444",
     flex: 1.25,
     paddingHorizontal: 12,
+    shadowColor: "#EF4444",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
     elevation: 4,
   },
   insufficientTopupText: {

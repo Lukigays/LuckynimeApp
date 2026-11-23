@@ -1527,6 +1527,10 @@ const styles = StyleSheet.create({
   messageCardHighlighted: {
     borderColor: "#FFFFFF",
     borderWidth: 1.5,
+    shadowColor: "#FFFFFF",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 10,
     elevation: 8,
     ...(Platform.OS === "web"
       ? ({
@@ -1849,6 +1853,10 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.45)",
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
     elevation: 8,
   },
   scrollToBottomBtnPressed: {

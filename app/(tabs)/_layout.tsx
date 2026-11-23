@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Tabs } from "expo-router";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -125,76 +125,77 @@ function WibukuBottomBar({ state, navigation }: BottomTabBarProps) {
   };
 
   return (
-    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 6) }]}>
-      <View style={styles.row}>
-        {NAV_ITEMS.map((item) => {
-          const focused = currentRouteName === item.routeName;
-          return (
-            <Pressable
-              key={item.routeName}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: focused }}
-              accessibilityLabel={item.label}
-              onPress={() => navigateTab(item.routeName)}
-              style={({ pressed }) => [styles.tabItem, pressed && { opacity: 0.72 }]}
-            >
-              <View style={[styles.iconPill, focused && styles.iconPillActive]}>
-                {item.isProfile && auth.user ? (
-                  <Image
-                    source={{ uri: avatarUri }}
-                    style={[styles.avatar, focused && styles.avatarActive]}
-                    contentFit="cover"
-                  />
-                ) : (
-                  <AppIcon
-                    name={(focused ? item.activeIcon : item.icon) as any}
-                    size={21}
-                    color={focused ? "#FFFFFF" : "#8E93A2"}
-                  />
-                )}
-              </View>
-            </Pressable>
-          );
-        })}
-      </View>
+    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
+      {NAV_ITEMS.map((item) => {
+        const focused = currentRouteName === item.routeName;
+        const color = focused ? "#FFFFFF" : "#6B7280";
+        return (
+          <Pressable
+            key={item.routeName}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: focused }}
+            accessibilityLabel={item.label}
+            onPress={() => navigateTab(item.routeName)}
+            style={({ pressed }) => [styles.tabItem, pressed && { opacity: 0.7 }]}
+          >
+            <View style={[styles.iconPill, focused && styles.iconPillActive]}>
+              {item.isProfile && auth.user ? (
+                <Image
+                  source={{ uri: avatarUri }}
+                  style={[styles.avatar, focused && styles.avatarActive]}
+                  contentFit="cover"
+                />
+              ) : (
+                <AppIcon name={(focused ? item.activeIcon : item.icon) as any} size={22} color={color} />
+              )}
+            </View>
+            <Text style={[styles.label, { color }, focused && styles.labelActive]} numberOfLines={1}>
+              {item.label}
+            </Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   bar: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-around",
     backgroundColor: "#141519",
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "#242731",
+    borderTopColor: "rgba(255, 255, 255, 0.08)",
     paddingTop: 8,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    height: 44,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
   },
   tabItem: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-    height: "100%",
+    gap: 4,
   },
   iconPill: {
-    width: 54,
-    height: 32,
-    borderRadius: 16,
+    width: 56,
+    height: 30,
+    borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
   },
   iconPillActive: {
-    backgroundColor: "#2D3142",
+    backgroundColor: "#2C303E",
+  },
+  label: {
+    fontFamily: "Nunito-SemiBold",
+    fontSize: 11,
+  },
+  labelActive: {
+    fontFamily: "Nunito-Bold",
   },
   avatar: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     borderWidth: 1.5,
     borderColor: "transparent",
   },

@@ -251,6 +251,7 @@ export default function DownloadsScreen() {
           <AppIcon name="arrow-left" size={20} color="#FFFFFF" />
         </Pressable>
         <View style={styles.titleBlock}>
+          <Text style={styles.eyebrow}>OFFLINE · EPISODE TERSIMPAN</Text>
           <Text style={styles.screenTitle}>Unduhan</Text>
         </View>
         <View style={styles.headerBrandBadge}>

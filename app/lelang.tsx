@@ -874,6 +874,7 @@ export default function LelangScreen() {
                     {
                       backgroundColor: "rgba(196, 166, 179, 0.12)",
                       borderColor: "rgba(196, 166, 179, 0.3)",
+                      shadowColor: "#8E93A2",
                     },
                   ]}
                 >
@@ -1495,6 +1496,7 @@ export default function LelangScreen() {
                       {
                         backgroundColor:
                           selectedDetailItem.glowColor || "rgba(255, 255, 255, 0.18)",
+                        shadowColor: selectedDetailItem.accentColor,
                       },
                     ]}
                   />
@@ -3001,7 +3003,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="home"
                 size={20}
-                color={activeTab === "home" && !isRiwayatOpen ? "#EF4444" : "#8E93A2"}
+                color={activeTab === "home" && !isRiwayatOpen ? "#FFFFFF" : "#6B7280"}
               />
               <Text
                 style={[
@@ -3025,7 +3027,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="gavel"
                 size={20}
-                color={activeTab === "lelang" && !isRiwayatOpen ? "#EF4444" : "#8E93A2"}
+                color={activeTab === "lelang" && !isRiwayatOpen ? "#FFFFFF" : "#6B7280"}
               />
               <Text
                 style={[
@@ -3049,7 +3051,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="layers"
                 size={20}
-                color={activeTab === "koleksi" && !isRiwayatOpen ? "#EF4444" : "#8E93A2"}
+                color={activeTab === "koleksi" && !isRiwayatOpen ? "#FFFFFF" : "#6B7280"}
               />
               <Text
                 style={[
@@ -3073,7 +3075,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="star"
                 size={20}
-                color={activeTab === "event" && !isRiwayatOpen ? "#EF4444" : "#8E93A2"}
+                color={activeTab === "event" && !isRiwayatOpen ? "#FFFFFF" : "#6B7280"}
               />
               <Text
                 style={[
@@ -3097,7 +3099,7 @@ export default function LelangScreen() {
               <AppIcon
                 name="account"
                 size={20}
-                color={activeTab === "profile" || isRiwayatOpen ? "#EF4444" : "#8E93A2"}
+                color={activeTab === "profile" || isRiwayatOpen ? "#FFFFFF" : "#6B7280"}
               />
               <Text
                 style={[
@@ -4244,10 +4246,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    backgroundColor: "#121316",
-    borderTopWidth: 1,
+    backgroundColor: "#141519",
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: "rgba(255, 255, 255, 0.08)",
-    paddingTop: 10,
+    paddingTop: 8,
   },
   bottomTabItem: {
     alignItems: "center",
@@ -4256,8 +4258,8 @@ const styles = StyleSheet.create({
   },
   bottomTabLabel: {
     fontFamily: "Nunito-SemiBold",
-    fontSize: 10,
-    color: "#8E93A2",
+    fontSize: 11,
+    color: "#6B7280",
   },
   bottomTabLabelActive: {
     fontFamily: "Nunito-Bold",
@@ -4265,7 +4267,7 @@ const styles = StyleSheet.create({
   },
   bottomTabLabelActiveRed: {
     fontFamily: "Nunito-Bold",
-    color: "#EF4444",
+    color: "#FFFFFF",
   },
 
   /* ══════════════════════════════════════════════════════════════
@@ -4451,6 +4453,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
+    shadowColor: "#EF4444",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
     elevation: 3,
   },
   profileQuickBtn: {
@@ -4644,6 +4650,9 @@ const styles = StyleSheet.create({
     height: 170,
     borderRadius: 85,
     backgroundColor: "rgba(168, 85, 247, 0.15)",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 20,
     elevation: 8,
   },
   bannerShowcaseBox: {
@@ -5792,6 +5801,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#EF4444",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
     elevation: 4,
   },
   klaimPayBtnDone: {
@@ -5851,6 +5864,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 12,
+    shadowColor: "#F5C518",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 16,
     elevation: 6,
   },
   hasilCelebrationTitle: {
