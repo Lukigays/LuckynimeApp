@@ -168,7 +168,7 @@ async function registerForPushNotifications() {
     finalStatus = status;
   }
   if (finalStatus !== "granted") return null;
-  const token = await Notifications.getExpoPushTokenAsync({ projectId: "e96fc02e-d968-4f13-a688-0d553d855df7" });
+  const token = await Notifications.getExpoPushTokenAsync({ projectId: "953bec0c-a3a0-467e-9b7c-7b030d1c5869" });
   return token.data;
 }
 

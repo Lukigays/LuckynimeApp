@@ -7,7 +7,7 @@ const env = {
   scheme: "luckynime",
   iosBundleId: "tech.luckynime.app",
   androidPackage: "luckynime.anime.app",
-  easProjectId: "e96fc02e-d968-4f13-a688-0d553d855df7",
+  easProjectId: "953bec0c-a3a0-467e-9b7c-7b030d1c5869",
 };
 
 const config: ExpoConfig = {

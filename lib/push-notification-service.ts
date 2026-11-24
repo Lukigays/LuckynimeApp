@@ -13,7 +13,7 @@ export interface PushNotificationPayload {
 
 const STORAGE_SAVED_TOKEN = "luckynime.saved_push_token";
 const EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send";
-const EXPO_PROJECT_ID = "e96fc02e-d968-4f13-a688-0d553d855df7";
+const EXPO_PROJECT_ID = "953bec0c-a3a0-467e-9b7c-7b030d1c5869";
 
 /**
  * Mendaftarkan perangkat ke Google FCM / Expo Push Service dan menyimpan tokennya ke Supabase
