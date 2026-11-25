@@ -53,6 +53,7 @@ jobs:
   build:
     name: Build ${{ matrix.label }} APK (${{ github.event.inputs.tag || github.ref_name }})
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     # Gate the release pipeline on validation: without this, flipping
     # continue-on-error on the validate job would not block anything.
     needs: validate
@@ -115,6 +116,8 @@ jobs:
             SIGNING_ARGS="-Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/luckynime-release.keystore -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEYSTORE_KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEYSTORE_KEY_PASSWORD }}"
           fi
           ./gradlew assembleRelease \
+            -Dorg.gradle.jvmargs="-Xmx3072m -XX:MaxMetaspaceSize=1536m -Dfile.encoding=UTF-8" \
+            --max-workers=2 --no-parallel \
             -PreactNativeArchitectures=${{ matrix.arch }} \
             -PnewArchEnabled=false \
             $SIGNING_ARGS \
