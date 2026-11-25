@@ -6,9 +6,14 @@ This is the public record of meaningful native Android releases. For the current
 
 ## Unreleased
 
-## v2.1.6 — Fullscreen Tetap Aktif Saat Pindah Episode
+## v2.1.7 — Fullscreen Tetap Aktif Saat Pindah Episode
 
 - Pemutar mempertahankan fullscreen, orientasi landscape, dan mode immersive saat pindah episode secara manual maupun autoplay. Mode biasa tetap berlaku bila fullscreen dimatikan.
+- Build APK universal membatasi worker Gradle dan menambah memori Metaspace agar kompilasi Kotlin tidak terhenti.
+
+## v2.1.6 — Build APK Tidak Terbit
+
+- Build sebelumnya kehabisan Metaspace dan dibatalkan oleh batas waktu GitHub Actions; perbaikan tersedia pada v2.1.7.
 
 ## v1.1.5 — Menu Pilihan Kualitas Video Ala Wibuku & Auto-Resume Instan Tanpa Klik Lanjutkan
 

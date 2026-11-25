@@ -13,7 +13,7 @@ const env = {
 const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
-  version: "2.1.6",
+  version: "2.1.7",
   orientation: "default",
   icon: "./assets/images/logo-app.png",
   scheme: env.scheme,
@@ -28,7 +28,7 @@ const config: ExpoConfig = {
     infoPlist: { ITSAppUsesNonExemptEncryption: false },
   },
   android: {
-    versionCode: 38,
+    versionCode: 39,
     adaptiveIcon: { backgroundColor: "#121316", foregroundImage: "./assets/images/android-icon-foreground.png" },
     edgeToEdgeEnabled: true,
     softwareKeyboardLayoutMode: "resize",
@@ -88,7 +88,7 @@ const config: ExpoConfig = {
   experiments: { typedRoutes: true },
   // Over-the-air JS/asset updates (expo-updates). Only JS and asset changes
   // ship this way; native changes still need a new APK. runtimeVersion ties an
-  // OTA bundle to a native build: 2.1.6 bundles only reach 2.1.6 APKs.
+  // OTA bundle to a native build: 2.1.7 bundles only reach 2.1.7 APKs.
   runtimeVersion: { policy: "appVersion" },
   updates: {
     url: `https://u.expo.dev/${env.easProjectId}`,
