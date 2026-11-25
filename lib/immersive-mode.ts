@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type RefObject } from "react";
 import { AppState, Dimensions, NativeModules, Platform } from "react-native";
 import * as NavigationBar from "expo-navigation-bar";
 
@@ -83,7 +83,8 @@ export async function applyAndroidImmersiveBars(hidden: boolean): Promise<void> 
  */
 export function useImmersiveSystemBars(
   immersive: boolean,
-  triggers: ReadonlyArray<unknown> = []
+  triggers: ReadonlyArray<unknown> = [],
+  skipRestoreOnUnmount?: RefObject<boolean>
 ): void {
   useEffect(() => {
     if (Platform.OS !== "android") return;
@@ -142,11 +143,13 @@ export function useImmersiveSystemBars(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [immersive, ...triggers]);
 
-  // Always restore visible system bars when unmounting the watch screen
+  // Restore system bars when leaving the watch screen, not between episodes.
   useEffect(() => {
     if (Platform.OS !== "android") return;
     return () => {
-      void applyAndroidImmersiveBars(false);
+      // The navigation handoff is decided after mount, so read the live flag.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      if (!skipRestoreOnUnmount?.current) void applyAndroidImmersiveBars(false);
     };
-  }, []);
+  }, [skipRestoreOnUnmount]);
 }

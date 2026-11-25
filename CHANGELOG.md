@@ -6,6 +6,10 @@ This is the public record of meaningful native Android releases. For the current
 
 ## Unreleased
 
+## v2.1.6 — Fullscreen Tetap Aktif Saat Pindah Episode
+
+- Pemutar mempertahankan fullscreen, orientasi landscape, dan mode immersive saat pindah episode secara manual maupun autoplay. Mode biasa tetap berlaku bila fullscreen dimatikan.
+
 ## v1.1.5 — Menu Pilihan Kualitas Video Ala Wibuku & Auto-Resume Instan Tanpa Klik Lanjutkan
 
 - **Menu `Pilihan Kualitas Video` Baru**: Bottom sheet gelap dengan tampilan identik (`360P (Hemat)`, `480P (Standar)` hijau, `720P (Bagus)` oranye, `1080P (Premium)` emas) lengkap dengan centang aktif & deskripsi detail, sekaligus mempertahankan detik tontonan saat berganti kualitas.

@@ -235,7 +235,7 @@ async function rememberProviderQuality(providerId: string | undefined, quality: 
 
 export default function WatchScreen() {
   const screenMountTime = useRef(Date.now()).current;
-  const params = useLocalSearchParams<{ id?: string | string[]; episode?: string | string[]; title?: string; image?: string; resumeTime?: string; fromMini?: string }>();
+  const params = useLocalSearchParams<{ id?: string | string[]; episode?: string | string[]; title?: string; image?: string; resumeTime?: string; fromMini?: string; fullscreen?: string }>();
   const { playerData, minimizePlayer } = useMiniPlayer();
   const animeId = parseRouteId(params.id) ?? -1;
   const invalidId = animeId <= 0;
@@ -416,7 +416,8 @@ export default function WatchScreen() {
   const [showControls, setShowControls] = useState(true);
   type ActivePanel = "settings" | "subtitles" | "speed" | "server" | "chapters" | "source" | "quality" | "download" | "language" | null;
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
-  const [manualFullscreen, setManualFullscreen] = useState(false);
+  const [manualFullscreen, setManualFullscreen] = useState(() => params.fullscreen === "1");
+  const episodeFullscreenHandoffRef = useRef(false);
   const [episodeSearch, setEpisodeSearch] = useState("");
   const [episodePage, setEpisodePage] = useState(0);
   const [progressWidth, setProgressWidth] = useState(0);
@@ -508,12 +509,12 @@ export default function WatchScreen() {
   const awarded5MinXp = useRef(false);
   const sleepFired = useRef(false);
 
-  // Do NOT force landscape on load — the inline player must stay inline until
-  // the user taps fullscreen. Forcing LANDSCAPE here rotated the whole
-  // activity on first frame, which looked like "tap opens fullscreen with no UI"
-  // (controls start hidden, so the rotated video showed nothing).
-  // Fullscreen is entered explicitly via enterFullscreen() only.
-  useEffect(() => () => { if (Platform.OS !== "web") void ScreenOrientation.unlockAsync().catch(() => {}); }, []);
+  // A replacement watch screen inherits fullscreen; only unlock when leaving
+  // the player, not while handing off to the next episode.
+  useEffect(() => { episodeFullscreenHandoffRef.current = false; }, [episode]);
+  useEffect(() => () => {
+    if (Platform.OS !== "web" && !episodeFullscreenHandoffRef.current) void ScreenOrientation.unlockAsync().catch(() => {});
+  }, []);
 
   // Fullscreen entry forces landscape even with system auto-rotate OFF (a
   // sensor lock alone keeps portrait when the user holds the phone upright,
@@ -529,6 +530,10 @@ export default function WatchScreen() {
     }
     void ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (params.fullscreen === "1") lockForceLandscape();
+  }, [params.fullscreen, lockForceLandscape]);
 
   const streamCache = useRef(new Map<string, CachedStream>());
   const blockedProviders = useRef(new Set<string>());
@@ -2700,8 +2705,9 @@ export default function WatchScreen() {
     }
 
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    router.replace({ pathname: "/watch/[id]", params: { id: String(animeId), episode: String(targetEpisode), title, image } } as never);
-  }, [animeId, canonicalEpisodes, image, title, animeQuery.data?.status, animeQuery.data?.nextAiringEpisode, episodeQuery.isSuccess]);
+    episodeFullscreenHandoffRef.current = manualFullscreen;
+    router.replace({ pathname: "/watch/[id]", params: { id: String(animeId), episode: String(targetEpisode), title, image, ...(manualFullscreen ? { fullscreen: "1" } : {}) } } as never);
+  }, [animeId, canonicalEpisodes, image, title, animeQuery.data?.status, animeQuery.data?.nextAiringEpisode, episodeQuery.isSuccess, manualFullscreen]);
 
   const openEpisodeInfo = useCallback((targetEpisode = episode) => {
     const selected = displayEpisodes.find((item) => item.number === targetEpisode);
@@ -2910,6 +2916,7 @@ export default function WatchScreen() {
 
   const exitFullscreen = useCallback(() => {
     setManualFullscreen(false);
+    if (params.fullscreen === "1") router.setParams({ fullscreen: undefined });
     // Keep chrome visible on exit so the inline player never looks dead.
     setShowControls(true);
     if (Platform.OS !== "web") {
@@ -2920,7 +2927,7 @@ export default function WatchScreen() {
         void ScreenOrientation.unlockAsync().catch(() => {});
       });
     }
-  }, []);
+  }, [params.fullscreen]);
 
   const enterPiP = useCallback(() => {
     if (Platform.OS === "web") return;
@@ -3201,7 +3208,7 @@ export default function WatchScreen() {
     return { type: "index", value: typeof first?.index === "number" ? first.index : 0 } as any;
   }, [audioTracks, language]);
 
-  useImmersiveSystemBars(manualFullscreen, [showControls, activePanel, reportModalVisible]);
+  useImmersiveSystemBars(manualFullscreen, [showControls, activePanel, reportModalVisible], episodeFullscreenHandoffRef);
 
   if (invalidId) {
     return <NativeScreen scroll={false} style={styles.fill}>
@@ -5538,5 +5545,4 @@ function FullscreenCornersIcon({ size = 20, exit = false }: { size?: number; exi
     </Svg>
   );
 }
-
 
